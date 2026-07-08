@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F047",
+  "name": "Support Ticket Triage with Follow-up Tasks",
+  "category": "business_operations",
+  "mock_services": [
+    "ticketing",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "0ced52c9a1f3197637f2cd069c797ba48f5eca65ba38e67f46976e672b66f75c",
+      "bytes": 357
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "811fbe78e76a801b4a50ce398d939aa41ae0629d2a9d72ad184ab7a9e281c36a",
+      "bytes": 2007
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "878ea78e8e2b01984e9a75b6bc519284547807769f5420e1f90e27211d8dd2f4",
+      "bytes": 2067
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    },
+    {
+      "path": "triage_brief.md",
+      "sha256": "3b99f60a555ad319c035a63cde1fbd2a61c85e1a59da1c39bcb1ee3c1d5a1172",
+      "bytes": 3402
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "0ced52c9a1f3197637f2cd069c797ba48f5eca65ba38e67f46976e672b66f75c",
+      "bytes": 357
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "811fbe78e76a801b4a50ce398d939aa41ae0629d2a9d72ad184ab7a9e281c36a",
+      "bytes": 2007
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "c57520672ad3a34bfdb259837cc1188690f887dd68ee52492852bd019d3af6c4",
+    "bytes": 2976
+  }
+}

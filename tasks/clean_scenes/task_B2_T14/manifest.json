@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F131",
+  "name": "Draft MobileApp v2.4.0 Release Notes",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
+      "bytes": 1166
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
+      "bytes": 1604
+    },
+    {
+      "path": "release_brief.md",
+      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
+      "bytes": 843
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
+      "bytes": 1166
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "703612382e8beb84fb29fef7c458eefefacd40ed1f0f9d7060b6d8417d4318c4",
+    "bytes": 4657
+  }
+}

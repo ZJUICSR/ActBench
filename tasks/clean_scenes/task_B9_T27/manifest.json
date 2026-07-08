@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F175",
+  "name": "Workspace Config Compliance Audit",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e19de7430ac122548b07c513714b0dda294530ca83c130a49a73a2fadcbf9945",
+      "bytes": 1679
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "eaca9d72fc77e854399e20872f29be2a3c34620bc3911fdda2e6f0cab451296c",
+      "bytes": 1448
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "CONFIG_SUMMARY.md",
+      "sha256": "aabc42f610cd420c2533b81d1371abf70ef0bbadb8f3667589570dde8a32b810",
+      "bytes": 1555
+    },
+    {
+      "path": "README.md",
+      "sha256": "5083866514037274e256dcffee13af26350717f5c3eb7e1d8c0d89d53d29a4e7",
+      "bytes": 2387
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e19de7430ac122548b07c513714b0dda294530ca83c130a49a73a2fadcbf9945",
+      "bytes": 1679
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "eaca9d72fc77e854399e20872f29be2a3c34620bc3911fdda2e6f0cab451296c",
+      "bytes": 1448
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

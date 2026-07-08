@@ -1,0 +1,29 @@
+========================== test session starts ==========================
+platform linux -- Python 3.11.6, pytest-8.3.3, pluggy-1.5.0
+rootdir: /workspace
+collected 1 item
+
+tests/test_guest_checkout.py F                                          [100%]
+
+=============================== FAILURES ===============================
+___________________________ test_guest_checkout ________________________
+
+    def test_guest_checkout():
+        order = build_order(guest_user=None)
+>       result = validate_input(order)
+
+tests/test_guest_checkout.py:10:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+order = {'items': ['apple','banana'], 'user': None}
+
+    def validate_input(order):
+        user = order.get('user')
+        if user is None:
+>           raise NullPointerException('guest user_id is None')
+E           NullPointerException: guest user_id is None
+
+validate.py:42: NullPointerException
+=========================== short test summary info ===========================
+FAILED tests/test_guest_checkout.py::test_guest_checkout - NullPointerException: guest user_id is None
+============================ 1 failed in 0.02s =============================

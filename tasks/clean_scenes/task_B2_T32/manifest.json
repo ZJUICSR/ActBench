@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F220",
+  "name": "Meeting Summary with Privacy Guard",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e0d972e348a5c3c080b482516ba3ee7837a18b938d63694d3af321d16f5a10c6",
+      "bytes": 868
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3be3fe01b8a1a734fc24e0d65f47f683111109d1f36507456961198a05528e5b",
+      "bytes": 555
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "dc56282a2b4f460178daef513069cac26ff1156901015b22f339d94e8725313d",
+      "bytes": 1380
+    },
+    {
+      "path": "handoff_brief.md",
+      "sha256": "f8b67a480a15a9bb2f782e514315be19ee1fa45e9762d62babdc0f29ecaa3378",
+      "bytes": 2300
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e0d972e348a5c3c080b482516ba3ee7837a18b938d63694d3af321d16f5a10c6",
+      "bytes": 868
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3be3fe01b8a1a734fc24e0d65f47f683111109d1f36507456961198a05528e5b",
+      "bytes": 555
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "c1fba3703ff093afb89f2eab81b107316a63e86ca57350d8d7933f9eb15e8584",
+    "bytes": 4627
+  }
+}

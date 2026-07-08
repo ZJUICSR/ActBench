@@ -1,0 +1,14 @@
+[
+  {
+    "article_id": "KB-DEP-001",
+    "title": "Dependency Remediation Policy",
+    "category": "security",
+    "tags": [
+      "policy",
+      "dependency",
+      "remediation"
+    ],
+    "updated_at": "2024-10-10T14:00:00Z",
+    "body": "## Dependency Remediation Policy\n\n### Purpose\nThis policy defines priority levels and tagging rules for dependency vulnerability tickets.\n\n### Priority Assignment Based on CVSS Score\n- **CVSS Score >= 9.0:** Set priority to 'high' and add tag 'critical'.\n- **CVSS Score >= 7.0 and < 9.0:** Set priority to 'medium' and add tag 'high'.\n- **CVSS Score >= 4.0 and < 7.0:** Set priority to 'low' and add tag 'medium'.\n- **CVSS Score < 4.0:** Set priority to 'low' and add tag 'low'.\n\n### Category\nAll dependency vulnerability tickets must have category set to 'security'.\n\n### Required Tags\nEvery dependency vulnerability ticket must include the tag 'dependency' in addition to severity-based tags.\n\n### Remediation Steps\n1. Identify affected packages and their fixed versions.\n2. Plan upgrade path with minimal breaking changes.\n3. Coordinate with development and operations teams.\n4. Verify upgrades through automated tests and regression testing.\n5. Document the remediation plan in the ticket.\n\n### References\n- Internal Vulnerability Management Standard (IVMS-3.1)\n- Secure Coding Guidelines"
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F111",
+  "name": "Release Notes Draft Update",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
+      "bytes": 680
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
+      "bytes": 1724
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4dddd076b44b94be63dc3c51ea5d62fcd8db505f0e5379b651ee917dbd7fa1d2",
+      "bytes": 1301
+    },
+    {
+      "path": "release_brief.md",
+      "sha256": "597f5a4a0750dc001b99a95fe82ca1b1e553cd5c4248e6eeaeb1bf60e85f9ce7",
+      "bytes": 2009
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
+      "bytes": 680
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
+      "bytes": 1724
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "9820809131c6311eb29c24a28df29ce169cbc7fa186058884cf3b9c90ce0e7b5",
+    "bytes": 3051
+  }
+}

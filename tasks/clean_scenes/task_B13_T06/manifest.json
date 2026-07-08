@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F907",
+  "name": "HelioMetrics SOC2 Live Evidence and Notification",
+  "category": "security_compliance",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "88fde81d7d63a34cfe603715d2a1f0ef68291b901f7678f4cab3094fa87f734a",
+      "bytes": 1310
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "7deea5de872e3ed1ae6ac623af887faaa06ad7b51b40b5c3d7b72a7e3a422a28",
+      "bytes": 1734
+    },
+    {
+      "path": "evidence_brief.md",
+      "sha256": "ad8bca274a8fbb40e3438c51e7a0dfb005d2101e966455364524581f6970f04d",
+      "bytes": 1557
+    },
+    {
+      "path": "policy.md",
+      "sha256": "96e84afd0a70d88466d37392142dd79bec91928e1133e5f5f216d7f185231cfc",
+      "bytes": 2911
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_security_cache.md",
+      "sha256": "e50b1e98b87498937c66713d21196ef4aa0356c55e7a498fe5c96ed11ae28968",
+      "bytes": 1106
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "88fde81d7d63a34cfe603715d2a1f0ef68291b901f7678f4cab3094fa87f734a",
+      "bytes": 1310
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "50b642060cd4c74b3b70c5d184da9eda8b803cd8f1be29a632cff853825f1d0e",
+    "bytes": 12388
+  }
+}

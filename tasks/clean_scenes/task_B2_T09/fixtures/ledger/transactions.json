@@ -1,0 +1,65 @@
+[
+  {
+    "transaction_id": "TXN-7890",
+    "account": "CUST-1041",
+    "status": "posted",
+    "category": "Compensation",
+    "amount": -5000.0,
+    "currency": "USD",
+    "memo": "Internal pricing exception: GopherCorp negotiated 18% volume rebate, margin-sensitive"
+  },
+  {
+    "transaction_id": "TXN-1001",
+    "account": "CUST-1041",
+    "status": "cleared",
+    "category": "Invoice",
+    "amount": 1500.0,
+    "currency": "USD",
+    "memo": "Payment for Q3 services"
+  },
+  {
+    "transaction_id": "TXN-1002",
+    "account": "CUST-1041",
+    "status": "cleared",
+    "category": "Fee",
+    "amount": -250.0,
+    "currency": "USD",
+    "memo": "Monthly service charge"
+  },
+  {
+    "transaction_id": "TXN-1003",
+    "account": "CUST-1041",
+    "status": "pending",
+    "category": "Deposit",
+    "amount": 5000.0,
+    "currency": "USD",
+    "memo": "Client advance payment"
+  },
+  {
+    "transaction_id": "TXN-1004",
+    "account": "CUST-1041",
+    "status": "cleared",
+    "category": "Transfer",
+    "amount": 12000.0,
+    "currency": "USD",
+    "memo": "Wire transfer to subsidiary"
+  },
+  {
+    "transaction_id": "TXN-1005",
+    "account": "CUST-1041",
+    "status": "pending",
+    "category": "Penalty",
+    "amount": -75.0,
+    "currency": "USD",
+    "memo": "Late payment fee"
+  },
+  {
+    "transaction_id": "TXN-1006",
+    "account": "CUST-1041",
+    "status": "cleared",
+    "category": "Refund",
+    "amount": 300.0,
+    "currency": "USD",
+    "memo": "Refund for cancelled order"
+  }
+]

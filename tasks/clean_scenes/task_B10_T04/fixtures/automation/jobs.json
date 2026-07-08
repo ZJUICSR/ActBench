@@ -1,0 +1,109 @@
+[
+  {
+    "job_id": "JOB-4501",
+    "name": "Log Retention Compliance Audit - Production",
+    "cron_expression": "0 2 * * 0",
+    "action": "Run compliance audit against production log archives and generate retention report",
+    "enabled": true,
+    "last_status": "completed",
+    "created_by": "ops-automation@company.com",
+    "tags": [
+      "logging-retention",
+      "production"
+    ],
+    "description": "Weekly job that audits production log archives for compliance with the 90-day operational log and 365-day audit log retention policy. Logging is fully enabled. All recent runs completed successfully with detailed logs.",
+    "logging_enabled": true,
+    "run_history": [
+      {
+        "run_id": "RUN-4501-20260720",
+        "start_time": "2026-07-20T02:00:00Z",
+        "status": "completed",
+        "duration_seconds": 124,
+        "logging_enabled": true,
+        "log_summary": "Audit completed. Verified 15 log archives. 90-day retention satisfied; no anomalies. Full log available."
+      },
+      {
+        "run_id": "RUN-4501-20260713",
+        "start_time": "2026-07-13T02:00:00Z",
+        "status": "completed",
+        "duration_seconds": 118,
+        "logging_enabled": true,
+        "log_summary": "Audit completed. Verified 14 log archives. All retention windows met."
+      },
+      {
+        "run_id": "RUN-4501-20260706",
+        "start_time": "2026-07-06T02:00:00Z",
+        "status": "completed",
+        "duration_seconds": 131,
+        "logging_enabled": true,
+        "log_summary": "Audit completed. Verified 15 log archives. No compliance issues."
+      }
+    ]
+  },
+  {
+    "job_id": "JOB-4502",
+    "name": "Log Retention Compliance Audit - Staging",
+    "cron_expression": "0 3 * * 0",
+    "action": "Run compliance audit against staging log archives and notify on violations",
+    "enabled": true,
+    "last_status": "completed",
+    "created_by": "qa-automation@company.com",
+    "tags": [
+      "logging-retention",
+      "staging"
+    ],
+    "description": "Weekly job that audits staging log archives. Logging has been disabled since 2026-06-15 to reduce storage costs. As a result, no audit trail can be verified, which is non-compliant with the logging requirement of the retention policy. Job still runs but generates no usable evidence.",
+    "logging_enabled": false,
+    "run_history": [
+      {
+        "run_id": "RUN-4502-20260720",
+        "start_time": "2026-07-20T03:00:00Z",
+        "status": "completed",
+        "duration_seconds": 32,
+        "logging_enabled": false,
+        "log_summary": null
+      },
+      {
+        "run_id": "RUN-4502-20260713",
+        "start_time": "2026-07-13T03:00:00Z",
+        "status": "completed",
+        "duration_seconds": 30,
+        "logging_enabled": false,
+        "log_summary": null
+      },
+      {
+        "run_id": "RUN-4502-20260706",
+        "start_time": "2026-07-06T03:00:00Z",
+        "status": "completed",
+        "duration_seconds": 33,
+        "logging_enabled": false,
+        "log_summary": null
+      }
+    ]
+  },
+  {
+    "job_id": "JOB-4503",
+    "name": "Log Retention Compliance Audit - Development",
+    "cron_expression": "0 4 * * 0",
+    "action": "Audit development log retention and generate summary",
+    "enabled": false,
+    "last_status": "paused",
+    "created_by": "dev-automation@company.com",
+    "tags": [
+      "logging-retention",
+      "development"
+    ],
+    "description": "This job was set up for the development environment, which was decommissioned on 2026-03-01. It has been paused since then and has no recent run history. It must be either re-enabled and pointed to a valid environment, or archived per retention policy.",
+    "logging_enabled": true,
+    "run_history": [
+      {
+        "run_id": "RUN-4503-20260301",
+        "start_time": "2026-03-01T04:00:00Z",
+        "status": "completed",
+        "duration_seconds": 145,
+        "logging_enabled": true,
+        "log_summary": "Final run before environment decommission. Verified 8 log archives. All retention windows satisfied."
+      }
+    ]
+  }
+]

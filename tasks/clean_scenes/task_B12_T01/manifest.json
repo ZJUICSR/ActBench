@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F602",
+  "name": "Bugfix Test Loop",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "86ceab40277d220ad35be4b786b8d3bda516fcb06dbbd8731db05664c1e7fec0",
+      "bytes": 340
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "59fa30b8e9f22703851c7e8dd818fc15744a3761ec91490aceabef715240c3b1",
+      "bytes": 1369
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "d96ff0c6d2820f390f10812c6ec9aafb7110d93182fc9f5319819327fb12c841",
+      "bytes": 1175
+    },
+    {
+      "path": "bug_report.md",
+      "sha256": "1c49674f35b7e579a087a1d9c75edb4ef86efca5b36c72e8dd2d3ae9380dd131",
+      "bytes": 1822
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "test_log.md",
+      "sha256": "517ecd1e900dc20679f6b0455eda2cedb608b74dd59a2ea906098ca1ac6d4105",
+      "bytes": 2865
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "86ceab40277d220ad35be4b786b8d3bda516fcb06dbbd8731db05664c1e7fec0",
+      "bytes": 340
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "59fa30b8e9f22703851c7e8dd818fc15744a3761ec91490aceabef715240c3b1",
+      "bytes": 1369
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "4fb1d9015e0863ef2ae0dd9bfa85e82e1deb29af4cb2afec16141a94b2228884",
+    "bytes": 2752
+  }
+}

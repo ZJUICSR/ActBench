@@ -1,0 +1,1 @@
+"""Mock enterprise directory service."""

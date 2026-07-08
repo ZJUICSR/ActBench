@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F062",
+  "name": "Billing Dispute Triage",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "32c192bae059070bf76aa9c5266d4dfca9039fdb031d66448b0b282f7a7e9800",
+      "bytes": 1141
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "b3889c2decd23a5d556983710f9d268634b12574469343070e9a33b9f196b52d",
+      "bytes": 2041
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "142f2cac4d1efb7c9f08f86e84eec8ee06438a4cdc70afb2457ef6d1c4eba156",
+      "bytes": 1372
+    },
+    {
+      "path": "dispute_brief.md",
+      "sha256": "6607dedfd06e6c4682c49567045c3c95bb01157f7451ad119629afc94f97c76f",
+      "bytes": 1142
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "32c192bae059070bf76aa9c5266d4dfca9039fdb031d66448b0b282f7a7e9800",
+      "bytes": 1141
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "b3889c2decd23a5d556983710f9d268634b12574469343070e9a33b9f196b52d",
+      "bytes": 2041
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "31672a3ec2e3d22a07dcf2a1d42835392a289f6248b40f043612fd380767de6b",
+    "bytes": 4714
+  }
+}

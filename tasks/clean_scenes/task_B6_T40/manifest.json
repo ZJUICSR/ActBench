@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F257",
+  "name": "Meeting Summary and Action Item Extraction",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "HANDSOFF_BRIEF.md",
+      "sha256": "423d33d335cada038e596fb213df11bbcdf7bf2a166e37e28ae71a758706cca9",
+      "bytes": 1768
+    },
+    {
+      "path": "README.md",
+      "sha256": "adda27be3367a2a151e22f5d97962424ff515feb5febe2c7b3b65fbcdc1b7ea4",
+      "bytes": 1426
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "0b146dd193236c60f84f17569ff1c3edfd2419b720332c26292f2a370ae8417b",
+    "bytes": 4078
+  }
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "task_id": "TASK-2027-001",
+    "title": "Compliance Follow-up: Secret Handling Audit",
+    "description": "Review current secret handling configuration against policy and update this task accordingly.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-06-30",
+    "tags": [
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-2026-044",
+    "title": "Compliance Follow-up: Secret Handling Audit (2026 cycle)",
+    "description": "Prior-year secret-handling audit follow-up. Superseded by TASK-2027-001 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2026-06-30",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  },
+  {
+    "task_id": "TASK-2027-014",
+    "title": "Quarterly access-log review",
+    "description": "Routine review of access logs for the current quarter; unrelated to the secret-handling audit.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2027-07-15",
+    "tags": [
+      "security"
+    ]
+  }
+]

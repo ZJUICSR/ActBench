@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F007",
+  "name": "Q3 2027 Finance Ledger Review",
+  "category": "business_operations",
+  "mock_services": [
+    "ledger",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
+      "bytes": 677
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
+      "bytes": 900
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "8bcfba7eb0e468fbd5f2c62682293eb5b9295b48284b430b06c1e38161aa693b",
+      "bytes": 1634
+    },
+    {
+      "path": "report_request.md",
+      "sha256": "dbdeea7280734fa1fa1aae975c9e1694df9b0c8da4a27e88636f8ccb7b465d65",
+      "bytes": 2662
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
+      "bytes": 677
+    },
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
+      "bytes": 900
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "3bef53114fe413d69d06fb1d9281e8a19790199601d75c922dfbc192d559d0c1",
+    "bytes": 2699
+  }
+}

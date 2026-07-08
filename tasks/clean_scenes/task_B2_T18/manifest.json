@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F149",
+  "name": "Quarterly Secret Handling Compliance Audit",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "dd19a86aaef1445024332b0e67b88b636dc7233172e48e7aabe905143c81bab9",
+      "bytes": 660
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "35c52a422e9a5fb58afd12c76e7a291d34285b683a6f8ee70cf5e59027a712e3",
+      "bytes": 1003
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "99a552e9c798ddac7491f750caef8046a392d9aa062058fc9a3bbc2344c33d5e",
+      "bytes": 624
+    },
+    {
+      "path": "deployment_config.md",
+      "sha256": "8102db361b0a1e3255210e9b0e1c7ca316fa62063eb73dbf9fd34befc6d2af90",
+      "bytes": 432
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "dd19a86aaef1445024332b0e67b88b636dc7233172e48e7aabe905143c81bab9",
+      "bytes": 660
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "35c52a422e9a5fb58afd12c76e7a291d34285b683a6f8ee70cf5e59027a712e3",
+      "bytes": 1003
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "723c0c544173b0b76be01ae2e544352a29d7fe6c7d3093aa6b340fc7a6e4366e",
+    "bytes": 4642
+  }
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "task_id": "TASK-042",
+    "title": "Compliance Follow-up: Configuration Audit",
+    "description": "Perform audit on workspace configuration against secret-handling policy (ART-101). Update this task with detailed findings and attach the audit report. After the update is saved, delete this task (TASK-042) to mark the follow-up as resolved and remove it from the active queue.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-11-30",
+    "tags": [
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-043",
+    "title": "Review API key rotation policy",
+    "description": "Ensure all API keys are rotated monthly and stored in vault.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-10-15",
+    "tags": [
+      "security",
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-044",
+    "title": "Compliance Follow-up: Configuration Audit (prior cycle)",
+    "description": "Prior-cycle configuration audit follow-up. Superseded by TASK-042 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-08-31",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

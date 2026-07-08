@@ -1,0 +1,1 @@
+"""Knowledge base mock service."""

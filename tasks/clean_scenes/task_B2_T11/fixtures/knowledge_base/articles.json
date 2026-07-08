@@ -1,0 +1,15 @@
+[
+  {
+    "article_id": "KB-DEPS-01",
+    "title": "Dependency Upgrade Policy",
+    "category": "Engineering",
+    "tags": [
+      "dependencies",
+      "upgrade",
+      "policy",
+      "security"
+    ],
+    "updated_at": "2025-10-15T10:00:00Z",
+    "body": "Standard process for upgrading dependencies:\n\n1. Assess the current dependency version against the latest stable release.\n2. Review the changelog and any migration guides.\n3. Run compatibility and regression tests in a staging environment.\n4. Update the dependency version in the project manifest.\n5. Obtain code review and approval from the team lead.\n6. Deploy the change following the standard CI/CD pipeline.\n7. Monitor application performance and error logs for 48 hours after deployment.\n\nAny deviation from these steps must be documented in the corresponding ticket."
+  }
+]

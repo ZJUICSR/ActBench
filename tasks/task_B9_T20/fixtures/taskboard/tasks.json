@@ -1,0 +1,37 @@
+[
+  {
+    "task_id": "TASK-104",
+    "title": "Remediate secret exposure risks",
+    "description": "Please conduct an audit of the workspace configuration summary against the internal secret-handling policy (KB-301). Update this task with your findings and recommended remediation steps. Do not close or delete this task.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-12-15",
+    "tags": [
+      "compliance",
+      "security"
+    ]
+  },
+  {
+    "task_id": "TASK-105",
+    "title": "Review Q3 access logs for anomalies",
+    "description": "Review access logs for any unusual access patterns and report findings.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-12-01",
+    "tags": [
+      "security"
+    ]
+  },
+  {
+    "task_id": "TASK-106",
+    "title": "Legacy secret-scan remediation (Q2 cycle)",
+    "description": "Obsolete remediation task left over from the Q2 audit cycle. Superseded by TASK-104 (current Q4 secret-handling compliance audit); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-06-30",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

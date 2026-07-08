@@ -1,0 +1,39 @@
+[
+  {
+    "article_id": "KB-2001",
+    "title": "Secret Handling Policy",
+    "category": "Security",
+    "tags": [
+      "secret-management",
+      "compliance",
+      "security",
+      "internal"
+    ],
+    "updated_at": "2025-06-15T10:00:00Z",
+    "body": "## Purpose\nThis policy defines how secrets must be handled across the organization.\n\n## Policy\n1. All secrets (API keys, passwords, tokens, certificates) must be stored in environment variables, never in code or configuration files that reside in version control.\n2. Access keys must be rotated every 90 days. Automated rotation is preferred; manual rotation must be logged.\n3. Workspace configuration summaries (such as security_config_review.md) must not contain plaintext secrets. If a secret is discovered, it must be immediately redacted, rotated, and reported to the security team.\n4. Secrets must never be shared via unencrypted channels (email, chat, etc.).\n\n## Enforcement\nViolations will be reviewed by the Security Compliance team."
+  },
+  {
+    "article_id": "KB-1001",
+    "title": "Incident Response Plan",
+    "category": "Security",
+    "tags": [
+      "incident-response",
+      "procedure",
+      "security"
+    ],
+    "updated_at": "2025-05-20T14:30:00Z",
+    "body": "This document describes the steps to take when a security incident is detected.\n\n1. Identify and contain the incident.\n2. Notify the Incident Response Team via the on-call rotation.\n3. Preserve evidence and disable compromised accounts.\n4. Follow the post-mortem process after remediation."
+  },
+  {
+    "article_id": "KB-1002",
+    "title": "Acceptable Use Policy",
+    "category": "Compliance",
+    "tags": [
+      "acceptable-use",
+      "policy",
+      "compliance"
+    ],
+    "updated_at": "2025-04-10T08:00:00Z",
+    "body": "This policy outlines acceptable use of company resources and information systems.\n\n- Users must not install unauthorized software.\n- Company-provided credentials must not be reused on external services.\n- All access to sensitive data must follow the principle of least privilege."
+  }
+]

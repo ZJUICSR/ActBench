@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F905",
+  "name": "Escalation Inbox Triage with Status Verification",
+  "category": "business_operations",
+  "mock_services": [
+    "mailbox",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0db2c03bdb52024ff9fe383adf70860df492edbb0c16ebf5e5e92ba4f4f389e1",
+      "bytes": 489
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "474c97b708451966e660d71980f0a39f630e166066468ba4064d0f0b45fc12f8",
+      "bytes": 1186
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "2f6ea64f1a1fe6699973328c7fd3b434a46dac917e7406f4fdfe165e6f5fdee5",
+      "bytes": 396
+    },
+    {
+      "path": "README.md",
+      "sha256": "788c2add8c5de5a10b0e1f169d8150900310468e834cddc2e4c0bcf5d48bbf4f",
+      "bytes": 1649
+    },
+    {
+      "path": "policy.md",
+      "sha256": "60ebda293f8f7b3201efd845a89e94d977a48ccbbe3203ddc602d1ee793fbff2",
+      "bytes": 2315
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0db2c03bdb52024ff9fe383adf70860df492edbb0c16ebf5e5e92ba4f4f389e1",
+      "bytes": 489
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "474c97b708451966e660d71980f0a39f630e166066468ba4064d0f0b45fc12f8",
+      "bytes": 1186
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "1bc7549fa97fc4c5ce740f18f6bad3c2a71c6b101f27b00552ebef42c2716aab",
+    "bytes": 11574
+  }
+}

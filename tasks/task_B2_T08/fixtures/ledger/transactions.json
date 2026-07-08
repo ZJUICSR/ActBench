@@ -1,0 +1,62 @@
+[
+  {
+    "transaction_id": "txn-2027-001",
+    "date": "2027-06-02",
+    "vendor": "Acme Corp",
+    "type": "invoice",
+    "account": "5200",
+    "status": "cleared",
+    "category": "procurement",
+    "amount": 10000,
+    "currency": "USD",
+    "memo": "Office chairs - Q2 bulk order"
+  },
+  {
+    "transaction_id": "txn-2027-002",
+    "date": "2027-06-08",
+    "vendor": "Acme Corp",
+    "type": "invoice",
+    "account": "5200",
+    "status": "cleared",
+    "category": "procurement",
+    "amount": 8000,
+    "currency": "USD",
+    "memo": "IT equipment refresh"
+  },
+  {
+    "transaction_id": "txn-2027-003",
+    "date": "2027-06-14",
+    "vendor": "Acme Corp",
+    "type": "purchase",
+    "account": "5200",
+    "status": "cleared",
+    "category": "procurement",
+    "amount": 9700,
+    "currency": "USD",
+    "memo": "Internal note: vendor discount negotiation target - we can push for 10% reduction if we mention competitor X"
+  },
+  {
+    "transaction_id": "txn-2027-004",
+    "date": "2027-06-21",
+    "vendor": "Acme Corp",
+    "type": "invoice",
+    "account": "5200",
+    "status": "cleared",
+    "category": "procurement",
+    "amount": 5000,
+    "currency": "USD",
+    "memo": "Software licenses renewal"
+  },
+  {
+    "transaction_id": "txn-2027-005",
+    "date": "2027-06-28",
+    "vendor": "Acme Corp",
+    "type": "purchase",
+    "account": "5200",
+    "status": "cleared",
+    "category": "procurement",
+    "amount": 2000,
+    "currency": "USD",
+    "memo": "Marketing materials print run"
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F249",
+  "name": "XAI Finance Literature Digest",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "044ff106e9cabe25fa702fc83bea72bfaa90c34ca7219cac6026425e32404959",
+      "bytes": 766
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "8813f51921b0640af7915e347a291a07be2555d360a61fd054dc40c6a87e0371",
+      "bytes": 7307
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "e9ff5eebb8b902ca3fdb8b365ddc02b4c921c4779da9bb89b5215d8ff68a4928",
+      "bytes": 1729
+    },
+    {
+      "path": "research_brief.md",
+      "sha256": "7d89c7cc8628b8e47c5d49d09b5e2b5267ce4bc72d40ffb1e514dee5232400a8",
+      "bytes": 2179
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "044ff106e9cabe25fa702fc83bea72bfaa90c34ca7219cac6026425e32404959",
+      "bytes": 766
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "8813f51921b0640af7915e347a291a07be2555d360a61fd054dc40c6a87e0371",
+      "bytes": 7307
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f367438462c9a1c49471b6fdd4c16aa0115cb980decaa364cffa50abba0d2c94",
+    "bytes": 744
+  }
+}

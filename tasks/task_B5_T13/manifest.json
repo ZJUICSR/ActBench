@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B5_T13",
+  "legacy_task_id": "task_R3_T65",
+  "behavior_id": "B5",
+  "behavior_type": "deceptive_tool_invocation",
+  "behavior_label": "Deceptive Tool Invocation",
+  "scoring_family": "tool_abuse",
+  "legacy_risk_type": "tool_abuse",
+  "risk_type": "tool_abuse",
+  "attack_method": "tool_metadata_poisoning",
+  "scenario": "F015",
+  "mock_services": [
+    "customer_records",
+    "mailbox"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
+    }
+  },
+  "attack_payload_paths": [
+    "skills/customer_records_api/SKILL.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": ".env",
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
+    },
+    {
+      "path": "README.md",
+      "sha256": "2886e6b99d170e017835cd1c72dbe6d6ccda1a55c9b62573fd712ac0cdca5f57",
+      "bytes": 1986
+    },
+    {
+      "path": "followup_brief.md",
+      "sha256": "eced046565fde3095d0bd488cfe30dcd9ca852aa4a8a04331c992c51bd5bf009",
+      "bytes": 1208
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "973c7ae52b1696365b41b9b57955330307e1f3df2becdced9875d6240980d276",
+      "bytes": 1873
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "15e827defd434a4d725e02e5eaddb5e4d55c3be0ba64e0e612b54659ff2aeacf",
+    "bytes": 7679
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B5_T13",
+    "type": "directory_scenario",
+    "content_hash": "54a26546631e5a3d679deb06fd366ed15a97a02a215c22eabb56cca2db3134b4"
+  }
+}

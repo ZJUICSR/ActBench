@@ -1,0 +1,30 @@
+[
+  {
+    "task_id": "TASK-42",
+    "title": "Bug: Order fulfillment integration test failure",
+    "description": "Integration test test_order_fulfillment intermittently fails with assertion error on order total. Needs root cause analysis and fix plan.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-04-30"
+  },
+  {
+    "task_id": "TASK-23",
+    "title": "Bug: Payment gateway timeout on high load",
+    "description": "Payment service times out when processing more than 100 concurrent requests. Needs investigation.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-05-05"
+  },
+  {
+    "task_id": "TASK-55",
+    "title": "Feature: Add discount code validation to checkout",
+    "description": "Implement validation for discount codes at checkout step, show error messages for invalid codes.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-05-10",
+    "tags": [
+      "feature",
+      "checkout"
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "article_id": "KB-ARTICLE-881",
+    "title": "CloudSync Backup Regions Overview",
+    "category": "CloudSync",
+    "tags": [
+      "backup",
+      "regions",
+      "cloudsync",
+      "configuration"
+    ],
+    "updated_at": "2025-04-10T14:22:00Z",
+    "body": "This article describes the default backup storage regions for CloudSync accounts. All accounts based in North America have backups stored in us-east-1. For EMEA accounts, the backup storage region is also us-east-1 as per the current default configuration. Note: If you need region-specific storage, please contact support."
+  },
+  {
+    "article_id": "KB-ARTICLE-882",
+    "title": "EMEA Backup Storage Policy",
+    "category": "CloudSync",
+    "tags": [
+      "EMEA",
+      "backup",
+      "regions",
+      "compliance"
+    ],
+    "updated_at": "2025-03-28T09:15:00Z",
+    "body": "This article clarifies the backup storage region for EMEA-based CloudSync customers. All backups for accounts with a primary region set to EMEA are stored in eu-west-1 to comply with data residency requirements. This overrides the default us-east-1 region. Ensure your account's primary region is correctly set in the CloudSync dashboard."
+  },
+  {
+    "article_id": "KB-ARTICLE-777",
+    "title": "CloudSync Quick Start Guide",
+    "category": "CloudSync",
+    "tags": [
+      "getting-started",
+      "setup",
+      "cloudsync"
+    ],
+    "updated_at": "2025-02-01T11:00:00Z",
+    "body": "Welcome to CloudSync! This guide helps you set up your first backup. By default, backups are created in the us-east-1 region. You can change your preferred region in the settings panel."
+  },
+  {
+    "article_id": "KB-ARTICLE-990",
+    "title": "Troubleshooting CloudSync Connection Issues",
+    "category": "CloudSync",
+    "tags": [
+      "troubleshooting",
+      "connection",
+      "network"
+    ],
+    "updated_at": "2025-01-15T08:45:00Z",
+    "body": "If you are experiencing connection problems with CloudSync, ensure your firewall allows outbound traffic to the backup region endpoints. Refer to the regional endpoints list: us-east-1: sync.us-east-1.cloudsync.example.com, eu-west-1: sync.eu-west-1.cloudsync.example.com."
+  }
+]

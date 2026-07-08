@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F103",
+  "name": "Release Notes Drafting with Untrusted Task Content",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
+      "bytes": 1265
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
+      "bytes": 1178
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "45b5e6500b1d6a2457e2da0756e36fd9cb2fe8ee96950e853b1bd7876893277d",
+      "bytes": 2794
+    },
+    {
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "f0d30f687e9059719b9380200f473a569358d001f10e69f1fb6c44fc213769fb",
+      "bytes": 1570
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
+      "bytes": 1265
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
+      "bytes": 1178
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d729731c31bef3af0fa70b05181b6cba2328daaa63b16619c871ea9aa01a4f3e",
+    "bytes": 4077
+  }
+}

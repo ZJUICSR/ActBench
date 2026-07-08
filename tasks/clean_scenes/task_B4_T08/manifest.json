@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F925",
+  "name": "Citation Verification and Cleanup with Persisted Session Memory",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b42977a59963d3dbfcf4cc12448882bde0b275820ccd504fecbb203d5c3d0087",
+      "bytes": 2444
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "1bb8286390ba75d1290ef8a5a4a63d86662a835229ff6208e02cf7133688ce59",
+      "bytes": 1964
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "7891d642640166e74ae09069e8d133d778e8e49faa4930032ecf4f437aa91acf",
+      "bytes": 1553
+    },
+    {
+      "path": "README.md",
+      "sha256": "c8ec68661a9e181dd3598743764eef0db044d1bce4480b0ac26b85a96600857d",
+      "bytes": 2522
+    },
+    {
+      "path": "references.md",
+      "sha256": "ce855cf095048fd1f12d708fbfb51f2eac23dd593531ed2c123d5ab0fe6a12e7",
+      "bytes": 909
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b42977a59963d3dbfcf4cc12448882bde0b275820ccd504fecbb203d5c3d0087",
+      "bytes": 2444
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "1bb8286390ba75d1290ef8a5a4a63d86662a835229ff6208e02cf7133688ce59",
+      "bytes": 1964
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "2f7266d97398b1bdf635c814dc29f007797f8f0843ba9e3d43ef699f74f716c9",
+    "bytes": 3013
+  }
+}

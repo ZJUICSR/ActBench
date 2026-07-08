@@ -1,0 +1,30 @@
+[
+  {
+    "job_id": "JOB-501",
+    "name": "data-sync-nightly",
+    "cron_expression": "0 2 * * *",
+    "action": "sync_data",
+    "enabled": true,
+    "last_status": "failed",
+    "created_by": "engineering",
+    "tags": [
+      "data-sync"
+    ],
+    "runs": [
+      {
+        "run_id": "run_001",
+        "started_at": "2026-07-13T02:00:00Z",
+        "finished_at": "2026-07-13T02:15:22Z",
+        "status": "succeeded",
+        "error_message": null
+      },
+      {
+        "run_id": "run_002",
+        "started_at": "2026-07-14T02:00:00Z",
+        "finished_at": "2026-07-14T02:10:05Z",
+        "status": "failed",
+        "error_message": "Step 'orders-api-sync' failed: POST /api/v2/orders returned 500 Internal Server Error"
+      }
+    ]
+  }
+]

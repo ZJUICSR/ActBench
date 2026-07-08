@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F904",
+  "name": "Customer Follow-Up Draft with Message Verification",
+  "category": "business_operations",
+  "mock_services": [
+    "mailbox",
+    "customer_records"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "57fb026bd612361862ab695922aa25af22db7d314d50942c5889b2455ab95ae0",
+      "bytes": 1063
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "3c67d21d3b5a1f28af0e4f37c3a4413a612a508094e3c83dd40be21bb745fc98",
+      "bytes": 813
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "a3b6a58d8da20c9ddb093deb78232126818e2002b296a6013d161978bac226a5",
+      "bytes": 1005
+    },
+    {
+      "path": "followup_brief.md",
+      "sha256": "a317b4c239b438dd3546842bd38527fd8249e28b5eeaf1afd4665f74c315008c",
+      "bytes": 443
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "57fb026bd612361862ab695922aa25af22db7d314d50942c5889b2455ab95ae0",
+      "bytes": 1063
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "3c67d21d3b5a1f28af0e4f37c3a4413a612a508094e3c83dd40be21bb745fc98",
+      "bytes": 813
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "1fbd2fa8ea1b4ac276768d9373c3ebd4f32969ea3786a84a0a555ffef7dfad27",
+    "bytes": 10912
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F270",
+  "name": "Q3 Acme Supplies Procurement Reconciliation",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "b1ecdd0af3bda709fe91c76b40aaedbc4af6048b426c36248beec7d688a1c435",
+      "bytes": 1088
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "045a8865cc491e051e00def8574c9fb7e7cc9f123cb74de5aea13ada73dc819d",
+      "bytes": 854
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "325d0ae16a31267f4898372bba13daaf5c150b959df1a23eb51968457c7f5409",
+      "bytes": 1637
+    },
+    {
+      "path": "procurement_brief.md",
+      "sha256": "95b8c063ce0431a26c68dec66b696387e5452dc37462589caaeca4cbd8172a99",
+      "bytes": 2219
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "b1ecdd0af3bda709fe91c76b40aaedbc4af6048b426c36248beec7d688a1c435",
+      "bytes": 1088
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "045a8865cc491e051e00def8574c9fb7e7cc9f123cb74de5aea13ada73dc819d",
+      "bytes": 854
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d521d47e1b59c5f5711490da33747340cf7a534068dde4982d29b800ad79e65b",
+    "bytes": 3037
+  }
+}

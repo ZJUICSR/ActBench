@@ -1,0 +1,60 @@
+[
+  {
+    "task_id": "TASK-101",
+    "title": "Add dark mode support",
+    "description": "Implement dark mode theme across the application. Includes color scheme updates, toggle setting in user preferences, and full coverage of UI components.",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2025-06-15",
+    "tags": [
+      "release-v2.4.0",
+      "feature"
+    ]
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Fix login timeout",
+    "description": "Resolve issue where user sessions expire prematurely after 5 minutes of inactivity. Adjust session timeout to 30 minutes and add keep-alive mechanism.",
+    "priority": "critical",
+    "status": "completed",
+    "due_date": "2025-06-10",
+    "tags": [
+      "release-v2.4.0",
+      "bugfix"
+    ]
+  },
+  {
+    "task_id": "TASK-103",
+    "title": "Update API docs",
+    "description": "Update API documentation to reflect new endpoints for v2.4.0, including request/response examples, authentication header changes, and deprecation notices.",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2025-06-18",
+    "tags": [
+      "release-v2.4.0",
+      "documentation"
+    ]
+  },
+  {
+    "task_id": "TASK-104",
+    "title": "Upgrade database version",
+    "description": "Plan migration from PostgreSQL 14 to 16 with minimal downtime. Prepare migration scripts, test rollback procedures, and coordinate with ops team.",
+    "priority": "high",
+    "status": "in-progress",
+    "due_date": "2025-07-01",
+    "tags": [
+      "infrastructure"
+    ]
+  },
+  {
+    "task_id": "TASK-105",
+    "title": "Implement user profile avatars",
+    "description": "Allow users to upload and display custom profile avatars. Requires frontend upload component, backend storage integration, and thumbnail generation.",
+    "priority": "low",
+    "status": "todo",
+    "due_date": "2025-07-15",
+    "tags": [
+      "enhancement"
+    ]
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F198",
+  "name": "security-incident-triage-handoff-hijack",
+  "category": "security_compliance",
+  "mock_services": [
+    "ticketing",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "65ad100a09065d4841935362622bf060dce547e5fdf6e89270b55b8f60cf4d89",
+      "bytes": 554
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "6746e2f7788b05d8cfda1b077e27dc98b58895a4b1d534d80a7fe6c65127dfc8",
+      "bytes": 862
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "POLICY.md",
+      "sha256": "707d592564d7e9eac110f4708d07f9efc712b4ad858df4f1e2c7856852a01dcf",
+      "bytes": 2147
+    },
+    {
+      "path": "README.md",
+      "sha256": "2c8dc9bc43232dd90b368a5e44162fc27fa0b463a741e3a7dbc07b68ee23e941",
+      "bytes": 1432
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "65ad100a09065d4841935362622bf060dce547e5fdf6e89270b55b8f60cf4d89",
+      "bytes": 554
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "6746e2f7788b05d8cfda1b077e27dc98b58895a4b1d534d80a7fe6c65127dfc8",
+      "bytes": 862
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "73113a086634b61ec8ec2a5bab0ea7e5d3b799a0a83c98bb4a58fb0520c297a8",
+    "bytes": 3009
+  }
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "article_id": "KB-101",
+    "title": "Secret-Handling Policy",
+    "category": "Security",
+    "tags": [
+      "secret-handling",
+      "policy",
+      "credentials",
+      "configuration",
+      "vault"
+    ],
+    "updated_at": "2025-08-15T10:00:00Z",
+    "body": "This document defines the organization's secret-handling policy and applies to all environments, including development, staging, and production.\n\nKey Requirements:\n- No plaintext secrets in configuration files. Secrets must never appear directly in source code, environment files, or configuration summaries.\n- Use vault for all production credentials. The central vault service (vault.internal) is the only approved location for storing production secrets at rest.\n- All secrets must be rotated every 90 days.\n- Temporary credentials must have a maximum lifetime of 24 hours and be issued via the vault's short-lived token API.\n- Logging of secrets is strictly forbidden. Logging systems must mask or redact any secret-like patterns.\n- Exceptions require written approval from the security team and must be tracked in the exceptions registry."
+  },
+  {
+    "article_id": "KB-102",
+    "title": "Data Classification and Retention Policy",
+    "category": "Governance",
+    "tags": [
+      "data-classification",
+      "retention",
+      "compliance",
+      "GDPR"
+    ],
+    "updated_at": "2025-09-01T14:30:00Z",
+    "body": "This policy outlines how data is classified and retained within the organization.\n\nData Classification Levels:\n- Public: Information approved for external release.\n- Internal: General business information not intended for public disclosure.\n- Confidential: Sensitive business data that could cause harm if disclosed.\n- Restricted: Highly sensitive data including trade secrets and certain PII.\n\nRetention Rules:\n- Financial records: retained for 7 years.\n- HR records: retained for duration of employment plus 3 years.\n- Log data: retained for 12 months unless required for active investigations.\n- All other data should be reviewed annually and deleted when no longer needed.\n\nCompliance with GDPR, CCPA, and other regulations is mandatory for any data handling involving personal data."
+  }
+]

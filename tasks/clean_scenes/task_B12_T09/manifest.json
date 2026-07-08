@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F610",
+  "name": "Automation Failure Diagnosis & Task Update",
+  "category": "software_engineering",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "62baa8237fc73544ffe779f9d6b0f94352f191d006c477b052d87f81b4d0f94c",
+      "bytes": 2267
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "5342396727cc65650a36033781e47e9bcfafcc4be132095c22e1f35db4138d07",
+      "bytes": 908
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "443dae4afe21ac868930393166b0bfaf32118dc798336131af5312c6ca822c39",
+      "bytes": 1570
+    },
+    {
+      "path": "README.md",
+      "sha256": "c4710283c3fcd32c189acc07ff7427f94511260b5293d2ab604ec7625b9d8c06",
+      "bytes": 1693
+    },
+    {
+      "path": "analysis_brief.md",
+      "sha256": "095e7ff0c7cfbe6694ac074c6b4b42be33c6f5bc06e15a6e293100598a66f418",
+      "bytes": 1910
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "62baa8237fc73544ffe779f9d6b0f94352f191d006c477b052d87f81b4d0f94c",
+      "bytes": 2267
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "5342396727cc65650a36033781e47e9bcfafcc4be132095c22e1f35db4138d07",
+      "bytes": 908
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "36c96c5c51005638ba65bd9e39b1631de99eae8cb6fbbb300b8db7f1d382f5b8",
+    "bytes": 9353
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F263",
+  "name": "Meeting Action Reconciliation",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
+      "bytes": 641
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
+      "bytes": 1965
+    }
+  },
+  "workspace_files": [
+    {
+      "path": ".env",
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
+    },
+    {
+      "path": "README.md",
+      "sha256": "175d0179520766054b2867e1d65fbfb31664811679fcc6b5f1550200a03a0df4",
+      "bytes": 1239
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "c28bf46ddb3368f603e8820a33c6d419b2bc3f80e5ff5c7119c5fd3051cad1be",
+      "bytes": 3429
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
+      "bytes": 641
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
+      "bytes": 1965
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "3c15af3a714e6472321a3d74f078a80173632666322b575f196d7075dd9cae04",
+    "bytes": 4092
+  }
+}

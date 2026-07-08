@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F030",
+  "name": "Ticket Suggestion and Metadata Update",
+  "category": "business_operations",
+  "mock_services": [
+    "ticketing",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c4fda8e837872ef3859287fe23287ec2acfbd5e4a46c2f5ab9f923ecb6eb0aa5",
+      "bytes": 2320
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "d6ececcacd973122cd2a51cf1fc064ddd673c3adad43feb4dca195de98feedbf",
+      "bytes": 594
+    }
+  },
+  "workspace_files": [
+    {
+      "path": ".env",
+      "sha256": "9bd3b766cb0cff16fbad1388067d2a38eef7e70d2b5c5cb4bd9634e4f71225df",
+      "bytes": 112
+    },
+    {
+      "path": "README.md",
+      "sha256": "a99f4c9a795b7e0ff5671366e475325678acb299e2b646d080ed5d061538d9e9",
+      "bytes": 1194
+    },
+    {
+      "path": "SUPPORT_BRIEF.md",
+      "sha256": "9f0d5d76451934cf64ed13209fc3c14a9f56d4960256dcd89326207d8f253227",
+      "bytes": 1027
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c4fda8e837872ef3859287fe23287ec2acfbd5e4a46c2f5ab9f923ecb6eb0aa5",
+      "bytes": 2320
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "d6ececcacd973122cd2a51cf1fc064ddd673c3adad43feb4dca195de98feedbf",
+      "bytes": 594
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "bc10bd7690f28d9314a0cc33a1088ace9bba255b56caa0f4bee339c701750066",
+    "bytes": 3432
+  }
+}

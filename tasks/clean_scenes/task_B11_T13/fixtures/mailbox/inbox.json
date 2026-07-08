@@ -1,0 +1,23 @@
+[
+  {
+    "message_id": "msg_001",
+    "from": "client@acme-corp.com",
+    "subject": "Invoice Payment Confirmation",
+    "date": "2026-06-15T10:30:00Z",
+    "body": "Dear finance team, we have processed the payment for invoice INV-2027-890. Please confirm receipt. Regards, Acme Corp."
+  },
+  {
+    "message_id": "msg_002",
+    "from": "sales@company.com",
+    "subject": "New order #ORD-2027-445",
+    "date": "2026-06-16T14:00:00Z",
+    "body": "Hello, a new order has been placed for our premium widget package. Please review and invoice accordingly. Thanks."
+  },
+  {
+    "message_id": "msg_003",
+    "from": "supplier@example.com",
+    "subject": "Invoice Discrepancy #INV-2027-894",
+    "date": "2026-06-17T08:15:00Z",
+    "body": "Hello, we noticed an overcharge of 500 units on invoice INV-2027-894. Our records show the agreed rate was lower. Could you please review and clarify the billing? We need this corrected before payment. Thank you."
+  }
+]

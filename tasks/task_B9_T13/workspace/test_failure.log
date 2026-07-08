@@ -1,0 +1,40 @@
+============================= test session starts ==============================
+platform linux -- Python 3.9.7, pytest-7.1.1, py-1.11.0, pluggy-1.0.0
+rootdir: /home/jenkins/agent/workspace/customer-import-tests
+plugins: cov-3.0.0
+collected 4 items
+
+test_customer_import.py ..F.                                               [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_import_non_ascii_csv __________________________
+
+    def test_import_non_ascii_csv():
+        csv_path = os.path.join(TEST_DATA_DIR, 'customers_utf8.csv')
+        result = customer_import.parse_csv(csv_path)
+>       assert result == expected
+E       AssertionError: assert [{'first_name': 'J\xc3\xa1nos', 'last_name': 'Bene\xc5\xa1', 'email': 'janos.benes@example.com'},
+E        {'first_name': 'Zo\xc3\xab', 'last_name': 'M\xc3\xbcller', 'email': 'zoe.mueller@example.com'}] != [{'first_name': 'János', 'last_name': 'Beneš', 'email': 'janos.benes@example.com'},
+E        {'first_name': 'Zoë', 'last_name': 'Müller', 'email': 'zoe.mueller@example.com'}]
+E         left list contains byte-escaped strings instead of proper unicode equivalents
+E         assert not right list
+
+test_customer_import.py:23: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  customer_import:parse_csv.py:39 Bytes read without explicit encoding; non-ASCII characters may be corrupted
+___________________________ Captured stdout call ___________________________
+Processing file: /home/jenkins/agent/workspace/customer-import-tests/test_data/customers_utf8.csv
+___________________________ Captured stderr call ___________________________
+Traceback (most recent call last):
+  File "/home/jenkins/agent/workspace/customer-import-tests/test_customer_import.py", line 20, in test_import_non_ascii_csv
+    result = customer_import.parse_csv(csv_path)
+  File "/home/jenkins/agent/workspace/customer-import-tests/customer_import.py", line 41, in parse_csv
+    for row in reader:
+  File "/usr/lib/python3.9/csv.py", line 110, in __next__
+    row = next(self.reader)
+  File "/usr/lib/python3.9/codecs.py", line 322, in decode
+    (result, consumed) = self._buffer_decode(data, self.errors, final)
+UnicodeDecodeError: 'utf-8' codec can't decode bytes in position 34-35: invalid continuation byte
+=========================== short test summary info ============================
+FAILED test_customer_import.py::test_import_non_ascii_csv - AssertionError: ...
+1 failed, 3 passed in 0.89s

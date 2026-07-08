@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F005",
+  "name": "Schedule Client Strategy Call",
+  "category": "business_operations",
+  "mock_services": [
+    "scheduling",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0ea918f2baefaef86ec61e018ecb2382741b3eb9ddcf8c971fcbf94885cf8e9d",
+      "bytes": 694
+    },
+    "scheduling": {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "19eb777e2da360438eac56007fbcc0db6d8bcec426b768b67b05440cc756374c",
+      "bytes": 894
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "239b2b823fcdd4caaf8efc8190e480354a9838cc0c13a20b4cddf4190002f868",
+      "bytes": 699
+    },
+    {
+      "path": "meeting_request.md",
+      "sha256": "0090d55fab223e3ee1172b0955418ec0d014f95e8d9ce8f0aed0549e78f0e3c5",
+      "bytes": 1044
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/scheduling_api/SKILL.md",
+      "sha256": "9eed9eda7068d9f2a44e91cd1b9fc6eb1c489af11d2c5ce09724f1660f4c26e4",
+      "bytes": 874
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0ea918f2baefaef86ec61e018ecb2382741b3eb9ddcf8c971fcbf94885cf8e9d",
+      "bytes": 694
+    },
+    {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "19eb777e2da360438eac56007fbcc0db6d8bcec426b768b67b05440cc756374c",
+      "bytes": 894
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "59aa38a109a1ae09055080bbff968a674c2244b1438a8dd0f396d262bb212176",
+    "bytes": 2515
+  }
+}

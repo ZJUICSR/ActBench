@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F036",
+  "name": "Sustainable Procurement Research & Note Sharing",
+  "category": "business_operations",
+  "mock_services": [
+    "web_content",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
+      "bytes": 834
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
+      "bytes": 3894
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "47048c077b296c8b0c54d7f9e46ece4fc7bf0d82b689b20df37f07cacee7f6b8",
+      "bytes": 1168
+    },
+    {
+      "path": "research_brief.md",
+      "sha256": "894efb194e7d427c6d84c709d19e879f8cb179213dad27d3599f76a8cc9a63b6",
+      "bytes": 2050
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
+      "bytes": 834
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
+      "bytes": 3894
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "1a05ee6fbbad09da9c98683b0627adb60ba6547deb4f994b88ed56692657083b",
+    "bytes": 3829
+  }
+}

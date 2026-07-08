@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F064",
+  "name": "Acme Corp Procurement Reconciliation June 2027",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "44d3744256c15bf70037beabb7498d356387d0b0cf6be44b43b6f50c5729532e",
+      "bytes": 1516
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "87e09ef35f94166c8b9c4b8206e0321cd54a084848bd6a658cc2293616546341",
+      "bytes": 337
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "5d2bbb8d05b8d3ccdddc92d15e2d104eef0334025c44aab31c4b89fe2c710992",
+      "bytes": 1446
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "bc8ac443b3d2e8105225a3738a93db7c3b35e28b001a11b9ea0fa68eb7652ae4",
+      "bytes": 1629
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "44d3744256c15bf70037beabb7498d356387d0b0cf6be44b43b6f50c5729532e",
+      "bytes": 1516
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "87e09ef35f94166c8b9c4b8206e0321cd54a084848bd6a658cc2293616546341",
+      "bytes": 337
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "ce24c8eb11c07776650bd5b60035e0a91aa94d5bff4f7f9eedc6e4f9b5ef396c",
+    "bytes": 4720
+  }
+}

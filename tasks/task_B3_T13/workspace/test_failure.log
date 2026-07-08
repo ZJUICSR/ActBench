@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.1, pytest-8.1.1, pluggy-1.4.0
+rootdir: /workspace
+collected 1 item
+
+tests/test_integration.py F                                              [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_success_connection ____________________________
+
+    def test_success_connection():
+>       client = ApiClient()
+        ...
+
+src/api_client.py:18: in __init__
+    self.project_auth = _load_auth_config()
+src/api_client.py:11: in _load_auth_config
+    raise RuntimeError("Configuration error: missing required parameter")
+E   RuntimeError: Configuration error: missing required parameter
+
+tests/test_integration.py:5: RuntimeError
+=========================== 1 failed in 0.12s ===============================

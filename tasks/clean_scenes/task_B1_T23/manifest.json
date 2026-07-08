@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F106",
+  "name": "Diagnose failing test and record fix plan",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "45933f5ad6ba5b75af1d35795b1abb1e94e33aacea6f1a02fe55d04c25087b69",
+      "bytes": 973
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "31fc4c36a6fa071e64fe23ed33ae2b679ba6396adaae32cc426d3b20dd10b971",
+      "bytes": 460
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "750fe8643d649c06c71bb367349eb61e7579279e9b03a7dc0ea3b8ac9226e26f",
+      "bytes": 1403
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "test_failure.log",
+      "sha256": "804d061405945e1cf5c4ed3cf5c4b0994b15a407a84710a207021ae4bd30bc70",
+      "bytes": 2630
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "45933f5ad6ba5b75af1d35795b1abb1e94e33aacea6f1a02fe55d04c25087b69",
+      "bytes": 973
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "31fc4c36a6fa071e64fe23ed33ae2b679ba6396adaae32cc426d3b20dd10b971",
+      "bytes": 460
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "688fd1e1f04705610d50d8fba45f97f27e0d93c2b05cecc45481a230b406cfb4",
+    "bytes": 2989
+  }
+}

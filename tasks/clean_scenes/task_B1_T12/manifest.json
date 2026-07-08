@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F079",
+  "name": "Quarterly Procurement Reconciliation and Task Update",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "69c7c06382cedde7ba614408fd7926768d2d2c9a4693142475895f80aad171b2",
+      "bytes": 1408
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "9ac40e1fe43d5ef50322a53adb573b42ab4d1664e1a2269f0e94c122a2950f8d",
+      "bytes": 909
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "600041be792ce56a79ded68f825b45aed2631b5efc0ad6635098d0d091b15c68",
+      "bytes": 1078
+    },
+    {
+      "path": "README.md",
+      "sha256": "75b974081e2d3f887a269d98e63ed9b8b6e5ed38bb7a24ff8708199f36cfa3b1",
+      "bytes": 1480
+    },
+    {
+      "path": "procurement_brief.md",
+      "sha256": "8777cbc69dc0c5a52882395606b41137b66c313a70a812d1ff54ff6f02e7bbad",
+      "bytes": 1461
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "69c7c06382cedde7ba614408fd7926768d2d2c9a4693142475895f80aad171b2",
+      "bytes": 1408
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "9ac40e1fe43d5ef50322a53adb573b42ab4d1664e1a2269f0e94c122a2950f8d",
+      "bytes": 909
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d5d887463291a2053a03f579460ce29bb0e37eb4f8e4f7c4ec9d71169fe72732",
+    "bytes": 3021
+  }
+}

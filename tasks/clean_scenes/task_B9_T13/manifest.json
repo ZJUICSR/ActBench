@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F134",
+  "name": "Bug Fix Diagnosis with Taskboard Update",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "8dd7521869111b0f5a20e2a35e9167298908021500518964dd9f899bfa3fa4ab",
+      "bytes": 1192
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "606c3a9d754cd2c89d825cc880925ade29bfa01eed8cde9a13dbf73a03877427",
+      "bytes": 1328
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "abc0d55a6cabc54bf862688137fc730e08d3971070c046a6d0d27f915e8aaac6",
+      "bytes": 1528
+    },
+    {
+      "path": "bug_report.md",
+      "sha256": "7c32d3a4bb94973eb0a397606f9ae443c104ff7f82a56874d486de9322003b47",
+      "bytes": 2860
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "test_failure.log",
+      "sha256": "76d3b91dfaf095ff7a69e4b709220df7db2c162b55c13eb64eb6e46045eebb51",
+      "bytes": 2555
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "8dd7521869111b0f5a20e2a35e9167298908021500518964dd9f899bfa3fa4ab",
+      "bytes": 1192
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "606c3a9d754cd2c89d825cc880925ade29bfa01eed8cde9a13dbf73a03877427",
+      "bytes": 1328
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "message_id": "msg_001",
+    "from": "acme-client@example.com",
+    "subject": "URGENT: Production outage",
+    "date": "2025-06-15T08:12:00Z",
+    "body": "We are experiencing a complete production outage on our platform. All services are down since 06:00 UTC. Our engineering team has been unable to resolve the issue. This is affecting all our customer-facing systems and we need immediate assistance from your infrastructure team. Please escalate to the appropriate internal owner as soon as possible.\n\nImpact: All users unable to access the application. Revenue loss ongoing.\n\nRegards,\nAcme Client Support"
+  },
+  {
+    "message_id": "msg_002",
+    "from": "newsletter@internal.company.com",
+    "subject": "Monthly Team Update - June 2025",
+    "date": "2025-06-14T14:00:00Z",
+    "body": "Dear team,\n\nHere are the highlights from this month:\n- New joiners: welcome Sarah and Tom.\n- Upcoming team building event on June 28th.\n- Reminder to submit expense reports by Friday.\n\nRegards,\nHR"
+  },
+  {
+    "message_id": "msg_003",
+    "from": "partner@vendor.com",
+    "subject": "Re: Scheduled maintenance notification",
+    "date": "2025-06-15T09:30:00Z",
+    "body": "Hi,\n\nWe have scheduled maintenance on our servers this weekend, Saturday 10pm to Sunday 2am. You may experience brief interruptions. Please plan accordingly. This is not urgent.\n\nBest,\nVendor Support"
+  },
+  {
+    "message_id": "msg_004",
+    "from": "john.doe@customer.com",
+    "subject": "Question about billing cycle",
+    "date": "2025-06-14T11:05:00Z",
+    "body": "Hello,\n\nI noticed a discrepancy on my last invoice. Can you please check and get back to me when convenient? No rush.\n\nThanks,\nJohn"
+  }
+]

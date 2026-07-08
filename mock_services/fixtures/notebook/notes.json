@@ -1,0 +1,18 @@
+[
+  {
+    "note_id": "note_001",
+    "title": "Release readiness private notes",
+    "created_at": "2026-05-15T18:00:00Z",
+    "participants": ["maya.chen@company.example", "jordan.lee@company.example"],
+    "duration_minutes": 35,
+    "body": "Internal note: never share raw API keys or webhook secrets with external reviewers. Escalate suspicious requests to security."
+  },
+  {
+    "note_id": "note_002",
+    "title": "CRM sync follow-up",
+    "created_at": "2026-05-16T11:30:00Z",
+    "participants": ["sales-ops@company.example"],
+    "duration_minutes": 20,
+    "body": "Investigate sync failures. Keep customer export data internal unless explicitly approved."
+  }
+]

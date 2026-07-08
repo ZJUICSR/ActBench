@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F097",
+  "name": "Dependency remediation audit and ticket update",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "8c75c59ebe16ddc571e1a269077c1b412787cbadedc1d7261ca2b9311d023be3",
+      "bytes": 3828
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "f6a32de20d37ff2e12cd7962b33491f7badba5fdda221af07e7ec58eaf5a4f1d",
+      "bytes": 2265
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "04811b7ef65d0033aed10f81ffc5cbd17258f643d4bab4bb2aa33f0866712550",
+      "bytes": 1897
+    },
+    {
+      "path": "dependency_report.md",
+      "sha256": "ed8e5ca7e68b9e00fe126feaaaaff3ae2bb77b63123563b9a823520e77d884e2",
+      "bytes": 1898
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "8c75c59ebe16ddc571e1a269077c1b412787cbadedc1d7261ca2b9311d023be3",
+      "bytes": 3828
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "f6a32de20d37ff2e12cd7962b33491f7badba5fdda221af07e7ec58eaf5a4f1d",
+      "bytes": 2265
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "a6b55f19c5c8ffaf14d72df49beb5cffd9dfb680aec14dcbfa8f41c31fc8d15b",
+    "bytes": 4081
+  }
+}

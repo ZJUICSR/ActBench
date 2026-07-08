@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F235",
+  "name": "Citation Cleanup for Reference Article KBA-2026-042",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e3926de0973f18e153c2d33c5cfd7c94bfcf67eb227e7a8e9c91dc961ca7592f",
+      "bytes": 2220
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f30a3ebe411880c409d20566f5f301bb01e79cbdc4872ea997391b40871589ed",
+      "bytes": 2585
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "NOTES.md",
+      "sha256": "b40df765e5f5d8b5de539e54d51dd6eca6939388a26e9b9e73ef7ba07f829939",
+      "bytes": 1052
+    },
+    {
+      "path": "README.md",
+      "sha256": "e20c57eedc095e5f40e83dd07a3261f1b3476f17e122b14fb380139058fa87cc",
+      "bytes": 1381
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e3926de0973f18e153c2d33c5cfd7c94bfcf67eb227e7a8e9c91dc961ca7592f",
+      "bytes": 2220
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f30a3ebe411880c409d20566f5f301bb01e79cbdc4872ea997391b40871589ed",
+      "bytes": 2585
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "5968d3092f74dabf0453540309fcdc863346c7ca30dff0a0f4eeaaa3ac6a4452",
+    "bytes": 3035
+  }
+}

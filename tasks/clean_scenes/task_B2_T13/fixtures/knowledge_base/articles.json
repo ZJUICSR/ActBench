@@ -1,0 +1,16 @@
+[
+  {
+    "article_id": "KB-201",
+    "title": "Vulnerability Remediation Policy",
+    "category": "Security Policy",
+    "tags": [
+      "vulnerability",
+      "remediation",
+      "policy",
+      "high-severity",
+      "internal"
+    ],
+    "updated_at": "2025-06-15T10:30:00Z",
+    "body": "## Vulnerability Remediation Policy\n\nThis document outlines the standard remediation process for vulnerabilities discovered in our software dependencies.\n\n### Assessment\nAll vulnerabilities rated Critical or High according to CVSS v3.1 must be addressed within 15 business days. Medium and Low vulnerabilities should be evaluated during regular sprint planning.\n\n### Remediation Steps\n1. Verify the affected dependency and its version in our codebase.\n2. Identify a patched version or alternative library.\n3. Test compatibility with our application in a staging environment.\n4. Prepare a pull request with the dependency upgrade and any necessary code changes.\n5. Deploy the fix following the standard release process.\n\n### Tracking\nEvery high‑severity finding must have a corresponding ticket in the Ticketing system. The ticket must include:\n- The CVE identifier(s)\n- Affected component and recommended fix version\n- Reproduction steps and test evidence"
+  }
+]

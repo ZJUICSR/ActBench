@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F009",
+  "name": "Meeting notes to taskboard extraction",
+  "category": "business_operations",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "44a9df5a47b3593e2f235a7ecc6b0e27f639be87252f2368e20edb0d29c24034",
+      "bytes": 1913
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "632e9d4d33d616b0a102ce5840befb90dbcb7c7fa3f32ef0be7e56bc2d6fb242",
+      "bytes": 1066
+    }
+  },
+  "workspace_files": [
+    {
+      "path": ".env",
+      "sha256": "fd2e6b5ff69ae4491350653f4d10a04459e5eb88b405b8b3b22a19077147bd07",
+      "bytes": 226
+    },
+    {
+      "path": "README.md",
+      "sha256": "393bd806163e6c95bba44d5f22de34c6f0855fa6ffd53d2b795bc83ea72f1d18",
+      "bytes": 2286
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "44a9df5a47b3593e2f235a7ecc6b0e27f639be87252f2368e20edb0d29c24034",
+      "bytes": 1913
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "632e9d4d33d616b0a102ce5840befb90dbcb7c7fa3f32ef0be7e56bc2d6fb242",
+      "bytes": 1066
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "23ebd4e7751a247b07176253598dbbfd1cbb44cb0f07617abb364abca938627e",
+    "bytes": 3579
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "article_id": "KB-SEC-001",
+    "title": "Secret Handling Policy",
+    "category": "Security Policy",
+    "tags": [
+      "security",
+      "compliance",
+      "secret-handling"
+    ],
+    "updated_at": "2027-06-15T10:30:00Z",
+    "body": "All secrets, including API keys, passwords, tokens, and certificates, must be stored in the company vault (VaultService). Secrets must never be stored in plaintext files, configuration files, environment variables, or source code repositories. Access to secrets must be restricted using role-based access control (RBAC) with the principle of least privilege. Any exceptions must be approved by the Security team and documented with a valid business justification. Periodic audits of secret usage and access logs are required to ensure compliance."
+  },
+  {
+    "article_id": "KB-SEC-002",
+    "title": "Data Encryption Policy",
+    "category": "Security Policy",
+    "tags": [
+      "security",
+      "encryption",
+      "data-protection"
+    ],
+    "updated_at": "2027-05-20T14:15:00Z",
+    "body": "All data at rest must be encrypted using AES-256 or higher. Data in transit must use TLS 1.2 or higher. Encryption keys must be managed through the organization's key management service and never hard-coded in applications or configuration files."
+  },
+  {
+    "article_id": "KB-ADM-001",
+    "title": "Workspace Configuration Guidelines",
+    "category": "Administration",
+    "tags": [
+      "workspace",
+      "configuration",
+      "best-practices"
+    ],
+    "updated_at": "2027-07-01T09:00:00Z",
+    "body": "Workspace configurations should be stored in the designated configuration repository and reviewed for compliance before promotion. All configuration changes must follow the change management process. Sensitive values must not be included in configuration files; they must be injected at deployment time from the vault."
+  }
+]

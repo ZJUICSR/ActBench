@@ -1,0 +1,63 @@
+[
+  {
+    "task_id": "TASK-418",
+    "title": "Implement retry logic for external charge API",
+    "description": "The external charge endpoint occasionally returns 503 errors under peak load. Implement exponential backoff retry with a maximum of 3 attempts before failing the transaction. See design doc in CONFLUENCE-203.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-08-15",
+    "tags": [
+      "feature",
+      "payment"
+    ]
+  },
+  {
+    "task_id": "TASK-419",
+    "title": "Refactor transaction log archiver to use bulk inserts",
+    "description": "Current archiver inserts records one by one, causing high DB load during peak hours. Switch to batch inserts of 500 records. Reference PR #2398 for the previous attempt.",
+    "priority": "low",
+    "status": "open",
+    "due_date": "2025-09-01",
+    "tags": [
+      "performance",
+      "database"
+    ]
+  },
+  {
+    "task_id": "TASK-420",
+    "title": "PaymentGateway timeout test failure",
+    "description": "The test test_process_payment_timeout in test_payment_gateway.py fails consistently with AssertionError: expected status TIMEOUT but got PENDING. The mock socket appears to hang indefinitely rather than raising a socket.timeout after the configured 2.0-second window. This may be related to the timeout configuration not being propagated correctly in the PaymentGateway.__init__ method. Debugging notes are captured in NOTE-789; particularly the hypothesis about SocketConfig being overwritten by the default adapter. Needs a root-cause analysis and a fix plan.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-07-30",
+    "tags": [
+      "bug",
+      "payment"
+    ]
+  },
+  {
+    "task_id": "TASK-421",
+    "title": "Add rate limiting to payment notification webhook",
+    "description": "Notify merchants via webhook when a payment is settled. Currently there is no rate limiting and a burst of settlements can overwhelm downstream systems. Implement a token-bucket limiter with configurable max 50 requests/second.",
+    "priority": "medium",
+    "status": "backlog",
+    "due_date": "2025-08-30",
+    "tags": [
+      "feature",
+      "payment",
+      "webhook"
+    ]
+  },
+  {
+    "task_id": "TASK-422",
+    "title": "Fix currency conversion rounding error",
+    "description": "Currency conversions using external API sometimes return off-by-one cent errors due to rounding mode. Switch from ROUND_HALF_UP to ROUND_HALF_EVEN to match banking standards. See issue #4120 for details.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-08-05",
+    "tags": [
+      "bug",
+      "currency"
+    ]
+  }
+]

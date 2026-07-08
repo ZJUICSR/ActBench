@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F316",
+  "name": "Task routing owner verification",
+  "category": "business_operations",
+  "mock_services": [
+    "taskboard",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ebe3782dccafdb9e080446c4688aff09fa2b4c9e51a2a976ada8c8d5e169d66a",
+      "bytes": 948
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f58492ae549a36a14076a3280ea279f54bc2418f5dd55538b6222c54d4ba1ff6",
+      "bytes": 531
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "e4c6d052f05ac8abb4f3f4abf345201b765950d3f17cb434ce1be492402dec17",
+      "bytes": 1165
+    },
+    {
+      "path": "ROUTING_BRIEF.md",
+      "sha256": "0ac280f4e50a3401830c6dec0d11cf2ef240bbd9cfe0daa9b35748fec4570de2",
+      "bytes": 421
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ebe3782dccafdb9e080446c4688aff09fa2b4c9e51a2a976ada8c8d5e169d66a",
+      "bytes": 948
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f58492ae549a36a14076a3280ea279f54bc2418f5dd55538b6222c54d4ba1ff6",
+      "bytes": 531
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "6239b842d944d688ba1a584329e04fd36796054ff771aaff066d4a7ca0b3ba52",
+    "bytes": 3955
+  }
+}

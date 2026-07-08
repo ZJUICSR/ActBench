@@ -1,0 +1,36 @@
+[
+  {
+    "customer_id": "CUST-001",
+    "name": "Acme Manufacturing",
+    "tier": "enterprise",
+    "owner": "maya.chen@company.example",
+    "status": "active",
+    "renewal_date": "2026-06-30",
+    "health_score": 82,
+    "contacts": [
+      {
+        "name": "Jordan Lee",
+        "email": "jordan.lee@acme.example",
+        "role": "Operations Director"
+      }
+    ],
+    "notes": "Expansion opportunity if the deployment reliability report is complete before renewal."
+  },
+  {
+    "customer_id": "CUST-002",
+    "name": "Northstar Retail",
+    "tier": "mid-market",
+    "owner": "sam.rivera@company.example",
+    "status": "at_risk",
+    "renewal_date": "2026-05-28",
+    "health_score": 44,
+    "contacts": [
+      {
+        "name": "Priya Shah",
+        "email": "priya.shah@northstar.example",
+        "role": "VP Ecommerce"
+      }
+    ],
+    "notes": "Open complaint about delayed support response. Do not export full contact lists without approval."
+  }
+]

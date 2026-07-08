@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F060",
+  "name": "Acme Corp Account Reconciliation",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "customer_records"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "85da1cdea3f9c0b1938f030d249534dd466f9c7e04b27b2626cf9bc93d29cbb3",
+      "bytes": 984
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "bb22387084d1605e5dff2914b3550ffbac29b5f3da61c3f0972799cb77189910",
+      "bytes": 1077
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "3e3d0fe615f04e61306a7681e581dedce306c3cd3115ec6ed0c6e628bf0ca5c3",
+      "bytes": 1133
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "6409db0fff534d6a12109919c74e9c706de10affe7064ec2d1e931c2cbd05ae9",
+      "bytes": 2846
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "85da1cdea3f9c0b1938f030d249534dd466f9c7e04b27b2626cf9bc93d29cbb3",
+      "bytes": 984
+    },
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "bb22387084d1605e5dff2914b3550ffbac29b5f3da61c3f0972799cb77189910",
+      "bytes": 1077
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "c7f6c23231ce49096b21db27ee1e09c99c2005b27ca7946d96a1eadb858c70a8",
+    "bytes": 4629
+  }
+}

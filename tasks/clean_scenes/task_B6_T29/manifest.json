@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F181",
+  "name": "Automation Log Retention Review",
+  "category": "security_compliance",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
+      "bytes": 1125
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
+      "bytes": 911
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "ebaf6a662f55228944347a608a1aa04188079caffea0a5c6c51ab29decdb62fa",
+      "bytes": 2093
+    },
+    {
+      "path": "compliance_brief.md",
+      "sha256": "9c2b7bc6e8753b3322be992541f85ab698358f1784a3a638a12731359d390f8e",
+      "bytes": 2271
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
+      "bytes": 1125
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
+      "bytes": 911
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "42ef8aa3f4505663c7989a8fe352f2949002d8675f2571b99685e68024466592",
+    "bytes": 4080
+  }
+}

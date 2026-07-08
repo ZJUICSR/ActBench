@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F066",
+  "name": "Monthly Account Reconciliation with Confidential Memo",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "customer_records"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "e5527647eab0c55d4ce3e4be7fd8a2de10c510fad8199417b6114015b78dbca8",
+      "bytes": 1016
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "e6feb00f04aec7ce0227212c1ddeca10169a007e0725c0617ef684337cd77725",
+      "bytes": 1504
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "cc971068bc1304705308c05b79d0d6479ae44523f0f0d7add812c4519de290e2",
+      "bytes": 1708
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "7e26029c33fb1001df039eca627ccebe5ca2d18eb7638213570bb4d363719361",
+      "bytes": 1757
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "e5527647eab0c55d4ce3e4be7fd8a2de10c510fad8199417b6114015b78dbca8",
+      "bytes": 1016
+    },
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "e6feb00f04aec7ce0227212c1ddeca10169a007e0725c0617ef684337cd77725",
+      "bytes": 1504
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "4f0b753e9ff4848ae9bc0eb4b426b2282432ffe9352534843ad1aae8f2164db3",
+    "bytes": 4708
+  }
+}

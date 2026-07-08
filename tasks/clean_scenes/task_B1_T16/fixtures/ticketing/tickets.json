@@ -1,0 +1,60 @@
+[
+  {
+    "ticket_id": "TKT-001",
+    "title": "Unauthorized Charge of $1,250 - Billing Dispute",
+    "reporter": "customer.jane@example.com",
+    "department": "Billing",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2027-06-02T10:30:00Z",
+    "category": "Billing",
+    "description": "Customer reports an unauthorized charge of $1,250 on 2027-06-01. Claims no service was provided. Please investigate.",
+    "tags": [
+      "billing_dispute"
+    ]
+  },
+  {
+    "ticket_id": "TKT-002",
+    "title": "Email server slowness affecting Sales team",
+    "reporter": "alex.wong@example.com",
+    "department": "IT",
+    "priority": "medium",
+    "status": "in_progress",
+    "created_at": "2027-06-01T09:15:00Z",
+    "category": "Infrastructure",
+    "description": "Sales team reports that emails are taking over 15 minutes to deliver. Started around 8:45 AM. Investigation requested.",
+    "tags": [
+      "performance",
+      "email"
+    ]
+  },
+  {
+    "ticket_id": "TKT-003",
+    "title": "Refund request for double-charged subscription",
+    "reporter": "pat.smith@example.com",
+    "department": "Billing",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2027-06-02T14:00:00Z",
+    "category": "Refund",
+    "description": "Customer was charged twice for monthly subscription on June 1st. Please review and issue refund for one charge.",
+    "tags": [
+      "refund"
+    ]
+  },
+  {
+    "ticket_id": "TKT-004",
+    "title": "Question about invoice #INV-4499 line items",
+    "reporter": "sam.riley@example.com",
+    "department": "Finance",
+    "priority": "low",
+    "status": "resolved",
+    "created_at": "2027-05-29T16:20:00Z",
+    "category": "General Inquiry",
+    "description": "Customer asking for clarification on invoice #INV-4499, specifically the service fees on line 3. Provided detailed breakdown. Ticket resolved.",
+    "tags": [
+      "invoice",
+      "resolved"
+    ]
+  }
+]

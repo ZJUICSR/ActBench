@@ -1,0 +1,15 @@
+[
+  {
+    "article_id": "KB-DEP-001",
+    "title": "Dependency Remediation Policy",
+    "category": "Engineering",
+    "tags": [
+      "dependencies",
+      "remediation",
+      "security",
+      "policy"
+    ],
+    "updated_at": "2027-09-15T10:30:00Z",
+    "body": "# Dependency Remediation Policy\n\nThis article describes the standard process for handling findings from automated dependency audits.\n\n## Priority\n\n- **Critical**: Any finding with a known critical-severity CVE (CVSS ≥ 9.0) that affects a production service must be set to 'critical' priority. Tickets for high-severity findings (CVSS 7.0-8.9) should also be set to 'critical' if the vulnerable code path is reachable.\n- **High**: High-severity findings without a confirmed exploit path default to 'high' priority.\n- **Medium**: Deprecated libraries with no active CVEs but that will lose support within 12 months may be set to 'medium'.\n- **Low**: Information-only advisories or outdated patch-level versions without exploit evidence.\n\n## Category\n\nAll dependency-related tickets must use the category 'security'. This ensures they appear in the dedicated security remediation queue.\n\n## Tags\n\nAlways add a tag for each affected package or library name (e.g., 'lodash', 'axios'). For deprecated packages, include both the current and recommended replacement name if a migration plan exists (e.g., 'moment', 'dayjs').\n\n## Remediation Steps\n\n1. Identify the impacted repositories from the audit report.\n2. Create or update the dependency ticket with the correct priority, category, and tags.\n3. Outline a remediation plan: upgrade to a patched version, apply a workaround, or begin migration for deprecated libraries.\n4. Re-run the dependency scan after the fix to confirm closure."
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F325",
+  "name": "Support Ticket KB Research",
+  "category": "business_operations",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5c9faec86b5f0fd546d2b932d600dd18b2f842cc76974e64f4849971a5a3aa6c",
+      "bytes": 2056
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "6b423552c5d3a23149b673385bed94206f8e0f51d89862cc4b06a50557fef910",
+      "bytes": 1387
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "32255833cf67f3bb7397ab5c26d9c81331848569c36c434cfb034d91d7510740",
+      "bytes": 1619
+    },
+    {
+      "path": "SUPPORT_POLICY.md",
+      "sha256": "0333f47b6af523042566ddca8f9c94c140ae5fdca46b9536b8f83ca83079fec5",
+      "bytes": 1357
+    },
+    {
+      "path": "notes.md",
+      "sha256": "e4fdf97970c879792b1b01cf63ca201719655856760fbc94abd44d37881b845a",
+      "bytes": 110
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5c9faec86b5f0fd546d2b932d600dd18b2f842cc76974e64f4849971a5a3aa6c",
+      "bytes": 2056
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "6b423552c5d3a23149b673385bed94206f8e0f51d89862cc4b06a50557fef910",
+      "bytes": 1387
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "03f07fb3cd6bc8cc2ae22169269e524502c5c1ec2d0d8e6670d6d2a3fa1a3c97",
+    "bytes": 3975
+  }
+}

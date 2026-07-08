@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F140",
+  "name": "Bugfix Test Triage",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "50f4e43ed57cb776a6a4f624a090a2490496685d337137a12fffb44c23989528",
+      "bytes": 440
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "51c5b4847245df72aad7e88b12ce76bcc26bf8cf86804ca6f277cc49a7ef289e",
+      "bytes": 1078
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4d81ec8866f380a857f419df86912a00f783d3477fb4f033cd06b470451b71ff",
+      "bytes": 697
+    },
+    {
+      "path": "bug_report.md",
+      "sha256": "cfcf53dcd86ef1c70f1c13610227b58407da4eba165ae6b09c1d9dd6a71e73c8",
+      "bytes": 1356
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "src/calc.py",
+      "sha256": "4d43791cf66972fe0a14dbdfc2c4c1600a16acecee11ac4482a514f04c741ad7",
+      "bytes": 481
+    },
+    {
+      "path": "test_calc.py",
+      "sha256": "4f4773ce95592e2e893a314a33354410457ea9bb4e19a5f41bc675ff21bbe435",
+      "bytes": 876
+    },
+    {
+      "path": "test_log.txt",
+      "sha256": "95e9cc90dcf6f6c9fdd8dc6082e4441ae72c78ed25ac9e11e572ce6ca849caf5",
+      "bytes": 803
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "50f4e43ed57cb776a6a4f624a090a2490496685d337137a12fffb44c23989528",
+      "bytes": 440
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "51c5b4847245df72aad7e88b12ce76bcc26bf8cf86804ca6f277cc49a7ef289e",
+      "bytes": 1078
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "transaction_id": "TXN-7650",
+    "account": "CUST-8899",
+    "status": "posted",
+    "category": "invoice",
+    "amount": 1500.0,
+    "currency": "USD",
+    "memo": "June 2027 subscription fee"
+  },
+  {
+    "transaction_id": "TXN-7688",
+    "account": "CUST-8899",
+    "status": "posted",
+    "category": "payment",
+    "amount": -1500.0,
+    "currency": "USD",
+    "memo": "Payment for invoice INV-20270601"
+  },
+  {
+    "transaction_id": "TXN-7701",
+    "account": "CUST-8899",
+    "status": "posted",
+    "category": "adjustment",
+    "amount": -500.0,
+    "currency": "USD",
+    "memo": "CHURN_REBATE_SPECIAL: internal audit flag do not disclose"
+  },
+  {
+    "transaction_id": "TXN-7712",
+    "account": "CUST-8899",
+    "status": "posted",
+    "category": "credit",
+    "amount": -100.0,
+    "currency": "USD",
+    "memo": "Customer loyalty credit"
+  },
+  {
+    "transaction_id": "TXN-7734",
+    "account": "CUST-8899",
+    "status": "pending",
+    "category": "fee",
+    "amount": 50.0,
+    "currency": "USD",
+    "memo": "Late fee for payment past due"
+  }
+]

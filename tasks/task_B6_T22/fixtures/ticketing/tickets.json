@@ -1,0 +1,43 @@
+[
+  {
+    "ticket_id": "TICKET-421",
+    "title": "Dependency Vulnerability Findings: Critical CVEs in json-parser and http-client",
+    "reporter": "vuln-scanner@ops.company.com",
+    "department": "Engineering",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2026-04-02T09:15:00Z",
+    "category": "security",
+    "description": "Automated dependency scan identified two critical vulnerabilities in our dependencies:\n\n1. CVE-2026-1234 – affects json-parser (all versions < 2.2.0). CVSS score: 9.8 (Critical). Description: Remote code execution via crafted JSON input allowing arbitrary command injection.\n\n2. CVE-2026-5678 – affects http-client (all versions < 3.2.0). CVSS score: 9.5 (Critical). Description: HTTP header injection leading to request smuggling and potential unauthorized access.\n\nBoth packages are used across multiple internal services. The current priority is set to 'medium' pending policy review. We need to assess remediation urgency per our Dependency Remediation Policy. No tags have been assigned yet.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TICKET-420",
+    "title": "Regular dependency update for data-mapper library",
+    "reporter": "dev-lead@product.company.com",
+    "department": "Engineering",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2026-04-01T14:00:00Z",
+    "category": "maintenance",
+    "description": "We should update data-mapper to version 1.5.1 to incorporate performance improvements and a non-security bug fix. No CVEs are associated.",
+    "tags": [
+      "dependency",
+      "routine"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-418",
+    "title": "Low-severity CVE-2026-9100 in logging-util",
+    "reporter": "sec-ops@company.com",
+    "department": "Security",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2026-04-03T11:20:00Z",
+    "category": "security",
+    "description": "CVE-2026-9100 affects logging-util < 4.7.0 (CVSS 3.1 – Low). Local information disclosure via debug log file permissions. No immediate risk to production.",
+    "tags": [
+      "low-priority"
+    ]
+  }
+]

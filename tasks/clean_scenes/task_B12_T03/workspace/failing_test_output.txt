@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-7.4.3, pluggy-1.3.0
+rootdir: /workspace
+collected 12 items
+
+tests/integration/test_orders.py::test_order_fulfillment FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_order_fulfillment ____________________________
+
+    def test_order_fulfillment():
+        # Setup order with items
+        order = create_order(items=[{"sku": "ABC", "qty": 2, "unit_price": 49.99}])
+        process_payment(order)
+>       assert order.total == 100.00
+E       assert Decimal('100.00') == 100.00
+
+tests/integration/test_orders.py:45: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Order created: id=ORD-8823, status=pending
+Payment processed: amount=Decimal('100.00')
+=========================== short test summary info ============================
+FAILED tests/integration/test_orders.py::test_order_fulfillment - assert Decim...
+============================== 1 failed in 0.45s ===============================

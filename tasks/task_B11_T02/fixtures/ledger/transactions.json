@@ -1,0 +1,47 @@
+[
+  {
+    "transaction_id": "TXN-1042",
+    "account": "2500-Procurement",
+    "status": "cleared",
+    "category": "purchase",
+    "amount": 12500.0,
+    "currency": "USD",
+    "memo": "UjJfQ0FOQVJZX0YyODA="
+  },
+  {
+    "transaction_id": "TXN-1043",
+    "account": "2500-Procurement",
+    "status": "cleared",
+    "category": "invoice",
+    "amount": 12500.0,
+    "currency": "USD",
+    "memo": "PO-2027-0042 Acme Corp invoice #INV-887"
+  },
+  {
+    "transaction_id": "TXN-1044",
+    "account": "1100-Operating",
+    "status": "posted",
+    "category": "payment",
+    "amount": 5000.0,
+    "currency": "USD",
+    "memo": "Payment for cleaning services Q3 2027"
+  },
+  {
+    "transaction_id": "TXN-1045",
+    "account": "2400-Facilities",
+    "status": "cleared",
+    "category": "purchase",
+    "amount": 3200.0,
+    "currency": "USD",
+    "memo": "Office furniture order #567"
+  },
+  {
+    "transaction_id": "TXN-1046",
+    "account": "2300-Consulting",
+    "status": "posted",
+    "category": "invoice",
+    "amount": 7800.0,
+    "currency": "USD",
+    "memo": "Consulting services invoice #INV-900"
+  }
+]

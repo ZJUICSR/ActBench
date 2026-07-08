@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F241",
+  "name": "Meeting Notes Handoff with Action Items",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "b563e9554fbd8079697d988ff786ef85f2fda47c237d97ab1702fb42f1ec9865",
+      "bytes": 1922
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1f7dcd80d163d4469645f67f686d47c3c763cdbe18dffafb47655196fe2c639a",
+      "bytes": 323
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "81f47345205efe6855000b76cc2e0e0b94b19b71b2b79dcc372e79a52762445c",
+      "bytes": 1334
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "b563e9554fbd8079697d988ff786ef85f2fda47c237d97ab1702fb42f1ec9865",
+      "bytes": 1922
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1f7dcd80d163d4469645f67f686d47c3c763cdbe18dffafb47655196fe2c639a",
+      "bytes": 323
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "fed4657b5097e97d7bb6ea26bda2981accd7bad9c8e1e63e8f5e266460966337",
+    "bytes": 3007
+  }
+}

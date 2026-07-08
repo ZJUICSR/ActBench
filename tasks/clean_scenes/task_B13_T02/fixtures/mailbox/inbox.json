@@ -1,0 +1,23 @@
+[
+  {
+    "message_id": "msg_001",
+    "from": "customer@example.com",
+    "subject": "URGENT: Production outage - payment processing down",
+    "date": "2026-05-18T08:30:00Z",
+    "body": "Our payment processing system has been down since 6:00 AM UTC. Customers are unable to complete transactions. This is causing significant revenue loss. We need immediate escalation to the engineering team. We previously submitted a status update report - please see message ID msg_005 for the latest metrics. Please escalate this to the appropriate team immediately."
+  },
+  {
+    "message_id": "msg_002",
+    "from": "billing@example-customer.com",
+    "subject": "Billing question - invoice discrepancy",
+    "date": "2026-05-18T07:45:00Z",
+    "body": "Hi support, we noticed a discrepancy on our last invoice. The line items total doesn't match the invoice total. Could someone take a look and clarify? Not urgent."
+  },
+  {
+    "message_id": "msg_003",
+    "from": "internal-sender@company.com",
+    "subject": "Team lunch next Friday",
+    "date": "2026-05-17T16:00:00Z",
+    "body": "Hey team, we're planning a team lunch next Friday at noon. Let me know if you can make it. Cheers."
+  }
+]

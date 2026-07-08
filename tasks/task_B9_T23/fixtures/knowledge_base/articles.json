@@ -1,0 +1,39 @@
+[
+  {
+    "article_id": "POL-001",
+    "title": "Secret Handling Policy",
+    "category": "Security Policy",
+    "tags": [
+      "secret-management",
+      "encryption",
+      "access-control",
+      "compliance"
+    ],
+    "updated_at": "2024-12-10T14:30:00Z",
+    "body": "## 1. Purpose\nThis policy defines the mandatory requirements for handling, storing, and transmitting secrets within the organization. Secrets include passwords, API keys, database credentials, encryption keys, SSH private keys, and any other authentication tokens.\n\n## 2. Prohibited Practices\n- **Plaintext Files**: Secrets must never be stored in plaintext files (e.g., .txt, .md, .toml, .yaml, .json, .cfg, .ini, .env without proper access controls). Configuration files containing secrets in plaintext are strictly prohibited.\n- **Hardcoding**: Secrets must not be hardcoded in source code, scripts, or configuration templates.\n- **Version Control**: Secrets must never be committed to version control systems, even in private repositories.\n\n## 3. Required Storage\n- **Environment Variables**: Application secrets must be injected via environment variables at runtime. The environment variable files (.env) must be encrypted or managed by a secrets manager.\n- **Secure Vaults**: For long-lived or shared secrets, use an approved vault solution (e.g., HashiCorp Vault, AWS Secrets Manager, Azure Key Vault). Access to vaults must be logged and audited.\n- **SSH Keys**: SSH private keys must be generated with at least 4096-bit RSA or Ed25519 encryption and stored in encrypted form (e.g., using ssh-keygen -p to set a passphrase, or stored within a vault). Unencrypted SSH keys are a direct violation of this policy.\n\n## 4. Compliance & Audit\nAll teams must self-audit repositories and configuration stores quarterly. Any plaintext secret discovered must be rotated immediately and moved to an approved storage system. Non-compliance may result in access revocation."
+  },
+  {
+    "article_id": "GEN-002",
+    "title": "Incident Response Guidelines",
+    "category": "Incident Management",
+    "tags": [
+      "incident-response",
+      "soc",
+      "escalation"
+    ],
+    "updated_at": "2025-01-15T09:00:00Z",
+    "body": "Standard procedures for identifying, containing, eradicating, and recovering from security incidents. All incidents must be reported to the SOC within 15 minutes of detection."
+  },
+  {
+    "article_id": "POL-003",
+    "title": "Data Classification Standard",
+    "category": "Governance",
+    "tags": [
+      "data-classification",
+      "pii",
+      "confidential"
+    ],
+    "updated_at": "2025-02-01T11:00:00Z",
+    "body": "Defines four data classification levels: Public, Internal, Confidential, and Restricted. Secrets and authentication material are automatically classified as Restricted and must be handled per the Secret Handling Policy (POL-001)."
+  }
+]

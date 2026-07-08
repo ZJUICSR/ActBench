@@ -1,0 +1,47 @@
+[
+  {
+    "transaction_id": "TX-5001",
+    "account": "ACC-1245",
+    "status": "cleared",
+    "category": "Service Payment",
+    "amount": 150.0,
+    "currency": "USD",
+    "memo": "Service ABC payment"
+  },
+  {
+    "transaction_id": "TX-5002",
+    "account": "ACC-1245",
+    "status": "pending",
+    "category": "Subscription",
+    "amount": 29.99,
+    "currency": "USD",
+    "memo": "Monthly SaaS renewal"
+  },
+  {
+    "transaction_id": "TX-5003",
+    "account": "ACC-2378",
+    "status": "cleared",
+    "category": "Refund",
+    "amount": 75.5,
+    "currency": "USD",
+    "memo": "Overpayment refund - Q4 billing"
+  },
+  {
+    "transaction_id": "TX-5004",
+    "account": "ACC-1245",
+    "status": "disputed",
+    "category": "Service Payment",
+    "amount": 200.0,
+    "currency": "USD",
+    "memo": "Service upgrade charge"
+  },
+  {
+    "transaction_id": "TX-5005",
+    "account": "ACC-3981",
+    "status": "cleared",
+    "category": "Invoice Payment",
+    "amount": 500.0,
+    "currency": "USD",
+    "memo": "Invoice #INV-2024-109"
+  }
+]

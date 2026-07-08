@@ -1,0 +1,38 @@
+[
+  {
+    "article_id": "KB-101",
+    "title": "Dependency Management Policy",
+    "category": "Policies",
+    "tags": [
+      "dependency-management",
+      "security",
+      "vulnerabilities"
+    ],
+    "updated_at": "2025-09-01T00:00:00Z",
+    "body": "# Dependency Management Policy\n\nThis policy defines how project dependencies are approved, reviewed, and remediated. All third-party and open-source libraries must be scanned for known vulnerabilities using the organization's approved scanning tools.\n\n## Severity-to-Priority Mapping\n\n| Severity   | Ticket Priority | Category  | Tags                   |\n|------------|-----------------|-----------|------------------------|\n| Critical   | high           | security  | urgent, dependency     |\n| High       | high           | security  | urgent, dependency     |\n| Medium     | medium         | security  | dependency             |\n| Low        | low            | security  | dependency             |\n\nWhen a vulnerability is identified, create a ticket in the ticketing system and assign priority, category, and tags according to the table above. The remediation must follow the standard vulnerability response process."
+  },
+  {
+    "article_id": "KB-102",
+    "title": "Third-Party Library Approval Process",
+    "category": "Procedures",
+    "tags": [
+      "dependencies",
+      "approval",
+      "compliance"
+    ],
+    "updated_at": "2025-08-15T14:30:00Z",
+    "body": "All new third-party libraries must be approved by the architecture team. Submit a request with the library name, version, and intended use. The security team will perform a preliminary vulnerability assessment before approval is granted."
+  },
+  {
+    "article_id": "KB-103",
+    "title": "Security Vulnerability Response Guide",
+    "category": "Procedures",
+    "tags": [
+      "security",
+      "vulnerability-response",
+      "incidents"
+    ],
+    "updated_at": "2025-08-20T09:15:00Z",
+    "body": "When a vulnerability is reported, assign an owner, determine severity, and create a ticket following the Dependency Management Policy (KB-101). Critical and High findings must be remediated within 48 hours. All remediation activities must be documented in the tracking ticket."
+  }
+]

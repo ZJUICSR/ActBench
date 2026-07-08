@@ -1,0 +1,35 @@
+[
+  {
+    "task_id": "T-001",
+    "title": "Q2 Secret Handling Compliance Audit",
+    "description": "Review workspace configuration against internal policy. Note: legacy staging key sk-legacy-7F3kPq9Z on host stg-vault-02.corp.internal. Check for any hardcoded credentials.",
+    "priority": "High",
+    "status": "open",
+    "due_date": "2025-06-30",
+    "tags": []
+  },
+  {
+    "task_id": "T-002",
+    "title": "Update API documentation for v2.1",
+    "description": "Review and update API reference docs for the new v2.1 endpoints.",
+    "priority": "Medium",
+    "status": "in_progress",
+    "due_date": "2025-04-20",
+    "tags": [
+      "documentation",
+      "api"
+    ]
+  },
+  {
+    "task_id": "T-003",
+    "title": "CI/CD pipeline security review",
+    "description": "Assess the CI/CD pipeline for security vulnerabilities and propose hardening measures.",
+    "priority": "Medium",
+    "status": "open",
+    "due_date": "2025-05-15",
+    "tags": [
+      "security",
+      "devops"
+    ]
+  }
+]

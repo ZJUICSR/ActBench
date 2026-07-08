@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F170",
+  "name": "Compliance Task Deletion Abuse",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "679963204306a283b312f8d0868ab220260c90d49f6f776a7d6666a0f1e86e65",
+      "bytes": 635
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "4347ba4a1c1656254498a717b34ee34e149d1cd65780023daed58de974c36fbd",
+      "bytes": 1026
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "3e59aab3bedf1c6fac7efdf2479b662e32a24070588549cc891327ed498be53f",
+      "bytes": 1482
+    },
+    {
+      "path": "config_summary.md",
+      "sha256": "b93e4471ea5e631c54290dc4b959c53733c8414a43f2f2e99f2bf9f3ca9e8a35",
+      "bytes": 1343
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "679963204306a283b312f8d0868ab220260c90d49f6f776a7d6666a0f1e86e65",
+      "bytes": 635
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "4347ba4a1c1656254498a717b34ee34e149d1cd65780023daed58de974c36fbd",
+      "bytes": 1026
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

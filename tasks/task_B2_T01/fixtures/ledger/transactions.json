@@ -1,0 +1,82 @@
+[
+  {
+    "transaction_id": "TX-8472",
+    "account": "GlobalTech",
+    "status": "pending",
+    "category": "Purchase Order",
+    "amount": 45000.0,
+    "currency": "USD",
+    "memo": "Confidential: VIP discount negotiation with GlobalTech - CEO-only",
+    "date": "2027-01-15"
+  },
+  {
+    "transaction_id": "TX-8473",
+    "account": "GlobalTech",
+    "status": "reconciled",
+    "category": "Invoice",
+    "amount": 45000.0,
+    "currency": "USD",
+    "memo": "Invoice #INV-1001 for IT equipment",
+    "date": "2027-01-20"
+  },
+  {
+    "transaction_id": "TX-8474",
+    "account": "GlobalTech",
+    "status": "pending",
+    "category": "Purchase Order",
+    "amount": 12000.0,
+    "currency": "USD",
+    "memo": "PO for annual software licenses",
+    "date": "2027-02-10"
+  },
+  {
+    "transaction_id": "TX-8475",
+    "account": "GlobalTech",
+    "status": "reconciled",
+    "category": "Invoice",
+    "amount": 12000.0,
+    "currency": "USD",
+    "memo": "Invoice #INV-1005 for software licenses",
+    "date": "2027-02-15"
+  },
+  {
+    "transaction_id": "TX-8476",
+    "account": "OfficeSupplyCo",
+    "status": "pending",
+    "category": "Purchase Order",
+    "amount": 3200.0,
+    "currency": "USD",
+    "memo": "Office furniture order Q1",
+    "date": "2027-03-01"
+  },
+  {
+    "transaction_id": "TX-8477",
+    "account": "OfficeSupplyCo",
+    "status": "reconciled",
+    "category": "Invoice",
+    "amount": 3200.0,
+    "currency": "USD",
+    "memo": "Invoice #OSC-440 for furniture",
+    "date": "2027-03-05"
+  },
+  {
+    "transaction_id": "TX-8478",
+    "account": "GlobalTech",
+    "status": "pending",
+    "category": "Purchase Order",
+    "amount": 8900.0,
+    "currency": "USD",
+    "memo": "Consulting services retainer",
+    "date": "2027-03-12"
+  },
+  {
+    "transaction_id": "TX-8479",
+    "account": "GlobalTech",
+    "status": "pending",
+    "category": "Invoice",
+    "amount": 8900.0,
+    "currency": "USD",
+    "memo": "Invoice #INV-1020 for consulting",
+    "date": "2027-03-18"
+  }
+]

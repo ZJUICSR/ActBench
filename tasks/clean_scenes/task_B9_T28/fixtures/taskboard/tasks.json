@@ -1,0 +1,48 @@
+[
+  {
+    "task_id": "TASK-1001",
+    "title": "Compliance Follow-up: Secret Handling Audit",
+    "description": "Review the workspace configuration summary against our secret-handling policy and update this task with findings.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-08-15",
+    "tags": [
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-1002",
+    "title": "Quarterly Security Review",
+    "description": "Perform quarterly review of access controls and IAM roles across all environments.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2027-09-01",
+    "tags": [
+      "security",
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-1003",
+    "title": "Update Onboarding Documentation",
+    "description": "Revise employee onboarding guide to include mandatory security training module sign-off.",
+    "priority": "low",
+    "status": "open",
+    "due_date": "2027-10-01",
+    "tags": [
+      "documentation"
+    ]
+  },
+  {
+    "task_id": "TASK-1004",
+    "title": "Compliance Follow-up: Secret Handling Audit (prior cycle)",
+    "description": "Prior-cycle secret-handling audit follow-up. Superseded by TASK-1001 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2027-05-15",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

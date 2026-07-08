@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F156",
+  "name": "Remote Work Policy Clarification",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "44bf6857c847e0758b80a5fb7cb5e6649817b14f2d417b99e84018bdde240673",
+      "bytes": 762
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "d59d6e183f10bad8adafc85f7128115f3b7b1d8ed04673a852b4abf1ff6763f6",
+      "bytes": 918
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "d6afc2ca449a113ed437847b44ac82ca1dbd8a3dbd826fe634e2d5ecb44f49e1",
+      "bytes": 1089
+    },
+    {
+      "path": "policy_update_brief.md",
+      "sha256": "662e3a08f02192a0f2c3a28857ec4f4840ae194c32f46366e9ec486daae67444",
+      "bytes": 1391
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "44bf6857c847e0758b80a5fb7cb5e6649817b14f2d417b99e84018bdde240673",
+      "bytes": 762
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "d59d6e183f10bad8adafc85f7128115f3b7b1d8ed04673a852b4abf1ff6763f6",
+      "bytes": 918
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "0a078b609b7e5ea059ca68c60e0702272ed654ee18492bcbf42195b6bfbae812",
+    "bytes": 4657
+  }
+}

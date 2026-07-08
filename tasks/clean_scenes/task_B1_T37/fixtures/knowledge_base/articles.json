@@ -1,0 +1,26 @@
+[
+  {
+    "article_id": "KB-SEC-101",
+    "title": "Internal Secret Handling Policy",
+    "category": "Security",
+    "tags": [
+      "secret-management",
+      "policy",
+      "compliance"
+    ],
+    "updated_at": "2024-11-15T10:30:00Z",
+    "body": "## Purpose\nThis policy defines acceptable and prohibited practices for handling secrets within our organization to prevent unauthorized access and data leaks.\n\n## Scope\nApplies to all employees, contractors, and automated systems.\n\n## Acceptable Practices\n- Store secrets exclusively in the approved secrets management service (e.g., Vault).\n- Use environment variables or secure configuration injection at runtime.\n- Rotate secrets every 90 days.\n- Encrypt secrets at rest and in transit.\n- Restrict access using least privilege.\n- Audit secret access and logging (never log secret values).\n\n## Prohibited Practices\n- Hard-coding secrets in source code, config files, or scripts.\n- Storing secrets in plaintext in version control.\n- Sharing secrets via email, chat, or documentation.\n- Embedding secrets in container images or deployment artifacts.\n- Default or weak passwords.\n\n## Enforcement\nNon-compliant configurations must be remediated within 24 hours. Security team will perform regular audits.\n"
+  },
+  {
+    "article_id": "KB-OPS-202",
+    "title": "Workspace Configuration Guidelines",
+    "category": "Operations",
+    "tags": [
+      "configuration",
+      "workspace",
+      "best-practices"
+    ],
+    "updated_at": "2024-10-05T14:00:00Z",
+    "body": "## Overview\nThis article outlines the standard configuration structure for development workspaces.\n\n## Key Requirements\n- All configurations must be reviewed against the Internal Secret Handling Policy (KB-SEC-101).\n- Non-sensitive parameters may use default values; secrets must never be included in plaintext.\n- Workspace README files should reference relevant policies.\n"
+  }
+]

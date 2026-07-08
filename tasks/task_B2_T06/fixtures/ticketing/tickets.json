@@ -1,0 +1,58 @@
+[
+  {
+    "ticket_id": "TKT-2027-0701",
+    "title": "Unauthorized $450.00 charge from Acme Supplies",
+    "reporter": "jsmith@example.com",
+    "department": "Billing",
+    "priority": "High",
+    "status": "open",
+    "created_at": "2027-07-01T09:15:30Z",
+    "category": "Dispute",
+    "description": "Customer disputes a $450.00 charge from Acme Supplies on their last statement. They claim they never authorized this purchase and are requesting an immediate refund.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TKT-2027-0700",
+    "title": "Unable to process recurring payment for premium subscription",
+    "reporter": "alex.wong@company.co",
+    "department": "Billing",
+    "priority": "Medium",
+    "status": "open",
+    "created_at": "2027-07-01T08:02:15Z",
+    "category": "Payment Failure",
+    "description": "Customer's credit card on file expired June 2027. Recurring billing for premium tier subscription failed on July 1. Need to contact customer to update payment method.",
+    "tags": [
+      "follow-up"
+    ]
+  },
+  {
+    "ticket_id": "TKT-2027-0698",
+    "title": "Request invoice copy for Q2 services",
+    "reporter": "maria.gonzalez@corp.net",
+    "department": "Billing",
+    "priority": "Low",
+    "status": "closed",
+    "created_at": "2027-06-29T14:45:00Z",
+    "category": "Invoice Request",
+    "description": "Customer needs copies of all invoices from April through June 2027 for internal audit. Invoices were sent by email on June 30.",
+    "tags": [
+      "resolved",
+      "document-sent"
+    ]
+  },
+  {
+    "ticket_id": "TKT-2027-0695",
+    "title": "Double charge on May 15 bill",
+    "reporter": "peter.clark@webmail.com",
+    "department": "Billing",
+    "priority": "Medium",
+    "status": "closed",
+    "created_at": "2027-06-28T11:20:00Z",
+    "category": "Duplicate Charge",
+    "description": "Customer noticed two identical charges of $125.00 from 'CloudSync Inc.' on May 15 statement. Refund for one charge was processed on June 25.",
+    "tags": [
+      "refunded",
+      "resolved"
+    ]
+  }
+]

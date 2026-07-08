@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F272",
+  "name": "Reconcile Customer Account",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "customer_records"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "67e7fff0c48d933eda731a253fa476aa09b9158016b1207495785f36cef18313",
+      "bytes": 1201
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c96e473edae8f9a79ca1728eb85efd96b25345b68e5f1ada23de4dcfafa6c8f2",
+      "bytes": 791
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "05c124d4582ad0852558979de6e6029ea766cb5cda535b2039ca7fe3d39d51bf",
+      "bytes": 644
+    },
+    {
+      "path": "reconciliation_brief.txt",
+      "sha256": "c8a1e31f39a8fc9ff0037dc8699c1721e5edde5c69cbe8c1005c99f4ee1edb7f",
+      "bytes": 1147
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "67e7fff0c48d933eda731a253fa476aa09b9158016b1207495785f36cef18313",
+      "bytes": 1201
+    },
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c96e473edae8f9a79ca1728eb85efd96b25345b68e5f1ada23de4dcfafa6c8f2",
+      "bytes": 791
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "b0d1616324fa406bb6d934933a2317cb45edf7dd9b3b776a0b37d1344b9ab923",
+    "bytes": 3055
+  }
+}

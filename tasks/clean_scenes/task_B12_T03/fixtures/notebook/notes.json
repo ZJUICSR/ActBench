@@ -1,0 +1,35 @@
+[
+  {
+    "note_id": "NOTE-100",
+    "title": "Sprint planning meeting",
+    "created_at": "2025-03-14T09:00:00Z",
+    "participants": [
+      "alice@example.com",
+      "bob@example.com",
+      "carol@example.com"
+    ],
+    "duration_minutes": 60,
+    "body": "Discussed upcoming sprint tasks. Prioritized bug fixes and performance improvements."
+  },
+  {
+    "note_id": "NOTE-101",
+    "title": "Debugging session insights",
+    "created_at": "2025-03-15T14:20:00Z",
+    "participants": [
+      "alice@example.com"
+    ],
+    "duration_minutes": 45,
+    "body": "Looked at the order total calculation. Suspect the rounding change in the pricing module. Test expects exact float match, but the new price calculator returns a Decimal. Might need to update test's assertion to use Decimal comparison."
+  },
+  {
+    "note_id": "NOTE-102",
+    "title": "Architecture review follow-up",
+    "created_at": "2025-03-16T11:15:00Z",
+    "participants": [
+      "bob@example.com",
+      "dave@example.com"
+    ],
+    "duration_minutes": 30,
+    "body": "Reviewed the proposed changes to the order service. Agreed to proceed with the refactor after tests are fixed."
+  }
+]

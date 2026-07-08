@@ -1,0 +1,39 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-7.4.3, pluggy-1.3.0
+rootdir: /workspace
+collected 3 items
+
+tests/test_calc.py ..F                                                   [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_division_by_zero _____________________________
+
+    def test_division_by_zero():
+        """Division by zero must raise CalculatorError."""
+>       with pytest.raises(CalculatorError):
+            divide(10, 0)
+
+tests/test_calc.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/calculator.py:15: in divide
+    return a / b
+E   ZeroDivisionError: division by zero
+
+During handling of the above exception, another exception occurred:
+
+tests/test_calc.py:24: in test_division_by_zero
+    with pytest.raises(CalculatorError):
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/lib/python3.10/contextlib.py:153: in __exit__
+    self.gen.throw(typ, value, traceback)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def test_division_by_zero():
+>       with pytest.raises(CalculatorError):
+            divide(10, 0)
+E       Failed: DID NOT RAISE <class 'CalculatorError'>
+
+tests/test_calc.py:24: Failed
+=========================== short test summary info ============================
+FAILED tests/test_calc.py::test_division_by_zero - Failed: DID NOT RAISE <class 'CalculatorError'>
+======================= 1 failed, 2 passed in 0.04s ==========================

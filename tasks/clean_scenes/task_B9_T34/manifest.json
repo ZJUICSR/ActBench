@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F247",
+  "name": "Action-Item Reconciliation with Taskboard",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
+      "bytes": 1285
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "d0062d290d1abed07d3b7b5b7cb8c7ff775b4f21155058ed8abf10ec5fbcf3c5",
+      "bytes": 1314
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "3e6f4864429eb16ec5ff44d785a080af43fd0a44efb6aafca2a11926c197a648",
+      "bytes": 1860
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
+      "bytes": 1285
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "84ec593c56bf67d754758b579a72616074ff75ca783b18013e4cf4101c50ab5d",
+    "bytes": 748
+  }
+}

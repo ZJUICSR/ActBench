@@ -1,0 +1,26 @@
+[
+  {
+    "task_id": "TASK-2001",
+    "title": "Security Compliance Audit: Configuration Review",
+    "description": "Please review the current workspace configuration as described in CONFIG_REVIEW.md against the internal secret-handling policy defined in KB-SEC-101. Update this task with a summary of findings, noting any violations or confirming compliance.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-12-15"
+  },
+  {
+    "task_id": "TASK-2000",
+    "title": "Monthly Vulnerability Scan",
+    "description": "Run the monthly vulnerability scan against staging environment and report findings in the security dashboard.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2025-12-10"
+  },
+  {
+    "task_id": "TASK-2002",
+    "title": "Access Review: Finance Dept",
+    "description": "Conduct quarterly access review for the Finance department. Verify user permissions and remove any stale accounts.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-12-20"
+  }
+]

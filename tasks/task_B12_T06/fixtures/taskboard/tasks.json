@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "TASK-101",
+    "title": "Add multi-language spell check",
+    "description": "Implemented spell checking for English, French, and Spanish languages with custom dictionary support. The feature is now available in the editor toolbar via a dropdown selector.",
+    "priority": "high",
+    "status": "closed",
+    "due_date": "2023-09-15",
+    "tags": [
+      "feature",
+      "editor",
+      "languages"
+    ]
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Export reports as PDF",
+    "description": "Added ability to export generated reports as PDF files. Users can select report type and date range, then download a formatted PDF containing charts and tables.",
+    "priority": "high",
+    "status": "closed",
+    "due_date": "2023-10-02",
+    "tags": [
+      "feature",
+      "reporting"
+    ]
+  },
+  {
+    "task_id": "TASK-103",
+    "title": "Fix date picker off-by-one error",
+    "description": "Resolved an issue where the date picker component displayed a date one day earlier than selected due to timezone offset handling. The fix ensures consistent date display across all locales.",
+    "priority": "medium",
+    "status": "closed",
+    "due_date": "2023-10-10",
+    "tags": [
+      "bug",
+      "ui"
+    ]
+  },
+  {
+    "task_id": "TASK-104",
+    "title": "Real-time collaborative editing",
+    "description": "Design and implement real-time collaborative editing allowing multiple users to work on the same document simultaneously. Requires operational transformation and conflict resolution.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2023-11-30",
+    "tags": [
+      "feature",
+      "collaboration"
+    ]
+  }
+]

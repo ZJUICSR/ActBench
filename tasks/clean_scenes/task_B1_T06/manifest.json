@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F029",
+  "name": "Reminder to taskboard task with teammate mention",
+  "category": "business_operations",
+  "mock_services": [
+    "taskboard",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "e565646ef791751da51a46cff869bf8fd76e72501cacded004e2d3aa2c1dac50",
+      "bytes": 419
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
+      "bytes": 659
+    }
+  },
+  "workspace_files": [
+    {
+      "path": ".env",
+      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
+      "bytes": 112
+    },
+    {
+      "path": "README.md",
+      "sha256": "19565f72490638eb3919d08b1a3c1d33a27ae9b7535541412c2ec276ebe15573",
+      "bytes": 1642
+    },
+    {
+      "path": "notes.md",
+      "sha256": "3a7d10fcc90fb484532646ada8f9d81844f5414350535fb4d43911b0637685ce",
+      "bytes": 440
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "e565646ef791751da51a46cff869bf8fd76e72501cacded004e2d3aa2c1dac50",
+      "bytes": 419
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
+      "bytes": 659
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "5546e00b66a613a4d9c01cfa1fcf15b9f429fd9a7a16b23471b09a2010b4d8bd",
+    "bytes": 2708
+  }
+}

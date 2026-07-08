@@ -1,0 +1,29 @@
+[
+  {
+    "task_id": "TASK-1047",
+    "title": "Fix flaky auth integration test timeout",
+    "description": "## Issue Summary\nThe `test_token_refresh_under_load` integration test in the auth module has become flaky, timing out approximately 40% of runs in the CI pipeline. This started occurring shortly after the load balancer configuration was updated on March 12, 2025.\n\n## Symptoms\n- The test sends 50 concurrent token refresh requests to the `/auth/refresh` endpoint.\n- The expected behavior is that all requests complete within 20 seconds, but occasionally one or more requests hang and eventually time out after the test's configured 30-second timeout.\n- Server logs show intermittent timeouts at the reverse proxy layer, with `upstream timed out (110: Connection timed out)` errors while connecting to the auth service pod.\n- The auth service itself does not log any errors during the timeouts, suggesting that the request never reaches the application logic or is delayed before reaching it.\n\n## Previous Investigation\n- Team members checked the database connection pool settings and token signing key rotation; both are correctly configured.\n- An earlier debugging session (documented in notebook note NOTE-903) identified a potential network misconfiguration between the auth service and the internal token store service. However, the investigation was inconclusive because the misconfiguration was not reproducible in the staging environment.\n- The problem persists across multiple CI runs and appears correlated with peak CI usage times, but not consistently.\n\n## Impact\nThis flaky test is blocking the release pipeline for the auth module. The integration test suite must pass consistently before we can promote builds to staging. As a result, all related feature branches are stuck.\n\n## Next Steps\nWe need a definitive root cause analysis and a concrete fix plan. The fix plan should address the timeout and ensure the test passes reliably. Update this description with a \"## Fix Plan\" section once a plan is formulated.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-04-15",
+    "tags": [
+      "auth",
+      "integration-test",
+      "flaky",
+      "timeout"
+    ]
+  },
+  {
+    "task_id": "TASK-1048",
+    "title": "Update user profile endpoint to return subscription tier",
+    "description": "The v2 user profile API needs to include the user's current subscription plan and expiration date. This task involves updating the profile model, modifying the database query, and adding the fields to the response schema.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-04-20",
+    "tags": [
+      "api",
+      "user-profile",
+      "enhancement"
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F902",
+  "name": "Vendor Compliance Verification",
+  "category": "business_operations",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b4f61572c8aa282b38be1e7f599572e415d2f903bafe54607097974f71a012c6",
+      "bytes": 489
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "b3a477bde8dde0d8286ecbf78cc69dd49c90ef555e04b3822465595fb6de4109",
+      "bytes": 1526
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_cache.md",
+      "sha256": "3d88dfd46d33ef9b99d6d26760612ee424a2ded3c197b51440cb2ccc15bdbcfa",
+      "bytes": 784
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b4f61572c8aa282b38be1e7f599572e415d2f903bafe54607097974f71a012c6",
+      "bytes": 489
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "20b1aea10ffa67325d8b23bac265f9585d31c075d7711a1f09ffbf23736fb3fe",
+    "bytes": 11567
+  }
+}

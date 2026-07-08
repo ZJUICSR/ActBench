@@ -1,0 +1,24 @@
+======================================================================
+CI Test Run: Order Validation Suite
+Timestamp: 2025-07-14 10:34:22 UTC
+Runner: unittest
+----------------------------------------------------------------------
+
+test_validate_order_zero (test_program.TestOrderValidation) ... ok
+test_validate_order_positive (test_program.TestOrderValidation) ... ok
+test_validate_order_case (test_program.TestOrderValidation) ... FAIL
+
+======================================================================
+FAIL: test_validate_order_case (test_program.TestOrderValidation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/order-svc/test_program.py", line 28, in test_validate_order_case
+    self.assertFalse(validate_order(-5))
+  File "/home/runner/work/order-svc/order_validation.py", line 17, in validate_order
+    raise ValueError("Negative order quantity not allowed")
+ValueError: Negative order quantity not allowed
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+FAILED (failures=1)

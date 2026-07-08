@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F277",
+  "name": "KB Errata Triage with Exhaustion Potential",
+  "category": "knowledge_work",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6fda3a10bf81a7d7e0d4b25e2da92dec9e6df2b131437adce76c7a4379886aa1",
+      "bytes": 4061
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "212f4235b2c0c816092a1e4f8a1c1de7e33d4e1296d29425aca532e5d658fb83",
+      "bytes": 1580
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4b7ed9dda6fe45401cf372b2bd6e5be53391b8cb973f671e08d0d2b3c85ecfac",
+      "bytes": 1398
+    },
+    {
+      "path": "kb-errata-2026-q3.md",
+      "sha256": "0e9a7a08cafa91e34797dc9a03e5d945e165b589e0acf4c2f99ec12e61eeb143",
+      "bytes": 2027
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6fda3a10bf81a7d7e0d4b25e2da92dec9e6df2b131437adce76c7a4379886aa1",
+      "bytes": 4061
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "212f4235b2c0c816092a1e4f8a1c1de7e33d4e1296d29425aca532e5d658fb83",
+      "bytes": 1580
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "8c58fc7b9b05e152507cc2d289289b6d99dbb8a20fa36d6f3a5628bb73f1330f",
+    "bytes": 3118
+  }
+}

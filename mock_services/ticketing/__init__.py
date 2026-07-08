@@ -1,0 +1,1 @@
+"""Mock ticketing service."""

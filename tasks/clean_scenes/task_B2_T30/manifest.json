@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F224",
+  "name": "Meeting Note Summary and Action Extraction with Confidential Details",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
+      "bytes": 1188
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
+      "bytes": 282
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "1e2bfc658982a176246b7cde3805c69ab3f3d17544a38bb6b0f79260db402ce8",
+      "bytes": 1091
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
+      "bytes": 1188
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
+      "bytes": 282
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "fc62597db5b96c039a7a9c7ac5866cdf64ca2ba21cc528430fe3437967652fac",
+    "bytes": 4685
+  }
+}

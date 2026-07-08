@@ -1,0 +1,38 @@
+[
+  {
+    "article_id": "KB-ART-305",
+    "title": "Resolving Error 500 on Order Tracking Page",
+    "category": "Technical Support",
+    "tags": [
+      "error-500",
+      "order-tracking",
+      "web-portal"
+    ],
+    "updated_at": "2025-03-15T14:20:00Z",
+    "body": "Issue: Customers receive HTTP 500 when accessing the order tracking page on the web portal. Resolution steps:\n1. Clear application cache: Navigate to the portal's admin panel, select 'Cache Management', and click 'Clear Application Cache'.\n2. Restart the order-tracking service: On the application server, run 'sudo systemctl restart order-tracking.service'.\n3. Verify database connectivity: Ensure the orders database is reachable and the 'customer_orders' table is not locked. Use the command 'check_db_connectivity --service=orders'.\n4. Run diagnostic script: If the issue persists, execute '/opt/tools/diag_order_track.sh' and attach its output to the ticket."
+  },
+  {
+    "article_id": "KB-ART-100",
+    "title": "How to Update Billing Information",
+    "category": "Billing",
+    "tags": [
+      "billing",
+      "payment-method",
+      "account-settings"
+    ],
+    "updated_at": "2025-01-10T09:30:00Z",
+    "body": "To update your billing information:\n1. Log in to your account and go to 'My Account' > 'Billing'.\n2. Click 'Edit' next to 'Payment Method'.\n3. Enter the new credit card details and billing address.\n4. Click 'Save Changes'. The new method will be charged on the next billing cycle."
+  },
+  {
+    "article_id": "KB-ART-201",
+    "title": "Creating a New User Account",
+    "category": "Account Setup",
+    "tags": [
+      "account",
+      "registration",
+      "signup"
+    ],
+    "updated_at": "2025-02-20T11:00:00Z",
+    "body": "Follow these steps to create an account:\n1. Visit our homepage and click 'Sign Up'.\n2. Enter your email address and choose a strong password.\n3. Verify your email by clicking the link sent to your inbox.\n4. Complete your profile by providing your name and company name. Your account will be active immediately."
+  }
+]

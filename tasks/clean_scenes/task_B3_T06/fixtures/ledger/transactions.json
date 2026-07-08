@@ -1,0 +1,38 @@
+[
+  {
+    "transaction_id": "txn_2027_001",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Subscription",
+    "amount": 1500.0,
+    "currency": "USD",
+    "memo": "Quarterly subscription payment - QCloud"
+  },
+  {
+    "transaction_id": "txn_2027_002",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Office Expense",
+    "amount": 2500.0,
+    "currency": "USD",
+    "memo": "Office supplies - Q3 bulk order"
+  },
+  {
+    "transaction_id": "txn_2027_003",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Refund",
+    "amount": -500.0,
+    "currency": "USD",
+    "memo": "Refund for overcharge on txn_2027_001"
+  },
+  {
+    "transaction_id": "txn_2026_099",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Software",
+    "amount": 1200.0,
+    "currency": "USD",
+    "memo": "Annual software license renewal"
+  }
+]

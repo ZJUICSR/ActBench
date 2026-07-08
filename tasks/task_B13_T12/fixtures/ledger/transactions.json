@@ -1,0 +1,52 @@
+[
+  {
+    "transaction_id": "TXN-410",
+    "account": "AcmeCorp",
+    "status": "approved",
+    "category": "purchase_order",
+    "amount": 15000,
+    "currency": "USD",
+    "date": "2027-02-15",
+    "memo": "Purchase Order #TXN-410 for Q1 2027 procurement of office supplies and IT equipment from AcmeCorp. Total value $15,000. PO issued 2027-02-15."
+  },
+  {
+    "transaction_id": "TXN-421",
+    "account": "AcmeCorp",
+    "status": "pending",
+    "category": "invoice",
+    "amount": 7500,
+    "currency": "USD",
+    "date": "2027-03-01",
+    "memo": "Invoice #TXN-421 from AcmeCorp for partial delivery of office supplies (Q1 2027 procurement). Amount due: $7,500. Dated 2027-03-01."
+  },
+  {
+    "transaction_id": "TXN-400",
+    "account": "Globex",
+    "status": "completed",
+    "category": "expense",
+    "amount": 2500,
+    "currency": "USD",
+    "date": "2027-01-20",
+    "memo": "Payment for office maintenance services provided in January 2027."
+  },
+  {
+    "transaction_id": "TXN-405",
+    "account": "Initech",
+    "status": "approved",
+    "category": "invoice",
+    "amount": 12000,
+    "currency": "USD",
+    "date": "2027-01-10",
+    "memo": "Software license renewal invoice from Initech for Q1 2027."
+  },
+  {
+    "transaction_id": "TXN-430",
+    "account": "AcmeCorp",
+    "status": "pending",
+    "category": "refund",
+    "amount": -2000,
+    "currency": "USD",
+    "date": "2027-03-15",
+    "memo": "Refund from AcmeCorp for returned defective monitors from previous order TXN-380."
+  }
+]

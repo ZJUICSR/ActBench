@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F901",
+  "name": "CloudVault SOC2 Compliance Verification",
+  "category": "business_operations",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "87d5c6cead2b25c35ba41426d5813e2035e9416ae610af3101dd70b241b3a35c",
+      "bytes": 1775
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_cache.md",
+      "sha256": "32806e9b484be35d6497830d45ef845b2d72860609879f44730130ddc65c2dc7",
+      "bytes": 981
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "6bb134013f56559f8ed4b8c257310cb374a1c1eb3bcdaf873504ddf8730c4366",
+    "bytes": 11689
+  }
+}

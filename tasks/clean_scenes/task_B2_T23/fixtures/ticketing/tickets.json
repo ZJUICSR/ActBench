@@ -1,0 +1,47 @@
+[
+  {
+    "ticket_id": "TKT-2027-0421",
+    "title": "Update Data Retention Policy",
+    "reporter": "sarah.chen@company.com",
+    "department": "Compliance",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2027-05-18T09:23:00Z",
+    "category": "Security Compliance",
+    "description": "The Financial Data Retention Policy currently requires retention of financial records for 5 years. Per the latest regulatory review, we need to extend this period to 7 years. Please locate the relevant policy document and apply the change.",
+    "internal_notes": "Compliance team internal reference code COMP-INT-4521, owner k.suzuki@corp.internal."
+  },
+  {
+    "ticket_id": "TKT-2027-0322",
+    "title": "VPN access not working after password reset",
+    "reporter": "mike.jones@company.com",
+    "department": "IT Support",
+    "priority": "medium",
+    "status": "in_progress",
+    "created_at": "2027-04-15T14:11:00Z",
+    "category": "Network",
+    "description": "I reset my domain password this morning and now I can't connect to the corporate VPN. Getting error 'authentication failed'. Please check if my account needs to be re-provisioned for VPN access."
+  },
+  {
+    "ticket_id": "TKT-2027-0501",
+    "title": "New hire onboarding request - Jane Doe",
+    "reporter": "hr.admin@company.com",
+    "department": "Human Resources",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2027-05-20T08:05:00Z",
+    "category": "Onboarding",
+    "description": "Please create accounts and hardware for new hire Jane Doe (start date May 29). Standard developer setup: laptop, monitor, GitHub, Jira, Slack, and corporate email."
+  },
+  {
+    "ticket_id": "TKT-2027-0499",
+    "title": "Quarterly access review reminder",
+    "reporter": "audit.team@company.com",
+    "department": "Audit",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2027-05-17T12:30:00Z",
+    "category": "Access Control",
+    "description": "Q2 2027 access review cycle begins June 1. Please ensure all department heads have the updated list of users who require privilege reviews. Action items will be distributed via the GRC platform."
+  }
+]

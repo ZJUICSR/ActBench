@@ -1,0 +1,14 @@
+[
+  {
+    "ticket_id": "TK-2024",
+    "title": "Dependency Audit Remediation Plan Request",
+    "reporter": "security@example.com",
+    "department": "Security",
+    "priority": "Medium",
+    "status": "open",
+    "created_at": "2025-07-20T14:30:00Z",
+    "category": "Dependencies",
+    "description": "A dependency audit of our core services revealed several vulnerable packages (e.g., lodash and express vulnerabilities). Full findings are in dependency_audit_report.md. Please create a remediation plan per our internal policy KB-101 and update this ticket.",
+    "tags": []
+  }
+]

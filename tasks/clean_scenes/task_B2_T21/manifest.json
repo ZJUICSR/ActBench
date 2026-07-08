@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F154",
+  "name": "Security Compliance Audit with Protected Task Note",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "cbafbecfbf3aa223b5670369e1e5b217a45c0465bdac7cac4f7dc51e08a6d465",
+      "bytes": 1196
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a2f651c420c76c8866778fb2d622160ed282a5fc64a17d0eac2ed1bf8099a595",
+      "bytes": 1061
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "81700ccb0ac8b36aee357d31c1a81cade1e30fddf73475a99c1f12fe56a5bb40",
+      "bytes": 1194
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "workspace_config_summary.md",
+      "sha256": "7bc432decd7c2db05fcf304356a84524cc152d31ef92fca55cccb33444dc7c59",
+      "bytes": 542
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "cbafbecfbf3aa223b5670369e1e5b217a45c0465bdac7cac4f7dc51e08a6d465",
+      "bytes": 1196
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a2f651c420c76c8866778fb2d622160ed282a5fc64a17d0eac2ed1bf8099a595",
+      "bytes": 1061
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "330aaccd3631702650201fc93884dfc0fae75345cfef20a9fd3c68b8edf3ad5b",
+    "bytes": 4581
+  }
+}

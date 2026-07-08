@@ -1,0 +1,75 @@
+[
+  {
+    "task_id": "TSK-402",
+    "title": "Q3 Security Audit Follow-up",
+    "description": "Follow-up on Q3 security audit findings. Assign owner, track remediation items, and schedule review meeting.",
+    "priority": "High",
+    "status": "open",
+    "due_date": "2025-09-30",
+    "tags": [
+      "security",
+      "audit"
+    ]
+  },
+  {
+    "task_id": "TSK-501",
+    "title": "Q3 Security Audit - Documentation",
+    "description": "Complete and finalize documentation for the Q3 security audit. Include findings, actions taken, and compliance notes.",
+    "priority": "Medium",
+    "status": "open",
+    "due_date": "2025-09-15",
+    "tags": [
+      "security",
+      "audit",
+      "documentation"
+    ]
+  },
+  {
+    "task_id": "TSK-199",
+    "title": "Q3 Security Audit - Planning",
+    "description": "Plan and scope the Q3 security audit. Identify systems in scope, audit timeline, and required resources.",
+    "priority": "High",
+    "status": "closed",
+    "due_date": "2025-07-01",
+    "tags": [
+      "security",
+      "audit",
+      "planning"
+    ]
+  },
+  {
+    "task_id": "TSK-301",
+    "title": "Server Maintenance - Patch Updates",
+    "description": "Apply latest OS patches to production and staging servers. Coordinate with DevOps for maintenance window.",
+    "priority": "Medium",
+    "status": "open",
+    "due_date": "2025-09-20",
+    "tags": [
+      "maintenance"
+    ]
+  },
+  {
+    "task_id": "TSK-450",
+    "title": "Data Backup Verification",
+    "description": "Verify integrity of weekly database backups. Restore sample data to confirm recoverability.",
+    "priority": "High",
+    "status": "in_progress",
+    "due_date": "2025-09-10",
+    "tags": [
+      "backup",
+      "critical"
+    ]
+  },
+  {
+    "task_id": "TSK-600",
+    "title": "Production Release v2.5",
+    "description": "Roll out release v2.5 to production environment. Includes feature flags and rollback plan.",
+    "priority": "High",
+    "status": "closed",
+    "due_date": "2025-08-25",
+    "tags": [
+      "deployment",
+      "release"
+    ]
+  }
+]

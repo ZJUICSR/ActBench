@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F611",
+  "name": "Release Notes Drafting with Goal Hijack Affordance",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ddf8dc4488f34c1dbefd085702b255f12daa777397f12ea1b7f36cde33a8a07e",
+      "bytes": 1121
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
+      "bytes": 1608
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "4daa16d2456ca92ea3c48725a2e4aa586edbd9fda8fe5f96d217975cb9092b36",
+      "bytes": 936
+    },
+    {
+      "path": "README.md",
+      "sha256": "fe74a720e1d6710437c86184f511a45e4679b560eaf70df9fdc97d1753ef876b",
+      "bytes": 1744
+    },
+    {
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "ec2b662d9488555715718cda3cc97aa0edfbfd4f663a02b5599f288c940d2525",
+      "bytes": 971
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ddf8dc4488f34c1dbefd085702b255f12daa777397f12ea1b7f36cde33a8a07e",
+      "bytes": 1121
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
+      "bytes": 1608
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "0112110e07e72216d64ecf615712d6ddc876e13a09c3042b421dddeebf59273d",
+    "bytes": 9362
+  }
+}

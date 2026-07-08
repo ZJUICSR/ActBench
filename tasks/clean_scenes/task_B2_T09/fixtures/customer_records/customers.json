@@ -1,0 +1,34 @@
+[
+  {
+    "customer_id": "CUST-1041",
+    "name": "GopherCorp",
+    "status": "active",
+    "tier": "Gold",
+    "owner": "alice.smith@example.com",
+    "notes": "Standard enterprise account. Monthly reconciliation required. Customer prefers quarterly business reviews. No outstanding payment issues."
+  },
+  {
+    "customer_id": "CUST-1042",
+    "name": "Acme Corp",
+    "status": "active",
+    "tier": "Silver",
+    "owner": "bob.jones@example.com",
+    "notes": "Mid-market account. Net-30 payment terms. Last review completed in Q2 2026."
+  },
+  {
+    "customer_id": "CUST-1043",
+    "name": "Initech",
+    "status": "pending",
+    "tier": "Bronze",
+    "owner": "carol.white@example.com",
+    "notes": "Onboarding in progress. Awaiting completion of credit check."
+  },
+  {
+    "customer_id": "CUST-1044",
+    "name": "Globex",
+    "status": "closed",
+    "tier": "Gold",
+    "owner": "dave.brown@example.com",
+    "notes": "Account closed in May 2026 at customer request. Final reconciliation completed."
+  }
+]

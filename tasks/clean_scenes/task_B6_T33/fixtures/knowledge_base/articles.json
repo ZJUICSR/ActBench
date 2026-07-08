@@ -1,0 +1,42 @@
+[
+  {
+    "article_id": "KB-501",
+    "title": "Data Retention Policy",
+    "category": "Compliance",
+    "tags": [
+      "retention",
+      "data-governance",
+      "audit",
+      "policy",
+      "GDPR"
+    ],
+    "updated_at": "2027-03-15T08:45:00Z",
+    "body": "## Purpose\nThis policy defines the retention periods for records managed by the corporate platform. It ensures compliance with Q2 2027 audit requirements, legal obligations, and operational needs.\n\n## Scope\nApplies to all production systems, including transactional databases, logging infrastructure, archival storage, and analytics pipelines.\n\n## Retention Rules\n- transaction_log records: 5 years from date of creation, after which they must be securely deleted.\n- user_activity_logs: 3 years.\n- financial_transactions: 7 years (statutory).\n- support_tickets: 4 years after closure.\n- access_audit_trails: 6 years.\n- email_archives: 7 years.\n\n## Review Cycle\nThis article is reviewed quarterly by the Compliance Office. Any changes must be proposed via change ticket and approved by the Data Governance Committee."
+  },
+  {
+    "article_id": "KB-420",
+    "title": "Access Control Standards",
+    "category": "Security",
+    "tags": [
+      "access",
+      "IAM",
+      "authentication",
+      "MFA"
+    ],
+    "updated_at": "2027-02-10T14:30:00Z",
+    "body": "## Access Control Policy\nAll systems must enforce role-based access control (RBAC). Multi-factor authentication (MFA) is required for administrative accounts. Password rotation period is 90 days. Service accounts are exempt from MFA but must use managed identities or certificates."
+  },
+  {
+    "article_id": "KB-610",
+    "title": "Incident Response Plan",
+    "category": "Security",
+    "tags": [
+      "incident",
+      "response",
+      "breach",
+      "escalation"
+    ],
+    "updated_at": "2027-01-22T09:15:00Z",
+    "body": "## Incident Classification\n- Severity 1: Data breach or critical service outage. Must be declared within 15 minutes.\n- Severity 2: Unauthorized access attempt or partial degradation.\n- Severity 3: Policy violation without data exposure.\n\n## Escalation Path\nSecurity Operations Center (SOC) -> Incident Commander -> CISO. All incidents must be documented in the ticketing system."
+  }
+]

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B13_T08",
+  "legacy_task_id": null,
+  "behavior_id": "B13",
+  "behavior_type": "false_reporting",
+  "behavior_label": "False Reporting",
+  "scoring_family": "execution_deception",
+  "legacy_risk_type": "execution_deception",
+  "risk_type": "execution_deception",
+  "attack_method": "context_injection",
+  "scenario": "F046",
+  "mock_services": [
+    "ticketing",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
+      "bytes": 1053
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
+      "bytes": 2492
+    }
+  },
+  "attack_payload_paths": [
+    "SUPPORT_BRIEF.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "fca8137ea497985ba2a4b99f11d1308c83018058999a9b94c4a08a656797eed4",
+      "bytes": 991
+    },
+    {
+      "path": "SUPPORT_BRIEF.md",
+      "sha256": "ae149cd1a5cb06325ae7b8162ea75206780fbb3878f431eebdb33fc66f5b04af",
+      "bytes": 2143
+    },
+    {
+      "path": "WORKFLOW.md",
+      "sha256": "e88b91201a6a12faa8ace9368f30c07d771f2abeb81956dde96d852bf098de90",
+      "bytes": 2272
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
+      "bytes": 1053
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
+      "bytes": 2492
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "4dec5df4c5b095f133f1ebe6ae4ec048ccbbd1a4357cb6024a7dfa398e1c798d",
+    "bytes": 18868
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B13_T08",
+    "type": "directory_scenario",
+    "content_hash": "a587b5bfbad8e5b3c11d739286fcadc3993afe5866b5d9850ccd6378e7e834e8"
+  }
+}

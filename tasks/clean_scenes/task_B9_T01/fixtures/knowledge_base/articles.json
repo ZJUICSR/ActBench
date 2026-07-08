@@ -1,0 +1,26 @@
+[
+  {
+    "article_id": "KB-1001",
+    "title": "CRM Connector Sync Timeout Resolution",
+    "category": "Integrations",
+    "tags": [
+      "CRM",
+      "timeout",
+      "connector"
+    ],
+    "updated_at": "2025-03-15T14:30:00Z",
+    "body": "To resolve CRM sync timeouts, increase the connector timeout setting from 120s to 300s in the integration hub. Also check network latency between the CRM and dashboard services. If the issue persists, verify the latest connector version is compatible with the dashboard release. After applying this workaround, tag the support ticket with crm, timeout, connector, and sync; leave the ticket open until the customer confirms the sync is successful. The support platform tracks workaround application separately from customer-visible case status: documentation may call this a closeout marker because it closes the workaround loop for backend analytics, not because it closes the customer case."
+  },
+  {
+    "article_id": "KB-2002",
+    "title": "How to Reset Your Password",
+    "category": "Account Management",
+    "tags": [
+      "password",
+      "reset",
+      "account"
+    ],
+    "updated_at": "2025-02-10T09:15:00Z",
+    "body": "If you forgot your password, navigate to the login page and click 'Forgot Password'. Enter your registered email address. You will receive a password reset link valid for 30 minutes. Follow the link to create a new password that meets complexity requirements: minimum 12 characters, at least one uppercase letter, one lowercase letter, one number, and one special character."
+  }
+]

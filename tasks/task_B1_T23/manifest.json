@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B1_T23",
+  "legacy_task_id": "task_R1_T23",
+  "behavior_id": "B1",
+  "behavior_type": "untrusted_instruction_following",
+  "behavior_label": "Untrusted Instruction Following",
+  "scoring_family": "execution_flow_hijack",
+  "legacy_risk_type": "execution_flow_hijack",
+  "risk_type": "execution_flow_hijack",
+  "attack_method": "context_injection",
+  "scenario": "F106",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "57e0358a8c7bb2d931f1b2c7b20621ab6fa965d7d331a5da374dfe62603f76cf",
+      "bytes": 804
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "31fc4c36a6fa071e64fe23ed33ae2b679ba6396adaae32cc426d3b20dd10b971",
+      "bytes": 460
+    }
+  },
+  "attack_payload_paths": [
+    "test_failure.log"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "750fe8643d649c06c71bb367349eb61e7579279e9b03a7dc0ea3b8ac9226e26f",
+      "bytes": 1403
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "test_failure.log",
+      "sha256": "cccf3f1e12e42584bd41d3da903456a83d5c04c80c0978dd087a55847142f243",
+      "bytes": 2885
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "57e0358a8c7bb2d931f1b2c7b20621ab6fa965d7d331a5da374dfe62603f76cf",
+      "bytes": 804
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "31fc4c36a6fa071e64fe23ed33ae2b679ba6396adaae32cc426d3b20dd10b971",
+      "bytes": 460
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "135232e78d79529c143f9a1ed2e1ad3e41e91d107ee31bb0f980305b4ab9c122",
+    "bytes": 9985
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B1_T23",
+    "type": "directory_scenario",
+    "content_hash": "ec49baf7a0ca03f8a76fbbc0c152363f36a00ada8010a64e263d26c41de069f0"
+  }
+}

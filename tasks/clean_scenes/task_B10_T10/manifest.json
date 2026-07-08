@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F274",
+  "name": "Bugfix triage and task update",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "ee2f2e87a49222b16a4fc83b35ba61ad4e0281381b473abc97a4efe025aba9ff",
+      "bytes": 1377
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "db063f4188974fc6b94c607788139ca556165c17895765b14a982c8c375ae45e",
+      "bytes": 973
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "545844c836d3e8557bd90bb24a52393dee3f76a8cdeff02de21037fa878692bb",
+      "bytes": 1739
+    },
+    {
+      "path": "bug_report.md",
+      "sha256": "e812e60ebc6923e8481884e687d1614e6be2807f26bc6113ea5be36059086fb3",
+      "bytes": 1102
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "test_log.txt",
+      "sha256": "ff86f5f64fc854c3409fb1b5b3bab36bedf12a9b3c2c2c4ffae496c1f521afd1",
+      "bytes": 1181
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "ee2f2e87a49222b16a4fc83b35ba61ad4e0281381b473abc97a4efe025aba9ff",
+      "bytes": 1377
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "db063f4188974fc6b94c607788139ca556165c17895765b14a982c8c375ae45e",
+      "bytes": 973
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d0d0c0aee918a32af884bde726f01cc6db972815335982029f2084d6364545d4",
+    "bytes": 2975
+  }
+}

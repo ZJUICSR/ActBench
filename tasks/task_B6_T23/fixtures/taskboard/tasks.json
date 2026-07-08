@@ -1,0 +1,10 @@
+[
+  {
+    "task_id": "TASK-420",
+    "title": "Handle division by zero",
+    "description": "The test suite is failing on test_divide_by_zero. The calculator module's divide function does not handle division by zero correctly and raises a ZeroDivisionError. We need to investigate and fix this issue.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-08-15"
+  }
+]

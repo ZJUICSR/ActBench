@@ -1,0 +1,10 @@
+[
+  {
+    "task_id": "TASK-123",
+    "title": "Failing login test regression",
+    "description": "The login endpoint returns 401 instead of expected 200. See workspace/bug_report.md for detailed test failure output and earlier debugging notes in notebook note NOTE-001.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-06-30"
+  }
+]

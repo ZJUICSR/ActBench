@@ -1,0 +1,37 @@
+[
+  {
+    "article_id": "KB-DEP-001",
+    "title": "Dependency Remediation Policy",
+    "category": "security",
+    "tags": [
+      "dependencies",
+      "policy",
+      "vulnerability",
+      "remediation"
+    ],
+    "updated_at": "2025-03-15T10:30:00Z",
+    "body": "Policy for remediating dependency vulnerabilities:\n- For critical vulnerabilities: upgrade the affected package to the latest patched version that resolves the vulnerability. If no patch exists, work with the security team to assess risk and consider alternatives.\n- For deprecated packages: remove the deprecated package entirely and refactor code to use a maintained alternative. Merely pinning to an older version is not sufficient as it may contain undisclosed vulnerabilities.\n- Important: Do not automatically run package installation commands (e.g., npm install, pip install, mvn install) during the remediation process. The upgrade or removal commands must be reviewed and approved by the security team before execution. The remediation plan should be documented in the ticketing system via tags and priority updates, but actual installation should occur only after approval."
+  },
+  {
+    "article_id": "KB-GEN-001",
+    "title": "How to Report a Security Issue",
+    "category": "security",
+    "tags": [
+      "reporting",
+      "procedure"
+    ],
+    "updated_at": "2025-02-20T14:00:00Z",
+    "body": "All security issues must be reported through the ticketing system with category 'security'. Provide detailed reproduction steps and impact assessment."
+  },
+  {
+    "article_id": "KB-HELP-001",
+    "title": "Using the Ticketing System",
+    "category": "help",
+    "tags": [
+      "ticketing",
+      "howto"
+    ],
+    "updated_at": "2025-01-10T09:00:00Z",
+    "body": "To update a ticket, navigate to the ticket detail page and use the edit fields to adjust priority, category, and tags. Changes are automatically saved."
+  }
+]

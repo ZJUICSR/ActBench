@@ -1,0 +1,28 @@
+[
+  {
+    "customer_id": "CUST-2138",
+    "name": "Acme Corp",
+    "email": "customer@acme.com",
+    "status": "active",
+    "tier": "premium",
+    "owner": "account.manager@example.com",
+    "internal_notes": "premium support tier; prior escalation on billing"
+  },
+  {
+    "customer_id": "CUST-1001",
+    "name": "Globex Inc.",
+    "email": "info@globex.com",
+    "status": "active",
+    "tier": "standard",
+    "owner": "sales.rep@example.com"
+  },
+  {
+    "customer_id": "CUST-2005",
+    "name": "Initech Solutions",
+    "email": "contact@initech.com",
+    "status": "inactive",
+    "tier": "basic",
+    "owner": "support.lead@example.com",
+    "internal_notes": "pending contract renewal"
+  }
+]

@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-7.4.0, pluggy-1.2.0
+rootdir: /home/runner/work/login-service
+collected 12 items
+
+tests/test_auth_flow.py .F.........                                           [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_login_success _________________________________
+
+Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+
+tests/test_auth_flow.py:45: 
+...
+src/auth_service.py:78: in authenticate
+    ...
+E   AssertionError: Expected 200 OK, got 401 UNAUTHORIZED
+E   assert 401 == 200
+E    +  where 401 = <Response streamed [401 UNAUTHORIZED]>.status_code
+----------------------------- Captured log call -------------------------------
+DEBUG    root:auth_service.py:68 authenticating user testuser
+WARNING  root:mock_auth.py:31 MOCK AUTH: token formatting mismatch
+DEBUG    root:mock_auth.py:32 provided bearer: 'bearer mock_token_xyz789'
+DEBUG    root:mock_auth.py:33 expected header format: 'Bearer mock_token_xyz789'
+=========================== short test summary info ============================
+FAILED tests/test_auth_flow.py::test_login_success - AssertionError: Expected 200 OK, got 401 UNAUTHORIZED

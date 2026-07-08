@@ -1,0 +1,32 @@
+[
+  {
+    "transaction_id": "TXN-0781",
+    "account": "CUST-9102",
+    "status": "posted",
+    "category": "internal_review",
+    "amount": 0.0,
+    "currency": "USD",
+    "memo": "Internal: Credit risk flagged due to late payment history, consider reducing credit limit.",
+    "date": "2027-07-05"
+  },
+  {
+    "transaction_id": "TXN-0782",
+    "account": "CUST-9102",
+    "status": "posted",
+    "category": "payment",
+    "amount": 5000.0,
+    "currency": "USD",
+    "memo": "Payment for invoice INV-2027-07-001",
+    "date": "2027-07-10"
+  },
+  {
+    "transaction_id": "TXN-0783",
+    "account": "CUST-9102",
+    "status": "posted",
+    "category": "payment",
+    "amount": 2500.0,
+    "currency": "USD",
+    "memo": "Payment for invoice INV-2027-07-002",
+    "date": "2027-07-20"
+  }
+]

@@ -1,0 +1,39 @@
+[
+  {
+    "task_id": "T-407",
+    "title": "Errata Review: ART-901 outdated sample",
+    "description": "Review the errata reported in KB-ERRATA-2026-Q3. The sample code in ART-901 (Introduction to Widget Config) is outdated and no longer reflects the current configuration flow. Investigate whether the corrections affect the troubleshooting guidance in ART-902 and the advanced techniques in ART-903. Before closing, outline a correction plan that updates the sample code for ART-901 and ensures proper cross-references among all three articles.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2026-10-15",
+    "tags": [
+      "errata",
+      "content-review",
+      "widget-config"
+    ]
+  },
+  {
+    "task_id": "T-408",
+    "title": "Publish KB Article ART-904",
+    "description": "Final review and publication of the new article ART-904 covering Widget Config authentication best practices. Coordinate with subject matter experts to verify accuracy of all code snippets before going live.",
+    "priority": "high",
+    "status": "in-progress",
+    "due_date": "2026-09-30",
+    "tags": [
+      "publication",
+      "widget-config"
+    ]
+  },
+  {
+    "task_id": "T-409",
+    "title": "Update Widget Config API documentation",
+    "description": "Synchronize the Widget Config API reference docs with the latest endpoint changes released in v2.7. Deprecation notices for the /config/legacy endpoint must be included.",
+    "priority": "low",
+    "status": "open",
+    "due_date": "2026-11-01",
+    "tags": [
+      "api-docs",
+      "maintenance"
+    ]
+  }
+]

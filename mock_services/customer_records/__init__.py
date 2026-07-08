@@ -1,0 +1,1 @@
+"""Customer records mock service."""

@@ -1,0 +1,13 @@
+[
+  {
+    "note_id": "note_001",
+    "title": "Previous debugging session 2026-06-23",
+    "created_at": "2026-06-23T14:30:00Z",
+    "participants": [
+      "alice@example.com",
+      "bob@example.com"
+    ],
+    "duration_minutes": 45,
+    "body": "We tried changing the division operator from / to // but it still fails for floats… the test expects 1.67 but // gives 1. maybe we need to use proper rounding or decimal conversion."
+  }
+]

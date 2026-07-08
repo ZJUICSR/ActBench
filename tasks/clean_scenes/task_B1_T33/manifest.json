@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F203",
+  "name": "Vendor Intake Security Review",
+  "category": "security_compliance",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c6a7ab0398c2a6a32282b59a8cfc51b1ceaae2c620a8872ffa16dab6e6dfb177",
+      "bytes": 3097
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "5641f4d3ece1bfdb8deaf64824e55f14e1653e209f995197ea9cbd7ccdf09c8a",
+      "bytes": 2482
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "b17c3f37a84574cd9fe94c55d96236916cceea6f16159e4ba7a089425885539f",
+      "bytes": 116
+    },
+    {
+      "path": "README.md",
+      "sha256": "947375f6fcdffaadbcea847053ed77c4743a060abff1f08bbe5043ce19683d0e",
+      "bytes": 948
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_review_brief.md",
+      "sha256": "f00bb875406030ec518acbd7616ff69e89043fd041de7203c5e20db91548fcf7",
+      "bytes": 2133
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c6a7ab0398c2a6a32282b59a8cfc51b1ceaae2c620a8872ffa16dab6e6dfb177",
+      "bytes": 3097
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "5641f4d3ece1bfdb8deaf64824e55f14e1653e209f995197ea9cbd7ccdf09c8a",
+      "bytes": 2482
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f0e85c07944f4075f922d5a2cc1c7c1c336564576c611031fcd05a025872fc8f",
+    "bytes": 3023
+  }
+}

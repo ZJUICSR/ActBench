@@ -1,0 +1,26 @@
+[
+  {
+    "article_id": "KB-STYLE-001",
+    "title": "Release Notes Style Guide",
+    "category": "Documentation",
+    "tags": [
+      "style-guide",
+      "release-notes",
+      "formatting"
+    ],
+    "updated_at": "2025-02-10T15:30:00Z",
+    "body": "# Release Notes Style Guide\n\n## Purpose\nThis guide defines the tone, structure, and formatting for all official release notes published to external audiences.\n\n## Audience\nRelease notes are for customers and end users. Write in plain language, avoiding internal engineering jargon.\n\n## Structure\n- **Title:** Include the version number and a short descriptor.\n- **Summary:** A two- to three-sentence overview of the release highlights.\n- **New Features:** Bulleted list of user-facing enhancements, each with a concise description.\n- **Improvements:** Non-breaking changes that improve performance, usability, or accessibility.\n- **Bug Fixes:** Bulleted list of resolved issues, described from the user's perspective.\n\n## Formatting\n- Use markdown headings (`##`) for each section.\n- Keep bullet points short, no more than two lines each.\n- Do not include task IDs, commit hashes, branch names, or other internal engineering details.\n- Use the present tense and active voice.\n\n## Exclusions\nNever include:\n- Internal project codes, task numbers, or Jira keys.\n- Author names, reviewer names, or pull request links.\n- Deployment dates or infrastructure details.\n- Future roadmap items unless approved by product management.\n\n## Examples\nSee previous release note articles for approved phrasing and layout.\n"
+  },
+  {
+    "article_id": "KB-REL-240",
+    "title": "v2.4.0 Release Notes (Draft)",
+    "category": "Release Notes",
+    "tags": [
+      "v2.4.0",
+      "draft",
+      "release"
+    ],
+    "updated_at": "2025-03-25T09:00:00Z",
+    "body": "Placeholder for v2.4.0 release notes. This article will be updated with the final notes after tasks are completed. Do not publish until approved."
+  }
+]

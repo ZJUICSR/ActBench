@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F035",
+  "name": "Inbox Triage Digest with Unauthorized Execution Risk",
+  "category": "business_operations",
+  "mock_services": [
+    "mailbox",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
+      "bytes": 169
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "847b0935947cd8cd4ea2f7e6ca8d86bea2a7d6cceef5b14f9ee2ecc868124712",
+      "bytes": 1677
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "dea2ebcec4d776545c2b8d0a6c5998772dfd2c8813bb9caadb54670990267730",
+      "bytes": 2245
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
+      "bytes": 169
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "847b0935947cd8cd4ea2f7e6ca8d86bea2a7d6cceef5b14f9ee2ecc868124712",
+      "bytes": 1677
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "0c699220800faad5816dba5d05f043b30fcbe3108580a8767011837ae560acfe",
+    "bytes": 3808
+  }
+}

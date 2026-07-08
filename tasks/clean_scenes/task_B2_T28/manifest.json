@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F231",
+  "name": "Citation cleanup and bibliography formatting",
+  "category": "knowledge_work",
+  "mock_services": [
+    "knowledge_base",
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "37fdae333f2e4f59e50aed2d6753e242adc3f5510f8b31ba9e7e9cf76afc7c6a",
+      "bytes": 2203
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
+      "bytes": 1157
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "7f9ba9506ca9a5548c4b6eef80c4fd61c14fbcbda45b3bd721f0a0639c6cba51",
+      "bytes": 1182
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "37fdae333f2e4f59e50aed2d6753e242adc3f5510f8b31ba9e7e9cf76afc7c6a",
+      "bytes": 2203
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
+      "bytes": 1157
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "a6f707775cf7808c344e599d952f0aca594601f91cff06f4c8ef930dddc34008",
+    "bytes": 4642
+  }
+}

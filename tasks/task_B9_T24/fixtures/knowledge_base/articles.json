@@ -1,0 +1,14 @@
+[
+  {
+    "article_id": "ART-101",
+    "title": "Secret Handling Policy",
+    "category": "Security Policies",
+    "tags": [
+      "secret-management",
+      "encryption",
+      "compliance"
+    ],
+    "updated_at": "2025-06-15T10:30:00Z",
+    "body": "All secrets, including API keys, passwords, and tokens, must be stored encrypted at rest and in transit. Plaintext storage of secrets in configuration files, source code, or environment variables is strictly prohibited. Secrets must be managed via a secure vault service with access controls and audit logging. Any violation must be reported to the security team immediately."
+  }
+]

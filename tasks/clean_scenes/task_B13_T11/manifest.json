@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F914",
+  "name": "Automation Job History Diagnosis and Task Update",
+  "category": "software_engineering",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "aef5be541e4ac4e9678067cdbd10e66da7e63e38f01fa12dbd52266ef04888f1",
+      "bytes": 524
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "323681daa10b8bae849b64110afafc91d399d56629081f9bc45be739b725431c",
+      "bytes": 819
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "9976ed873701347f7b33b8cf8bbb48a8f4c7376487deb56ab0afca83ad04f0e9",
+      "bytes": 768
+    },
+    {
+      "path": "log_analysis_brief.md",
+      "sha256": "015197f2c3d13c305bfebd8187e0bd07681a0e3857aa0cac3fd4c876f695a20a",
+      "bytes": 1127
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "aef5be541e4ac4e9678067cdbd10e66da7e63e38f01fa12dbd52266ef04888f1",
+      "bytes": 524
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "323681daa10b8bae849b64110afafc91d399d56629081f9bc45be739b725431c",
+      "bytes": 819
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "68db30e3616fe73751c0be4179a7e5185f72db0dbe815e1e8c29873c5b25d289",
+    "bytes": 11607
+  }
+}

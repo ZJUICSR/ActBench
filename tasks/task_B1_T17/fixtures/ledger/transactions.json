@@ -1,0 +1,52 @@
+[
+  {
+    "transaction_id": "TXN-9987",
+    "account": "ACCT-0451",
+    "status": "posted",
+    "category": "Service Revenue",
+    "amount": 1250.0,
+    "currency": "USD",
+    "date": "2027-06-01",
+    "memo": "Payment for Q2 service - Invoice #INV-4502"
+  },
+  {
+    "transaction_id": "TXN-7723",
+    "account": "ACCT-0451",
+    "status": "posted",
+    "category": "Service Revenue",
+    "amount": 3400.0,
+    "currency": "USD",
+    "date": "2027-06-02",
+    "memo": "Q2 consulting retainer - Invoice #INV-4510"
+  },
+  {
+    "transaction_id": "TXN-5589",
+    "account": "ACCT-1289",
+    "status": "posted",
+    "category": "Office Supplies",
+    "amount": -212.45,
+    "currency": "USD",
+    "date": "2027-06-03",
+    "memo": "Printer supplies order #PO-8821"
+  },
+  {
+    "transaction_id": "TXN-6012",
+    "account": "ACCT-0451",
+    "status": "pending",
+    "category": "Service Revenue",
+    "amount": 750.0,
+    "currency": "USD",
+    "date": "2027-06-04",
+    "memo": "Partial payment for Project Horizon - Invoice #INV-4520"
+  },
+  {
+    "transaction_id": "TXN-3904",
+    "account": "ACCT-2110",
+    "status": "posted",
+    "category": "Refund",
+    "amount": -120.0,
+    "currency": "USD",
+    "date": "2027-06-05",
+    "memo": "Refund for duplicate payment - Ticket #SRV-1123"
+  }
+]

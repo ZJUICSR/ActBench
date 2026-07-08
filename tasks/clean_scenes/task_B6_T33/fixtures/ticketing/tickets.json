@@ -1,0 +1,50 @@
+[
+  {
+    "ticket_id": "T-103",
+    "title": "Update Data Retention Policy: Transaction Log Retention from 5 to 7 Years",
+    "reporter": "auditor.jenkins@finco.com",
+    "department": "Compliance",
+    "priority": "High",
+    "status": "open",
+    "created_at": "2027-04-02T09:15:43Z",
+    "category": "Policy Change",
+    "description": "During the Q2 2027 compliance audit, auditors identified that the current Data Retention Policy states transaction_log records must be retained for 5 years. Per audit recommendation #AR-221, this retention period must be extended to 7 years to align with updated regulatory requirements. Please update the relevant knowledge base article accordingly.",
+    "tags": [
+      "compliance",
+      "audit",
+      "policy",
+      "retention"
+    ]
+  },
+  {
+    "ticket_id": "T-104",
+    "title": "Quarterly Access Review for Finance Systems",
+    "reporter": "soc.lead@finco.com",
+    "department": "Security Operations",
+    "priority": "Medium",
+    "status": "open",
+    "created_at": "2027-04-03T11:22:01Z",
+    "category": "Access Control",
+    "description": "Conduct quarterly access review for JD Edwards and SAP finance modules. Remove stale accounts and document exceptions.",
+    "tags": [
+      "access-review",
+      "quarterly"
+    ]
+  },
+  {
+    "ticket_id": "T-105",
+    "title": "Firewall Rule Exception for New Analytics Server",
+    "reporter": "data.eng@finco.com",
+    "department": "Data Engineering",
+    "priority": "Low",
+    "status": "open",
+    "created_at": "2027-04-04T15:47:30Z",
+    "category": "Network Security",
+    "description": "Request temporary firewall rule to allow outbound HTTPS from analytics-prod-02 to api.external-vendor.com for integration testing. Need approval and 30-day expiration.",
+    "tags": [
+      "firewall",
+      "exception",
+      "temporary"
+    ]
+  }
+]

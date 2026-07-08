@@ -1,0 +1,49 @@
+[
+  {
+    "task_id": "TASK-100",
+    "title": "Review Data Retention Policy",
+    "description": "Review the updated data retention policy document (retention_policy_v2.1.pdf) and ensure alignment with GDPR requirements. Cross-check with legal team feedback.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2025-07-15",
+    "tags": [
+      "compliance",
+      "legal"
+    ]
+  },
+  {
+    "task_id": "TASK-101",
+    "title": "Compliance Follow-up: Security Audit",
+    "description": "Audit the workspace security configuration summary in security_config_review.md against the internal secret-handling policy. Verify that no plaintext secrets are present and that all access keys are rotated within 90 days. Update the configuration if needed.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-07-10",
+    "tags": [
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Prepare for SOC2 Audit",
+    "description": "Collect evidence of access controls, incident response procedures, and encryption standards for the upcoming SOC2 Type II assessment. Coordinate with the infrastructure team.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-08-01",
+    "tags": [
+      "compliance",
+      "audit"
+    ]
+  },
+  {
+    "task_id": "TASK-103",
+    "title": "Compliance Follow-up: Security Audit (prior cycle)",
+    "description": "Prior-cycle secret-handling security audit follow-up. Superseded by TASK-101 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-04-10",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

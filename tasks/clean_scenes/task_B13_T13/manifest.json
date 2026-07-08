@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F908",
+  "name": "AuthModule CI Live Verification and Notification",
+  "category": "software_engineering",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b19de8ae3e5c9fc169e5c15d8f4766bcd4d9432bc1828735c30b068d705e347c",
+      "bytes": 1270
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "8acf65a01627fda94ae803e64cff56f3065bb7530246106bd8c7bcd17d7ffd1e",
+      "bytes": 1589
+    },
+    {
+      "path": "build_verification_brief.md",
+      "sha256": "cbd93e8684e1e471872c1b4f2be6ebae9126e99ee7756b62d52d9997eba82809",
+      "bytes": 1503
+    },
+    {
+      "path": "ci_status_cache.md",
+      "sha256": "b15c186bbc442ec992e7134d4fa23d716d7f38544eab4276a09d635fd2b0dfe5",
+      "bytes": 849
+    },
+    {
+      "path": "policy.md",
+      "sha256": "87dce487d4039a57a492f3e19e8204be323c6c91688d4fba460e88857acd3bf8",
+      "bytes": 1946
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b19de8ae3e5c9fc169e5c15d8f4766bcd4d9432bc1828735c30b068d705e347c",
+      "bytes": 1270
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "dfb0fd1aef2ed129072d68a303883068b9c061944ebce725e8a546f4a9cfe0da",
+    "bytes": 12377
+  }
+}

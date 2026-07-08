@@ -1,0 +1,70 @@
+[
+  {
+    "article_id": "KB-1001",
+    "title": "Dependency Management Policy",
+    "category": "Engineering Standards",
+    "tags": [
+      "dependency",
+      "security",
+      "policy",
+      "npm",
+      "package-management"
+    ],
+    "updated_at": "2025-05-12T09:30:00Z",
+    "body": "## 1. Purpose\nThis policy establishes the standards and procedures for managing third-party software dependencies across all projects.\n\n## 2. Scope\nApplies to all production applications and services using external libraries, frameworks, or modules (e.g., npm, PyPI, Maven).\n\n## 3. Policy\n- All dependencies must be pinned to a specific version using lockfiles (package-lock.json, yarn.lock, etc.).\n- Dependencies must be scanned for known vulnerabilities weekly using an approved tool (e.g., Snyk, Dependabot, OWASP Dependency-Check).\n- Critical or high severity vulnerabilities must be patched within 7 days of disclosure.\n- New dependencies must be approved through a dependency review ticket and added to the allowed list.\n- Unused or deprecated dependencies must be removed during each sprint.\n\n## 4. Remediation Process\n- When a vulnerability is identified, the team must create a ticket (e.g., JIRA, ServiceNow) and evaluate the impact.\n- For direct dependencies, upgrade to the latest patched version.\n- For transitive dependencies, apply a resolution override in package.json or update the parent dependency.\n- After upgrading, run the full test suite and perform a security regression test.\n- Vendored or forked dependencies must be kept in sync with upstream security patches.\n\n## 5. Versioning Strategy\n- Use semantic versioning ranges cautiously; prefer caret (^) ranges for production.\n- Major version upgrades require a full compatibility assessment and dedicated QA cycle.\n\n## 6. Audit & Compliance\n- Quarterly dependency audits review license compliance, security status, and update cadence.\n- Non-compliant projects will be flagged in the engineering dashboard."
+  },
+  {
+    "article_id": "KB-1002",
+    "title": "Common npm Audit Findings and How to Triage Them",
+    "category": "Security Bulletins",
+    "tags": [
+      "npm",
+      "audit",
+      "triage",
+      "lodash",
+      "prototype-pollution"
+    ],
+    "updated_at": "2025-06-01T14:15:00Z",
+    "body": "When running `npm audit`, you may encounter several recurring advisories. Here’s how to triage the most frequent ones:\n\n- **Prototype Pollution in lodash (<4.17.21)**: Severity: High. This affects `lodash.defaultsDeep` and similar functions. Upgrade to lodash 4.17.21+.\n- **Regular Expression Denial of Service (ReDoS)** in various packages: Often patched by upgrading the affected module.\n- **Arbitrary Code Execution**: Typically found in dev tooling; prioritize patching if the tool runs in CI.\n\nFor each finding, check if the vulnerable path is actually exercised in production. If not, the risk is lower but should still be patched within the policy timeframe."
+  },
+  {
+    "article_id": "KB-1003",
+    "title": "Creating a Dependency Review Ticket",
+    "category": "Processes",
+    "tags": [
+      "ticket",
+      "dependency",
+      "review",
+      "request"
+    ],
+    "updated_at": "2025-04-20T11:00:00Z",
+    "body": "To add a new third-party dependency:\n1. Create a ticket with type 'Dependency Review'.\n2. Include the package name, version, and reason for usage.\n3. Provide a link to the package repository and its license.\n4. The Security team will review within 2 business days.\n5. Upon approval, add the dependency to the allowed list and proceed."
+  },
+  {
+    "article_id": "KB-1004",
+    "title": "Branch Protection and CI Requirements",
+    "category": "Engineering Standards",
+    "tags": [
+      "ci",
+      "branch-protection",
+      "security",
+      "git"
+    ],
+    "updated_at": "2025-05-01T08:45:00Z",
+    "body": "All repositories must enable the following branch protection rules on main/master:\n- Require pull request reviews before merging.\n- Require status checks to pass (including `npm audit` and `npm test`).\n- Require signed commits.\n- Dismiss stale pull request approvals when new commits are pushed.\n\nCI pipelines must run `npm ci` and `npm audit` on every push."
+  },
+  {
+    "article_id": "KB-1005",
+    "title": "Approved List of Build Tools and Runtimes",
+    "category": "Reference",
+    "tags": [
+      "tooling",
+      "approved",
+      "node",
+      "python",
+      "runtime"
+    ],
+    "updated_at": "2025-04-10T07:20:00Z",
+    "body": "Currently approved runtimes and build tools:\n- Node.js 18.x and 20.x (LTS)\n- npm 9.x+\n- Python 3.10+\n- Maven 3.8+\n\nUse of unsupported tools requires an exception ticket."
+  }
+]

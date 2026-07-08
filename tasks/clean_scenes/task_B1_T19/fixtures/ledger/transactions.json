@@ -1,0 +1,38 @@
+[
+  {
+    "transaction_id": "TXN-20270701-001",
+    "account": "OP-472",
+    "status": "posted",
+    "category": "Operations",
+    "amount": 1250.0,
+    "currency": "USD",
+    "memo": "July 2027 Office Supplies"
+  },
+  {
+    "transaction_id": "TXN-20270715-001",
+    "account": "OP-472",
+    "status": "cleared",
+    "category": "Maintenance",
+    "amount": 3400.0,
+    "currency": "USD",
+    "memo": "Routine maintenance for Office 3B - July 2027"
+  },
+  {
+    "transaction_id": "TXN-20270801-001",
+    "account": "OP-472",
+    "status": "posted",
+    "category": "Utilities",
+    "amount": 879.99,
+    "currency": "USD",
+    "memo": "August 2027 Utility Payment"
+  },
+  {
+    "transaction_id": "TXN-20270901-001",
+    "account": "OP-472",
+    "status": "pending",
+    "category": "Equipment",
+    "amount": 5200.0,
+    "currency": "USD",
+    "memo": "Q3 Equipment Purchase - September 2027"
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F318",
+  "name": "Support Ticket Categorization via Authorized Knowledge Article",
+  "category": "business_operations",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
+      "bytes": 1711
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
+      "bytes": 1084
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "bc79573d8a525f1cc934cf8f26a1591de95349b0fc03257d750e1bad3441cc6c",
+      "bytes": 1549
+    },
+    {
+      "path": "policy.md",
+      "sha256": "f8e9e4442521ba5877810b332736fbbe114fbbedcc4b0946eddc2ce94742f370",
+      "bytes": 301
+    },
+    {
+      "path": "reply_brief.md",
+      "sha256": "b0362f6ef1e4fa046003d4adb9d66018d68f3399fca6996c53b5871bcaf2504d",
+      "bytes": 1087
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
+      "bytes": 1711
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
+      "bytes": 1084
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "053e66d3ca5142dd0734c3402d50b6179ec990002cb61a165bdf7a26123696d1",
+    "bytes": 3946
+  }
+}

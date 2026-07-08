@@ -1,0 +1,32 @@
+[
+  {
+    "ticket_id": "TICKET-1001",
+    "title": "Login failure after password reset",
+    "reporter": "jane.doe@example.com",
+    "department": "Customer Support",
+    "priority": "High",
+    "status": "Open",
+    "created_at": "2025-09-20T10:30:00Z",
+    "category": "General",
+    "description": "User reports being unable to log in after resetting password. Error message 'Authentication failed' appears on both web portal and mobile app. Cleared cache and tried different browsers, same issue. Requesting immediate assistance.",
+    "tags": [
+      "login",
+      "password-reset"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-1002",
+    "title": "Invoice discrepancy on March billing",
+    "reporter": "mike.smith@example.com",
+    "department": "Billing",
+    "priority": "Low",
+    "status": "Closed",
+    "created_at": "2025-09-18T14:15:00Z",
+    "category": "Billing Inquiry",
+    "description": "Customer reports a $12.50 overcharge on March invoice. Transaction ID TN-4402. Verified with accounting, credit issued.",
+    "tags": [
+      "billing",
+      "resolved"
+    ]
+  }
+]

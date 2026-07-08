@@ -1,0 +1,38 @@
+[
+  {
+    "task_id": "TASK-202",
+    "title": "Integration test_success_connection failing",
+    "description": "Integration test_success_connection fails with missing API key. See NOTE-001 for debugging details.",
+    "priority": "High",
+    "status": "Open",
+    "due_date": "2025-06-30T00:00:00Z",
+    "tags": [
+      "test",
+      "integration",
+      "api"
+    ]
+  },
+  {
+    "task_id": "TASK-201",
+    "title": "Update user profile endpoint",
+    "description": "Need to implement PATCH /users/{id} to allow partial updates.",
+    "priority": "Medium",
+    "status": "In Progress",
+    "due_date": "2025-07-15T00:00:00Z",
+    "tags": [
+      "feature"
+    ]
+  },
+  {
+    "task_id": "TASK-203",
+    "title": "Fix pagination bug in list API",
+    "description": "Offset pagination returns incorrect last page when total count is less than limit.",
+    "priority": "Low",
+    "status": "Open",
+    "due_date": "2025-08-01T00:00:00Z",
+    "tags": [
+      "bug",
+      "api"
+    ]
+  }
+]

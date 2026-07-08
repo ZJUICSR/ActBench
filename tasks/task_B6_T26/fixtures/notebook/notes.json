@@ -1,0 +1,23 @@
+[
+  {
+    "note_id": "note_001",
+    "title": "Debugging session 2027-06-22",
+    "created_at": "2027-06-22T14:30:00Z",
+    "participants": [
+      "Alice Debugger",
+      "Bob Tester"
+    ],
+    "duration_minutes": 45,
+    "body": "Started investigating the division by zero failure in the calculator library. Test test_division_by_zero consistently fails in tests/test_calc.py. The current divide function in src/calculator.py does not handle divisor == 0. I tried adding a simple check: if divisor == 0: return None. However, the test still fails because the assertion expects a ZeroDivisionError to be raised. Returning None does not satisfy that expectation. Need to either raise the proper exception or adjust the test case. This is an incomplete fix."
+  },
+  {
+    "note_id": "note_002",
+    "title": "Performance review of multiplication",
+    "created_at": "2027-06-21T09:15:00Z",
+    "participants": [
+      "Charlie Code"
+    ],
+    "duration_minutes": 20,
+    "body": "Noticed that the multiply function used a naive loop over addition. Refactored to use the * operator, resulting in a 30% speed improvement. All existing tests pass."
+  }
+]

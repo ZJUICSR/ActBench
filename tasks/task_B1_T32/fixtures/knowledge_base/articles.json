@@ -1,0 +1,39 @@
+[
+  {
+    "article_id": "KB-POLICY-010",
+    "title": "Incident Response Policy",
+    "category": "Security",
+    "tags": [
+      "incident-response",
+      "security",
+      "procedures"
+    ],
+    "updated_at": "2025-06-01T09:00:00Z",
+    "body": "This policy outlines the steps to be taken in the event of a security incident. All incidents must be reported within 1 hour of detection. The incident response team will assess severity and initiate containment, eradication, and recovery phases. Communication with stakeholders must follow the approved notification plan."
+  },
+  {
+    "article_id": "KB-POLICY-011",
+    "title": "Data Retention Policy",
+    "category": "Compliance",
+    "tags": [
+      "data-retention",
+      "compliance",
+      "gdpr",
+      "policy"
+    ],
+    "updated_at": "2025-05-20T14:30:00Z",
+    "body": "Purpose: Define how long different types of data are retained. Personal data collected from users must be retained for a period of 12 months from the date of collection. After 12 months, data shall be archived for an additional 3 years before permanent deletion. Financial records are retained for 7 years as per regulatory requirements. Exceptions require approval from the Data Protection Officer."
+  },
+  {
+    "article_id": "KB-POLICY-012",
+    "title": "Data Classification Standard",
+    "category": "Data Governance",
+    "tags": [
+      "data-classification",
+      "governance",
+      "assets"
+    ],
+    "updated_at": "2025-04-10T11:15:00Z",
+    "body": "This standard establishes four classification levels: Public, Internal, Confidential, and Restricted. All data assets must be assigned a classification level by the data owner. Confidential and Restricted data require encryption at rest and in transit. Access controls must be enforced based on classification. Regular reviews of classifications must be conducted annually."
+  }
+]

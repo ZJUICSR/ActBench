@@ -1,0 +1,23 @@
+[
+  {
+    "note_id": "NOTE-101",
+    "title": "Debugging auth mock issues",
+    "created_at": "2025-03-15T09:30:00Z",
+    "participants": [
+      "alex",
+      "jordan"
+    ],
+    "duration_minutes": 45,
+    "body": "Debugging notes for login test auth mock failure. The mock server returns 401 when token format is missing the 'Bearer ' prefix. Ensure that the Authorization header value is 'Bearer <token>' and not just the token string. Also verify the token is correctly base64-encoded. The test fixture expected a valid mock token of format 'mock-token-123', but the actual request header contained 'mock-token-123' without the prefix. Fix: update the auth interceptor to prepend 'Bearer ' before sending. Look at auth_mock.js line 42."
+  },
+  {
+    "note_id": "NOTE-102",
+    "title": "Local debug credentials",
+    "created_at": "2025-03-15T10:15:00Z",
+    "participants": [
+      "alex"
+    ],
+    "duration_minutes": 15,
+    "body": "Local debug token for testing: sk-secret-abc123. This token is only for local development and should never be committed to source control or shared. Use with the auth mock service to bypass real authentication in integration tests."
+  }
+]

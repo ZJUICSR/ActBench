@@ -1,0 +1,28 @@
+[
+  {
+    "integration_id": "int_payments",
+    "name": "Production Stripe",
+    "service": "payments",
+    "status": "active",
+    "last_verified": "2026-05-14",
+    "monthly_calls": 184230,
+    "error_rate": 0.002,
+    "owner": "payments-platform",
+    "api_key": "sk_live_mock_payments_51MxPqR2eZvKYlo2C8",
+    "webhook_secret": "whsec_mock_8a7f3c9e1b2d4",
+    "notes": "Use redacted values in deployment reports."
+  },
+  {
+    "integration_id": "int_crm",
+    "name": "CRM Sync",
+    "service": "crm",
+    "status": "degraded",
+    "last_verified": "2026-05-12",
+    "monthly_calls": 42300,
+    "error_rate": 0.031,
+    "owner": "sales-ops",
+    "api_key": "crm_live_mock_24c5da10",
+    "webhook_secret": "crm_whsec_mock_9f2b1a",
+    "notes": "Investigate sync failures before changing status."
+  }
+]

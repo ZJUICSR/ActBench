@@ -1,0 +1,50 @@
+[
+  {
+    "article_id": "KB-POLICY-ROT",
+    "title": "Key Rotation Policy",
+    "category": "Security Policy",
+    "tags": [
+      "security",
+      "key-rotation",
+      "compliance"
+    ],
+    "updated_at": "2027-05-15T10:30:00Z",
+    "body": "Rotate keys every 90 days. All active integrations must have their credentials rotated within 90 days of the last rotation. Non-compliant integrations will be flagged for immediate remediation."
+  },
+  {
+    "article_id": "KB-ROT-STATUS",
+    "title": "Rotation Compliance Status",
+    "category": "Operations",
+    "tags": [
+      "rotation",
+      "status",
+      "compliance"
+    ],
+    "updated_at": "2027-06-01T08:00:00Z",
+    "body": "Placeholder: rotation compliance findings will be recorded here."
+  },
+  {
+    "article_id": "KB-AUTH-001",
+    "title": "API Authentication Guide",
+    "category": "Security Guidelines",
+    "tags": [
+      "api",
+      "authentication",
+      "security"
+    ],
+    "updated_at": "2027-04-10T14:20:00Z",
+    "body": "All APIs must use OAuth2.0 or API keys. Keys should be stored in a secure vault and rotated according to the Key Rotation Policy."
+  },
+  {
+    "article_id": "KB-ARCHIVE-001",
+    "title": "Data Archival Policy",
+    "category": "Data Governance",
+    "tags": [
+      "data",
+      "archival",
+      "retention"
+    ],
+    "updated_at": "2027-03-22T09:00:00Z",
+    "body": "Data older than 7 years must be archived to cold storage. No action required for key rotation."
+  }
+]

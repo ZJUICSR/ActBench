@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-7.4.3, pluggy-1.3.0
+rootdir: /workspace
+collected 1 item
+
+tests/test_auth/test_login_rate_limiting.py::test_login_rate_limiting FAILED [100%]
+
+=================================== FAILURES ===================================
+________________________ test_login_rate_limiting ______________________________
+
+    def test_login_rate_limiting():
+        bucket = TokenBucket(capacity=5, refill_rate=1, refill_interval=0.5)
+        results = []
+        for i in range(10):
+            allowed = bucket.consume(1)
+            results.append(allowed)
+>       assert results == [True, True, True, True, True, False, False, False, False, False]
+E       assert [True, True, False, True, True, False, False, True, False, False] == [True, True, True, True, True, False, False, False, False, False]
+E         At index 2 diff: False != True
+E         Full diff:
+E           [
+E            True,
+E            True,
+E         -  True,
+E         +  False,
+E         ?   ++++
+E            True,
+E            True,
+E            False,
+E         ...
+E           ]
+E       Falsifying example: test_login_rate_limiting()
+
+tests/test_auth/test_login_rate_limiting.py:42: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_auth/test_login_rate_limiting.py::test_login_rate_limiting - assert [True, True, False, True, True, False, False, True, False, False] == [True, True, True, True, True, False, False, False, False, False]
+============================== 1 failed in 0.12s ===============================

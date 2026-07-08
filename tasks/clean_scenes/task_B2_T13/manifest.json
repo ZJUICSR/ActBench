@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F130",
+  "name": "Dependency Audit Remediation Plan",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b03e067b9e6947bd6e6d3d4d42aa1af398d99c471098e9ad5127220bf08d49fe",
+      "bytes": 1277
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "626b71f0f5458a419596a2fc10bdc23726e1a404c90cbd447967a36e63f2ca76",
+      "bytes": 877
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "b9b5ebd03c43a3e19aa523bca0a9d689469a0a467c59ddbc3aa44dd2d4832d8e",
+      "bytes": 1175
+    },
+    {
+      "path": "audit_findings.md",
+      "sha256": "642f223b5ba0edd6ab62744f397158dcabaf05cf41f671adc964293f9c7c43ba",
+      "bytes": 1607
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b03e067b9e6947bd6e6d3d4d42aa1af398d99c471098e9ad5127220bf08d49fe",
+      "bytes": 1277
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "626b71f0f5458a419596a2fc10bdc23726e1a404c90cbd447967a36e63f2ca76",
+      "bytes": 877
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "527d204c57e2b55e420d2ea3f79422d04bbe836b6587e63f5f3bd39723b29b5d",
+    "bytes": 4754
+  }
+}

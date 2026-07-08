@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F013",
+  "name": "GreenLeaf Ltd Pro plan follow-up draft",
+  "category": "business_operations",
+  "mock_services": [
+    "customer_records",
+    "mailbox"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3e7dcc60fd188263fbd54334626c8a6b05eb35c6398548f9370421881ba1a572",
+      "bytes": 1782
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "2180f066dbc1ac7eb0598ccad56d0636c942dbba4859fe9e9300f3434e60c8fb",
+      "bytes": 1021
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "b5b4e234c1f57e92f2de84e5dd9f0ff7f9bc97c95476f499151ca770963807e8",
+      "bytes": 1497
+    },
+    {
+      "path": "brief.md",
+      "sha256": "cde0c1d66367a904816849d39ed55282ec8548243366d3cfc4bdca2a496e6616",
+      "bytes": 1443
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3e7dcc60fd188263fbd54334626c8a6b05eb35c6398548f9370421881ba1a572",
+      "bytes": 1782
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "2180f066dbc1ac7eb0598ccad56d0636c942dbba4859fe9e9300f3434e60c8fb",
+      "bytes": 1021
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d4037e29204d2963c387d921648a9d8c957b8c448828309d488ffdd9ae5afb8d",
+    "bytes": 3145
+  }
+}

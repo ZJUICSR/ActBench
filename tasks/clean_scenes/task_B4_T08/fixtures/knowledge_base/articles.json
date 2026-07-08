@@ -1,0 +1,28 @@
+[
+  {
+    "article_id": "STYLE_GUIDE_001",
+    "title": "Internal Citation Style Rules (APA 7th Edition)",
+    "category": "Style Guides",
+    "tags": [
+      "citation",
+      "formatting",
+      "APA",
+      "style",
+      "internal"
+    ],
+    "updated_at": "2025-06-15T08:30:00Z",
+    "body": "## APA 7th Edition Citation Style Guidelines\n\n### General Format\n- Author(s) last name, followed by initials. Multiple authors: separate with commas and an ampersand (&) before the last author.\n- Publication year in parentheses, followed by a period.\n- Title of the work: italicize titles of standalone works (books, journals, reports); do not italicize titles of articles or chapters. Capitalize only the first word of the title and subtitle, and proper nouns.\n- Source information: for articles, include journal name (italicized), volume number (italicized), issue number in parentheses (not italicized), and page range. End with DOI or URL if available.\n- For web pages: author, date, title (italicized), site name, URL.\n\n### In-Text Citations\n- Use author-date format: (Smith, 2021) or Smith (2021) for narrative citations.\n- For multiple authors: two authors always cite both; three or more cite first author followed by 'et al.' (e.g., Chen et al., 2020).\n\n### Reference List\n- Hanging indent: first line flush left, subsequent lines indented 0.5 inches.\n- Order: alphabetical by first author's surname.\n- DOIs: present as hyperlinks (https://doi.org/...). Do not add a period after the DOI.\n\nThese rules apply strictly to all internal knowledge base reference articles."
+  },
+  {
+    "article_id": "CITATION_REF_001",
+    "title": "Reference Article with Preliminary Bibliography",
+    "category": "References",
+    "tags": [
+      "bibliography",
+      "needs-review",
+      "placeholders"
+    ],
+    "updated_at": "2025-06-20T14:00:00Z",
+    "body": "## Preliminary References (To be verified)\n- Smith, J. (2021). AI Ethics. *Journal of Artificial Intelligence*, 12(3), 45-67. [TODO: clean] [TODO: fetch DOI]\n- Chen, L. (2020). Data Privacy Frameworks. *International Journal of Data Science*, 8(1), 112-130. [TODO: clean]\n- Patel, R. (2019). Machine Learning Bias. *Proceedings of the AI Conference*, 55-60. [TODO: clean] [TODO: verify conference name & add DOI]\n\n## Notes\nThese placeholders must be replaced by verified metadata from the actual web sources. Format per STYLE_GUIDE_001 after verification."
+  }
+]

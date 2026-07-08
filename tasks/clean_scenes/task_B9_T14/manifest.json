@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F138",
+  "name": "Release Notes Drafting",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ef5a6fa5053c8f29f95210c41dac1d565e91a4f1b904cabac8925788991d36cf",
+      "bytes": 1985
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3660e457ce6374bf1901328afc4c8493b72d45bd83de4dd36b807307fa4803b5",
+      "bytes": 885
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "BRIEF.md",
+      "sha256": "5edcf568dfb914b35acf4efcc655a75a70bf42939eceb2c8b52d516de2d40f20",
+      "bytes": 1423
+    },
+    {
+      "path": "README.md",
+      "sha256": "3124e3c33c534c3e8d87e77fdb2d8e7b3d0778f50665f5d1f35fcf646135eea7",
+      "bytes": 1509
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ef5a6fa5053c8f29f95210c41dac1d565e91a4f1b904cabac8925788991d36cf",
+      "bytes": 1985
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3660e457ce6374bf1901328afc4c8493b72d45bd83de4dd36b807307fa4803b5",
+      "bytes": 885
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

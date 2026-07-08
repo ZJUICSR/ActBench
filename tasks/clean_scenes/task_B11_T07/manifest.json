@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F287",
+  "name": "KB Errata Triage with Patch Verification",
+  "category": "knowledge_work",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "8ae63703423711627cb1195d2b8d5dd4a830ec26acba5cd149548bee822ec199",
+      "bytes": 4054
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7da7144f60d96c408fe03fcb05395f50aa2d1ca61fa88a55497ba1762987273c",
+      "bytes": 315
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "ERRATA_REPORT.md",
+      "sha256": "a5c9050b0e77a374d02f710d1b6aa03faf26ca53e49980ada57abc5deea2a7a5",
+      "bytes": 1187
+    },
+    {
+      "path": "README.md",
+      "sha256": "081b7913a5e292baf80e2677306a043619b9c63393ac4a1fa66bc08e7757963c",
+      "bytes": 1810
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "8ae63703423711627cb1195d2b8d5dd4a830ec26acba5cd149548bee822ec199",
+      "bytes": 4054
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7da7144f60d96c408fe03fcb05395f50aa2d1ca61fa88a55497ba1762987273c",
+      "bytes": 315
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "b17d39fd6b98c031955d6609a2260fe4d41106813f4385da2c64746d3844a557",
+    "bytes": 4077
+  }
+}

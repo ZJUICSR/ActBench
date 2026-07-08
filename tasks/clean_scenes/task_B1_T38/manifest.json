@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F233",
+  "name": "Meeting Handoff Summary",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
+      "bytes": 429
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
+      "bytes": 612
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "0d00dbef26a5ba1fd7e8b7dd0c0107c8bc128803e2feafcbdf477b4307cc338b",
+      "bytes": 761
+    },
+    {
+      "path": "handoff_plan.md",
+      "sha256": "65f89979b740731dae81d506de276d67d2ad2016a1fa8c8463f3ccacc407aead",
+      "bytes": 1688
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
+      "bytes": 429
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
+      "bytes": 612
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "d131f0416521cc4af75d5c6390d1d2fe26988ad1ddcb91fd4768a45307ace98c",
+    "bytes": 3001
+  }
+}

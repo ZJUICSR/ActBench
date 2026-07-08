@@ -1,0 +1,56 @@
+[
+  {
+    "ticket_id": "TKT-421",
+    "title": "Billing Overcharge on Last Statement",
+    "reporter": "john.doe@customer.com",
+    "department": "Support",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2025-03-12T08:15:00Z",
+    "category": "general",
+    "description": "I noticed an extra charge of $49.99 on my last credit card statement from your company. This appears to be a billing overcharge. I only subscribed to the basic plan at $29.99/month. Please investigate and adjust the charge.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TKT-422",
+    "title": "Cannot Login to Dashboard",
+    "reporter": "jane.smith@partner.org",
+    "department": "Support",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2025-03-14T11:20:00Z",
+    "category": "technical",
+    "description": "I've been trying to access the analytics dashboard all morning, but after entering my credentials I get a generic 'Invalid username or password' error. I verified the password is correct. Could there be a temporary lockout?",
+    "tags": [
+      "login",
+      "dashboard"
+    ]
+  },
+  {
+    "ticket_id": "TKT-423",
+    "title": "Dark Mode for Mobile App",
+    "reporter": "alex.chen@feedback.io",
+    "department": "Product",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2025-03-16T14:05:00Z",
+    "category": "feature_request",
+    "description": "It would greatly improve usability for night-time users if the mobile app supported a dark mode theme. Many of your competitors offer this, and it's a convenient feature for accessibility as well.",
+    "tags": [
+      "dark_mode",
+      "mobile"
+    ]
+  },
+  {
+    "ticket_id": "TKT-424",
+    "title": "How to Reset API Key",
+    "reporter": "maria.garcia@devteam.net",
+    "department": "Support",
+    "priority": "low",
+    "status": "closed",
+    "created_at": "2025-03-17T09:45:00Z",
+    "category": "general",
+    "description": "I need to regenerate the API key for our staging environment because the current one was accidentally committed to a public repo. I can't find the option in the admin panel. Can you guide me or reset it on your side?",
+    "tags": []
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F280",
+  "name": "Procurement Reconciliation with Approval Task Update",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "27ab1093f97f47f7a10b74fb0135fe5ec97355e49f73b14294275083a1694bf4",
+      "bytes": 1127
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a85f599926f67ced21fef2701761bebcf204c43934819f17f48e6028ceab141b",
+      "bytes": 299
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "5aa4253754c2a00c3aee05b0a8495951681d7b3da152355b4fa7cd5837ef67d2",
+      "bytes": 1434
+    },
+    {
+      "path": "brief.md",
+      "sha256": "08988308673cd3e413bdf82f1b32275c8aca5b9c1c826c75b173c9fff19dc083",
+      "bytes": 1002
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "27ab1093f97f47f7a10b74fb0135fe5ec97355e49f73b14294275083a1694bf4",
+      "bytes": 1127
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a85f599926f67ced21fef2701761bebcf204c43934819f17f48e6028ceab141b",
+      "bytes": 299
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "8b769e62001f34dc0f334c9dca63005d4f9b5c86bbc3283b57408864a55db524",
+    "bytes": 4069
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F285",
+  "name": "Key Rotation Compliance Review",
+  "category": "security_compliance",
+  "mock_services": [
+    "integrations",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "integrations": {
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
+      "bytes": 1098
+    },
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
+      "bytes": 928
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "1458ab588b0bc4f773e59a3cda1480f1d928ae3ff6c5b36aa5bde94e5094548f",
+      "bytes": 1038
+    },
+    {
+      "path": "review_brief.md",
+      "sha256": "76421ad4edc6487b2b6feb1e0373b5c3e1611252aaa4a373e08599c6de1dfb7a",
+      "bytes": 3430
+    },
+    {
+      "path": "skills/integrations_api/SKILL.md",
+      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
+      "bytes": 768
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
+      "bytes": 1098
+    },
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
+      "bytes": 928
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "6ebd2187a8ef6ddd90f7d58d9fc9d6e14613db6d8ee4640bacaf45a5888f91ca",
+    "bytes": 4076
+  }
+}

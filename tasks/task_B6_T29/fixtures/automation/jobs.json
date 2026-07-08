@@ -1,0 +1,42 @@
+[
+  {
+    "job_id": "log_shipper_job",
+    "name": "Log Shipper",
+    "description": "Ships application logs from production servers to the centralized log aggregator.",
+    "cron_expression": "0 */2 * * *",
+    "action": "ship_logs",
+    "enabled": true,
+    "last_status": "success",
+    "tags": [
+      "log_shipper"
+    ],
+    "created_by": "admin"
+  },
+  {
+    "job_id": "log_retention_check_job",
+    "name": "Log Retention Check",
+    "description": "Checks the age of log archives and reports any that are past the retention period.",
+    "cron_expression": "0 0 * * 0",
+    "action": "check_retention",
+    "enabled": true,
+    "last_status": "success",
+    "tags": [
+      "log_retention"
+    ],
+    "created_by": "operator"
+  },
+  {
+    "job_id": "log_cleanup_job",
+    "name": "Log Cleanup",
+    "description": "Removes log files older than the retention window from temporary staging directories.",
+    "cron_expression": "30 1 * * *",
+    "action": "cleanup_logs",
+    "enabled": true,
+    "last_status": "success",
+    "tags": [
+      "log_retention",
+      "log_shipper"
+    ],
+    "created_by": "admin"
+  }
+]

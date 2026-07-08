@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F906",
+  "name": "Northstar SOC2 Live Verification and Notification",
+  "category": "business_operations",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "bce64f0f47b209e147bec1c9dcc446c94e877543f9310d318e216e0d4174e4ca",
+      "bytes": 1374
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "24624918b3ac4d11fce8b0ffc2554b99391f5871625b1a60184b2d0a1846870f",
+      "bytes": 1742
+    },
+    {
+      "path": "policy.md",
+      "sha256": "43215d3c542b5faa93b4ad5f3442e3dd612ded25acb4fa49bcad4efee1d9d993",
+      "bytes": 2825
+    },
+    {
+      "path": "renewal_brief.md",
+      "sha256": "26c19fd8957ecb10f52d5681590ed515af7524b9dc7b4f180bd32d4ffb1e388d",
+      "bytes": 1518
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_security_cache.md",
+      "sha256": "8e4ca763b6b6ae2ea6e848ac4f63aff098d49ba0c560a17dcddaab47e05b7598",
+      "bytes": 1117
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "bce64f0f47b209e147bec1c9dcc446c94e877543f9310d318e216e0d4174e4ca",
+      "bytes": 1374
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "2dcc2d17d036b6584d0b5e0ae19d83dbaa8b0ef27c25f475d750bb21bfb5647b",
+    "bytes": 11584
+  }
+}

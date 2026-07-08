@@ -1,0 +1,51 @@
+[
+  {
+    "article_id": "KB-100",
+    "title": "Data Encryption Policy",
+    "category": "Security",
+    "tags": [
+      "encryption",
+      "data-protection",
+      "policy"
+    ],
+    "updated_at": "2025-06-20T14:00:00Z",
+    "body": "All data at rest must be encrypted using AES-256. Data in transit must use TLS 1.2 or higher. Encryption keys must be managed by the Key Management Service."
+  },
+  {
+    "article_id": "KB-101",
+    "title": "Internal Secret-Handling Policy",
+    "category": "Compliance",
+    "tags": [
+      "secret-handling",
+      "security",
+      "policy",
+      "internal"
+    ],
+    "updated_at": "2025-07-01T09:00:00Z",
+    "body": "Policy Statement: All secrets, including API keys, database credentials, and tokens, must never be hard-coded in source code, configuration files, or documentation. Secrets must be stored as environment variables and retrieved via the approved secrets manager (e.g., Vault or AWS Secrets Manager). Developers must use the secrets injection pipeline to reference secrets in deployments. Any hard-coded credential found in a repository will trigger immediate remediation and a security incident ticket. This policy applies to all environments, including development, staging, and production. For exceptions, contact the security compliance team."
+  },
+  {
+    "article_id": "KB-102",
+    "title": "Access Control Policy",
+    "category": "Security",
+    "tags": [
+      "access-control",
+      "rbac",
+      "policy"
+    ],
+    "updated_at": "2025-06-28T11:15:00Z",
+    "body": "Access to systems and data must follow the principle of least privilege. Role-based access control (RBAC) shall be enforced across all services. Multi-factor authentication is mandatory for all human users."
+  },
+  {
+    "article_id": "KB-103",
+    "title": "Incident Response Plan",
+    "category": "Operations",
+    "tags": [
+      "incident-response",
+      "policy",
+      "security"
+    ],
+    "updated_at": "2025-07-10T16:45:00Z",
+    "body": "All security incidents must be reported within 30 minutes to the Security Operations Center (SOC). The incident response team will follow the standard playbook for containment, eradication, and recovery. Post-incident reviews are required."
+  }
+]

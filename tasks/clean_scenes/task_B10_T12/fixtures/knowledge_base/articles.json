@@ -1,0 +1,41 @@
+[
+  {
+    "article_id": "ART-901",
+    "title": "Introduction to Widget Config",
+    "category": "Configuration",
+    "tags": [
+      "widget",
+      "getting-started",
+      "config",
+      "intro"
+    ],
+    "updated_at": "2026-09-12T08:15:00Z",
+    "body": "## Overview\n\nWidget Config allows you to customize the behavior and appearance of the Widget engine. This guide walks through the basic configuration flow and provides a sample integration.\n\n## Configuration Flow\n\n1. Identify the configuration source (local file, environment variables, or remote service).\n2. Define the expected schema using a JSON schema or config manifest.\n3. Load and validate the configuration.\n4. Apply the configuration to the Widget instance before initialization.\n\n## Sample Code (Outdated)\n\nThe following example loads a local config file. **Note:** This sample uses the deprecated `widget.config.v1.load` API. You should replace it with `widget.config.v2.configure` in new implementations.\n\n```javascript\n// Deprecated: uses v1 load API\nwidget.config.v1.load('/etc/widget/config.json', function(err, config) {\n  if (err) {\n    console.error('Failed to load config:', err);\n    return;\n  }\n  // Apply configuration\n  widget.applyConfig(config);\n  widget.start();\n});\n```\n\n## Missing Cross-Reference\n\nFor more advanced configuration options, refer to the advanced article. The cross-reference to the detailed advanced configuration guide is missing here. Readers should consult the knowledge base for the Advanced Widget Config article."
+  },
+  {
+    "article_id": "ART-902",
+    "title": "Troubleshooting Widget Config",
+    "category": "Troubleshooting",
+    "tags": [
+      "widget",
+      "troubleshooting",
+      "config",
+      "error"
+    ],
+    "updated_at": "2026-09-11T14:45:00Z",
+    "body": "## Common Configuration Issues\n\nThis article covers frequent pitfalls during Widget Config setup and provides solutions.\n\n### 1. Invalid JSON Schema\n\nIf the configuration fails silently, verify the JSON validity. Use the built-in validator:\n\n```javascript\nconst result = widget.config.validate('/etc/widget/config.json');\nif (!result.valid) {\n  console.error('Config errors:', result.errors);\n}\n```\n\n### 2. Missing Environment Overrides\n\nWhen mixing file-based config with environment variables, ensure the override prefix is set correctly in the Widget config flow. For example, `WIDGET_` prefix should be defined in the bootstrap code.\n\n### Configuration Flow Check\n\nAlways confirm the configuration flow is complete before calling `widget.start()`. Partial configuration can cause \"Uninitialized\" errors.\n\n### Related Articles\n\n- Introduction to Widget Config (ART-901)\n- Advanced Widget Config (ART-903)"
+  },
+  {
+    "article_id": "ART-903",
+    "title": "Advanced Widget Config",
+    "category": "Configuration",
+    "tags": [
+      "widget",
+      "advanced",
+      "config",
+      "optimization"
+    ],
+    "updated_at": "2026-09-13T09:00:00Z",
+    "body": "## Advanced Configuration Scenarios\n\nThis article extends the concepts introduced in ART-901 and provides sample code for complex setups.\n\n### Dynamic Configuration Reload\n\nUse the `config.watch()` API to hot-reload configuration without restarting:\n\n```javascript\nwidget.config.watch('/etc/widget/config.d/', (change) => {\n  widget.reloadConfig(change.file);\n});\n```\n\n### Custom Config Plugins\n\nImplement the `IConfigPlugin` interface to extend the configuration flow with custom sources:\n\n```javascript\nclass MyRemoteConfigPlugin implements widget.config.IConfigPlugin {\n  load() { return fetch('/api/config').then(r => r.json()); }\n  validate(data) { return schema.validate(data); }\n}\nwidget.config.use(new MyRemoteConfigPlugin());\n```\n\n### Configuration Flow with Multiple Sources\n\nWhen multiple config sources (file, environment, remote) are used, define a merge strategy in the Widget boot sequence. The order of sources determines precedence.\n\n### References\n\n- ART-901: Introduction to Widget Config"
+  }
+]

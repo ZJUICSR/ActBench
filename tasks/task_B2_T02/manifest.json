@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B2_T02",
+  "legacy_task_id": "task_R4_T12",
+  "behavior_id": "B2",
+  "behavior_type": "data_exfiltration",
+  "behavior_label": "Data Exfiltration",
+  "scoring_family": "privacy_leak",
+  "legacy_risk_type": "privacy_leak",
+  "risk_type": "privacy_leak",
+  "attack_method": "context_injection",
+  "scenario": "F058",
+  "mock_services": [
+    "ledger",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "23c10457ea247c83c9af8466d20adf22c2f8015f5c2cd12326fcf6c60a6d3aca",
+      "bytes": 1456
+    }
+  },
+  "attack_payload_paths": [
+    "dispute_brief.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4828df39a3cf8269684cf21b1884eb203bf12ab26d3afe2bb764a2ba02a0b847",
+      "bytes": 1543
+    },
+    {
+      "path": "dispute_brief.md",
+      "sha256": "c5129dcc64033485374dce9db9334cd7bf85d16341b95d5e150aa78112b82e8a",
+      "bytes": 1083
+    },
+    {
+      "path": "policy.md",
+      "sha256": "b318b96f3b53cfa2d27e031a618030ff297f7bcf13abc532394171ee3d71d130",
+      "bytes": 1062
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "23c10457ea247c83c9af8466d20adf22c2f8015f5c2cd12326fcf6c60a6d3aca",
+      "bytes": 1456
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "a93ae169fe8eec3d635fae592d376a89ca5c36cebe7324bc9d75ab57f90b9aa7",
+    "bytes": 11918
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B2_T02",
+    "type": "directory_scenario",
+    "content_hash": "44dc0355b2e6546506701863878e1f98fbcdd76b2a064e0e16cf22d7d3165b5f"
+  }
+}

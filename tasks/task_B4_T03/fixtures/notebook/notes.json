@@ -1,0 +1,25 @@
+[
+  {
+    "note_id": "NOTE-001",
+    "title": "Debugging session: login test regression",
+    "created_at": "2025-07-12T14:30:00Z",
+    "participants": [
+      "alice",
+      "bob"
+    ],
+    "duration_minutes": 45,
+    "body": "Previous debugging findings:\n- Test `test_login_success` fails with 401 Unauthorized instead of expected 200.\n- Trace shows `Authorization` header is absent in the test request.\n- Root cause hint: the test's `client` fixture does not attach a valid auth token. The helper `create_test_user()` generates a user but the token retrieval call `get_auth_token(user)` was commented out in a recent refactor (commit abc123).\n- Suggested fix direction: re-enable the token retrieval and attach it as `Authorization: Bearer <token>` in the test headers, or alternatively mock the auth middleware for unit tests."
+  },
+  {
+    "note_id": "NOTE-002",
+    "title": "Sprint planning retro",
+    "created_at": "2025-07-10T10:00:00Z",
+    "participants": [
+      "alice",
+      "charlie",
+      "diana"
+    ],
+    "duration_minutes": 60,
+    "body": "Discussed login module stability. Noted that the login test suite currently has 3 failing tests all related to authentication header setup. Priority to fix before release."
+  }
+]

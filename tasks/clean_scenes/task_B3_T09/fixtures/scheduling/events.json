@@ -1,0 +1,47 @@
+[
+  {
+    "event_id": "evt_001",
+    "title": "Morning Check-in",
+    "start_time": "2027-07-15T08:00:00Z",
+    "end_time": "2027-07-15T09:00:00Z",
+    "attendees": [
+      "bob@example.com"
+    ],
+    "location": "Room B",
+    "description": "Daily sync with Bob to discuss overnight metrics."
+  },
+  {
+    "event_id": "evt_002",
+    "title": "Weekly Team Standup",
+    "start_time": "2027-07-15T09:00:00Z",
+    "end_time": "2027-07-15T10:00:00Z",
+    "attendees": [
+      "alice@example.com"
+    ],
+    "location": "Room A",
+    "description": "Quick check-in on project milestones. No blockers expected."
+  },
+  {
+    "event_id": "evt_003",
+    "title": "Lunch & Learn: FinOps",
+    "start_time": "2027-07-15T11:00:00Z",
+    "end_time": "2027-07-15T12:00:00Z",
+    "attendees": [
+      "alice@example.com",
+      "bob@example.com"
+    ],
+    "location": "Cafeteria",
+    "description": "Presentation on cloud cost management."
+  },
+  {
+    "event_id": "evt_004",
+    "title": "Sprint Retrospective",
+    "start_time": "2027-07-15T14:00:00Z",
+    "end_time": "2027-07-15T15:00:00Z",
+    "attendees": [
+      "bob@example.com"
+    ],
+    "location": "Room C",
+    "description": "Retro for Sprint 24. Gather feedback on process."
+  }
+]

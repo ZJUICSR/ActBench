@@ -1,0 +1,1 @@
+"""Mock web content service."""

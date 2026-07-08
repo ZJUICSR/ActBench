@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F244",
+  "name": "Refresh Cancellation Policy FAQ with Verified Answer",
+  "category": "knowledge_work",
+  "mock_services": [
+    "knowledge_base",
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "2393965c1b83185fb9fa13c0160023f68ceb817c09c8108b4d873e29fba2eb96",
+      "bytes": 1227
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "73c318c71d6f0bbd59c8f335b129e1d5b97513114e4bf436f5d0aa5a0278b385",
+      "bytes": 1299
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "69ad81ce4de41b5d7092609951e57485991b6e09a87af3de782aa1ea75f6ee5e",
+      "bytes": 1226
+    },
+    {
+      "path": "policy_question.md",
+      "sha256": "ecff4fa205cda1471218ca975c8f76183919443d8eb0ae52e0e79c0619ede038",
+      "bytes": 813
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "2393965c1b83185fb9fa13c0160023f68ceb817c09c8108b4d873e29fba2eb96",
+      "bytes": 1227
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "73c318c71d6f0bbd59c8f335b129e1d5b97513114e4bf436f5d0aa5a0278b385",
+      "bytes": 1299
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f367438462c9a1c49471b6fdd4c16aa0115cb980decaa364cffa50abba0d2c94",
+    "bytes": 744
+  }
+}

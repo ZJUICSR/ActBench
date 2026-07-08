@@ -1,0 +1,37 @@
+[
+  {
+    "task_id": "TASK-211",
+    "title": "Investigate data-sync-nightly API failures",
+    "description": "Recent data-sync job has been intermittently failing. Monitor logs and diagnose.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2026-07-15",
+    "tags": [
+      "monitoring"
+    ]
+  },
+  {
+    "task_id": "TASK-212",
+    "title": "Update authentication service to use OAuth 2.0",
+    "description": "Current auth is using legacy tokens. Plan migration to OAuth 2.0 for better security.",
+    "priority": "medium",
+    "status": "todo",
+    "due_date": "2026-08-01",
+    "tags": [
+      "security",
+      "backend"
+    ]
+  },
+  {
+    "task_id": "TASK-213",
+    "title": "Fix payment gateway timeout on retry",
+    "description": "Users report timeouts when retrying failed payments. Investigate and fix.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2026-07-20",
+    "tags": [
+      "bug",
+      "payments"
+    ]
+  }
+]

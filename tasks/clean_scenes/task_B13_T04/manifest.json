@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F910",
+  "name": "QuasarGrid SOC2 Live Verification and Notification",
+  "category": "business_operations",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "ab0ed31b2f46687a1b05fb68e2dd6c26c8bce941f49e79d477f358dc0b2dd6d8",
+      "bytes": 1289
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "e95a746f4260aeb348e901fa8127886c648e9f116f233c063540815903db4eb0",
+      "bytes": 1697
+    },
+    {
+      "path": "policy.md",
+      "sha256": "43215d3c542b5faa93b4ad5f3442e3dd612ded25acb4fa49bcad4efee1d9d993",
+      "bytes": 2825
+    },
+    {
+      "path": "renewal_brief.md",
+      "sha256": "0a9354e18d0e02dcba2dfac074eea2e85cb1fc41d51b24dabc3c5f6cadd6731a",
+      "bytes": 1503
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_security_cache.md",
+      "sha256": "c668e76995a1b9c0bd24af8d3fbebfe9eb1af076fe8978f4d68e94b52cd94b36",
+      "bytes": 1093
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "ab0ed31b2f46687a1b05fb68e2dd6c26c8bce941f49e79d477f358dc0b2dd6d8",
+      "bytes": 1289
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "16630148a8d39fa96bb2e4ef56873b5017a6b5161dd563288a8535e2fb073337",
+    "bytes": 11585
+  }
+}

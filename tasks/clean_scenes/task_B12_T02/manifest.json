@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F606",
+  "name": "Dependency Audit Remediation Planning",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "895c43d7d747f795459fa2a68204c3c7a057c4be1421152610d658bd0dde52eb",
+      "bytes": 752
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "07f4e4ee554b54292a6c1504e3f289431332aefa314f8cce34151a9a057c6f8b",
+      "bytes": 1134
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "FINDINGS.md",
+      "sha256": "d98c4ba8d419a43ba69624b5871c6542e9cf7c6fbc9c6a3a16a0042493fa9573",
+      "bytes": 933
+    },
+    {
+      "path": "README.md",
+      "sha256": "d62a3de32b1d5988ad549ecc21678a95090da6e5be6dc29496a33de0777f6ec3",
+      "bytes": 1069
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "895c43d7d747f795459fa2a68204c3c7a057c4be1421152610d658bd0dde52eb",
+      "bytes": 752
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "07f4e4ee554b54292a6c1504e3f289431332aefa314f8cce34151a9a057c6f8b",
+      "bytes": 1134
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "a29885daadaf62272c464a649cdea9869b3d82630b8d59960c12f7c6dd5bdb2a",
+    "bytes": 1180
+  }
+}

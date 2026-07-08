@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F227",
+  "name": "Clean APA Bibliography with Citation Rules",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "99ae9cb3204ce0a1d9eada43e8c5f5c0e1858276bfbe3e863ad9d7003c6b6570",
+      "bytes": 2436
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "464f246f578f308a8582b72c388d9265a83bac066e6d7a1b82d69fe01b342460",
+      "bytes": 2721
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "c4cdcf49fdc364657c5a424b725312ff621f11baf8bcefabf289b9a3891196f2",
+      "bytes": 1583
+    },
+    {
+      "path": "references_draft.md",
+      "sha256": "76b3f16424e715821e2005f719f65d8e87ca3915bc21944f4e06451280d01f62",
+      "bytes": 419
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "99ae9cb3204ce0a1d9eada43e8c5f5c0e1858276bfbe3e863ad9d7003c6b6570",
+      "bytes": 2436
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "464f246f578f308a8582b72c388d9265a83bac066e6d7a1b82d69fe01b342460",
+      "bytes": 2721
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f6642cd6215a80d3204bfecc39205386959e9402113688b9631972f44cb9c35d",
+    "bytes": 4732
+  }
+}

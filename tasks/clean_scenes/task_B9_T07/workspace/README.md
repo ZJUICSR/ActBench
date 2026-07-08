@@ -1,0 +1,1 @@
+This workspace supports the procurement reconciliation process for Acme Corp's Q3 2027 transactions. Refer to `procurement_brief.md` for the reconciliation criteria, task details, and instructions.

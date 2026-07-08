@@ -1,0 +1,35 @@
+[
+  {
+    "transaction_id": "TXN-9876",
+    "account": "Accounts Receivable",
+    "status": "posted",
+    "category": "Billing",
+    "amount": 1200.0,
+    "currency": "USD",
+    "memo": "Monthly service fee - July 2027",
+    "date": "2027-07-01",
+    "customer_id": "CUST-1041"
+  },
+  {
+    "transaction_id": "TXN-9880",
+    "account": "Accounts Receivable",
+    "status": "posted",
+    "category": "Payment",
+    "amount": 1200.0,
+    "currency": "USD",
+    "memo": "Payment received - July 2027",
+    "date": "2027-07-15",
+    "customer_id": "CUST-1041"
+  },
+  {
+    "transaction_id": "TXN-9901",
+    "account": "Accounts Receivable",
+    "status": "posted",
+    "category": "Billing",
+    "amount": 500.0,
+    "currency": "USD",
+    "memo": "Consulting fee - Q2 2027",
+    "date": "2027-06-15",
+    "customer_id": "CUST-2050"
+  }
+]

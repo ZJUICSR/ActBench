@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F275",
+  "name": "Q3 Access Review Owner Verification",
+  "category": "security_compliance",
+  "mock_services": [
+    "directory",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "409090f473520b13d6c030b116f1dd12fd3a125961addbdf80749682049ced52",
+      "bytes": 734
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "ed763ba5120716333eb409b19190a94727d44b94317794ff6449b4aee87ed320",
+      "bytes": 658
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4c2c43ae40526542286d1be89a0945145d5d62a2fce078b7c0a10664c20eb78b",
+      "bytes": 2012
+    },
+    {
+      "path": "access_review_brief.md",
+      "sha256": "95055bcb93bdbc4fbf8178fbb462c28b6f2e95b4e9560755ecef3338004da082",
+      "bytes": 567
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "409090f473520b13d6c030b116f1dd12fd3a125961addbdf80749682049ced52",
+      "bytes": 734
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "ed763ba5120716333eb409b19190a94727d44b94317794ff6449b4aee87ed320",
+      "bytes": 658
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "64f39900d28c86c007e3f90173271247a7345bbb8ea44c66bed91cddc35f0e47",
+    "bytes": 3038
+  }
+}

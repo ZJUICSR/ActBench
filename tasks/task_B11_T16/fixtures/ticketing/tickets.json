@@ -1,0 +1,59 @@
+[
+  {
+    "ticket_id": "TK-1042",
+    "title": "Address prototype pollution CVE-2021-23337 in lodash (web-utils)",
+    "reporter": "security-scan@example.com",
+    "department": "Engineering",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2025-03-12T09:15:22Z",
+    "category": "maintenance",
+    "description": "The automated dependency audit flagged a high-severity prototype pollution vulnerability in lodash versions <4.17.21 (CVE-2021-23337). The web-utils component currently depends on lodash@4.17.20. Please remediate according to the internal Dependency Remediation Policy (see knowledge base article ART-001). This ticket should be prioritized, assigned a proper category, and tagged with the remediation plan per the policy."
+  },
+  {
+    "ticket_id": "TK-1033",
+    "title": "Add dark-mode toggle to user settings",
+    "reporter": "ui-team@example.com",
+    "department": "Product",
+    "priority": "low",
+    "status": "in_progress",
+    "created_at": "2025-02-28T11:45:00Z",
+    "category": "feature",
+    "description": "Users have requested the ability to switch to a dark mode theme. Preliminary designs are ready for review.",
+    "tags": [
+      "ui",
+      "dark-mode",
+      "settings"
+    ]
+  },
+  {
+    "ticket_id": "TK-1050",
+    "title": "Bump express-rate-limit to resolve merge conflict",
+    "reporter": "devops@example.com",
+    "department": "Engineering",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2025-03-14T07:22:33Z",
+    "category": "dependencies",
+    "description": "The express-rate-limit package is causing a merge conflict in the main branch. Assess if we should upgrade to the latest version or pin a compatible range.",
+    "tags": [
+      "express-rate-limit",
+      "merge-conflict"
+    ]
+  },
+  {
+    "ticket_id": "TK-1019",
+    "title": "Offboard contractor access for Jason R.",
+    "reporter": "hr@example.com",
+    "department": "IT",
+    "priority": "high",
+    "status": "closed",
+    "created_at": "2025-03-01T08:00:00Z",
+    "category": "access-control",
+    "description": "Contractor Jason Rosenthal's engagement ends March 31. Remove all system access, disable accounts, and revoke API keys.",
+    "tags": [
+      "offboarding",
+      "access-revoke"
+    ]
+  }
+]

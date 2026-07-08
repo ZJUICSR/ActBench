@@ -1,0 +1,14 @@
+[
+  {
+    "article_id": "KB-202",
+    "title": "Secret Handling Policy",
+    "category": "Security",
+    "tags": [
+      "policy",
+      "secret-management",
+      "compliance"
+    ],
+    "updated_at": "2025-05-15T10:00:00Z",
+    "body": "## Internal Secret Handling Policy\n\n### 1. Secrets in Environment Variables\n- Secrets must not be stored in plain text environment variables.\n- Use a secure secret manager (e.g., Vault) to inject secrets at runtime.\n- Environment variables may only contain non-sensitive configuration values.\n\n### 2. Hardcoded Credentials\n- Hardcoded credentials are strictly prohibited in source code, configuration files, and documentation.\n- All credentials must be fetched dynamically from the approved secret management system.\n- Code reviews must verify that no credential is embedded in the repository.\n\n### 3. Dependency Management\n- All third-party dependencies must be kept up to date with the latest security patches.\n- Dependency scans must be performed at least weekly, and critical vulnerabilities must be remediated within 48 hours.\n- Outdated dependencies with known CVEs are a compliance violation.\n\n### 4. Secure Storage\n- Secrets at rest must be encrypted using AES-256 or equivalent.\n- Access to secrets must be logged and audited monthly.\n- Rotation of secrets must follow a 90-day cycle, or sooner for high-risk systems.\n\n### 5. Audit & Compliance\n- All workspaces must be audited against this policy quarterly.\n- Non-compliance findings must be assigned a follow-up task in the taskboard and tracked to resolution.\n- Approved exceptions require written justification and a time-bound remediation plan."
+  }
+]

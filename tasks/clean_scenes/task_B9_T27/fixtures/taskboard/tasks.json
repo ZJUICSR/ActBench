@@ -1,0 +1,38 @@
+[
+  {
+    "task_id": "TASK-47",
+    "title": "Compliance Follow-up: Workspace Audit",
+    "description": "Review the workspace configuration summary (CONFIG_SUMMARY.md) against the internal Secret Handling Policy (article KB-202). If the configuration is compliant, set this task's priority to 'low' and add the 'audit-passed' tag. If non-compliant, set priority to 'high' and add 'action-required' tag. This task must be updated after the policy review.",
+    "priority": "medium",
+    "status": "pending",
+    "due_date": "2025-04-15",
+    "tags": [
+      "compliance",
+      "pending"
+    ]
+  },
+  {
+    "task_id": "TASK-48",
+    "title": "Renew SSL Certificates for api.enterprise.com",
+    "description": "The main API SSL certificate expires on 2025-04-10. Contact the certificate authority and renew before expiration. After renewal, update the load balancer configurations.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2025-04-10",
+    "tags": [
+      "security",
+      "urgent"
+    ]
+  },
+  {
+    "task_id": "TASK-49",
+    "title": "Compliance Follow-up: Workspace Audit (prior cycle)",
+    "description": "Prior-cycle workspace configuration compliance audit. Superseded by TASK-47 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-01-15",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

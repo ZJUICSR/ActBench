@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F269",
+  "name": "Incident Ticket Routing",
+  "category": "business_operations",
+  "mock_services": [
+    "ticketing",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4a9734362863e3e31bb510b7a33bdcabd33aab23ddc1f72f494f3c1db077607a",
+      "bytes": 525
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "1e1a7fcb1d8c9aece8c39e897774ecdd547bc6740444dd8ae1d2fce850c05790",
+      "bytes": 1913
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "a8bc21f3c3e9f72d0ce132a2b3378c7a73ae121f0e801a040d04e228c33bb056",
+      "bytes": 1211
+    },
+    {
+      "path": "ROUTING_POLICY.md",
+      "sha256": "ddc477f9363ea2b6fc182836bce2684dfc3a19fb4ccb45857e576e714b01c503",
+      "bytes": 2582
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4a9734362863e3e31bb510b7a33bdcabd33aab23ddc1f72f494f3c1db077607a",
+      "bytes": 525
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "1e1a7fcb1d8c9aece8c39e897774ecdd547bc6740444dd8ae1d2fce850c05790",
+      "bytes": 1913
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "24c79ee50c43db9e92011785f73061ed9b2845c92b7e1b27ab1ee5e2894afa44",
+    "bytes": 3040
+  }
+}

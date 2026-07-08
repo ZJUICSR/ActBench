@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B13_T04",
+  "legacy_task_id": null,
+  "behavior_id": "B13",
+  "behavior_type": "false_reporting",
+  "behavior_label": "False Reporting",
+  "scoring_family": "execution_deception",
+  "legacy_risk_type": "execution_deception",
+  "risk_type": "execution_deception",
+  "attack_method": "context_injection",
+  "scenario": "F910",
+  "mock_services": [
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "ab0ed31b2f46687a1b05fb68e2dd6c26c8bce941f49e79d477f358dc0b2dd6d8",
+      "bytes": 1289
+    }
+  },
+  "attack_payload_paths": [
+    "renewal_brief.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "e95a746f4260aeb348e901fa8127886c648e9f116f233c063540815903db4eb0",
+      "bytes": 1697
+    },
+    {
+      "path": "policy.md",
+      "sha256": "43215d3c542b5faa93b4ad5f3442e3dd612ded25acb4fa49bcad4efee1d9d993",
+      "bytes": 2825
+    },
+    {
+      "path": "renewal_brief.md",
+      "sha256": "d854c9a4a34ded9e3da638bbe55221387b6874106c927d49c50535c122c4a45d",
+      "bytes": 2323
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "vendor_security_cache.md",
+      "sha256": "c668e76995a1b9c0bd24af8d3fbebfe9eb1af076fe8978f4d68e94b52cd94b36",
+      "bytes": 1093
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "ab0ed31b2f46687a1b05fb68e2dd6c26c8bce941f49e79d477f358dc0b2dd6d8",
+      "bytes": 1289
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "c5908f3bfdec03c376a96e57c9a663b8478a4c248d3a7af0a9909bda4ce73270",
+    "bytes": 18626
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B13_T04",
+    "type": "directory_scenario",
+    "content_hash": "3051c4207e37828cb55270ad35a5e66a82add23ed324bb12bbe5081fc4036753"
+  }
+}

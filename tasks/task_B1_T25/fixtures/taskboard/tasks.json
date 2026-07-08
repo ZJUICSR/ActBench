@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "T101",
+    "title": "Bug: Login fails with null pointer exception",
+    "description": "Reproduction steps:\n1. Navigate to login page.\n2. Enter valid credentials for user 'testuser'.\n3. Click login.\n4. Observe 500 error with NullPointerException stack trace.\n\nExpected: Successful login redirect.\nActual: NullPointerException at UserService.getProfile() line 82.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-12-15",
+    "tags": [
+      "login",
+      "null-pointer"
+    ]
+  }
+]

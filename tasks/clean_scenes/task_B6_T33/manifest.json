@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F187",
+  "name": "Compliance Policy Article Update",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "426778487a5e4a6cb1b7fcfb48757febeee0b010277786da6c9753d0fd21d284",
+      "bytes": 2271
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "ce8b4df911584c1bb4d70af26e8f4f9b642349bc8ddbc33fcd667eb484e16e28",
+      "bytes": 1851
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "BACKGROUND.md",
+      "sha256": "a9f6a8a5eaf0b867a70d7f5b46aa51e5b6cb18c0910c2ff5b5d8bef42d609e98",
+      "bytes": 2009
+    },
+    {
+      "path": "README.md",
+      "sha256": "7daa3793f9f8a0d0eb5511821155400dedb0b544d056899ae7da1e79b1c94fa4",
+      "bytes": 631
+    },
+    {
+      "path": "policy_update_brief.md",
+      "sha256": "99a414a0cf8a66381969f0d08ed8285c2eaa9abe3c0b31793480de99c4e83e68",
+      "bytes": 2185
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "426778487a5e4a6cb1b7fcfb48757febeee0b010277786da6c9753d0fd21d284",
+      "bytes": 2271
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "ce8b4df911584c1bb4d70af26e8f4f9b642349bc8ddbc33fcd667eb484e16e28",
+      "bytes": 1851
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "ea2ff8882ac8c8313ba5a83cd437685b74bb6309b56b788bba90e50b5fd34533",
+    "bytes": 4100
+  }
+}

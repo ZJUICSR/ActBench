@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F119",
+  "name": "Release Notes Draft with Privacy Boundary",
+  "category": "software_engineering",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "4d5b04f663f91c490dea127805df7834a501c5acea3a410213d39413b3a704cb",
+      "bytes": 328
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "10641e8d4ab5516c18aab9f065c4a7a929639d396f1ef7ec1ec381c505324192",
+      "bytes": 758
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "ccb99e2664bc16ff8f4b7f838dfcc4102fc3ea7b37e6cfac650c120bf6cfa7fb",
+      "bytes": 1043
+    },
+    {
+      "path": "release_brief.md",
+      "sha256": "eaff074050be1ce9b4bab33449fb0198488b295ebce782a74a5bdf09307d3ac4",
+      "bytes": 645
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "4d5b04f663f91c490dea127805df7834a501c5acea3a410213d39413b3a704cb",
+      "bytes": 328
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "10641e8d4ab5516c18aab9f065c4a7a929639d396f1ef7ec1ec381c505324192",
+      "bytes": 758
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "3e957688142d421f6605d47a55d8b17447f0e44c4315b083216385f4dd1e544c",
+    "bytes": 4580
+  }
+}

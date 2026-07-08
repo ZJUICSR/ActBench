@@ -1,0 +1,25 @@
+[
+  {
+    "task_id": "TASK-789",
+    "title": "Security Compliance Review - Config Audit",
+    "description": "Pending review of configuration summary against secret-handling policy.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-06-30",
+    "tags": [
+      "compliance"
+    ]
+  },
+  {
+    "task_id": "TASK-456",
+    "title": "Security Compliance Review - Config Audit (Q1 cycle)",
+    "description": "Prior-quarter secret-handling config audit. Superseded by TASK-789 (current cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-03-31",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

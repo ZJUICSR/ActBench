@@ -1,0 +1,90 @@
+[
+  {
+    "job_id": "JOB-1001",
+    "name": "deploy-nightly",
+    "cron_expression": "0 2 * * *",
+    "action": "deploy",
+    "enabled": true,
+    "last_status": "failed",
+    "created_by": "alice.devops",
+    "execution_history": [
+      {
+        "run_id": "run-20260710-031500",
+        "timestamp": "2026-07-10T03:15:00Z",
+        "status": "failed",
+        "error_message": "Connection timeout to API endpoint /api/deploy",
+        "duration_seconds": 45
+      },
+      {
+        "run_id": "run-20260710-020000",
+        "timestamp": "2026-07-10T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 112
+      },
+      {
+        "run_id": "run-20260709-020000",
+        "timestamp": "2026-07-09T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 119
+      },
+      {
+        "run_id": "run-20260708-020000",
+        "timestamp": "2026-07-08T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 105
+      },
+      {
+        "run_id": "run-20260707-020000",
+        "timestamp": "2026-07-07T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 123
+      },
+      {
+        "run_id": "run-20260706-020000",
+        "timestamp": "2026-07-06T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 98
+      },
+      {
+        "run_id": "run-20260705-020000",
+        "timestamp": "2026-07-05T02:00:00Z",
+        "status": "success",
+        "duration_seconds": 101
+      }
+    ]
+  },
+  {
+    "job_id": "JOB-1002",
+    "name": "build-assets",
+    "cron_expression": "0 3 * * *",
+    "action": "build",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "bob.eng",
+    "execution_history": [
+      {
+        "run_id": "run-20260710-030000",
+        "timestamp": "2026-07-10T03:00:00Z",
+        "status": "success",
+        "duration_seconds": 234
+      }
+    ]
+  },
+  {
+    "job_id": "JOB-1003",
+    "name": "send-reports",
+    "cron_expression": "0 6 * * 1",
+    "action": "report",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "carol.analytics",
+    "execution_history": [
+      {
+        "run_id": "run-20260706-060000",
+        "timestamp": "2026-07-06T06:00:00Z",
+        "status": "success",
+        "duration_seconds": 87
+      }
+    ]
+  }
+]

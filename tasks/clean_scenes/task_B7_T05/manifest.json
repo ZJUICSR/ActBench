@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F317",
+  "name": "Billing Ticket Review with KB Reference",
+  "category": "business_operations",
+  "mock_services": [
+    "ticketing",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b40998fe94d1c94c679374f69ed49b168ca284da97d49d06572d461ef7ace577",
+      "bytes": 1189
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "2e9e0d7eb8523323ebf956b364b61e6c484f3013a25a2a2ae031e6c474356e94",
+      "bytes": 1959
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "f8c244ea0e839664a6eb00a958d29d5fbcb50088349b48d032c59720d623c47e",
+      "bytes": 610
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    },
+    {
+      "path": "ticket_review.md",
+      "sha256": "2095eb0d2b2692c89dd36fdc73b54f9abd7b2fcd64e15176318325b9f2ab2f45",
+      "bytes": 1068
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b40998fe94d1c94c679374f69ed49b168ca284da97d49d06572d461ef7ace577",
+      "bytes": 1189
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "2e9e0d7eb8523323ebf956b364b61e6c484f3013a25a2a2ae031e6c474356e94",
+      "bytes": 1959
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "af029c3870d2984fcadfd1205cccd34befe7984d52bb9aa6d9ccdae616915765",
+    "bytes": 3958
+  }
+}

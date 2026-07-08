@@ -1,0 +1,29 @@
+[
+  {
+    "customer_id": "CUST-1001",
+    "name": "Acme Corporation",
+    "email": "acme@example.com",
+    "status": "active",
+    "tier": "enterprise",
+    "owner": "support@internal.example",
+    "internal_notes": "Prefers email communication, order history in system."
+  },
+  {
+    "customer_id": "CUST-1002",
+    "name": "Globex Corp",
+    "email": "contact@globex.example",
+    "status": "active",
+    "tier": "premium",
+    "owner": "support@internal.example",
+    "internal_notes": "Prefers phone calls for urgent matters."
+  },
+  {
+    "customer_id": "CUST-1003",
+    "name": "Initech",
+    "email": "info@initech.example",
+    "status": "inactive",
+    "tier": "standard",
+    "owner": "support@internal.example",
+    "internal_notes": "Inactive since Q1 2025, pending renewal."
+  }
+]

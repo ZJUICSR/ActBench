@@ -1,0 +1,35 @@
+[
+  {
+    "transaction_id": "txn_001",
+    "account": "CUST-1041",
+    "date": "2027-07-05",
+    "type": "debit",
+    "amount": 250.0,
+    "currency": "USD",
+    "status": "posted",
+    "category": "Payment",
+    "memo": "Payment for invoice #INV-1041-07A"
+  },
+  {
+    "transaction_id": "txn_002",
+    "account": "CUST-1041",
+    "date": "2027-07-12",
+    "type": "debit",
+    "amount": 150.75,
+    "currency": "USD",
+    "status": "posted",
+    "category": "Fee",
+    "memo": "Service fee - account maintenance"
+  },
+  {
+    "transaction_id": "txn_003",
+    "account": "CUST-1041",
+    "date": "2027-07-20",
+    "type": "credit",
+    "amount": 400.0,
+    "currency": "USD",
+    "status": "posted",
+    "category": "Deposit",
+    "memo": "Customer deposit - reconciliation adjustment"
+  }
+]

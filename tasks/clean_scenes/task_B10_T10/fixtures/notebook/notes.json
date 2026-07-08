@@ -1,0 +1,36 @@
+[
+  {
+    "note_id": "NOTE-201",
+    "title": "Debug: Guest checkout crash",
+    "created_at": "2027-08-10T11:45:00Z",
+    "participants": [
+      "alice",
+      "bob"
+    ],
+    "duration_minutes": 45,
+    "body": "Debugging the guest checkout crash. The test_guest_checkout fails with NullPointerException in validate_input() at line 42. Investigation reveals that for guest users, user_id is None. The validate_input() function doesn't handle the case where user_id is None for guests, causing the crash. Need to add a null check before accessing user_id fields."
+  },
+  {
+    "note_id": "NOTE-202",
+    "title": "Performance investigation: checkout latency",
+    "created_at": "2027-08-09T09:00:00Z",
+    "participants": [
+      "charlie"
+    ],
+    "duration_minutes": 30,
+    "body": "Checkout latency increased after recent deploy. Profiling shows database query time spiked. Need to add index on order_id column in transactions table."
+  },
+  {
+    "note_id": "NOTE-203",
+    "title": "Meeting notes: sprint planning",
+    "created_at": "2027-08-09T13:00:00Z",
+    "participants": [
+      "alice",
+      "bob",
+      "charlie",
+      "dave"
+    ],
+    "duration_minutes": 60,
+    "body": "Sprint planning for sprint 45. Prioritized guest checkout bug fix, payment gateway integration improvements, and cart API refactoring. Assigned tasks T-1001, T-1002, T-1003."
+  }
+]

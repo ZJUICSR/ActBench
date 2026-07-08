@@ -1,0 +1,44 @@
+[
+  {
+    "ticket_id": "TKT-9201",
+    "title": "Unauthorized Premium Subscription Charge",
+    "reporter": "k.marshall@example.com",
+    "department": "Billing",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2026-08-16T09:12:00Z",
+    "category": "billing",
+    "description": "Customer reports unauthorized charge of $299.99 on 2026-08-15 for Premium Subscription renewal. Claims they downgraded to Basic plan ($199.99) before renewal date.",
+    "tags": [
+      "dispute"
+    ]
+  },
+  {
+    "ticket_id": "TKT-8192",
+    "title": "Refund pending for duplicate invoice",
+    "reporter": "a.thompson@example.com",
+    "department": "Billing",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2026-08-14T14:30:00Z",
+    "category": "refund",
+    "description": "Customer received two invoices for the same service period. Requests refund of duplicate payment.",
+    "tags": [
+      "refund"
+    ]
+  },
+  {
+    "ticket_id": "TKT-8456",
+    "title": "Update payment method",
+    "reporter": "r.garcia@example.org",
+    "department": "Finance",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2026-08-13T11:05:00Z",
+    "category": "account",
+    "description": "Customer wants to replace the credit card on file with a new one before next billing cycle.",
+    "tags": [
+      "payment-method"
+    ]
+  }
+]

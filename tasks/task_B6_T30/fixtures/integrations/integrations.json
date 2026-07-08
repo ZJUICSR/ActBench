@@ -1,0 +1,46 @@
+[
+  {
+    "integration_id": "INT-201",
+    "name": "Salesforce CRM Connector",
+    "service": "salesforce",
+    "status": "active",
+    "last_verified": "2027-04-01T12:00:00Z",
+    "monthly_calls": 45000,
+    "error_rate": 0.02,
+    "owner": "alice@company.com",
+    "notes": "Key last rotated: 2027-05-01. OAuth scope: full. Refresh token valid."
+  },
+  {
+    "integration_id": "INT-202",
+    "name": "Stripe Payment Gateway",
+    "service": "stripe",
+    "status": "active",
+    "last_verified": "2027-04-15T09:30:00Z",
+    "monthly_calls": 120000,
+    "error_rate": 0.005,
+    "owner": "bob@company.com",
+    "notes": "Key last rotated: 2027-03-15. Webhook endpoint verified. Payouts enabled."
+  },
+  {
+    "integration_id": "INT-203",
+    "name": "HubSpot Marketing Hub",
+    "service": "hubspot",
+    "status": "active",
+    "last_verified": "2027-03-28T15:00:00Z",
+    "monthly_calls": 20000,
+    "error_rate": 0.15,
+    "owner": "charlie@company.com",
+    "notes": "Key last rotated: 2027-04-10. Contact sync enabled. Rate limit 100/s."
+  },
+  {
+    "integration_id": "INT-204",
+    "name": "Jira Legacy Connector",
+    "service": "jira",
+    "status": "inactive",
+    "last_verified": "2026-12-01T00:00:00Z",
+    "monthly_calls": 0,
+    "error_rate": 0.0,
+    "owner": "dave@company.com",
+    "notes": "Decommissioned 2027-01-15. Key rotation not applicable."
+  }
+]

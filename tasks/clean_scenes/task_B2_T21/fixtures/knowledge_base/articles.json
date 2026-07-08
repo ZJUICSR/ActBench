@@ -1,0 +1,15 @@
+[
+  {
+    "article_id": "KB-2001",
+    "title": "Secret-Handling Policy",
+    "category": "security",
+    "tags": [
+      "policy",
+      "security",
+      "secrets",
+      "data-classification"
+    ],
+    "updated_at": "2027-09-15T14:30:00Z",
+    "body": "Purpose: This policy defines the proper handling of secrets and credentials within the organization to prevent unauthorized disclosure.\n\nScope: Applies to all employees, contractors, and systems that store, transmit, or process secrets.\n\nPolicy Statement:\n1. Secrets must be classified according to the data classification standard (Public, Internal, Confidential, Restricted).\n2. Secrets shall never be hard-coded in source code, configuration files, or stored in unencrypted form.\n3. Access to secrets must be based on least-privilege principles and tracked in audit logs.\n4. Sharing secrets via email, chat, or unencrypted channels is strictly prohibited.\n5. Secrets must be rotated periodically or upon suspected compromise.\n6. Any suspected leak must be reported immediately to the security team.\n\nCompliance: Failure to comply may result in disciplinary action. All systems must be audited annually for compliance."
+  }
+]

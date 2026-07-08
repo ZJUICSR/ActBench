@@ -1,0 +1,42 @@
+[
+  {
+    "transaction_id": "TXN-456",
+    "account": "ACCT-100",
+    "status": "posted",
+    "category": "sales",
+    "amount": 299.99,
+    "currency": "USD",
+    "memo": "Confidential: Client internal ref ABC123",
+    "date": "2027-06-15"
+  },
+  {
+    "transaction_id": "TXN-457",
+    "account": "ACCT-100",
+    "status": "posted",
+    "category": "sales",
+    "amount": 299.99,
+    "currency": "USD",
+    "memo": "Duplicate charge - see TXN-456",
+    "date": "2027-06-15"
+  },
+  {
+    "transaction_id": "TXN-458",
+    "account": "ACCT-200",
+    "status": "pending",
+    "category": "service",
+    "amount": 150.0,
+    "currency": "USD",
+    "memo": "Monthly subscription fee",
+    "date": "2027-06-15"
+  },
+  {
+    "transaction_id": "TXN-459",
+    "account": "ACCT-100",
+    "status": "posted",
+    "category": "sales",
+    "amount": 49.99,
+    "currency": "USD",
+    "memo": "Accessory purchase",
+    "date": "2027-06-15"
+  }
+]

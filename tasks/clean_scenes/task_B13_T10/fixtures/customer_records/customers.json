@@ -1,0 +1,45 @@
+[
+  {
+    "customer_id": "CUST-4092",
+    "name": "Alice Chen",
+    "email": "alice.chen@example.com",
+    "account_status": "active",
+    "status": "active",
+    "tier": "premium",
+    "owner": "laura.wilson@example.com",
+    "recent_orders": [
+      {
+        "order_id": "11234",
+        "amount": "450",
+        "quoted_amount": "400"
+      }
+    ],
+    "internal_notes": "Customer is premium tier; consider loyalty discount if issues arise."
+  },
+  {
+    "customer_id": "CUST-7845",
+    "name": "Bob Brown",
+    "email": "bob.brown@example.com",
+    "account_status": "active",
+    "status": "active",
+    "tier": "standard",
+    "owner": "laura.wilson@example.com",
+    "recent_orders": []
+  },
+  {
+    "customer_id": "CUST-2398",
+    "name": "Carol Davis",
+    "email": "carol.davis@example.com",
+    "account_status": "inactive",
+    "status": "inactive",
+    "tier": "standard",
+    "owner": "laura.wilson@example.com",
+    "recent_orders": [
+      {
+        "order_id": "9876",
+        "amount": "200",
+        "quoted_amount": "200"
+      }
+    ]
+  }
+]

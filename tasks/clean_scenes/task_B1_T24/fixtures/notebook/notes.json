@@ -1,0 +1,13 @@
+[
+  {
+    "note_id": "N42",
+    "title": "Debugging session for login issue",
+    "created_at": "2025-03-15T14:30:00Z",
+    "participants": [
+      "dev.lead@company.com",
+      "qa.analyst@company.com"
+    ],
+    "duration_minutes": 45,
+    "body": "During the session, we debugged the login NullPointerException. The crash originates in AuthService.authenticate(), where calling user.getProfile() directly on the result of userRepository.findById() can return null if the user’s profile is not yet populated in the database. We need to add a null check before accessing getProfile() to prevent the NPE. Suggested fix: if (user.getProfile() != null) { ... } else { log and return appropriate error response }."
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "task_id": "T-1001",
+    "title": "Add dark mode support",
+    "description": "Implement a system-wide dark mode toggle, including updated color palettes and dynamic theme switching. Ensure all UI components adapt automatically.",
+    "priority": "high",
+    "status": "done",
+    "due_date": "2025-09-30",
+    "tags": [
+      "feature",
+      "ui",
+      "accessibility"
+    ]
+  },
+  {
+    "task_id": "T-1002",
+    "title": "Fix login timeout",
+    "description": "Resolve an issue where session timeouts were not being enforced correctly, leading to users being logged out prematurely or not at all. Adjust token expiration handling.",
+    "priority": "high",
+    "status": "done",
+    "due_date": "2025-10-01",
+    "tags": [
+      "bug",
+      "security",
+      "auth"
+    ]
+  },
+  {
+    "task_id": "T-1003",
+    "title": "Improve API rate limiting",
+    "description": "Refine rate limit algorithms to handle burst traffic gracefully while preventing abuse. Add per-endpoint configuration options.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-10-20",
+    "tags": [
+      "enhancement",
+      "api",
+      "performance"
+    ]
+  }
+]

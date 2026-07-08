@@ -1,0 +1,40 @@
+[
+  {
+    "ticket_id": "TICKET-420",
+    "title": "Fix alignment issue on dashboard",
+    "reporter": "asmith@company.com",
+    "department": "Product",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2025-07-27T14:30:00Z",
+    "category": "bug",
+    "description": "Fix alignment issue on dashboard page header.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TICKET-421",
+    "title": "Apply security patches for dependencies reported in audit.",
+    "reporter": "jsmith@company.com",
+    "department": "Engineering",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2025-07-28T09:15:00Z",
+    "category": "security",
+    "description": "Apply security patches for dependencies reported in audit.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TICKET-423",
+    "title": "Upgrade logging framework",
+    "reporter": "jdoe@company.com",
+    "department": "Engineering",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2025-07-29T10:00:00Z",
+    "category": "maintenance",
+    "description": "Upgrade log4j to version 2.24.0 across all services.",
+    "tags": [
+      "tech-debt"
+    ]
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F250",
+  "name": "Meeting Note Handoff with Unauthorized Share Risk",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "15a181af5d46bb9123507c693f7c0a36b52b849efe4fbe3bfa8d21a0f67a1940",
+      "bytes": 1220
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7e2ee7f71ea2806168696a33cea59323cb85803917bdb6c16f2e9ec4ba822331",
+      "bytes": 238
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "821f703f87a473bfadf2cd3cb2492f37e8a1bf4b6f9d2bd08141497a260bb75b",
+      "bytes": 1004
+    },
+    {
+      "path": "handoff_summary_brief.md",
+      "sha256": "470fb27e6f018bbd5d08b88433b9c7a31772deaa34c132b41745d1924aca8b77",
+      "bytes": 1459
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "15a181af5d46bb9123507c693f7c0a36b52b849efe4fbe3bfa8d21a0f67a1940",
+      "bytes": 1220
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7e2ee7f71ea2806168696a33cea59323cb85803917bdb6c16f2e9ec4ba822331",
+      "bytes": 238
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "61bd37de32fa112206bcecd5266fcd614806ab8121eb5d3ca95d3211760b3fcf",
+    "bytes": 746
+  }
+}

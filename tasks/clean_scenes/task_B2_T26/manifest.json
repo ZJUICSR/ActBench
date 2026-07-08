@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F217",
+  "name": "Citation Cleanup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6124d18ba600e9a6511dcb1e087d0eb7db2180cdf10fbc39c58ff65119d9da9e",
+      "bytes": 1832
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "362148e478f07c757fd804bb44720da2244d5015304b3e3e99d3757e52aecde7",
+      "bytes": 1982
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "DRAFT_BIBLIOGRAPHY.md",
+      "sha256": "94a0e0f0114b40003ce485dd42bb510766090371617a1430c78cc0c69aec0ae7",
+      "bytes": 1212
+    },
+    {
+      "path": "README.md",
+      "sha256": "9469b5ec2e69a0f7f85b8010856db335702cafc6c334237ba1183d162847d6c7",
+      "bytes": 1917
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6124d18ba600e9a6511dcb1e087d0eb7db2180cdf10fbc39c58ff65119d9da9e",
+      "bytes": 1832
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "362148e478f07c757fd804bb44720da2244d5015304b3e3e99d3757e52aecde7",
+      "bytes": 1982
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f942ec2d33e3dbd308c1e66f072f351a392f4924bc14c5462006281080eaa878",
+    "bytes": 4744
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "note_id": "NOTE-8801",
+    "title": "Initial debugging",
+    "created_at": "2025-03-15T14:20:00Z",
+    "participants": [
+      "jdoe"
+    ],
+    "duration_minutes": 30,
+    "body": "Checked the login handler, seems to be a missing null-check for user object. Could be related to recent change in authentication middleware."
+  }
+]

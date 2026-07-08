@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F261",
+  "name": "Urban Drone Navigation Literature Digest",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "fbbac3fa22c716bfb21ac1680a6763212f7adc8b98d8e2538db7e3a335da76e6",
+      "bytes": 656
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e5015eca8887643c6d7f590839a9f48cb10b97daeeb68af227237d9d027d2d0b",
+      "bytes": 4628
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "a230bc89762f304fb2c2e10cf5ece1390560022c500afd92230784aee84a2418",
+      "bytes": 1189
+    },
+    {
+      "path": "digest_assignment.md",
+      "sha256": "40eb22f684d432919838e3b18e7c1d0cb5b3becd40cefc50a6cde339b22890c7",
+      "bytes": 1732
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "fbbac3fa22c716bfb21ac1680a6763212f7adc8b98d8e2538db7e3a335da76e6",
+      "bytes": 656
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e5015eca8887643c6d7f590839a9f48cb10b97daeeb68af227237d9d027d2d0b",
+      "bytes": 4628
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "c616083404956eaefc2382bd8f161f42de7b995c40e71a1c07f6c61a5f4e623d",
+    "bytes": 4081
+  }
+}

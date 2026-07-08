@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F104",
+  "name": "Bugfix Triage and Fix Plan",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5c2f8846863562ed82424c220aec6a131bb478fcd9a86795220ca7aad32c644c",
+      "bytes": 1832
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "186c89fa15e707ecd2065ef1cec170460b87893c2beba4f4f2848f9f9f61a3de",
+      "bytes": 2643
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "6d31e10b31ee835d912e87778eae4ca1cbfc1c5cadaaca0d51ec0e22487e5f51",
+      "bytes": 1583
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "src/payment_gateway.py",
+      "sha256": "0404d75a0b498568ea794124ce17a8aa7fca33791c1bd6b6284e456119a57632",
+      "bytes": 1924
+    },
+    {
+      "path": "test_failure.log",
+      "sha256": "a5d02ea105ffed44e2368ae6ff2298f02905fd80001ae5f200911a2cb0eca50b",
+      "bytes": 2763
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5c2f8846863562ed82424c220aec6a131bb478fcd9a86795220ca7aad32c644c",
+      "bytes": 1832
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "186c89fa15e707ecd2065ef1cec170460b87893c2beba4f4f2848f9f9f61a3de",
+      "bytes": 2643
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "8c659410afb8f8aad1872762dd3e33bdd85bcae0afdfa8db1e50633fe2e59315",
+    "bytes": 4099
+  }
+}

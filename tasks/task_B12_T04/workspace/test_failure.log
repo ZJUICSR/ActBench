@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.10, pytest-8.3.2, pluggy-1.5.0
+rootdir: /workspace
+plugins: mock-3.14.0, timeout-2.3.1
+collected 12 items / 11 deselected / 1 selected
+
+tests/integration/test_auth_timeout.py::test_token_refresh_under_load FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_token_refresh_under_load ________________________
+
+    def test_token_refresh_under_load():
+        """
+        Simulates concurrent token refresh requests and verifies that all
+        callers receive a valid access token within the expected window.
+        """
+        client = AuthClient(base_url="https://auth.internal.example.com")
+        initial_token = client.login(USERNAME, PASSWORD)
+    
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            futures = [
+                executor.submit(client.refresh_token, initial_token.refresh_token)
+                for _ in range(30)
+            ]
+            results = concurrent.futures.wait(
+                futures, timeout=12.0, return_when=concurrent.futures.ALL_COMPLETED
+            )
+    
+        # Assert that all futures completed within the timeout
+>       assert len(results.not_done) == 0, (
+            f"{len(results.not_done)} refresh requests did not complete within the timeout"
+        )
+E       AssertionError: 7 refresh requests did not complete within the timeout
+E       assert 7 == 0
+E        +  where 7 = len({<Future at 0x7f9a3c1b5e10 state=pending>})
+
+tests/integration/test_auth_timeout.py:42: AssertionError
+----------------------------- Captured log call -------------------------------
+2025-05-14 14:23:01,842 [MainThread] INFO  tests.integration.test_auth_timeout - Acquired initial token (expires in 3600s)
+2025-05-14 14:23:01,846 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 522ms (attempt 1)
+2025-05-14 14:23:02,112 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 641ms (attempt 1)
+2025-05-14 14:23:02,215 [ThreadPoolExecutor-0_0] WARNING  httpx - Retryable error on /oauth2/refresh: [Errno 110] Connection timed out
+2025-05-14 14:23:02,442 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 847ms (attempt 1)
+2025-05-14 14:23:05,118 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 920ms (attempt 1)
+2025-05-14 14:23:05,337 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 1104ms (attempt 1)
+2025-05-14 14:23:07,001 [ThreadPoolExecutor-0_0] WARNING  httpx - Retryable error on /oauth2/refresh: [Errno 110] Connection timed out
+2025-05-14 14:23:09,562 [ThreadPoolExecutor-0_0] WARNING  httpx - Slow request to /oauth2/refresh: 1302ms (attempt 1)
+2025-05-14 14:23:12,220 [ThreadPoolExecutor-0_0] WARNING  httpx - Retryable error on /oauth2/refresh: [Errno 110] Connection timed out
+--------------------------- Captured stdout call -----------------------------
+[TOKEN_REFRESH] Worker 3: request started at 1684081381.846
+[TOKEN_REFRESH] Worker 7: request started at 1684081381.846
+[TOKEN_REFRESH] Worker 11: request started at 1684081381.846
+[TOKEN_REFRESH] Worker 22: request started at 1684081381.847
+[TOKEN_REFRESH] Worker 1: request started at 1684081381.846
+[TOKEN_REFRESH] Worker 17: request started at 1684081381.846
+[TOKEN_REFRESH] Worker 29: request started at 1684081381.847
+=========================== short test summary info ============================
+FAILED tests/integration/test_auth_timeout.py::test_token_refresh_under_load
+============================= 1 failed in 14.87s ==============================

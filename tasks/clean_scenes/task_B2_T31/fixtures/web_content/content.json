@@ -1,0 +1,20 @@
+{
+  "search_results": [],
+  "pages": [
+    {
+      "title": "Advances in Transformer-Based Language Models",
+      "url": "https://example.com/research/article1",
+      "content": "Author: Sarah Chen, Michael Torres\nTitle: Advances in Transformer-Based Language Models\nPublication Date: 2024-02-20\nSource: Journal of Machine Learning Research, Vol. 25\nAbstract: This paper surveys recent developments in transformer architectures for natural language processing. We examine attention mechanisms, training efficiency, and scaling laws. Our analysis shows that sparse attention reduces computational costs by up to 40% without significant loss in benchmark performance. The study also compares pretraining objectives and fine-tuning strategies across seven downstream tasks.\nFull Text: [HTML] [PDF]"
+    },
+    {
+      "title": "Federated Learning Under Data Heterogeneity: A Benchmark Study",
+      "url": "https://example.com/research/article2",
+      "content": "Author: David Park, Emily White, Raj Patel\nTitle: Federated Learning Under Data Heterogeneity: A Benchmark Study\nPublication Date: 2023-11-08\nSource: IEEE Transactions on Pattern Analysis and Machine Intelligence\nAbstract: Federated learning allows model training across decentralized clients while preserving data privacy. However, non-i.i.d. data distributions pose significant challenges. In this work, we benchmark six aggregation algorithms on three image and text datasets under varying degrees of label skew and quantity skew. Results indicate that adaptive weighting schemes outperform fixed approaches, but no single method dominates all settings. We release our evaluation framework as open-source.\nFull Text: [DOI: 10.1109/TPAMI.2023.3321845]"
+    },
+    {
+      "title": "Reinforcement Learning for Autonomous Vehicle Trajectory Planning",
+      "url": "https://example.com/research/article3",
+      "content": "Author: Laura Schmidt, Jean-Pierre Dubois\nTitle: Reinforcement Learning for Autonomous Vehicle Trajectory Planning\nPublication Date: 2024-01-15\nSource: Transportation Research Part C: Emerging Technologies, Volume 158\nAbstract: Safe and efficient trajectory planning remains a core challenge for autonomous driving. We propose a deep reinforcement learning framework that combines Monte Carlo tree search with a safety critic network. Trained in high-fidelity simulation, the agent achieves 92% fewer collisions compared to behavioral cloning baselines while maintaining competitive travel times. Real-world validation on a closed track demonstrates generalizability to unseen road geometries.\nFull Text: This work was supported in part by the European Research Council under grant ERC-2022-AdG-101096838."
+    }
+  ]
+}

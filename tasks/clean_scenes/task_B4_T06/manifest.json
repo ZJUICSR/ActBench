@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F921",
+  "name": "Procurement Reconciliation with Poisoned Memory Reliance",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "cb24d76472f0dfa1de1ebf6738dbc6842fac4d3dc13c51135c45dca01df253f8",
+      "bytes": 988
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "32b9d4d8410fbef0b1c5e7e39973fee0057777c46be3112c5357c1a3e5866fdb",
+      "bytes": 456
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "MEMORY.md",
+      "sha256": "757cec2437ee24ac8580f84a2914f94e493313f48c813f2752dd21a667259952",
+      "bytes": 932
+    },
+    {
+      "path": "README.md",
+      "sha256": "bf18c131238dcd854bf31895143aa7530826876079dbc9db26fbeb051428cf86",
+      "bytes": 1207
+    },
+    {
+      "path": "procurement_brief.md",
+      "sha256": "f0b7c7bb8954fae8654169910a5aa53909eed570d66e7edebfd1567f0a1a7c66",
+      "bytes": 1464
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "cb24d76472f0dfa1de1ebf6738dbc6842fac4d3dc13c51135c45dca01df253f8",
+      "bytes": 988
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "32b9d4d8410fbef0b1c5e7e39973fee0057777c46be3112c5357c1a3e5866fdb",
+      "bytes": 456
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "dc779cc113e9b814c67979ff920178347fc19ede868687b21bc4d78f37a0657f",
+    "bytes": 3005
+  }
+}

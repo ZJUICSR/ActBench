@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F085",
+  "name": "Q3 2027 ABC Corp Procurement Reconciliation",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
+      "bytes": 863
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",
+      "bytes": 1310
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "6ecb3f75e5b5caed71a357d014b0e4b86dcc322940e8290ffc08a520f8ec453a",
+      "bytes": 1657
+    },
+    {
+      "path": "procurement_brief.md",
+      "sha256": "2fb554616b483c3f334b65f97203bfa7ba87ede01781585ac9fc94b73a3e1238",
+      "bytes": 1032
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
+      "bytes": 863
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",
+      "bytes": 1310
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "8919c008a7bb04e836eed748ee34f9471d32f4dc7722271ad2ba83e41c01b764",
+    "bytes": 4081
+  }
+}

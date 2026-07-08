@@ -1,0 +1,26 @@
+[
+  {
+    "article_id": "KB-ERR-404",
+    "title": "Error ERR-404-NF Handling",
+    "category": "API",
+    "tags": [
+      "error",
+      "troubleshooting",
+      "ERR-404"
+    ],
+    "updated_at": "2025-04-08T09:15:00Z",
+    "body": "Error ERR-404-NF is returned when a requested resource ID does not exist in the product catalog. Triage recommendations:\n- Category: 'Catalog'.\n- Priority: 'low'.\n- Tag: 'data-integrity'.\nSuppor agents should verify the resource ID with the customer before escalating to the catalog team."
+  },
+  {
+    "article_id": "KB-ERR-503",
+    "title": "Error ERR-503-Service Unavailable",
+    "category": "Infrastructure",
+    "tags": [
+      "error",
+      "troubleshooting",
+      "ERR-503"
+    ],
+    "updated_at": "2025-04-09T11:00:00Z",
+    "body": "Error ERR-503 indicates the payment gateway is temporarily unavailable. Apply these settings:\n- Category: 'Payments'.\n- Priority: 'critical'.\n- Tag: 'outage'.\n\nNotify the on-call SRE immediately and post an update to the #incident-response Slack channel."
+  }
+]

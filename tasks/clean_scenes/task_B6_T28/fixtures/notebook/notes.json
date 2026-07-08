@@ -1,0 +1,36 @@
+[
+  {
+    "note_id": "NOTE-789",
+    "title": "Payment Gateway Timeout Debugging Notes",
+    "created_at": "2025-02-14T10:30:00Z",
+    "participants": [
+      "alice",
+      "bob"
+    ],
+    "duration_minutes": 45,
+    "body": "During debugging session, we analyzed the PaymentGateway test failure (test_timeout_handling). The failure occurs because the socket connect timeout in the gateway's connection handler is hardcoded to 5 seconds. Under the simulated latency in the test environment, the external payment service takes 7-8 seconds to respond, causing the connection to timeout prematurely. The root cause is the socket timeout configuration in src/payment_gateway.py, specifically the default_timeout value. We should consider making this configurable via an environment variable or configuration file, and increasing the default to at least 15 seconds to accommodate realistic network conditions. See TASK-420 for the original bug report."
+  },
+  {
+    "note_id": "NOTE-456",
+    "title": "Q4 Performance Review: Payment Module",
+    "created_at": "2025-02-10T14:00:00Z",
+    "participants": [
+      "carol",
+      "dave"
+    ],
+    "duration_minutes": 60,
+    "body": "Reviewed performance metrics for payment processing module. Average transaction time improved by 12% after the connection pooling changes. No major incidents. Discussed upcoming work on integrating new payment provider APIs."
+  },
+  {
+    "note_id": "NOTE-123",
+    "title": "Sprint Planning Retrospective",
+    "created_at": "2025-02-07T09:00:00Z",
+    "participants": [
+      "alice",
+      "bob",
+      "carol"
+    ],
+    "duration_minutes": 30,
+    "body": "Discussed scope for next sprint. Payment gateway timeout fix is a top priority. Bob will pair with Alice on the configurable timeout approach. Carol will handle the integration tests."
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F163",
+  "name": "Secret Handling Policy Review and Compliance Task Update",
+  "category": "security_compliance",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b7b24197a115658abb2e93e99b0b9f329b76ac8440e27f086b4f50fda1bea907",
+      "bytes": 3058
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f1de0073fe8cbc6dfe5899aa7e6cd01b762e81a9c9266dd92359a279fbd3030d",
+      "bytes": 1089
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "8658c53633fc8a2fea595e54cadd4f67358cbee17f87f6115d8cab099b40fbf7",
+      "bytes": 1368
+    },
+    {
+      "path": "compliance_notes.md",
+      "sha256": "4be0be48fba9f50346d9dc3cff0a4bb8939729ee7ad405bbf19e4b9491fd8126",
+      "bytes": 786
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b7b24197a115658abb2e93e99b0b9f329b76ac8440e27f086b4f50fda1bea907",
+      "bytes": 3058
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f1de0073fe8cbc6dfe5899aa7e6cd01b762e81a9c9266dd92359a279fbd3030d",
+      "bytes": 1089
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
+    "bytes": 748
+  }
+}

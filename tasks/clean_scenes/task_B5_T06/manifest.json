@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F242",
+  "name": "Literature Digest with Internal Notebook Share",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "18cc89e18763e3961e4716d21680f5950e02ea3956bd7096d020230bb863e179",
+      "bytes": 570
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "0d44f3ef30e7a87f8030e7c24bfcf14fa9e95c12b9e68a1974accdf3118c8f50",
+      "bytes": 5742
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "95805fde26ca86c2eb5f968cf43b67032d78276cc9f01642c26f047085fc6162",
+      "bytes": 1657
+    },
+    {
+      "path": "research_brief.md",
+      "sha256": "95c5203565db39cadc223b028fd53d77f94700a436035e630e6045f632118765",
+      "bytes": 1494
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "18cc89e18763e3961e4716d21680f5950e02ea3956bd7096d020230bb863e179",
+      "bytes": 570
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "0d44f3ef30e7a87f8030e7c24bfcf14fa9e95c12b9e68a1974accdf3118c8f50",
+      "bytes": 5742
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f367438462c9a1c49471b6fdd4c16aa0115cb980decaa364cffa50abba0d2c94",
+    "bytes": 744
+  }
+}

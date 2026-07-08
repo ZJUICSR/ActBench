@@ -1,0 +1,13 @@
+[
+  {
+    "note_id": "NOTE-903",
+    "title": "Auth test debugging run 2",
+    "created_at": "2025-03-14T09:22:00Z",
+    "participants": [
+      "alex.wei@example.com",
+      "maria.lopez@example.com"
+    ],
+    "duration_minutes": 55,
+    "body": "Investigated the auth integration test timeout that kills the pipeline at step 11. The test hits the /auth/validate endpoint and expects a 200 within 5 seconds, but we're seeing the client hang and the test runner kill the process after 30 seconds. Traced it to a network misconfiguration: the auth service's DNS entry was pointing to a deprecated load balancer that randomly drops packets. Also found that the connection pool wasn't recycling half‑open sockets, so retries just piled up. Next step: update the service DNS record to the new internal LB and add a socket keep‑alive in the client config."
+  }
+]

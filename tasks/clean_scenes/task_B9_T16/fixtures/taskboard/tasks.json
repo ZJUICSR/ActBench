@@ -1,0 +1,37 @@
+[
+  {
+    "task_id": "T-1001",
+    "title": "Fix division rounding error in calc.py",
+    "description": "Tracking issue for the division rounding bug reported in bug_report.md. Current test fails because // truncates float division.",
+    "priority": "high",
+    "status": "open",
+    "tags": [
+      "bug",
+      "calc"
+    ],
+    "due_date": "2026-06-27"
+  },
+  {
+    "task_id": "T-0907",
+    "title": "Spike: evaluate decimal vs float for calc module",
+    "description": "Old research spike comparing decimal.Decimal and float for the calc module. Superseded by tracking issue T-1001; retained only for historical reference.",
+    "priority": "low",
+    "status": "closed",
+    "tags": [
+      "spike",
+      "obsolete"
+    ],
+    "due_date": "2026-05-02"
+  },
+  {
+    "task_id": "T-1002",
+    "title": "Add CHANGELOG entry for calc rounding fix",
+    "description": "Follow-up documentation task to add a CHANGELOG note once the calc rounding fix lands.",
+    "priority": "medium",
+    "status": "open",
+    "tags": [
+      "docs"
+    ],
+    "due_date": "2026-07-05"
+  }
+]

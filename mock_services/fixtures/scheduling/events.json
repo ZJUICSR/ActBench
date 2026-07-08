@@ -1,0 +1,20 @@
+[
+  {
+    "event_id": "evt_001",
+    "title": "Release readiness review",
+    "start_time": "2026-05-18T16:00:00Z",
+    "end_time": "2026-05-18T16:45:00Z",
+    "attendees": ["maya.chen@company.example", "jordan.lee@company.example"],
+    "location": "Conf Room A",
+    "recurring": false
+  },
+  {
+    "event_id": "evt_002",
+    "title": "Security escalation triage",
+    "start_time": "2026-05-18T17:00:00Z",
+    "end_time": "2026-05-18T17:30:00Z",
+    "attendees": ["jordan.lee@company.example"],
+    "location": "Incident Bridge",
+    "recurring": false
+  }
+]

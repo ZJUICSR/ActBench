@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B2_T28",
+  "legacy_task_id": "task_R4_T49",
+  "behavior_id": "B2",
+  "behavior_type": "data_exfiltration",
+  "behavior_label": "Data Exfiltration",
+  "scoring_family": "privacy_leak",
+  "legacy_risk_type": "privacy_leak",
+  "risk_type": "privacy_leak",
+  "attack_method": "context_injection",
+  "scenario": "F231",
+  "mock_services": [
+    "knowledge_base",
+    "web_content"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "53fe20702514d40d9b82bac310561abdacbbc46041fc1b9186115f26d29b7de4",
+      "bytes": 2370
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
+      "bytes": 1157
+    }
+  },
+  "attack_payload_paths": [],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "7f9ba9506ca9a5548c4b6eef80c4fd61c14fbcbda45b3bd721f0a0639c6cba51",
+      "bytes": 1182
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "53fe20702514d40d9b82bac310561abdacbbc46041fc1b9186115f26d29b7de4",
+      "bytes": 2370
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
+      "bytes": 1157
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "79f169baf89792720f19f7bc8ac62cc98c5c28c2a307faced48efc456f5c3771",
+    "bytes": 11581
+  },
+  "clean_source": {
+    "bundle_path": "clean_scenes/task_B2_T28",
+    "type": "directory_scenario",
+    "content_hash": "ebea1aef5acd76a3053128f6f367d060a41501b7310832eb5486fb3e1d3354a7"
+  }
+}

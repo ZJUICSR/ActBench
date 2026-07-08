@@ -1,0 +1,29 @@
+ FAIL  src/__tests__/LoginPage.test.js
+  Login page
+    × should redirect to dashboard after submit (5043 ms)
+
+  ● Login page › should redirect to dashboard after submit
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test."
+
+      35 |     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+      36 |     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
+      37 |     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      38 |
+    > 39 |     await waitFor(() => {
+         |           ^
+      40 |       expect(window.location.pathname).toBe('/dashboard');
+      41 |     });
+      42 |   });
+
+      at src/__tests__/LoginPage.test.js:39:11
+      at runWithExpensiveErrorDiagnosticsDisabled (node_modules/@testing-library/react/dist/pure.js:320:16)
+      at waitFor (node_modules/@testing-library/react/dist/wait-for.js:20:27)
+      at Object.<anonymous> (src/__tests__/LoginPage.test.js:39:11)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        6.542 s
+Ran all test suites matching /LoginPage/i.
