@@ -94,11 +94,21 @@ def test_cli_accepts_qwenpaw_backend(monkeypatch: pytest.MonkeyPatch) -> None:
     assert args.model == "qwen/test"
 
 
-def test_registry_resolves_backends_without_eager_qwenpaw_import() -> None:
-    assert available_backend_names() == ("openclaw", "qwenpaw", "fake")
+def test_cli_accepts_openagent_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "openagent", "--model", "oa/test"])
+
+    args = _parse_args()
+
+    assert args.backend == "openagent"
+    assert args.model == "oa/test"
+
+
+def test_registry_resolves_backends_without_eager_optional_imports() -> None:
+    assert available_backend_names() == ("openclaw", "qwenpaw", "openagent", "fake")
     assert get_backend("openclaw").name == "openclaw"
     assert get_backend("fake").name == "fake"
     assert get_backend("qwenpaw").name == "qwenpaw"
+    assert get_backend("openagent").name == "openagent"
     with pytest.raises(ValueError, match="unknown backend"):
         get_backend("missing")
 
@@ -222,6 +232,87 @@ def test_qwenpaw_backend_allows_non_default_model_before_runtime_import(
 
     assert exc_info.value.code == 2
     assert "missing qwenpaw" in caplog.text
+
+
+def test_openagent_backend_missing_api_key_is_controlled(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.openagent import OpenAgentBackend
+
+    monkeypatch.delenv("OPENAGENT_API_KEY", raising=False)
+    backend = OpenAgentBackend()
+    context = _context(tmp_path, backend="openagent")
+
+    with pytest.raises(BackendInitializationError, match="OPENAGENT_API_KEY"):
+        backend.initialize_run(context)
+
+
+def test_openagent_backend_returns_backend_compatible_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.openagent import OpenAgentBackend
+
+    monkeypatch.setenv("OPENAGENT_API_KEY", "test-key")
+    monkeypatch.setenv("OPENAGENT_BASE_URL", "http://openagent.test")
+    backend = OpenAgentBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    calls: list[list[dict[str, str]]] = []
+
+    def fake_completion(**kwargs):
+        calls.append([dict(message) for message in kwargs["messages"]])
+        return {
+            "choices": [{"message": {"role": "assistant", "content": "done"}}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15},
+        }
+
+    monkeypatch.setattr(backend, "_post_chat_completion", fake_completion)
+    context = _context(tmp_path, backend="openagent")
+    task = _task(frontmatter={"sessions": ["first", {"prompt": "second"}]})
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=task, context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert result["backend"] == "openagent"
+    assert result["backend_metadata"]["endpoint"] == "/api/v1/chat/completions"
+    assert result["backend_metadata"]["transcript_source"] == "openagent_openai_compatible"
+    assert result["usage"]["input_tokens"] == 20
+    assert result["usage"]["output_tokens"] == 10
+    assert result["usage"]["total_tokens"] == 30
+    assert result["usage"]["request_count"] == 2
+    assert len(result["transcript"]) == 4
+    assert calls[1] == [
+        {"role": "user", "content": "first"},
+        {"role": "assistant", "content": "done"},
+        {"role": "user", "content": "second"},
+    ]
+    assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_openagent_backend_http_failure_returns_error_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.openagent import OpenAgentBackend, OpenAgentRequestError
+
+    monkeypatch.setenv("OPENAGENT_API_KEY", "test-key")
+    backend = OpenAgentBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(
+        backend,
+        "_post_chat_completion",
+        lambda **kwargs: (_ for _ in ()).throw(OpenAgentRequestError("openagent boom")),
+    )
+    context = _context(tmp_path, backend="openagent")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "error"
+    assert result["backend"] == "openagent"
+    assert "openagent boom" in result["stderr"]
 
 
 def test_run_benchmark_with_fake_backend_writes_backend_schema(tmp_path: Path) -> None:

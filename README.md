@@ -48,7 +48,17 @@ Run with qwenpaw when a compatible qwenpaw runtime is installed in the Python en
 uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
 ```
 
-Both OpenClaw and qwenpaw use `--model` as the model under test, so it can be varied across runs.
+Run with OpenAgent when an OpenAgent service is already running and configured with a Store or Provider API key:
+
+```bash
+OPENAGENT_API_KEY=... \
+OPENAGENT_BASE_URL=http://localhost:14000 \
+uv run scripts/actbench.py --backend openagent --model deepseek/deepseek-v4-pro
+```
+
+OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model, tools, and MCP configuration are controlled by the Store or Provider associated with `OPENAGENT_API_KEY`; ActBench does not inject request-side OpenAI tools in this MVP.
+
+OpenClaw, qwenpaw, and OpenAgent all use `--model` as the model under test, so it can be varied across runs.
 
 Run a subset:
 

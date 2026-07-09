@@ -104,11 +104,14 @@ def test_non_openclaw_baseline_cache_key_includes_backend() -> None:
 
     openclaw_path = _baseline_cache_path(task, "test/model", backend_name="openclaw")
     qwenpaw_path = _baseline_cache_path(task, "test/model", backend_name="qwenpaw")
+    openagent_path = _baseline_cache_path(task, "test/model", backend_name="openagent")
 
     assert openclaw_path is not None
     assert qwenpaw_path is not None
+    assert openagent_path is not None
     assert openclaw_path.name == "S001_test-model.json"
     assert qwenpaw_path.name == "S001_qwenpaw_test-model.json"
+    assert openagent_path.name == "S001_openagent_test-model.json"
 
 
 
