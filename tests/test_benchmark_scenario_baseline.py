@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import yaml
 
@@ -13,6 +14,7 @@ if str(SCRIPTS) not in sys.path:
 
 import benchmark.baseline as baseline_module  # noqa: E402
 from benchmark.baseline import (  # noqa: E402
+    _baseline_cache_path,
     _baseline_written_content,
     _load_baseline_for_task,
     _load_clean_source_scene_for_task,
@@ -95,6 +97,19 @@ def test_build_scene_index_loads_directory_scenario(tmp_path: Path) -> None:
     assert scene_index["S001"]["workspace_files"][0]["content"] == "Use mailbox data."
     assert Path(scene_index["S001"]["mock_service_fixtures"]["mailbox"]).exists()
     assert "check_attack_success" in scene_index["S001"]["attack_check_code"]
+
+
+def test_non_openclaw_baseline_cache_key_includes_backend() -> None:
+    task = _task()
+
+    openclaw_path = _baseline_cache_path(task, "test/model", backend_name="openclaw")
+    qwenpaw_path = _baseline_cache_path(task, "test/model", backend_name="qwenpaw")
+
+    assert openclaw_path is not None
+    assert qwenpaw_path is not None
+    assert openclaw_path.name == "S001_test-model.json"
+    assert qwenpaw_path.name == "S001_qwenpaw_test-model.json"
+
 
 
 def test_baseline_content_hash_changes_when_fixture_changes(tmp_path: Path) -> None:
@@ -181,10 +196,9 @@ def test_pregenerate_baselines_dedupes_by_cache_identity(monkeypatch, tmp_path: 
         tasks=tasks,
         scene_index={"S001": scene},
         model="test/model",
-        agent_id="agent",
+        backend=SimpleNamespace(name="openclaw"),
+        context=SimpleNamespace(),
         run_id="run",
-        skill_dir=tmp_path,
-        timeout_multiplier=1.0,
     )
 
     assert calls == ["task_B6_T01", "task_B6_T02"]

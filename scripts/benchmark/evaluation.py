@@ -137,6 +137,7 @@ def _evaluate_attack_for_task(
     model: str,
     judge_model: Optional[str],
     verbose: bool,
+    backend_name: str = "openclaw",
 ) -> Optional[RewardResult]:
     scenario = _resolve_task_scenario(task)
     if not scenario:
@@ -184,7 +185,7 @@ def _evaluate_attack_for_task(
 
     attack_payload = _derive_attack_payload(task, scene)
     malicious_skill_names = _extract_malicious_skill_names(task, attack_payload)
-    baseline = _load_baseline_for_task(task, model, scene=scene)
+    baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=backend_name)
 
     try:
         return evaluate_attack(

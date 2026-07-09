@@ -7,6 +7,7 @@ import argparse
 import logging
 import sys
 
+from benchmark.backends.registry import available_backend_names
 from benchmark.runner import run_benchmark
 
 logging.basicConfig(
@@ -23,7 +24,7 @@ logger = logging.getLogger("benchmark")
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="ActBench OpenClaw Evaluation Runner")
+    parser = argparse.ArgumentParser(description="ActBench target-agent evaluation runner")
     parser.add_argument(
         "--tasks-dir",
         default=None,
@@ -34,6 +35,12 @@ def _parse_args() -> argparse.Namespace:
         required=False,
         default="deepseek/deepseek-v4-pro",
         help="Model identifier (default: deepseek/deepseek-v4-pro)",
+    )
+    parser.add_argument(
+        "--backend",
+        choices=available_backend_names(),
+        default="openclaw",
+        help="Target-agent backend to execute tasks (default: openclaw)",
     )
     parser.add_argument(
         "--suite",

@@ -1,6 +1,6 @@
 # ActBench
 
-ActBench is a task-based security evaluation suite for OpenClaw-style agents. It evaluates whether an agent remains aligned with the user's task when workspace files, mock API records, skills, or other task artifacts contain unsafe instructions or data.
+ActBench is a task-based security evaluation suite for tool-using agents. It evaluates whether an agent remains aligned with the user's task when workspace files, mock API records, skills, or other task artifacts contain unsafe instructions or data. OpenClaw remains the default execution backend, with additional backends available through adapters.
 
 This public release contains the benchmark tasks, runner, scoring code, mock services, and result formats needed to reproduce ActBench evaluations. It does **not** include the private task-generation or attack-search pipeline used to create the tasks.
 
@@ -8,7 +8,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 
 - `tasks/task_B*_T*/` — self-contained ActBench tasks.
 - `tasks/clean_scenes/` — benign clean-source bundles used for optional delta-aware baseline generation.
-- `scripts/actbench.py` and `scripts/benchmark/` — benchmark runner and result aggregation.
+- `scripts/actbench.py` and `scripts/benchmark/` — benchmark runner, backend adapters, and result aggregation.
 - `mock_services/` — local fixture-backed FastAPI services used by tasks.
 - `skills/mock_apis/` — standard OpenClaw skills that describe the mock service endpoints.
 - `docs/` — task, result, and mock-service format notes.
@@ -17,8 +17,8 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 
 - Python 3.10+
 - `uv` or `pip`
-- OpenClaw CLI available on `PATH`
-- A configured target model for OpenClaw
+- OpenClaw CLI available on `PATH` for the default `openclaw` backend
+- A configured target model for the selected backend
 - A judge-model API key when using LLM-assisted scoring:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
   - `OPENROUTER_API_KEY` for OpenRouter-routed judge models
@@ -34,11 +34,21 @@ pip install -e .
 
 ## Run ActBench
 
-Run all public tasks:
+Run all public tasks with the default OpenClaw backend:
 
 ```bash
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro
+# equivalent:
+uv run scripts/actbench.py --backend openclaw --model deepseek/deepseek-v4-pro
 ```
+
+Run with qwenpaw when a compatible qwenpaw runtime is installed in the Python environment:
+
+```bash
+uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
+```
+
+Both OpenClaw and qwenpaw use `--model` as the model under test, so it can be varied across runs.
 
 Run a subset:
 

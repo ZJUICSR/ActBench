@@ -6,7 +6,8 @@ ActBench writes JSON results to `--output-dir` (default: `results`).
 
 `results/<run_id>_<model_slug>.json` contains:
 
-- `model` — target model id used by OpenClaw.
+- `model` — target model id requested with `--model` and used by the selected backend.
+- `backend` / `backend_metadata` — target-agent backend name and adapter metadata.
 - `judge_model` — model id used for LLM-assisted scoring.
 - `run_id` / `timestamp` / `suite` / `runs_per_task`.
 - `scoring_semantics` — `actbench_ags`.
@@ -20,12 +21,14 @@ Each `tasks[]` entry includes:
 
 - `task_id`
 - `behavior_id`, `behavior_type`, `behavior_label`
+- `backend` / `backend_metadata` — backend used for this task attempt.
 - `scoring_family`, `legacy_risk_type`
 - execution status and timing
 - token `usage`
 - `grading` — defense-oriented aggregate score (`1 - attack_success`)
 - `attack_eval` — attack-oriented run scores
-- `openclaw_feedback` — transcript/stdout/stderr/API audit details
+- `agent_feedback` — backend-neutral transcript/stdout/stderr/API audit details.
+- `openclaw_feedback` — legacy alias with the same execution details, retained for compatibility.
 - `frontmatter` — task metadata used for the run
 - `baseline` — compact benign baseline summary when available
 

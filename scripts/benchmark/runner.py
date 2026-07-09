@@ -12,18 +12,14 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from lib_agent import (
-    cleanup_agent_sessions,
-    ensure_agent_exists,
-    execute_openclaw_task,
-    slugify_model,
-)
 from lib_reward import ATTACK_SUCCESS_THRESHOLD, REWARD_JUDGE_MODEL
 from lib_gateway_lock import acquire as _gw_acquire, release as _gw_release
 from lib_tasks import TaskLoader
 from lib_taxonomy import infer_behavior_from_metadata
 from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, safe_artifact_name
 
+from benchmark.backends.base import BackendInitializationError, BackendRunContext
+from benchmark.backends.registry import get_backend
 from benchmark.baseline import _load_baseline_for_task, _pregenerate_baselines, _scene_for_task
 from benchmark.evaluation import _evaluate_attack_for_task
 from benchmark.metrics import (
@@ -40,12 +36,26 @@ from benchmark.ui import _colorize_gradient, _get_git_version, _load_ascii_art, 
 logger = logging.getLogger("benchmark")
 
 
+def _execution_feedback(result: Dict[str, Any], backend_name: str) -> Dict[str, Any]:
+    return {
+        "backend": result.get("backend", backend_name),
+        "transcript": result.get("transcript", []),
+        "stdout": result.get("stdout", ""),
+        "stderr": result.get("stderr", ""),
+        "api_audit": result.get("api_audit", {}),
+        "api_endpoints": result.get("api_endpoints", {}),
+        "status": result.get("status"),
+        "timed_out": result.get("timed_out"),
+        "exit_code": result.get("exit_code"),
+    }
+
+
 def run_benchmark(args: argparse.Namespace) -> None:
     """Main entry point for the ActBench runner."""
     script_dir = Path(__file__).resolve().parents[1]
     skill_root = script_dir.parent  # Parent of scripts/ is the skill root
 
-    logger.info("🦞🦀🦐 ActBench - OpenClaw Security Evaluation")
+    logger.info("🦞🦀🦐 ActBench - Target-Agent Security Evaluation")
     ascii_crab = _load_ascii_art(skill_root, "crab.txt")
     if ascii_crab:
         print("\n" + _colorize_gradient(ascii_crab) + "\n")
@@ -91,12 +101,35 @@ def run_benchmark(args: argparse.Namespace) -> None:
         sys.exit(2)
     scene_index = _build_scene_index(skill_root)
 
-    model_slug = slugify_model(args.model)
+    backend_name = getattr(args, "backend", "openclaw")
+    try:
+        backend = get_backend(backend_name)
+    except ValueError as exc:
+        logger.error("❌ %s", exc)
+        sys.exit(2)
+
+    model_id = args.model
+    model_slug = backend.slugify_model(model_id)
     run_root = Path("/tmp/claweval")
     run_id = _next_run_id(run_root)
     skill_dir = skill_root
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    agent_id = backend.make_agent_id(model_id)
+    # Use a shared workspace for the agent - we'll copy fixtures per task
+    agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
+    backend_context = BackendRunContext(
+        backend=backend.name,
+        model=model_id,
+        run_id=run_id,
+        run_root=run_root,
+        skill_dir=skill_dir,
+        agent_id=agent_id,
+        agent_workspace=agent_workspace,
+        timeout_multiplier=args.timeout_multiplier,
+        verbose=args.verbose,
+    )
+
     training_recorder = None
     if not args.no_training_artifacts:
         artifact_root = (
@@ -109,7 +142,13 @@ def run_benchmark(args: argparse.Namespace) -> None:
             run_kind="actbench",
             run_id=run_id,
             metadata={
-                "model": args.model,
+                "model": model_id,
+                "backend": backend.name,
+                "backend_metadata": {
+                    "name": backend.name,
+                    "model": model_id,
+                    "agent_id": agent_id,
+                },
                 "judge_model": args.judge_model or REWARD_JUDGE_MODEL,
                 "suite": args.suite,
                 "runs_per_task": args.runs,
@@ -121,26 +160,25 @@ def run_benchmark(args: argparse.Namespace) -> None:
         activate_recorder(training_recorder)
     else:
         activate_recorder(None)
-    agent_id = f"bench-{model_slug}"
-    # Use a shared workspace for the agent - we'll copy fixtures per task
-    agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
 
-    # Register this ActBench run's gateway agent slot (visibility, not fail-fast):
-    # ActBench uses a run_id-scoped workspace, but concurrent workloads still
-    # need to see that this slot is busy.
-    # Stale locks are reaped on read, so a hard kill cannot wedge the slot.
-    _gw_acquire(
-        agent_id,
-        role="actbench",
-        model=args.model,
-        command="actbench " + " ".join(sys.argv[1:]),
-    )
-    atexit.register(_gw_release, agent_id)
+    if backend.uses_gateway_lock:
+        # Register this ActBench run's gateway agent slot (visibility, not fail-fast):
+        # ActBench uses a run_id-scoped workspace, but concurrent workloads still
+        # need to see that this slot is busy.
+        # Stale locks are reaped on read, so a hard kill cannot wedge the slot.
+        _gw_acquire(
+            agent_id,
+            role="actbench",
+            model=model_id,
+            command="actbench " + " ".join(sys.argv[1:]),
+        )
+        atexit.register(_gw_release, agent_id)
 
-    # Trust openclaw's backend registry.
-    # If the model id is invalid, ensure_agent_exists will fail loudly.
-    ensure_agent_exists(agent_id, args.model, agent_workspace)
-    cleanup_agent_sessions(agent_id)
+    try:
+        backend.initialize_run(backend_context)
+    except BackendInitializationError as exc:
+        logger.error("❌ Backend %s could not be initialized: %s", backend.name, exc)
+        sys.exit(2)
 
     results = []
     grades_by_task_id = {}
@@ -168,12 +206,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
         _pregenerate_baselines(
             tasks=tasks_to_run,
             scene_index=scene_index,
-            model=args.model,
-            agent_id=agent_id,
+            model=model_id,
+            backend=backend,
+            context=backend_context,
             run_id=run_id,
-            skill_dir=skill_dir,
-            timeout_multiplier=args.timeout_multiplier,
-            verbose=args.verbose,
         )
 
     runs_per_task = max(1, args.runs)
@@ -191,14 +227,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
             logger.info("%s", "=" * 80)
             execution_error = None
             try:
-                result = execute_openclaw_task(
+                result = backend.execute_task(
                     task=task,
-                    agent_id=agent_id,
-                    model_id=args.model,
-                    run_id=f"{run_id}-{run_index + 1}",
-                    timeout_multiplier=args.timeout_multiplier,
-                    skill_dir=skill_dir,
-                    verbose=args.verbose,
+                    context=backend_context,
+                    attempt_run_id=f"{run_id}-{run_index + 1}",
                 )
             except Exception as exc:
                 execution_error = str(exc)
@@ -217,14 +249,21 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     "stderr": execution_error,
                     "api_audit": {},
                     "api_endpoints": {},
+                    "backend": backend.name,
+                    "backend_metadata": {
+                        "name": backend.name,
+                        "model": model_id,
+                        "agent_id": agent_id,
+                    },
                 }
             attack_eval = _evaluate_attack_for_task(
                 task=task,
                 execution_result=result,
                 scene_index=scene_index,
-                model=args.model,
+                model=model_id,
                 judge_model=args.judge_model,
                 verbose=args.verbose,
+                backend_name=backend.name,
             )
 
             task_results.append(result)
@@ -233,12 +272,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 attack_eval_by_task_id.setdefault(task.task_id, []).append(attack_eval.to_dict())
             if training_recorder and result.get("training_artifact_key"):
                 run_key = result["training_artifact_key"]
+                run_dir = Path("runs") / safe_artifact_name(run_key)
+                training_recorder.write_json(run_dir / "agent_execution.json", result)
+                if backend.name == "openclaw":
+                    training_recorder.write_json(run_dir / "openclaw_execution.json", result)
                 training_recorder.write_json(
-                    Path("runs") / safe_artifact_name(run_key) / "openclaw_execution.json",
-                    result,
-                )
-                training_recorder.write_json(
-                    Path("runs") / safe_artifact_name(run_key) / "evaluation.json",
+                    run_dir / "evaluation.json",
                     (
                         attack_eval.to_dict()
                         if attack_eval is not None
@@ -405,7 +444,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
     baseline_hits = 0
     for tid, t in tasks_by_id.items():
         scene = _scene_for_task(t, scene_index)
-        b = _load_baseline_for_task(t, args.model, scene=scene)
+        b = _load_baseline_for_task(t, model_id, scene=scene, backend_name=backend.name)
         baselines_by_task_id[tid] = b
         if b is not None:
             baseline_hits += 1
@@ -427,6 +466,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
             baseline_lite = {
                 "scene_id": baseline.get("scene_id"),
                 "target_model": baseline.get("target_model"),
+                "backend": baseline.get("backend", backend.name),
                 "files_read": baseline.get("files_read", []),
                 "files_written": baseline.get("files_written", []),
                 "transcript_summary": baseline.get("transcript_summary", ""),
@@ -445,6 +485,11 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "behavior_label": behavior.behavior_label,
                 "scoring_family": behavior.scoring_family,
                 "legacy_risk_type": behavior.legacy_risk_type,
+                "backend": result.get("backend", backend.name),
+                "backend_metadata": result.get(
+                    "backend_metadata",
+                    {"name": backend.name, "model": model_id, "agent_id": agent_id},
+                ),
                 "status": result["status"],
                 "timed_out": result["timed_out"],
                 "execution_time": result["execution_time"],
@@ -469,16 +514,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "defense_all_pass": (attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]).get(
                     "defense_all_pass", False
                 ),
-                "openclaw_feedback": {
-                    "transcript": result.get("transcript", []),
-                    "stdout": result.get("stdout", ""),
-                    "stderr": result.get("stderr", ""),
-                    "api_audit": result.get("api_audit", {}),
-                    "api_endpoints": result.get("api_endpoints", {}),
-                    "status": result.get("status"),
-                    "timed_out": result.get("timed_out"),
-                    "exit_code": result.get("exit_code"),
-                },
+                "agent_feedback": _execution_feedback(result, backend.name),
+                "openclaw_feedback": _execution_feedback(result, backend.name),
                 "frontmatter": tasks_by_id[tid].frontmatter,
                 "baseline": baseline_lite,
             }
@@ -488,7 +525,13 @@ def run_benchmark(args: argparse.Namespace) -> None:
     pass_power = _compute_pass_power_summary(attack_eval_by_task_id)
 
     aggregate = {
-        "model": args.model,
+        "model": model_id,
+        "backend": backend.name,
+        "backend_metadata": {
+            "name": backend.name,
+            "model": model_id,
+            "agent_id": agent_id,
+        },
         "judge_model": args.judge_model or REWARD_JUDGE_MODEL,
         "actbench_version": _get_git_version(skill_root),
         "benchmark_version": _get_git_version(skill_root),
@@ -519,7 +562,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
     attack_summary = build_attack_summary(attack_eval_by_task_id, tasks_by_id=tasks_by_id)
     attack_summary.update(
         {
-            "model": args.model,
+            "model": model_id,
+            "backend": backend.name,
             "run_id": run_id,
             "suite": args.suite,
             "runs_per_task": runs_per_task,
@@ -564,4 +608,6 @@ def run_benchmark(args: argparse.Namespace) -> None:
     _log_category_summary(task_entries, tasks_by_id, scene_index=scene_index)
     _log_attack_eval_summary(attack_eval_by_task_id, tasks_by_id, scene_index=scene_index)
     _log_efficiency_summary(efficiency, grades_by_task_id)
-    _gw_release(agent_id)
+    backend.finalize_run(backend_context)
+    if backend.uses_gateway_lock:
+        _gw_release(agent_id)

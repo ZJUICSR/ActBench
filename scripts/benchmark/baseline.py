@@ -9,8 +9,10 @@ import hashlib
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from lib_agent import execute_openclaw_task, slugify_model
+from lib_agent import slugify_model
 from lib_tasks import Task
+
+from benchmark.backends.base import AgentBackend, BackendRunContext
 
 from benchmark.transcript import _extract_transcript_file_ops, _summarize_transcript
 from lib_scene_bundle import load_scene
@@ -104,7 +106,13 @@ def _scene_for_task(task: Task, scene_index: Dict[str, Dict[str, Any]]) -> Optio
     return None
 
 
-def _baseline_cache_path(task: Task, model: str, scene: Optional[Dict[str, Any]] = None) -> Optional[Path]:
+def _baseline_cache_path(
+    task: Task,
+    model: str,
+    scene: Optional[Dict[str, Any]] = None,
+    *,
+    backend_name: str = "openclaw",
+) -> Optional[Path]:
     scenario = _resolve_task_scenario(task) if hasattr(task, "frontmatter") else None
     if not scenario:
         return None
@@ -114,7 +122,10 @@ def _baseline_cache_path(task: Task, model: str, scene: Optional[Dict[str, Any]]
         slug = f"{slug}_{str(clean_source['content_hash'])[:12]}"
     elif scene and scene.get("_fixture_base_dir"):
         slug = f"{slug}_{hashlib.sha256(str(scene.get('_fixture_base_dir')).encode()).hexdigest()[:12]}"
-    return BASELINE_CACHE_DIR / f"{slug}_{slugify_model(model)}.json"
+    model_slug = slugify_model(model)
+    if backend_name and backend_name != "openclaw":
+        return BASELINE_CACHE_DIR / f"{slug}_{backend_name}_{model_slug}.json"
+    return BASELINE_CACHE_DIR / f"{slug}_{model_slug}.json"
 
 
 def _normalize_content(content: Any) -> str:
@@ -176,6 +187,8 @@ def _load_baseline_for_task(
     task: Task,
     model: str,
     scene: Optional[Dict[str, Any]] = None,
+    *,
+    backend_name: str = "openclaw",
 ) -> Optional[Dict[str, Any]]:
     """Load the cached benign baseline for this task's source scene + model.
 
@@ -188,7 +201,7 @@ def _load_baseline_for_task(
     scenario = _resolve_task_scenario(task) if hasattr(task, "frontmatter") else None
     if not scenario:
         return None
-    cache_path = _baseline_cache_path(task, model, scene)
+    cache_path = _baseline_cache_path(task, model, scene, backend_name=backend_name)
     if cache_path is None:
         return None
     if not cache_path.exists():
@@ -248,11 +261,9 @@ def _generate_baseline_for_task(
     task: Task,
     scene: Dict[str, Any],
     model: str,
-    agent_id: str,
+    backend: AgentBackend,
+    context: BackendRunContext,
     run_id: str,
-    skill_dir: Path,
-    timeout_multiplier: float,
-    verbose: bool = False,
 ) -> Optional[Dict[str, Any]]:
     """Run a benign (no-attack) execution for the scene and cache the result.
 
@@ -264,11 +275,11 @@ def _generate_baseline_for_task(
     if not scenario:
         return None
 
-    cache_path = _baseline_cache_path(task, model, scene)
+    cache_path = _baseline_cache_path(task, model, scene, backend_name=backend.name)
     if cache_path is None:
         return None
     expected_hash = baseline_content_hash(task, scene)
-    cached = _load_baseline_for_task(task, model, scene=scene)
+    cached = _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name)
     if cached is not None:
         return cached
 
@@ -307,14 +318,10 @@ def _generate_baseline_for_task(
         clean_task.frontmatter["mock_service_fixtures"] = scene.get("mock_service_fixtures")
 
     try:
-        result = execute_openclaw_task(
+        result = backend.execute_task(
             task=clean_task,
-            agent_id=agent_id,
-            model_id=model,
-            run_id=f"{run_id}_bl_{scenario[-10:]}",
-            timeout_multiplier=timeout_multiplier,
-            skill_dir=skill_dir,
-            verbose=verbose,
+            context=context,
+            attempt_run_id=f"{run_id}_bl_{scenario[-10:]}",
         )
     except Exception as exc:
         logger.warning("Baseline generation failed for %s: %s", scenario, exc)
@@ -340,6 +347,7 @@ def _generate_baseline_for_task(
     baseline = {
         "scene_id": scenario,
         "target_model": model,
+        "backend": backend.name,
         "content_hash": expected_hash,
         "user_prompt": user_prompt,
         "transcript_summary": _summarize_transcript(transcript),
@@ -373,11 +381,9 @@ def _pregenerate_baselines(
     tasks: List[Task],
     scene_index: Dict[str, Dict[str, Any]],
     model: str,
-    agent_id: str,
+    backend: AgentBackend,
+    context: BackendRunContext,
     run_id: str,
-    skill_dir: Path,
-    timeout_multiplier: float,
-    verbose: bool = False,
 ) -> None:
     """Pre-generate benign baselines for any tasks that don't have a cached one.
 
@@ -393,13 +399,13 @@ def _pregenerate_baselines(
         if not scenario:
             continue
         scene = _scene_for_task(task, scene_index)
-        cache_path = _baseline_cache_path(task, model, scene)
+        cache_path = _baseline_cache_path(task, model, scene, backend_name=backend.name)
         clean_source = (task.frontmatter or {}).get("clean_source")
         cache_key = str(cache_path) if cache_path is not None else f"{scenario}:{_normalize_content(clean_source)}"
         if cache_key in seen_cache_keys:
             continue
         seen_cache_keys.add(cache_key)
-        if scene and _load_baseline_for_task(task, model, scene=scene) is None:
+        if scene and _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name) is None:
             missing.append(task)
         elif not scene and cache_path is not None and not cache_path.exists():
             missing.append(task)
@@ -420,9 +426,7 @@ def _pregenerate_baselines(
             task=task,
             scene=scene,
             model=model,
-            agent_id=agent_id,
+            backend=backend,
+            context=context,
             run_id=run_id,
-            skill_dir=skill_dir,
-            timeout_multiplier=timeout_multiplier,
-            verbose=verbose,
         )

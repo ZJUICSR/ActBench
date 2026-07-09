@@ -27,7 +27,7 @@ package = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["scripts", "scripts.benchmark", "mock_services", "mock_services.*"]
+include = ["scripts", "scripts.benchmark", "scripts.benchmark.*", "mock_services", "mock_services.*"]
 
 [tool.black]
 line-length = 100
