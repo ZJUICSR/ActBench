@@ -11,7 +11,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - `scripts/actbench.py` and `scripts/benchmark/` — benchmark runner, backend adapters, and result aggregation.
 - `mock_services/` — local fixture-backed FastAPI services used by tasks.
 - `skills/mock_apis/` — standard OpenClaw skills that describe the mock service endpoints.
-- `docs/` — task, result, and mock-service format notes.
+- `docs/` — task, result, mock-service, and backend setup notes.
 
 ## Requirements
 
@@ -48,7 +48,7 @@ Run with qwenpaw when a compatible qwenpaw runtime is installed in the Python en
 uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
 ```
 
-Run with OpenAgent when an OpenAgent service is already running and configured with a Store or Provider API key:
+Run with OpenAgent when an OpenAgent service is already running and configured with a Store external API key:
 
 ```bash
 OPENAGENT_API_KEY=... \
@@ -56,9 +56,9 @@ OPENAGENT_BASE_URL=http://localhost:14000 \
 uv run scripts/actbench.py --backend openagent --model deepseek/deepseek-v4-pro
 ```
 
-OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and Store/Provider tools are controlled by the Store or Provider associated with `OPENAGENT_API_KEY`.
+OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and tools are controlled by the Store associated with `OPENAGENT_API_KEY`.
 
-By default, the OpenAgent adapter also exposes the per-task workspace and declared mock APIs through an ActBench-owned MCP gateway. Configure the OpenAgent Store/Provider once with the MCP URL that OpenAgent can reach:
+By default, the OpenAgent adapter also exposes the per-task workspace and declared mock APIs through an ActBench-owned MCP gateway. Configure the OpenAgent Store once with the MCP URL that OpenAgent can reach:
 
 - local OpenAgent: `http://127.0.0.1:8765/mcp`
 - OpenAgent in Docker: `http://host.docker.internal:8765/mcp`
@@ -75,6 +75,8 @@ Relevant OpenAgent MCP environment variables:
 - `OPENAGENT_TIMEOUT_SECONDS` optionally caps individual OpenAgent HTTP requests; if unset, ActBench uses the task timeout budget instead of a fixed 120s cap.
 
 The MCP gateway security model is task-scoped: file paths are resolved inside the materialized workspace, API discovery returns only service names and allowed business paths, `actbench_call_api` can call only the task's declared mock services and business paths, and administrative mock endpoints such as health, audit, reset, logs, fixture paths, raw base URLs, and admin tokens are not exposed to OpenAgent.
+
+See `docs/OPENAGENT.md` for the full OpenAgent setup flow, including what to provide, how to add the ActBench MCP server in OpenAgent, and Docker networking notes.
 
 OpenClaw, qwenpaw, and OpenAgent all use `--model` as the model under test, so it can be varied across runs.
 
