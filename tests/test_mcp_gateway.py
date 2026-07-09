@@ -22,6 +22,7 @@ from lib_mcp_gateway import (  # noqa: E402
     actbench_write_file,
     clear_contexts,
     dispatch_json_rpc,
+    mcp_tools,
     register_context,
     unregister_context,
 )
@@ -78,6 +79,26 @@ def test_json_rpc_initialize_and_tools_list_shapes() -> None:
         "actbench_get_api_endpoints",
         "actbench_call_api",
     }
+
+
+def test_mcp_tool_input_property_schemas_are_explicit() -> None:
+    for tool in mcp_tools():
+        schema = tool["inputSchema"]
+        assert schema["type"] == "object"
+        properties = schema.get("properties", {})
+        assert isinstance(properties, dict)
+        for property_name, property_schema in properties.items():
+            assert property_schema != {}, f"{tool['name']}.{property_name} has empty schema"
+
+
+def test_call_api_body_schema_is_provider_compatible() -> None:
+    tools = {tool["name"]: tool for tool in mcp_tools()}
+    body_schema = tools["actbench_call_api"]["inputSchema"]["properties"]["body"]
+
+    assert body_schema != {}
+    assert body_schema["type"] == "object"
+    assert body_schema["default"] == {}
+    assert body_schema["additionalProperties"] is True
 
 
 def test_context_registration_unregisters_and_invalidates_tools(tmp_path: Path) -> None:
