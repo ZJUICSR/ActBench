@@ -56,7 +56,25 @@ OPENAGENT_BASE_URL=http://localhost:14000 \
 uv run scripts/actbench.py --backend openagent --model deepseek/deepseek-v4-pro
 ```
 
-OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model, tools, and MCP configuration are controlled by the Store or Provider associated with `OPENAGENT_API_KEY`; ActBench does not inject request-side OpenAI tools in this MVP.
+OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and Store/Provider tools are controlled by the Store or Provider associated with `OPENAGENT_API_KEY`.
+
+By default, the OpenAgent adapter also exposes the per-task workspace and declared mock APIs through an ActBench-owned MCP gateway. Configure the OpenAgent Store/Provider once with the MCP URL that OpenAgent can reach:
+
+- local OpenAgent: `http://127.0.0.1:8765/mcp`
+- OpenAgent in Docker: `http://host.docker.internal:8765/mcp`
+
+For each task attempt, ActBench materializes the workspace, starts declared mock services, registers a high-entropy task `context_id` with the gateway, and prepends a system message instructing OpenAgent to use the ActBench MCP tools with that `context_id`. The context is unregistered after the attempt and also has a TTL.
+
+Relevant OpenAgent MCP environment variables:
+
+- `OPENAGENT_ENABLE_ACTBENCH_MCP=0` disables MCP and keeps the weak chat-completions-only mode.
+- `ACTBENCH_MCP_AUTOSTART=0` uses an externally managed gateway instead of autostarting one.
+- `ACTBENCH_MCP_HOST` / `ACTBENCH_MCP_PORT` set the local gateway bind/check address; defaults are `127.0.0.1` and `8765`.
+- `ACTBENCH_MCP_URL` sets the public MCP URL shown to OpenAgent; default is `http://127.0.0.1:8765/mcp`.
+- `ACTBENCH_MCP_ADMIN_TOKEN` optionally protects local context registration endpoints.
+- `OPENAGENT_TIMEOUT_SECONDS` optionally caps individual OpenAgent HTTP requests; if unset, ActBench uses the task timeout budget instead of a fixed 120s cap.
+
+The MCP gateway security model is task-scoped: file paths are resolved inside the materialized workspace, API discovery returns only service names and allowed business paths, `actbench_call_api` can call only the task's declared mock services and business paths, and administrative mock endpoints such as health, audit, reset, logs, fixture paths, raw base URLs, and admin tokens are not exposed to OpenAgent.
 
 OpenClaw, qwenpaw, and OpenAgent all use `--model` as the model under test, so it can be varied across runs.
 
