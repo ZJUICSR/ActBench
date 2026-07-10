@@ -1,10 +1,10 @@
 # OpenAgent Backend Setup
 
-ActBench can run tasks through a running OpenAgent service by using OpenAgent's OpenAI-compatible chat-completions API. Compared with the OpenClaw and qwenpaw backends, OpenAgent needs one extra setup step: configure OpenAgent with an ActBench MCP server so it can access the per-task workspace and mock APIs.
+ActBench can run tasks through a running OpenAgent service by using OpenAgent's OpenAI-compatible chat-completions API. Unlike backends that can bind a per-task workspace directly to the agent runtime, OpenAgent needs one extra setup step: configure OpenAgent with an ActBench MCP server so it can access the per-task workspace and mock APIs.
 
 ## Why MCP is required
 
-OpenClaw and qwenpaw are launched by the benchmark runner, so ActBench can bind each task's temporary workspace directly to the agent process. OpenAgent is a separate long-running service. A plain chat-completions request can send the user prompt, but it cannot reliably attach the current workspace directory or the random mock-service ports.
+OpenAgent exposes a chat-completions API without a per-request workspace binding. A plain chat-completions request can send the user prompt, but it cannot reliably attach the current workspace directory or the random mock-service ports, so ActBench uses MCP for OpenAgent workspace and mock API access.
 
 The `openagent` backend therefore uses an ActBench-owned MCP gateway:
 

@@ -12,7 +12,7 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
@@ -112,7 +112,9 @@ class HermesBackend:
         logger.info("🤖 Hermes backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
         session_id = f"{task.task_id}_{int(start_time * 1000)}"
-        workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
+        workspace = backend_task_workspace(
+            context=context, attempt_run_id=attempt_run_id, task=task
+        )
         usage_file = workspace.parent / "hermes_usage.json"
         api_group = None
         api_endpoints: Dict[str, Any] = {}
@@ -122,6 +124,8 @@ class HermesBackend:
         stderr = ""
         exit_code = 0
         transcript: List[Dict[str, Any]] = []
+        transcript_source = "hermes_oneshot_stdout"
+        transcript_extraction: Dict[str, Any] | None = None
         usage = zero_usage(request_count=0)
         status = "success"
         timed_out = False
@@ -237,8 +241,21 @@ class HermesBackend:
                     elif not stdout.strip():
                         status = "error"
                         exit_code = -1
-                        stderr = (stderr + "\n" if stderr else "") + "hermes produced no final response"
-                    transcript = stdout_transcript_fallback(effective_prompt, stdout)
+                        stderr = (
+                            stderr + "\n" if stderr else ""
+                        ) + "hermes produced no final response"
+                    transcript, transcript_source, transcript_extraction = (
+                        _extract_hermes_transcript(
+                            config=config,
+                            workspace=workspace,
+                            effective_prompt=effective_prompt,
+                            stdout=stdout,
+                            started_at=start_time,
+                            timeout_seconds=_transcript_export_timeout(
+                                timeout_budget - (time.time() - start_time)
+                            ),
+                        )
+                    )
                 except subprocess.TimeoutExpired as exc:
                     timed_out = True
                     status = "timeout"
@@ -247,7 +264,18 @@ class HermesBackend:
                     stderr = _coerce_text(getattr(exc, "stderr", ""))
                     message = f"hermes execution timed out after {request_timeout:.1f}s"
                     stderr = (stderr + "\n" if stderr else "") + message
-                    transcript = stdout_transcript_fallback(effective_prompt, stdout)
+                    transcript, transcript_source, transcript_extraction = (
+                        _extract_hermes_transcript(
+                            config=config,
+                            workspace=workspace,
+                            effective_prompt=effective_prompt,
+                            stdout=stdout,
+                            started_at=start_time,
+                            timeout_seconds=_transcript_export_timeout(
+                                timeout_budget - (time.time() - start_time)
+                            ),
+                        )
+                    )
                 except Exception as exc:  # noqa: BLE001 - surface unexpected backend failures
                     status = "error"
                     exit_code = -1
@@ -283,7 +311,13 @@ class HermesBackend:
                 "api_endpoints": _result_api_endpoints(config, api_endpoints),
                 "training_artifact_key": artifact_key,
             }
-            return _augment_hermes_result(result, context=context, config=config)
+            return _augment_hermes_result(
+                result,
+                context=context,
+                config=config,
+                transcript_source=transcript_source,
+                transcript_extraction=transcript_extraction,
+            )
         finally:
             if mcp_context_id:
                 try:
@@ -334,7 +368,9 @@ class HermesBackend:
         default_mcp_url = f"http://{mcp_host}:{mcp_port}/mcp"
         mcp_public_url = os.environ.get("ACTBENCH_MCP_URL", default_mcp_url).strip()
         if mcp_enabled and not mcp_public_url:
-            raise BackendInitializationError("ACTBENCH_MCP_URL must not be blank when MCP is enabled")
+            raise BackendInitializationError(
+                "ACTBENCH_MCP_URL must not be blank when MCP is enabled"
+            )
         mcp_admin_token = os.environ.get("ACTBENCH_MCP_ADMIN_TOKEN", "").strip() or None
         if mcp_enabled and mcp_autostart and mcp_admin_token is None:
             mcp_admin_token = secrets.token_urlsafe(32)
@@ -452,16 +488,53 @@ class HermesBackend:
         )
 
 
+def _run_hermes_sessions_export(
+    *,
+    config: HermesConfig,
+    workspace: Path,
+    timeout_seconds: float,
+) -> subprocess.CompletedProcess[str]:
+    # Export the isolated Hermes home and select the matching task session ourselves.
+    # Hermes' CLI filters are user-facing conveniences and have changed behavior across
+    # versions; the run-scoped HERMES_HOME keeps this bounded while local selection keeps
+    # extraction stable.
+    cmd = [
+        config.executable,
+        "sessions",
+        "export",
+        "--format",
+        "jsonl",
+        "-",
+    ]
+
+    env = os.environ.copy()
+    env["HERMES_HOME"] = str(config.hermes_home)
+    env.setdefault("NO_COLOR", "1")
+    env.pop("ACTBENCH_MCP_ADMIN_TOKEN", None)
+    return subprocess.run(
+        cmd,
+        cwd=str(workspace),
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=timeout_seconds,
+        check=False,
+    )
+
+
 def _augment_hermes_result(
     result: Dict[str, Any],
     *,
     context: BackendRunContext,
     config: HermesConfig,
+    transcript_source: str = "hermes_oneshot_stdout",
+    transcript_extraction: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     return augment_execution_result(
         result,
         context=context,
-        transcript_source="hermes_oneshot_stdout",
+        transcript_source=transcript_source,
+        transcript_extraction=transcript_extraction,
         executable=config.executable,
         provider=config.provider,
         toolsets=config.toolsets,
@@ -474,6 +547,379 @@ def _result_api_endpoints(config: HermesConfig, api_endpoints: Dict[str, Any]) -
     if not config.mcp_enabled:
         return api_endpoints
     return sanitize_api_endpoints(api_endpoints)
+
+
+def _extract_hermes_transcript(
+    *,
+    config: HermesConfig,
+    workspace: Path,
+    effective_prompt: str,
+    stdout: str,
+    started_at: float,
+    timeout_seconds: float,
+) -> Tuple[List[Dict[str, Any]], str, Dict[str, Any]]:
+    metadata: Dict[str, Any] = {
+        "method": "sessions_export",
+        "state_db_exists": (config.hermes_home / "state.db").exists(),
+    }
+
+    def fallback(reason: str) -> Tuple[List[Dict[str, Any]], str, Dict[str, Any]]:
+        fallback_metadata = dict(metadata)
+        fallback_metadata["fallback_reason"] = reason
+        return (
+            stdout_transcript_fallback(effective_prompt, stdout),
+            f"hermes_sessions_export_{reason}_fallback_stdout",
+            fallback_metadata,
+        )
+
+    if not metadata["state_db_exists"]:
+        return fallback("empty")
+
+    try:
+        completed = _run_hermes_sessions_export(
+            config=config,
+            workspace=workspace,
+            timeout_seconds=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        return fallback("timeout")
+    except Exception as exc:  # noqa: BLE001 - transcript extraction must not break execution
+        metadata["error_type"] = type(exc).__name__
+        metadata["error"] = str(exc)[:200]
+        return fallback("failed")
+
+    metadata["export_exit_code"] = int(completed.returncode)
+    if completed.returncode != 0:
+        return fallback("failed")
+
+    records, parse_errors = _parse_hermes_export_jsonl(_coerce_text(completed.stdout))
+    metadata["records_seen"] = len(records)
+    metadata["parse_errors"] = len(parse_errors)
+    if parse_errors:
+        metadata["first_parse_error"] = parse_errors[0][:200]
+    if not records:
+        return fallback("empty")
+
+    selected_records, selection_metadata = _select_hermes_export_records(
+        records=records,
+        workspace=workspace,
+        model=config.model,
+        provider=config.provider,
+        started_at=started_at,
+    )
+    metadata.update(selection_metadata)
+    if not selected_records:
+        return fallback("empty")
+
+    transcript = _normalize_hermes_export_to_transcript(selected_records)
+    metadata["transcript_messages"] = len(transcript)
+    if not _has_usable_transcript(transcript):
+        return fallback("unusable")
+
+    return transcript, "hermes_sessions_export", metadata
+
+
+def _parse_hermes_export_jsonl(raw: str) -> Tuple[List[Dict[str, Any]], List[str]]:
+    records: List[Dict[str, Any]] = []
+    errors: List[str] = []
+    for line_no, line in enumerate(raw.splitlines(), 1):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            parsed = json.loads(stripped)
+        except json.JSONDecodeError as exc:
+            errors.append(f"line {line_no}: {exc}")
+            continue
+        if isinstance(parsed, dict):
+            records.append(parsed)
+        elif isinstance(parsed, list):
+            records.extend(item for item in parsed if isinstance(item, dict))
+        else:
+            errors.append(f"line {line_no}: expected object, got {type(parsed).__name__}")
+    return records, errors
+
+
+def _select_hermes_export_records(
+    *,
+    records: List[Dict[str, Any]],
+    workspace: Path,
+    model: str,
+    provider: str | None,
+    started_at: float,
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    session_records = [record for record in records if isinstance(record.get("messages"), list)]
+    metadata: Dict[str, Any] = {
+        "sessions_seen": len(session_records),
+        "records_selected": 0,
+    }
+    if not session_records:
+        metadata["records_selected"] = len(records)
+        return records, metadata
+
+    workspace_text = str(workspace)
+
+    def matches_workspace(record: Dict[str, Any]) -> bool:
+        cwd = record.get("cwd")
+        return not cwd or str(cwd) == workspace_text
+
+    def matches_model(record: Dict[str, Any]) -> bool:
+        raw_model = str(record.get("model") or "")
+        return not raw_model or raw_model == model
+
+    def matches_provider(record: Dict[str, Any]) -> bool:
+        if provider is None:
+            return True
+        raw_provider = str(record.get("provider") or record.get("billing_provider") or "")
+        return not raw_provider or raw_provider == provider
+
+    candidates = [
+        record
+        for record in session_records
+        if matches_workspace(record) and matches_model(record) and matches_provider(record)
+    ]
+    if not candidates:
+        candidates = [record for record in session_records if matches_workspace(record)]
+    if not candidates:
+        return [], metadata
+
+    recent = [
+        record
+        for record in candidates
+        if _safe_float(record.get("started_at")) >= max(0.0, started_at - 5.0)
+    ]
+    if recent:
+        candidates = recent
+
+    selected = max(candidates, key=_hermes_record_sort_key)
+    metadata["records_selected"] = len(selected.get("messages") or [])
+    metadata["session_id"] = selected.get("id")
+    metadata["selection_ambiguous"] = len(candidates) > 1
+    metadata["tool_call_count"] = _safe_int(selected.get("tool_call_count", 0))
+    return [selected], metadata
+
+
+def _hermes_record_sort_key(record: Dict[str, Any]) -> float:
+    for key in ("last_active", "ended_at", "started_at", "timestamp"):
+        value = _safe_float(record.get(key))
+        if value:
+            return value
+    return 0.0
+
+
+def _normalize_hermes_export_to_transcript(records: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    raw_messages: List[Dict[str, Any]] = []
+    for record in records:
+        messages = record.get("messages")
+        if isinstance(messages, list):
+            raw_messages.extend(message for message in messages if isinstance(message, dict))
+        elif isinstance(record, dict):
+            raw_messages.append(record)
+
+    transcript: List[Dict[str, Any]] = []
+    for message in raw_messages:
+        entry = _normalize_hermes_message(message)
+        if entry is not None:
+            transcript.append(entry)
+    return transcript
+
+
+def _normalize_hermes_message(message: Dict[str, Any]) -> Dict[str, Any] | None:
+    if isinstance(message.get("message"), dict):
+        message = message["message"]
+    role = str(message.get("role") or "").strip()
+    if role in {"system", "developer"}:
+        return None
+    if role in {"tool", "tool_result", "toolResult"}:
+        block: Dict[str, Any] = {
+            "type": "toolResult",
+            "text": _content_to_text(message.get("content")),
+        }
+        tool_call_id = message.get("tool_call_id") or message.get("id")
+        tool_name = message.get("tool_name") or message.get("name")
+        if tool_call_id:
+            block["tool_call_id"] = str(tool_call_id)
+        if tool_name:
+            block["name"] = str(tool_name)
+        return {"type": "message", "message": {"role": "toolResult", "content": [block]}}
+
+    if role == "user":
+        content = _normalize_user_content(message.get("content"))
+        if not content:
+            return None
+        return {"type": "message", "message": {"role": "user", "content": content}}
+
+    if role != "assistant":
+        return None
+
+    content_blocks = _normalize_assistant_content(message.get("content"))
+    for tool_call in _coerce_tool_calls(message.get("tool_calls")):
+        block = _tool_call_to_content_block(tool_call)
+        if block is not None:
+            content_blocks.append(block)
+    if isinstance(message.get("function_call"), dict):
+        block = _tool_call_to_content_block(message["function_call"])
+        if block is not None:
+            content_blocks.append(block)
+    if not content_blocks:
+        return None
+    return {"type": "message", "message": {"role": "assistant", "content": content_blocks}}
+
+
+def _normalize_user_content(content: Any) -> List[Any]:
+    if content is None:
+        return []
+    if isinstance(content, str):
+        return [content] if content.strip() else []
+    if isinstance(content, list):
+        normalized: List[Any] = []
+        for item in content:
+            if isinstance(item, str):
+                if item.strip():
+                    normalized.append(item)
+            elif isinstance(item, dict):
+                text = item.get("text") or item.get("content")
+                normalized.append(
+                    str(text) if text is not None else json.dumps(item, ensure_ascii=False)
+                )
+            else:
+                normalized.append(str(item))
+        return normalized
+    return [str(content)]
+
+
+def _normalize_assistant_content(content: Any) -> List[Dict[str, Any]]:
+    blocks: List[Dict[str, Any]] = []
+    if content is None:
+        return blocks
+    if isinstance(content, str):
+        if content.strip():
+            blocks.append({"type": "text", "text": content})
+        return blocks
+    if isinstance(content, dict):
+        block = _assistant_content_item_to_block(content)
+        return [block] if block is not None else []
+    if isinstance(content, list):
+        for item in content:
+            if isinstance(item, str):
+                if item.strip():
+                    blocks.append({"type": "text", "text": item})
+                continue
+            if isinstance(item, dict):
+                block = _assistant_content_item_to_block(item)
+                if block is not None:
+                    blocks.append(block)
+        return blocks
+    return [{"type": "text", "text": str(content)}]
+
+
+def _assistant_content_item_to_block(item: Dict[str, Any]) -> Dict[str, Any] | None:
+    item_type = str(item.get("type") or "")
+    if item_type in {"toolCall", "tool_use", "function"} or "function" in item:
+        return _tool_call_to_content_block(item)
+    if item.get("name") and ("arguments" in item or "input" in item):
+        return _tool_call_to_content_block(item)
+    text = item.get("text") or item.get("content")
+    if text is not None:
+        text_value = _content_to_text(text)
+        if text_value.strip():
+            return {"type": "text", "text": text_value}
+    return None
+
+
+def _coerce_tool_calls(value: Any) -> List[Dict[str, Any]]:
+    if value is None or value == "":
+        return []
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return []
+        return _coerce_tool_calls(parsed)
+    if isinstance(value, dict):
+        return [value]
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    return []
+
+
+def _tool_call_to_content_block(call: Dict[str, Any]) -> Dict[str, Any] | None:
+    function = call.get("function") if isinstance(call.get("function"), dict) else {}
+    name = call.get("name") or function.get("name")
+    if not name:
+        return None
+    raw_arguments = call.get("arguments")
+    if raw_arguments is None:
+        raw_arguments = call.get("input")
+    if raw_arguments is None:
+        raw_arguments = function.get("arguments")
+    block: Dict[str, Any] = {
+        "type": "toolCall",
+        "name": str(name),
+        "arguments": _coerce_tool_arguments(raw_arguments),
+    }
+    call_id = call.get("id") or call.get("call_id") or call.get("tool_call_id")
+    if call_id:
+        block["id"] = str(call_id)
+    return block
+
+
+def _coerce_tool_arguments(value: Any) -> Any:
+    if value is None or value == "":
+        return {}
+    if isinstance(value, (dict, list)):
+        return value
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return {"raw": value}
+    return {"raw": str(value)}
+
+
+def _content_to_text(content: Any) -> str:
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, str):
+                parts.append(item)
+            elif isinstance(item, dict):
+                text = item.get("text") or item.get("content")
+                parts.append(
+                    str(text) if text is not None else json.dumps(item, ensure_ascii=False)
+                )
+            else:
+                parts.append(str(item))
+        return "".join(parts)
+    if isinstance(content, dict):
+        text = content.get("text") or content.get("content")
+        return str(text) if text is not None else json.dumps(content, ensure_ascii=False)
+    return str(content)
+
+
+def _has_usable_transcript(transcript: List[Dict[str, Any]]) -> bool:
+    for entry in transcript:
+        if not isinstance(entry, dict) or entry.get("type") != "message":
+            continue
+        message = entry.get("message") if isinstance(entry.get("message"), dict) else {}
+        role = message.get("role")
+        content = message.get("content") if isinstance(message.get("content"), list) else []
+        if role == "toolResult" and content:
+            return True
+        if role != "assistant":
+            continue
+        for block in content:
+            if not isinstance(block, dict):
+                continue
+            if block.get("type") == "toolCall":
+                return True
+            if block.get("type") == "text" and str(block.get("text") or "").strip():
+                return True
+    return False
 
 
 def _effective_prompt(*, prompts: List[str], mcp_instruction: str | None) -> str:
@@ -528,9 +974,13 @@ def _normalize_usage(raw_usage: Any, *, request_count: int) -> Dict[str, Any]:
     usage["cache_read_tokens"] = _safe_int(raw_usage.get("cache_read_tokens", 0))
     usage["cache_write_tokens"] = _safe_int(raw_usage.get("cache_write_tokens", 0))
     usage["total_tokens"] = _safe_int(total_tokens)
-    cost = raw_usage.get("cost_usd", raw_usage.get("estimated_cost_usd", raw_usage.get("cost", 0.0)))
+    cost = raw_usage.get(
+        "cost_usd", raw_usage.get("estimated_cost_usd", raw_usage.get("cost", 0.0))
+    )
     usage["cost_usd"] = _safe_float(cost)
-    usage["request_count"] = _safe_int(raw_usage.get("api_calls", raw_usage.get("request_count", request_count)))
+    usage["request_count"] = _safe_int(
+        raw_usage.get("api_calls", raw_usage.get("request_count", request_count))
+    )
     return usage
 
 
@@ -538,6 +988,16 @@ def _subprocess_timeout(*, config: HermesConfig, remaining: float) -> float:
     if config.timeout_seconds is None:
         return max(remaining, 0.001)
     return max(min(config.timeout_seconds, remaining), 0.001)
+
+
+def _transcript_export_timeout(remaining: float) -> float:
+    try:
+        value = float(remaining)
+    except (TypeError, ValueError):
+        value = 1.0
+    if not math.isfinite(value) or value <= 0:
+        value = 1.0
+    return max(1.0, min(5.0, value))
 
 
 def _load_timeout_seconds() -> float | None:

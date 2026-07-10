@@ -19,6 +19,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - `uv` or `pip`
 - OpenClaw CLI available on `PATH` for the default `openclaw` backend
 - Hermes CLI available on `PATH` or `ACTBENCH_HERMES_BIN` set when using `--backend hermes`
+- A running QwenPaw service when using `--backend qwenpaw`
 - A configured target model for the selected backend
 - A judge-model API key when using LLM-assisted scoring:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
@@ -43,11 +44,31 @@ uv run scripts/actbench.py --model deepseek/deepseek-v4-pro
 uv run scripts/actbench.py --backend openclaw --model deepseek/deepseek-v4-pro
 ```
 
-Run with qwenpaw when a compatible qwenpaw runtime is installed in the Python environment:
+Run with qwenpaw by starting QwenPaw separately and pointing ActBench at the service. ActBench does not import qwenpaw or require a qwenpaw Python environment; it creates a task-scoped QwenPaw service agent bound to each materialized task workspace:
 
 ```bash
-uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
+ACTBENCH_QWENPAW_BASE_URL=http://127.0.0.1:8088 \
+  uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
 ```
+
+For source-checkout QwenPaw runs, one typical service startup command is:
+
+```bash
+cd /path/to/QwenPaw
+PYTHONPATH=/path/to/QwenPaw/src \
+QWENPAW_WORKING_DIR=/tmp/qwenpaw-actbench \
+python -m qwenpaw app --host 127.0.0.1 --port 8088
+```
+
+Relevant qwenpaw environment variables:
+
+- `ACTBENCH_QWENPAW_BASE_URL` selects the QwenPaw service URL; default is `http://127.0.0.1:8088`.
+- `ACTBENCH_QWENPAW_API_KEY` optionally sends `Authorization: Bearer ...` to the service.
+- `ACTBENCH_QWENPAW_TIMEOUT_SECONDS` optionally caps individual service requests; if unset, ActBench uses the task timeout budget.
+- `ACTBENCH_QWENPAW_AGENT_PREFIX` prefixes per-task service agent IDs; default is `actbench`.
+- `ACTBENCH_QWENPAW_DELETE_AGENT` controls best-effort deletion of per-task QwenPaw agent registrations after each attempt; default is enabled.
+- `ACTBENCH_QWENPAW_HEADLESS_TOOL_GUARD` is passed through to QwenPaw's request context.
+
 
 Run with OpenAgent when an OpenAgent service is already running and configured with a Store external API key:
 

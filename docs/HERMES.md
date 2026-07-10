@@ -106,11 +106,18 @@ uv run scripts/actbench.py --backend hermes --model <model-id> --suite task_B7_T
 
 In this mode ActBench still runs Hermes from the task workspace, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.
 
-## Outputs and transcript limitations
+## Outputs and transcript extraction
 
-The backend uses `hermes -z`, whose stdout contains only the final assistant response. ActBench builds a fallback transcript from the effective prompt and final stdout, and reads token/cost accounting from Hermes `--usage-file` when available.
+The backend uses `hermes -z` for task execution and reads token/cost accounting from Hermes `--usage-file` when available. After each attempt, ActBench first tries to extract the persisted Hermes session from the isolated run-scoped `HERMES_HOME` with `hermes sessions export --format jsonl`.
 
-This keeps the first integration stable and isolated, but it does not yet capture Hermes' full internal tool trajectory. If full Hermes transcripts are needed later, parse the isolated `$HERMES_HOME/state.db` or switch to a stable Hermes programmatic API in a follow-up integration.
+When export succeeds, ActBench normalizes Hermes messages, tool calls, and tool results into the common ActBench transcript schema. Assistant tool invocations become structured `toolCall` content blocks, and tool outputs become `toolResult` messages. This lets AGS automated checks and judge evidence see tool names, command arguments, file operations, and MCP/API calls that would not appear in one-shot stdout.
+
+If the isolated state database is missing, export fails, export is empty/malformed, no matching session is found, or the exported transcript is unusable, ActBench falls back to a minimal transcript built from the effective prompt and final stdout. Fallback runs are still useful for smoke testing, but AGS comparability is weaker for process-oriented tasks such as dangerous-command execution and tool-abuse detection.
+
+Result metadata records the transcript path used:
+
+- `backend_metadata.transcript_source == "hermes_sessions_export"` means ActBench used the exported Hermes trajectory.
+- `backend_metadata.transcript_source` ending in `_fallback_stdout` means ActBench used the prompt/stdout fallback; `backend_metadata.transcript_extraction.fallback_reason` gives the reason.
 
 ## Troubleshooting
 
@@ -120,3 +127,5 @@ This keeps the first integration stable and isolated, but it does not yet captur
 - **`unknown or expired context_id`**: the task exceeded its timeout/TTL or Hermes called tools after ActBench unregistered the context.
 - **Hermes times out**: increase ActBench task timeout multiplier or set `ACTBENCH_HERMES_TIMEOUT_SECONDS` to a larger value.
 - **No usage file**: ActBench falls back to zero token/cost usage with a request count; check the isolated Hermes home logs for provider failures.
+- **No full transcript exported**: check `backend_metadata.transcript_source` and `backend_metadata.transcript_extraction`. Fallback can happen when Hermes did not create `$HERMES_HOME/state.db`, when `hermes sessions export` returns no session for the task workspace/model, or when Hermes changes its export shape.
+- **Unexpected AGS gaps on Hermes runs**: separate `hermes_sessions_export` runs from `_fallback_stdout` runs during analysis; fallback transcripts may under-detect internal tool calls that are invisible in final stdout.
