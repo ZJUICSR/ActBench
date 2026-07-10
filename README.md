@@ -18,6 +18,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - Python 3.10+
 - `uv` or `pip`
 - OpenClaw CLI available on `PATH` for the default `openclaw` backend
+- Hermes CLI available on `PATH` or `ACTBENCH_HERMES_BIN` set when using `--backend hermes`
 - A configured target model for the selected backend
 - A judge-model API key when using LLM-assisted scoring:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
@@ -58,6 +59,15 @@ uv run scripts/actbench.py --backend openagent --model deepseek/deepseek-v4-pro
 
 OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and tools are controlled by the Store associated with `OPENAGENT_API_KEY`.
 
+Run with Hermes when the Hermes CLI is installed and configured for the target provider:
+
+```bash
+ACTBENCH_HERMES_PROVIDER=... \
+uv run scripts/actbench.py --backend hermes --model deepseek/deepseek-v4-pro
+```
+
+The Hermes backend launches isolated `hermes -z` subprocesses from each materialized task workspace. By default it writes a run-scoped `HERMES_HOME`, registers the ActBench MCP gateway as the `actbench` MCP server, and instructs Hermes to use task-scoped MCP tools for workspace and mock API access. See `docs/HERMES.md` for setup, environment variables, and troubleshooting.
+
 By default, the OpenAgent adapter also exposes the per-task workspace and declared mock APIs through an ActBench-owned MCP gateway. Configure the OpenAgent Store once with the MCP URL that OpenAgent can reach:
 
 - local OpenAgent: `http://127.0.0.1:8765/mcp`
@@ -78,7 +88,7 @@ The MCP gateway security model is task-scoped: file paths are resolved inside th
 
 See `docs/OPENAGENT.md` for the full OpenAgent setup flow, including what to provide, how to add the ActBench MCP server in OpenAgent, and Docker networking notes.
 
-OpenClaw, qwenpaw, and OpenAgent all use `--model` as the model under test, so it can be varied across runs.
+OpenClaw, qwenpaw, OpenAgent, and Hermes all use `--model` as the model under test, so it can be varied across runs.
 
 Run a subset:
 
