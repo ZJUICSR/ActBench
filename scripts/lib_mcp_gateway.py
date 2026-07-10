@@ -13,7 +13,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
@@ -39,6 +39,7 @@ class ActBenchMcpContext:
     api_endpoints: dict[str, Any]
     created_at: float
     expires_at: float
+    traces: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -115,6 +116,31 @@ class ActBenchMcpRegistry:
                 raise ActBenchMcpError("unknown or expired context_id")
             return context
 
+    def record_trace(self, context_id: str, trace: dict[str, Any]) -> dict[str, Any]:
+        normalized_id = str(context_id).strip()
+        now = time.time()
+        with self._lock:
+            self._cleanup_locked(now=now)
+            context = self._contexts.get(normalized_id)
+            if context is None:
+                raise ActBenchMcpError("unknown or expired context_id")
+            safe_trace = _json_safe_copy(trace)
+            if not isinstance(safe_trace, dict):
+                safe_trace = {"value": safe_trace}
+            safe_trace.setdefault("sequence", len(context.traces) + 1)
+            context.traces.append(safe_trace)
+            return _json_safe_copy(safe_trace)
+
+    def get_traces(self, context_id: str) -> list[dict[str, Any]]:
+        normalized_id = str(context_id).strip()
+        now = time.time()
+        with self._lock:
+            self._cleanup_locked(now=now)
+            context = self._contexts.get(normalized_id)
+            if context is None:
+                raise ActBenchMcpError("unknown or expired context_id")
+            return _json_safe_copy(context.traces)
+
     def clear(self) -> None:
         with self._lock:
             self._contexts.clear()
@@ -149,6 +175,51 @@ def unregister_context(context_id: str) -> bool:
 
 def clear_contexts() -> None:
     REGISTRY.clear()
+
+
+def get_context_traces(context_id: str) -> list[dict[str, Any]]:
+    return REGISTRY.get_traces(context_id)
+
+
+def _json_safe_copy(value: Any) -> Any:
+    return json.loads(json.dumps(value, ensure_ascii=False, default=str))
+
+
+def _is_sensitive_trace_key(key: str) -> bool:
+    normalized = key.lower().replace("-", "_")
+    if normalized in {"context_id", "token", "auth_token", "bearer_token"}:
+        return True
+    sensitive_fragments = (
+        "authorization",
+        "admin_token",
+        "api_key",
+        "apikey",
+        "access_token",
+        "refresh_token",
+        "password",
+        "secret",
+        "credential",
+        "cookie",
+    )
+    return any(fragment in normalized for fragment in sensitive_fragments)
+
+
+def _redact_mcp_trace_value(value: Any, *, key: str = "") -> Any:
+    if key and _is_sensitive_trace_key(key):
+        return "[redacted]"
+    if isinstance(value, dict):
+        redacted: dict[str, Any] = {}
+        for item_key, item_value in value.items():
+            key_text = str(item_key)
+            if key_text.lower().replace("-", "_") == "context_id":
+                continue
+            redacted[key_text] = _redact_mcp_trace_value(item_value, key=key_text)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_mcp_trace_value(item) for item in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
 
 
 def _resolve_workspace_path(context: ActBenchMcpContext, raw_path: str | None) -> Path:
@@ -453,12 +524,35 @@ def _dispatch_tool_call(params: Any) -> dict[str, Any]:
 
     handler = TOOL_HANDLERS.get(name)
     if handler is None:
-        return _mcp_tool_error(f"unknown tool: {name}")
+        result = _mcp_tool_error(f"unknown tool: {name}")
+        _maybe_record_tool_trace(name=name, arguments=arguments, result=result)
+        return result
     try:
         value = handler(**arguments)
     except Exception as exc:  # noqa: BLE001 - tool errors are returned to the model
-        return _mcp_tool_error(str(exc))
-    return _mcp_tool_result(value)
+        result = _mcp_tool_error(str(exc))
+        _maybe_record_tool_trace(name=name, arguments=arguments, result=result)
+        return result
+    result = _mcp_tool_result(value)
+    _maybe_record_tool_trace(name=name, arguments=arguments, result=result)
+    return result
+
+
+def _maybe_record_tool_trace(*, name: str, arguments: dict[str, Any], result: dict[str, Any]) -> None:
+    context_id = arguments.get("context_id")
+    if not isinstance(context_id, str) or not context_id.strip():
+        return
+    trace = {
+        "timestamp": time.time(),
+        "name": name,
+        "arguments": _redact_mcp_trace_value(arguments),
+        "result": _redact_mcp_trace_value(result),
+        "isError": bool(result.get("isError")),
+    }
+    try:
+        REGISTRY.record_trace(context_id, trace)
+    except ActBenchMcpError:
+        return
 
 
 def _mcp_tool_result(value: Any) -> dict[str, Any]:
@@ -529,6 +623,15 @@ def create_app() -> FastAPI:
         _require_admin_token(request)
         removed = unregister_context(context_id)
         return JSONResponse({"status": "ok", "removed": removed})
+
+    @app.get("/admin/contexts/{context_id}/traces")
+    async def admin_context_traces(context_id: str, request: Request) -> JSONResponse:
+        _require_admin_token(request)
+        try:
+            traces = get_context_traces(context_id)
+        except ActBenchMcpError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return JSONResponse({"status": "ok", "context_id": context_id, "traces": traces})
 
     return app
 
@@ -633,6 +736,20 @@ def unregister_gateway_context(
     return _client_request_json(
         f"{_admin_contexts_url(mcp_url).rstrip('/')}/{encoded_context}",
         method="DELETE",
+        admin_token=admin_token,
+    )
+
+
+def get_gateway_context_traces(
+    *,
+    mcp_url: str,
+    context_id: str,
+    admin_token: str | None = None,
+) -> dict[str, Any]:
+    encoded_context = urllib.parse.quote(context_id, safe="")
+    return _client_request_json(
+        f"{_admin_contexts_url(mcp_url).rstrip('/')}/{encoded_context}/traces",
+        method="GET",
         admin_token=admin_token,
     )
 

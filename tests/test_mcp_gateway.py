@@ -13,6 +13,7 @@ for path in (ROOT, SCRIPTS_DIR):
         sys.path.insert(0, str(path))
 
 from lib_api_services import start_api_services  # noqa: E402
+import lib_mcp_gateway as mcp_gateway_module  # noqa: E402
 from lib_mcp_gateway import (  # noqa: E402
     ActBenchMcpError,
     actbench_call_api,
@@ -22,6 +23,8 @@ from lib_mcp_gateway import (  # noqa: E402
     actbench_write_file,
     clear_contexts,
     dispatch_json_rpc,
+    get_context_traces,
+    get_gateway_context_traces,
     mcp_tools,
     register_context,
     unregister_context,
@@ -132,6 +135,89 @@ def test_workspace_file_tools_and_json_rpc_call(tmp_path: Path) -> None:
 
     response = _call_tool("actbench_read_file", {"context_id": "ctx", "path": "nested/output.txt"})
     assert _rpc_tool_result(response)["content"] == "done"
+
+
+def test_json_rpc_tool_calls_are_recorded_as_redacted_traces(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    (workspace / "README.md").write_text("hello", encoding="utf-8")
+    register_context(context_id="ctx-secret", workspace=workspace, ttl_seconds=30)
+
+    response = _call_tool(
+        "actbench_read_file",
+        {
+            "context_id": "ctx-secret",
+            "path": "README.md",
+        },
+    )
+
+    assert _rpc_tool_result(response)["content"] == "hello"
+    traces = get_context_traces("ctx-secret")
+    assert len(traces) == 1
+    trace = traces[0]
+    assert trace["sequence"] == 1
+    assert trace["name"] == "actbench_read_file"
+    assert trace["arguments"]["path"] == "README.md"
+    assert "context_id" not in trace["arguments"]
+    assert trace["isError"] is False
+    assert trace["result"]["isError"] is False
+    assert "hello" in trace["result"]["content"][0]["text"]
+    assert "ctx-secret" not in json.dumps(trace, sort_keys=True)
+
+
+def test_json_rpc_tool_errors_are_recorded_as_traces(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    register_context(context_id="ctx", workspace=workspace, ttl_seconds=30)
+
+    missing = _call_tool("actbench_read_file", {"context_id": "ctx", "path": "missing.txt"})
+    unknown = _call_tool(
+        "missing_tool",
+        {
+            "context_id": "ctx",
+            "headers": {"Authorization": "Bearer should-not-leak"},
+            "api_key": "also-secret",
+        },
+    )
+
+    assert "path is not a file" in _rpc_tool_error(missing)
+    assert "unknown tool" in _rpc_tool_error(unknown)
+    traces = get_context_traces("ctx")
+    assert [trace["name"] for trace in traces] == ["actbench_read_file", "missing_tool"]
+    assert all(trace["isError"] is True for trace in traces)
+    assert "path is not a file" in traces[0]["result"]["content"][0]["text"]
+    assert "unknown tool" in traces[1]["result"]["content"][0]["text"]
+    assert traces[1]["arguments"]["headers"]["Authorization"] == "[redacted]"
+    assert traces[1]["arguments"]["api_key"] == "[redacted]"
+    assert "should-not-leak" not in json.dumps(traces[1], sort_keys=True)
+    assert "also-secret" not in json.dumps(traces[1], sort_keys=True)
+
+
+def test_get_gateway_context_traces_client_helper_quotes_context_id(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict] = []
+
+    def fake_client_request_json(url: str, **kwargs: object) -> dict:
+        calls.append({"url": url, **kwargs})
+        return {"status": "ok", "traces": []}
+
+    monkeypatch.setattr(mcp_gateway_module, "_client_request_json", fake_client_request_json)
+
+    result = get_gateway_context_traces(
+        mcp_url="http://127.0.0.1:8765/mcp",
+        context_id="ctx/with space",
+        admin_token="admin-secret",
+    )
+
+    assert result == {"status": "ok", "traces": []}
+    assert calls == [
+        {
+            "url": "http://127.0.0.1:8765/admin/contexts/ctx%2Fwith%20space/traces",
+            "method": "GET",
+            "admin_token": "admin-secret",
+        }
+    ]
 
 
 def test_workspace_file_tools_reject_absolute_and_parent_escape(tmp_path: Path) -> None:

@@ -19,6 +19,7 @@ from lib_mcp_gateway import (
     DEFAULT_MCP_PORT,
     ActBenchMcpGatewayProcess,
     check_gateway_health,
+    get_gateway_context_traces,
     register_gateway_context,
     sanitize_api_endpoints,
     start_gateway_subprocess,
@@ -285,6 +286,19 @@ class OpenAgentBackend:
 
             if api_group:
                 api_audit = api_group.collect_audit()
+
+            if config.mcp_enabled and mcp_context_id:
+                try:
+                    trace_response = get_gateway_context_traces(
+                        mcp_url=config.mcp_admin_url,
+                        context_id=mcp_context_id,
+                        admin_token=config.mcp_admin_token,
+                    )
+                    transcript.extend(
+                        _mcp_gateway_traces_to_transcript(trace_response.get("traces"))
+                    )
+                except Exception as exc:  # noqa: BLE001 - tracing must not fail the task
+                    logger.warning("   Failed to retrieve ActBench MCP traces: %s", exc)
 
             execution_time = elapsed_since(start_time)
             result = {
@@ -622,6 +636,112 @@ def _transcript_from_openai_message(message: Dict[str, Any]) -> Dict[str, Any]:
         if key in message:
             transcript_message[key] = message[key]
     return {"type": "message", "message": transcript_message}
+
+
+def _mcp_gateway_traces_to_transcript(raw_traces: Any) -> List[Dict[str, Any]]:
+    if not isinstance(raw_traces, list):
+        return []
+    transcript: List[Dict[str, Any]] = []
+    for index, trace in enumerate(raw_traces, 1):
+        if not isinstance(trace, dict):
+            continue
+        name = trace.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        sequence = trace.get("sequence") or index
+        tool_call_id = f"actbench-mcp-{sequence}"
+        arguments = trace.get("arguments") if isinstance(trace.get("arguments"), dict) else {}
+        arguments = _redact_mcp_trace_value(arguments)
+        transcript.append(
+            {
+                "type": "message",
+                "message": {
+                    "role": "assistant",
+                    "content": [
+                        {
+                            "type": "toolCall",
+                            "name": name,
+                            "arguments": arguments,
+                            "id": tool_call_id,
+                        }
+                    ],
+                },
+            }
+        )
+        result_block: Dict[str, Any] = {
+            "type": "toolResult",
+            "text": _mcp_trace_result_text(trace.get("result")),
+            "tool_call_id": tool_call_id,
+            "name": name,
+        }
+        if "isError" in trace:
+            result_block["isError"] = bool(trace.get("isError"))
+        transcript.append(
+            {
+                "type": "message",
+                "message": {"role": "toolResult", "content": [result_block]},
+            }
+        )
+    return transcript
+
+
+def _mcp_trace_result_text(result: Any) -> str:
+    if isinstance(result, dict):
+        content = result.get("content")
+        if isinstance(content, list):
+            parts: List[str] = []
+            for item in content:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict):
+                    text = item.get("text") or item.get("content")
+                    if isinstance(text, str):
+                        parts.append(text)
+            if parts:
+                return "\n".join(parts)
+        text = result.get("text")
+        if isinstance(text, str):
+            return text
+    if result is None:
+        return ""
+    return json.dumps(result, ensure_ascii=False, sort_keys=True, default=str)
+
+
+def _redact_mcp_trace_value(value: Any, *, key: str = "") -> Any:
+    if key and _is_sensitive_mcp_trace_key(key):
+        return "[redacted]"
+    if isinstance(value, dict):
+        redacted: Dict[str, Any] = {}
+        for item_key, item_value in value.items():
+            key_text = str(item_key)
+            if key_text.lower().replace("-", "_") == "context_id":
+                continue
+            redacted[key_text] = _redact_mcp_trace_value(item_value, key=key_text)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_mcp_trace_value(item) for item in value]
+    return value
+
+
+def _is_sensitive_mcp_trace_key(key: str) -> bool:
+    normalized = key.lower().replace("-", "_")
+    if normalized in {"context_id", "token", "auth_token", "bearer_token"}:
+        return True
+    return any(
+        fragment in normalized
+        for fragment in (
+            "authorization",
+            "admin_token",
+            "api_key",
+            "apikey",
+            "access_token",
+            "refresh_token",
+            "password",
+            "secret",
+            "credential",
+            "cookie",
+        )
+    )
 
 
 def _augment_openagent_result(
