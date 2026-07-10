@@ -78,6 +78,25 @@ def _configure_hermes_test_env(
     monkeypatch.delenv("ACTBENCH_MCP_AUTOSTART", raising=False)
 
 
+def _configure_opencode_test_env(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    mcp_enabled: bool = False,
+) -> None:
+    monkeypatch.setenv("ACTBENCH_OPENCODE_BIN", "opencode")
+    monkeypatch.setenv("ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP", "1" if mcp_enabled else "0")
+    monkeypatch.delenv("ACTBENCH_OPENCODE_MODEL", raising=False)
+    monkeypatch.delenv("ACTBENCH_OPENCODE_AGENT", raising=False)
+    monkeypatch.delenv("ACTBENCH_OPENCODE_TIMEOUT_SECONDS", raising=False)
+    monkeypatch.delenv("ACTBENCH_OPENCODE_HOME_ROOT", raising=False)
+    monkeypatch.delenv("ACTBENCH_OPENCODE_AUTO", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_ADMIN_TOKEN", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_URL", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_HOST", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_PORT", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_AUTOSTART", raising=False)
+
+
 def _configure_qwenpaw_test_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ACTBENCH_QWENPAW_BASE_URL", "http://qwenpaw.test")
     monkeypatch.delenv("ACTBENCH_QWENPAW_API_KEY", raising=False)
@@ -140,13 +159,23 @@ def test_cli_accepts_hermes_backend(monkeypatch: pytest.MonkeyPatch) -> None:
     assert args.model == "hermes/test"
 
 
+def test_cli_accepts_opencode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "opencode", "--model", "opencode/test"])
+
+    args = _parse_args()
+
+    assert args.backend == "opencode"
+    assert args.model == "opencode/test"
+
+
 def test_registry_resolves_backends_without_eager_optional_imports() -> None:
-    assert available_backend_names() == ("openclaw", "qwenpaw", "openagent", "hermes", "fake")
+    assert available_backend_names() == ("openclaw", "qwenpaw", "openagent", "hermes", "opencode", "fake")
     assert get_backend("openclaw").name == "openclaw"
     assert get_backend("fake").name == "fake"
     assert get_backend("qwenpaw").name == "qwenpaw"
     assert get_backend("openagent").name == "openagent"
     assert get_backend("hermes").name == "hermes"
+    assert get_backend("opencode").name == "opencode"
     with pytest.raises(ValueError, match="unknown backend"):
         get_backend("missing")
 
@@ -720,6 +749,322 @@ def test_hermes_backend_timeout_returns_timeout_result(
     assert result["exit_code"] == -1
     assert "timed out" in result["stderr"]
     assert result["stdout"] == "partial"
+
+
+def test_opencode_backend_missing_binary_is_controlled(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: None)
+    backend = OpenCodeBackend()
+    context = _context(tmp_path, backend="opencode")
+
+    with pytest.raises(BackendInitializationError, match="ACTBENCH_OPENCODE_BIN"):
+        backend.initialize_run(context)
+
+
+def test_opencode_transcript_helpers_normalize_export_messages() -> None:
+    from benchmark.backends.opencode import (
+        _extract_session_id_from_run_stdout,
+        _normalize_opencode_export_to_transcript,
+        _usage_from_opencode_export,
+    )
+
+    export_payload = {
+        "info": {"id": "ses_1"},
+        "messages": [
+            {
+                "info": {"role": "user", "id": "msg_user", "sessionID": "ses_1"},
+                "parts": [{"type": "text", "id": "prt_user", "text": "Read the file."}],
+            },
+            {
+                "info": {
+                    "role": "assistant",
+                    "id": "msg_assistant",
+                    "sessionID": "ses_1",
+                    "tokens": {
+                        "input": 10,
+                        "output": 5,
+                        "reasoning": 1,
+                        "cache": {"read": 2, "write": 3},
+                    },
+                    "cost": 0.125,
+                },
+                "parts": [
+                    {"type": "text", "id": "txt_1", "text": "I will inspect it."},
+                    {
+                        "type": "tool",
+                        "id": "prt_tool_1",
+                        "callID": "tool_1",
+                        "tool": "actbench_read_file",
+                        "state": {
+                            "status": "completed",
+                            "input": {
+                                "path": "README.md",
+                                "context_id": "ctx-secret",
+                                "headers": {"Authorization": "Bearer should-not-leak"},
+                            },
+                            "output": "hello",
+                        },
+                    },
+                ],
+            },
+            {"type": "shell", "callID": "shell_1", "command": "ls", "output": "README.md\n"},
+        ],
+    }
+
+    transcript = _normalize_opencode_export_to_transcript(export_payload)
+
+    assert transcript[0] == {
+        "type": "message",
+        "message": {"role": "user", "content": ["Read the file."]},
+    }
+    tool_call_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolCall"
+    ]
+    tool_result_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolResult"
+    ]
+    assert tool_call_blocks[0] == {
+        "type": "toolCall",
+        "name": "actbench_read_file",
+        "arguments": {
+            "path": "README.md",
+            "headers": {"Authorization": "[redacted]"},
+        },
+        "id": "tool_1",
+    }
+    assert tool_result_blocks[0] == {
+        "type": "toolResult",
+        "text": "hello",
+        "tool_call_id": "tool_1",
+        "name": "actbench_read_file",
+        "isError": False,
+    }
+    assert tool_call_blocks[1] == {
+        "type": "toolCall",
+        "name": "shell",
+        "arguments": {"command": "ls"},
+        "id": "shell_1",
+    }
+    usage = _usage_from_opencode_export(export_payload)
+    assert usage["input_tokens"] == 10
+    assert usage["output_tokens"] == 6
+    assert usage["cache_read_tokens"] == 2
+    assert usage["cache_write_tokens"] == 3
+    assert usage["total_tokens"] == 16
+    assert usage["cost_usd"] == 0.125
+    assert usage["request_count"] == 1
+    assert _extract_session_id_from_run_stdout('{"type":"text","sessionID":"ses_1"}\n') == "ses_1"
+    assert _extract_session_id_from_run_stdout('[{"sessionID":"ses_list"}]\n') == "ses_list"
+
+
+def test_opencode_mcp_disabled_ignores_stale_mcp_env(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_MCP_PORT", "not-a-port")
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
+    backend = OpenCodeBackend()
+
+    backend.initialize_run(_context(tmp_path, backend="opencode"))
+
+    assert backend._config is not None
+    assert backend._config.mcp_enabled is False
+
+
+def test_opencode_backend_returns_backend_compatible_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
+    backend = OpenCodeBackend()
+    calls: list[dict] = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        return subprocess.CompletedProcess(
+            args=["opencode"],
+            returncode=0,
+            stdout=(
+                '{"type":"text","sessionID":"ses_1",'
+                '"part":{"type":"text","text":"done","time":{"end":1}}}\n'
+            ),
+            stderr="",
+        )
+
+    def fake_export(**kwargs):
+        return subprocess.CompletedProcess(
+            args=["opencode", "export", kwargs["session_id"]],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "info": {"id": kwargs["session_id"]},
+                    "messages": [
+                        {
+                            "info": {"role": "user", "id": "msg_user", "sessionID": kwargs["session_id"]},
+                            "parts": [{"type": "text", "id": "prt_user", "text": "Say hello."}],
+                        },
+                        {
+                            "info": {
+                                "role": "assistant",
+                                "id": "msg_assistant",
+                                "sessionID": kwargs["session_id"],
+                                "tokens": {
+                                    "input": 10,
+                                    "output": 5,
+                                    "reasoning": 0,
+                                    "cache": {"read": 2, "write": 1},
+                                },
+                                "cost": 0.125,
+                            },
+                            "parts": [{"type": "text", "id": "txt_1", "text": "done"}],
+                        },
+                    ],
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_opencode_subprocess", fake_run)
+    monkeypatch.setattr(backend, "_run_opencode_export", fake_export)
+    context = _context(tmp_path, backend="opencode")
+    task = _task(frontmatter={"sessions": ["first", {"prompt": "second"}]})
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=task, context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert result["backend"] == "opencode"
+    assert result["backend_metadata"]["transcript_source"] == "opencode_export"
+    assert result["backend_metadata"]["opencode_session_id"] == "ses_1"
+    assert result["backend_metadata"]["mcp_enabled"] is False
+    assert result["usage"]["input_tokens"] == 10
+    assert result["usage"]["output_tokens"] == 5
+    assert result["usage"]["cache_read_tokens"] == 2
+    assert result["usage"]["cache_write_tokens"] == 1
+    assert result["usage"]["total_tokens"] == 15
+    assert result["usage"]["cost_usd"] == 0.125
+    assert result["usage"]["request_count"] == 1
+    assert "Session 1:" in calls[0]["prompt"]
+    assert "Session 2:" in calls[0]["prompt"]
+    assert calls[0]["workspace"] == Path(result["workspace"])
+    assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=True)
+    monkeypatch.setenv("ACTBENCH_MCP_AUTOSTART", "0")
+    monkeypatch.setenv("ACTBENCH_MCP_ADMIN_TOKEN", "secret-token")
+    monkeypatch.setenv("ACTBENCH_MCP_URL", "http://host.docker.internal:8765/mcp")
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
+    monkeypatch.setattr(opencode_module.secrets, "token_urlsafe", lambda _: "ctx-123")
+    monkeypatch.setattr(opencode_module, "check_gateway_health", lambda **kwargs: None)
+    registered: list[dict] = []
+    unregistered: list[dict] = []
+    monkeypatch.setattr(
+        opencode_module,
+        "register_gateway_context",
+        lambda **kwargs: registered.append(kwargs) or {"status": "ok"},
+    )
+    monkeypatch.setattr(
+        opencode_module,
+        "unregister_gateway_context",
+        lambda **kwargs: unregistered.append(kwargs) or {"status": "ok", "removed": True},
+    )
+    monkeypatch.setattr(
+        opencode_module,
+        "get_gateway_context_traces",
+        lambda **kwargs: {"status": "ok", "traces": []},
+    )
+    backend = OpenCodeBackend()
+    prompts: list[str] = []
+
+    def fake_run(**kwargs):
+        prompts.append(kwargs["prompt"])
+        return subprocess.CompletedProcess(
+            args=["opencode"],
+            returncode=0,
+            stdout='{"type":"text","sessionID":"ses_mcp","part":{"type":"text","text":"done"}}\n',
+            stderr="",
+        )
+
+    def fake_export(**kwargs):
+        return subprocess.CompletedProcess(
+            args=["opencode", "export", kwargs["session_id"]],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "info": {"id": kwargs["session_id"]},
+                    "messages": [
+                        {
+                            "info": {"role": "user", "id": "msg_user", "sessionID": kwargs["session_id"]},
+                            "parts": [{"type": "text", "id": "prt_user", "text": "Say hello."}],
+                        },
+                        {
+                            "info": {
+                                "role": "assistant",
+                                "id": "msg_assistant",
+                                "sessionID": kwargs["session_id"],
+                            },
+                            "parts": [{"type": "text", "id": "txt_1", "text": "done"}],
+                        },
+                    ],
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_opencode_subprocess", fake_run)
+    monkeypatch.setattr(backend, "_run_opencode_export", fake_export)
+    context = _context(tmp_path, backend="opencode")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert len(registered) == 1
+    assert registered[0]["context_id"] == "ctx-123"
+    assert registered[0]["workspace"] == Path(result["workspace"])
+    assert registered[0]["ttl_seconds"] >= 60
+    assert "ctx-123" in prompts[0]
+    assert "http://host.docker.internal:8765/mcp" in prompts[0]
+    assert unregistered == [
+        {
+            "mcp_url": "http://127.0.0.1:8765/mcp",
+            "context_id": "ctx-123",
+            "admin_token": "secret-token",
+        }
+    ]
+    assert result["backend_metadata"]["mcp_enabled"] is True
+    assert result["backend_metadata"]["mcp_public_url"] == "http://host.docker.internal:8765/mcp"
+    result_text = json.dumps(result, sort_keys=True)
+    assert "secret-token" not in result_text
+    assert "ctx-123" not in result_text
 
 
 def test_hermes_mcp_initialize_autostarts_gateway(

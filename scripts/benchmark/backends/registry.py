@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from benchmark.backends.base import AgentBackend
 
-_BACKEND_NAMES = ("openclaw", "qwenpaw", "openagent", "hermes", "fake")
+_BACKEND_NAMES = ("openclaw", "qwenpaw", "openagent", "hermes", "opencode", "fake")
 
 
 def available_backend_names() -> tuple[str, ...]:
@@ -33,6 +33,10 @@ def get_backend(name: str | None) -> AgentBackend:
         from benchmark.backends.hermes import HermesBackend
 
         return HermesBackend()
+    if normalized == "opencode":
+        from benchmark.backends.opencode import OpenCodeBackend
+
+        return OpenCodeBackend()
     if normalized == "fake":
         from benchmark.backends.fake import FakeBackend
 
