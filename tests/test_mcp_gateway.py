@@ -21,6 +21,7 @@ from lib_mcp_gateway import (  # noqa: E402
     actbench_list_files,
     actbench_read_file,
     actbench_write_file,
+    check_gateway_admin_health,
     clear_contexts,
     dispatch_json_rpc,
     get_context_traces,
@@ -191,6 +192,33 @@ def test_json_rpc_tool_errors_are_recorded_as_traces(tmp_path: Path) -> None:
     assert traces[1]["arguments"]["api_key"] == "[redacted]"
     assert "should-not-leak" not in json.dumps(traces[1], sort_keys=True)
     assert "also-secret" not in json.dumps(traces[1], sort_keys=True)
+
+
+def test_check_gateway_admin_health_uses_authenticated_admin_endpoint(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict] = []
+
+    def fake_client_request_json(url: str, **kwargs: object) -> dict:
+        calls.append({"url": url, **kwargs})
+        return {"status": "ok"}
+
+    monkeypatch.setattr(mcp_gateway_module, "_client_request_json", fake_client_request_json)
+
+    check_gateway_admin_health(
+        mcp_url="http://127.0.0.1:8765/mcp",
+        admin_token="admin-secret",
+        timeout_seconds=1.5,
+    )
+
+    assert calls == [
+        {
+            "url": "http://127.0.0.1:8765/admin/health",
+            "method": "GET",
+            "timeout_seconds": 1.5,
+            "admin_token": "admin-secret",
+        }
+    ]
 
 
 def test_get_gateway_context_traces_client_helper_quotes_context_id(

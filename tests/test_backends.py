@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from argparse import Namespace
@@ -108,6 +109,8 @@ def _configure_claudecode_test_env(
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_TIMEOUT_SECONDS", raising=False)
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_HOME_ROOT", raising=False)
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_PERMISSION_MODE", raising=False)
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_ALLOWED_TOOLS", raising=False)
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_TOOLS", raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_ADMIN_TOKEN", raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_URL", raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_HOST", raising=False)
@@ -1141,6 +1144,143 @@ def test_claudecode_transcript_helpers_normalize_stream_json() -> None:
     assert usage["request_count"] == 2
 
 
+def test_claudecode_transcript_fallback_does_not_persist_thinking_only_stream() -> None:
+    from benchmark.backends.claudecode import _extract_claudecode_transcript
+
+    stdout = json.dumps(
+        {
+            "type": "assistant",
+            "message": {
+                "role": "assistant",
+                "content": [{"type": "thinking", "thinking": "private reasoning"}],
+            },
+        }
+    )
+
+    transcript, source, metadata, usage = _extract_claudecode_transcript(
+        effective_prompt="Think privately.",
+        stdout=stdout,
+        redactions=[],
+    )
+
+    assert source == "claudecode_stream_json"
+    assert metadata["fallback_reason"] == "unusable_stream_transcript"
+    assert metadata["transcript_messages"] == 1
+    assert usage["request_count"] == 1
+    assert "private reasoning" not in json.dumps(transcript)
+
+
+def test_claudecode_transcript_helpers_handle_terminal_errors_and_edge_shapes() -> None:
+    from benchmark.backends.claudecode import (
+        _extract_claudecode_transcript,
+        _normalize_claudecode_stream_to_transcript,
+        _redact_text_values,
+    )
+
+    stdout = "\n".join(
+        [
+            json.dumps(
+                {
+                    "type": "assistant",
+                    "message": {
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "tool_use",
+                                "id": "tool_1",
+                                "name": "mcp__actbench__actbench_read_file",
+                                "input": '["not", "an", "object"]',
+                            }
+                        ],
+                    },
+                }
+            ),
+            json.dumps(
+                {
+                    "type": "user",
+                    "message": {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": "tool_1",
+                                "is_error": "false",
+                                "content": "ok",
+                            }
+                        ],
+                    },
+                }
+            ),
+            json.dumps(
+                {
+                    "type": "result",
+                    "subtype": "error_max_turns",
+                    "is_error": True,
+                    "message": "limit reached",
+                    "num_turns": 2,
+                }
+            ),
+        ]
+    )
+
+    transcript, source, metadata, _usage = _extract_claudecode_transcript(
+        effective_prompt="Read the file.",
+        stdout=stdout,
+        redactions=[],
+    )
+    assert source == "claudecode_stream_json"
+    assert metadata["terminal_error"] == "error_max_turns: limit reached"
+    tool_call_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolCall"
+    ]
+    assert tool_call_blocks[0]["arguments"] == {"raw": ["not", "an", "object"]}
+    tool_result_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolResult"
+    ]
+    assert tool_result_blocks[0]["isError"] is False
+
+    direct_transcript = _normalize_claudecode_stream_to_transcript(
+        effective_prompt="Call tool.",
+        events=[
+            {
+                "type": "assistant",
+                "message": {
+                    "content": [
+                        {
+                            "type": "tool_use",
+                            "name": "mcp__actbench__actbench_write_file",
+                            "input": ["raw", "list"],
+                        }
+                    ]
+                },
+            }
+        ],
+    )
+    direct_call = direct_transcript[1]["message"]["content"][0]
+    assert direct_call["arguments"] == {"raw": ["raw", "list"]}
+
+    raw = '{"headers":{"Authorization":"Bearer should-not-leak"}}'
+    redacted = _redact_text_values(raw, [])
+    assert "should-not-leak" not in redacted
+    assert "Bearer [redacted]" in redacted
+
+
+def test_claudecode_test_env_clears_tool_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_ALLOWED_TOOLS", "Read")
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_TOOLS", "Read")
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=True)
+
+    assert "ACTBENCH_CLAUDECODE_ALLOWED_TOOLS" not in os.environ
+    assert "ACTBENCH_CLAUDECODE_TOOLS" not in os.environ
+
+
 def test_claudecode_mcp_disabled_ignores_stale_mcp_env(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -1162,6 +1302,27 @@ def test_claudecode_mcp_disabled_ignores_stale_mcp_env(
     assert (backend._config.claudecode_home / "actbench-claudecode.json").exists()
 
 
+def test_claudecode_mcp_enabled_disables_builtin_tools_by_default(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=True)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+
+    config = backend._load_config(_context(tmp_path, backend="claudecode"))
+
+    assert config.mcp_enabled is True
+    assert config.builtin_tools == ""
+
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_TOOLS", "Read,Grep")
+    config = backend._load_config(_context(tmp_path, backend="claudecode"))
+    assert config.builtin_tools == "Read,Grep"
+
+
 def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_env(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -1172,12 +1333,14 @@ def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_en
     monkeypatch.setenv("ACTBENCH_MCP_ADMIN_TOKEN", "secret-token")
     captured: dict[str, object] = {}
 
-    def fake_subprocess_run(cmd, **kwargs):
+    def fake_run_with_process_group(cmd, **kwargs):
         captured["cmd"] = cmd
         captured.update(kwargs)
         return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
 
-    monkeypatch.setattr(claudecode_module.subprocess, "run", fake_subprocess_run)
+    monkeypatch.setattr(
+        claudecode_module, "_run_subprocess_with_process_group", fake_run_with_process_group
+    )
     config = ClaudeCodeConfig(
         executable="/usr/bin/claude",
         model="claude-opus-4-8",
@@ -1207,6 +1370,9 @@ def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_en
     cmd = captured["cmd"]
     assert isinstance(cmd, list)
     assert cmd[:3] == ["/usr/bin/claude", "--bare", "-p"]
+    assert "Prompt text" not in cmd
+    assert captured["input_text"] == "Prompt text"
+    assert "--input-format" in cmd and cmd[cmd.index("--input-format") + 1] == "text"
     assert "--output-format" in cmd and cmd[cmd.index("--output-format") + 1] == "stream-json"
     assert "--verbose" in cmd
     assert "--permission-mode" in cmd and cmd[cmd.index("--permission-mode") + 1] == "dontAsk"
@@ -1295,6 +1461,56 @@ def test_claudecode_backend_returns_backend_compatible_result(
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
 
 
+def test_claudecode_terminal_result_error_becomes_backend_error(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+    monkeypatch.setattr(
+        backend,
+        "_run_claudecode_subprocess",
+        lambda **kwargs: subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout="\n".join(
+                [
+                    json.dumps(
+                        {
+                            "type": "assistant",
+                            "message": {"content": [{"type": "text", "text": "partial"}]},
+                        }
+                    ),
+                    json.dumps(
+                        {
+                            "type": "result",
+                            "subtype": "error_during_execution",
+                            "is_error": True,
+                            "message": "boom",
+                        }
+                    ),
+                ]
+            ),
+            stderr="",
+        ),
+    )
+    context = _context(tmp_path, backend="claudecode")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "error"
+    assert result["exit_code"] == -1
+    assert "error_during_execution" in result["stderr"]
+    assert result["backend_metadata"]["transcript_extraction"]["terminal_error"] == (
+        "error_during_execution: boom"
+    )
+
+
 def test_claudecode_success_without_usable_transcript_becomes_error(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -1341,6 +1557,7 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
         lambda: "00000000-0000-4000-8000-000000000002",
     )
     monkeypatch.setattr(claudecode_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(claudecode_module, "check_gateway_admin_health", lambda **kwargs: None)
     registered: list[dict] = []
     unregistered: list[dict] = []
     monkeypatch.setattr(

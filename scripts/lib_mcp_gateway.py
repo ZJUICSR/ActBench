@@ -587,6 +587,11 @@ def create_app() -> FastAPI:
     async def health() -> dict[str, Any]:
         return {"status": "ok"}
 
+    @app.get("/admin/health")
+    async def admin_health(request: Request) -> dict[str, Any]:
+        _require_admin_token(request)
+        return {"status": "ok"}
+
     @app.post("/mcp")
     async def mcp_endpoint(request: Request) -> Response:
         payload = await request.json()
@@ -703,6 +708,20 @@ def check_gateway_health(
     raise ActBenchMcpError(f"MCP gateway health check timed out at {url}: {last_error}")
 
 
+def check_gateway_admin_health(
+    *,
+    mcp_url: str,
+    admin_token: str | None = None,
+    timeout_seconds: float = 5.0,
+) -> None:
+    _client_request_json(
+        _admin_health_url(mcp_url),
+        method="GET",
+        timeout_seconds=timeout_seconds,
+        admin_token=admin_token,
+    )
+
+
 def register_gateway_context(
     *,
     mcp_url: str,
@@ -771,6 +790,11 @@ def stop_gateway_process(handle: ActBenchMcpGatewayProcess | None) -> None:
 def _admin_contexts_url(mcp_url: str) -> str:
     parsed = urllib.parse.urlparse(mcp_url)
     return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, "/admin/contexts", "", "", ""))
+
+
+def _admin_health_url(mcp_url: str) -> str:
+    parsed = urllib.parse.urlparse(mcp_url)
+    return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, "/admin/health", "", "", ""))
 
 
 def _client_request_json(

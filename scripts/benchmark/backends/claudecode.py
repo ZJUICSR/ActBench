@@ -10,6 +10,7 @@ import re
 import secrets
 import shlex
 import shutil
+import signal
 import subprocess
 import time
 import uuid
@@ -21,6 +22,7 @@ from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
     DEFAULT_MCP_PORT,
     ActBenchMcpGatewayProcess,
+    check_gateway_admin_health,
     check_gateway_health,
     get_gateway_context_traces,
     register_gateway_context,
@@ -45,6 +47,7 @@ from benchmark.backends.common import (
     execution_error_result,
     finish_task_artifacts,
     materialize_task_workspace,
+    safe_path_component,
     session_prompts,
     start_declared_api_services,
     stdout_transcript_fallback,
@@ -304,6 +307,14 @@ class ClaudeCodeBackend:
                             redactions=redactions,
                         )
                     )
+                    terminal_error = _terminal_error_from_metadata(transcript_extraction)
+                    if terminal_error:
+                        if status == "success":
+                            status = "error"
+                            exit_code = -1
+                        stderr = _append_stderr(
+                            stderr, f"claudecode terminal result error: {terminal_error}"
+                        )
                 except subprocess.TimeoutExpired as exc:
                     timed_out = True
                     status = "timeout"
@@ -319,6 +330,11 @@ class ClaudeCodeBackend:
                             redactions=redactions,
                         )
                     )
+                    terminal_error = _terminal_error_from_metadata(transcript_extraction)
+                    if terminal_error:
+                        stderr = _append_stderr(
+                            stderr, f"claudecode terminal result error: {terminal_error}"
+                        )
                 except Exception as exc:  # noqa: BLE001 - surface unexpected backend failures
                     status = "error"
                     exit_code = -1
@@ -335,11 +351,17 @@ class ClaudeCodeBackend:
                         admin_token=config.mcp_admin_token,
                     )
                     trace_transcript = _mcp_gateway_traces_to_transcript(trace_response.get("traces"))
-                    if trace_transcript and not _has_actbench_tool_result(transcript):
-                        transcript.extend(trace_transcript)
-                        transcript_extraction["mcp_trace_messages_appended"] = len(trace_transcript)
-                    elif trace_transcript:
+                    missing_trace_transcript = _missing_mcp_trace_transcript(
+                        transcript=transcript,
+                        trace_transcript=trace_transcript,
+                    )
+                    if trace_transcript:
                         transcript_extraction["mcp_trace_messages_available"] = len(trace_transcript)
+                    if missing_trace_transcript:
+                        transcript.extend(missing_trace_transcript)
+                        transcript_extraction["mcp_trace_messages_appended"] = len(
+                            missing_trace_transcript
+                        )
                 except Exception as exc:  # noqa: BLE001 - tracing must not fail the task
                     logger.warning("   Failed to retrieve ActBench MCP traces: %s", exc)
                     transcript_extraction["mcp_trace_error"] = _redact_text_values(
@@ -512,6 +534,18 @@ class ClaudeCodeBackend:
                         port=config.mcp_port,
                         timeout_seconds=1.0,
                     )
+                except Exception:
+                    self._mcp_gateway = start_gateway_subprocess(
+                        host=config.mcp_host,
+                        port=config.mcp_port,
+                        admin_token=config.mcp_admin_token,
+                    )
+                else:
+                    check_gateway_admin_health(
+                        mcp_url=config.mcp_admin_url,
+                        admin_token=config.mcp_admin_token,
+                        timeout_seconds=1.0,
+                    )
                     self._mcp_gateway = ActBenchMcpGatewayProcess(
                         process=None,
                         host=config.mcp_host,
@@ -519,14 +553,12 @@ class ClaudeCodeBackend:
                         mcp_url=config.mcp_admin_url,
                         admin_token=config.mcp_admin_token,
                     )
-                except Exception:
-                    self._mcp_gateway = start_gateway_subprocess(
-                        host=config.mcp_host,
-                        port=config.mcp_port,
-                        admin_token=config.mcp_admin_token,
-                    )
             else:
                 check_gateway_health(host=config.mcp_host, port=config.mcp_port)
+                check_gateway_admin_health(
+                    mcp_url=config.mcp_admin_url,
+                    admin_token=config.mcp_admin_token,
+                )
                 self._mcp_gateway = ActBenchMcpGatewayProcess(
                     process=None,
                     host=config.mcp_host,
@@ -536,10 +568,11 @@ class ClaudeCodeBackend:
                 )
         except Exception as exc:  # noqa: BLE001
             raise BackendInitializationError(
-                "claudecode backend could not start or reach the ActBench MCP gateway at "
-                f"{config.mcp_admin_url}: {exc}. Set ACTBENCH_MCP_AUTOSTART=0 for an "
-                "externally managed gateway or ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP=0 "
-                "for weak direct-workspace mode."
+                "claudecode backend could not start or authenticate to the ActBench MCP gateway at "
+                f"{config.mcp_admin_url}: {exc}. If another gateway is already running, set "
+                "ACTBENCH_MCP_ADMIN_TOKEN to its token, choose a different ACTBENCH_MCP_PORT, "
+                "or restart the gateway. Set ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP=0 for "
+                "weak direct-workspace mode."
             ) from exc
         logger.info("   ActBench MCP gateway ready for Claude Code at %s", config.mcp_public_url)
 
@@ -557,7 +590,8 @@ class ClaudeCodeBackend:
             config.executable,
             "--bare",
             "-p",
-            prompt,
+            "--input-format",
+            "text",
             "--output-format",
             "stream-json",
             "--verbose",
@@ -574,15 +608,67 @@ class ClaudeCodeBackend:
             cmd.extend(["--allowedTools", ",".join(config.allowed_tools)])
         if mcp_config_path is not None:
             cmd.extend(["--mcp-config", str(mcp_config_path), "--strict-mcp-config"])
-        return subprocess.run(
+        return _run_subprocess_with_process_group(
             cmd,
-            cwd=str(workspace),
+            input_text=prompt,
+            cwd=workspace,
             env=_claudecode_env(config),
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
+            timeout_seconds=timeout_seconds,
         )
+
+
+def _run_subprocess_with_process_group(
+    cmd: List[str],
+    *,
+    input_text: str,
+    cwd: Path,
+    env: Dict[str, str],
+    timeout_seconds: float,
+) -> subprocess.CompletedProcess[str]:
+    process = subprocess.Popen(
+        cmd,
+        cwd=str(cwd),
+        env=env,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(input=input_text, timeout=timeout_seconds)
+    except subprocess.TimeoutExpired as exc:
+        stdout = _coerce_text(getattr(exc, "stdout", None) or getattr(exc, "output", ""))
+        stderr = _coerce_text(getattr(exc, "stderr", ""))
+        _terminate_process_group(process, signal.SIGTERM)
+        try:
+            terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
+        except subprocess.TimeoutExpired:
+            _terminate_process_group(process, signal.SIGKILL)
+            terminated_stdout, terminated_stderr = process.communicate()
+        stdout = _coerce_text(terminated_stdout) or stdout
+        stderr = _coerce_text(terminated_stderr) or stderr
+        raise subprocess.TimeoutExpired(
+            cmd=cmd,
+            timeout=timeout_seconds,
+            output=stdout,
+            stderr=stderr,
+        ) from exc
+    return subprocess.CompletedProcess(args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr)
+
+
+def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals) -> None:
+    if process.poll() is not None:
+        return
+    try:
+        os.killpg(process.pid, sig)
+    except ProcessLookupError:
+        return
+    except OSError:
+        if sig == signal.SIGTERM:
+            process.terminate()
+        else:
+            process.kill()
 
 
 def _claudecode_env(config: ClaudeCodeConfig) -> Dict[str, str]:
@@ -601,7 +687,7 @@ def _claudecode_env(config: ClaudeCodeConfig) -> Dict[str, str]:
 
 
 def _write_mcp_config(config: ClaudeCodeConfig, *, session_id: str) -> Path:
-    path = config.mcp_config_dir / f"{_safe_path_component(session_id)}.mcp.json"
+    path = config.mcp_config_dir / f"{safe_path_component(session_id)}.mcp.json"
     payload = {
         "mcpServers": {
             "actbench": {
@@ -658,13 +744,12 @@ def _load_allowed_tools(*, mcp_enabled: bool) -> Tuple[str, ...]:
 
 
 def _load_builtin_tools(*, mcp_enabled: bool) -> str | None:
-    del mcp_enabled  # Reserved for future backend-specific defaults.
     raw = os.environ.get("ACTBENCH_CLAUDECODE_TOOLS")
     if raw is None:
-        return None
+        return "" if mcp_enabled else None
     stripped = raw.strip()
     if not stripped:
-        return None
+        return "" if mcp_enabled else None
     if stripped.lower() in {"none", "disabled", "disable"}:
         return ""
     return stripped
@@ -685,19 +770,24 @@ def _extract_claudecode_transcript(
     stdout: str,
     redactions: Iterable[str | None] = (),
 ) -> Tuple[List[Dict[str, Any]], str, Dict[str, Any], Dict[str, Any]]:
+    redaction_values = [str(item) for item in redactions if item]
     events, metadata = _parse_claudecode_stream(stdout)
+    terminal_error = _claudecode_terminal_error(events)
+    if terminal_error:
+        metadata["terminal_error"] = _redact_text_values(terminal_error[:1000], redaction_values)
     transcript = _normalize_claudecode_stream_to_transcript(
         effective_prompt=effective_prompt,
         events=events,
     )
     source = "claudecode_stream_json"
     if not _has_usable_transcript(transcript):
-        fallback = stdout_transcript_fallback(effective_prompt, stdout)
-        if fallback:
-            transcript = fallback
-            source = "claudecode_stream_json_fallback_stdout_raw"
-            metadata["fallback_reason"] = "unusable_stream_transcript"
-    transcript = _redact_transcript(transcript, redactions)
+        metadata["fallback_reason"] = "unusable_stream_transcript"
+        if not events:
+            fallback = stdout_transcript_fallback(effective_prompt, stdout)
+            if fallback:
+                transcript = fallback
+                source = "claudecode_stream_json_fallback_stdout_raw"
+    transcript = _redact_transcript(transcript, redaction_values)
     usage = _usage_from_claudecode_stream(events)
     metadata["transcript_messages"] = len(transcript)
     return transcript, source, metadata, usage
@@ -734,6 +824,44 @@ def _parse_claudecode_stream(stdout: str) -> Tuple[List[Dict[str, Any]], Dict[st
     if parse_errors:
         metadata["parse_errors"] = parse_errors
     return events, metadata
+
+
+def _claudecode_terminal_error(events: List[Dict[str, Any]]) -> str | None:
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        event_type = str(event.get("type") or "")
+        if event_type == "error":
+            error_text = _content_to_text(event.get("error") or event.get("message") or event)
+            return error_text.strip() or "error event"
+        if event_type != "result":
+            continue
+        subtype = str(event.get("subtype") or "")
+        if not (_coerce_bool(event.get("is_error")) or subtype.startswith("error_")):
+            continue
+        details = []
+        if subtype:
+            details.append(subtype)
+        for key in ("error", "errors", "message", "result"):
+            text = _content_to_text(event.get(key))
+            if text.strip():
+                details.append(text.strip())
+        return ": ".join(details) if details else "result error"
+    return None
+
+
+def _terminal_error_from_metadata(metadata: Dict[str, Any] | None) -> str | None:
+    if not isinstance(metadata, dict):
+        return None
+    raw = metadata.get("terminal_error")
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    return text or None
+
+
+def _append_stderr(stderr: str, message: str) -> str:
+    return (stderr + "\n" if stderr else "") + message
 
 
 def _normalize_claudecode_stream_to_transcript(
@@ -915,12 +1043,13 @@ def _normalize_claudecode_tool_result_block(
     name = block.get("name")
     if not isinstance(name, str) or not name.strip():
         name = tool_names_by_id.get(call_id, "")
+    raw_is_error = block.get("is_error") if "is_error" in block else block.get("isError")
     result: Dict[str, Any] = {
         "type": "toolResult",
         "text": _content_to_text(block.get("content") if "content" in block else block.get("text")),
         "tool_call_id": call_id,
         "name": name,
-        "isError": bool(block.get("is_error") or block.get("isError")),
+        "isError": _coerce_bool(raw_is_error),
     }
     return result
 
@@ -993,7 +1122,9 @@ def _mcp_gateway_traces_to_transcript(raw_traces: Any) -> List[Dict[str, Any]]:
         name = trace.get("name")
         if not isinstance(name, str) or not name:
             continue
-        sequence = trace.get("sequence") or index
+        sequence = trace.get("sequence", index)
+        if sequence is None:
+            sequence = index
         tool_call_id = f"actbench-mcp-{sequence}"
         arguments = trace.get("arguments") if isinstance(trace.get("arguments"), dict) else {}
         arguments = _redact_mcp_trace_value(arguments)
@@ -1020,7 +1151,7 @@ def _mcp_gateway_traces_to_transcript(raw_traces: Any) -> List[Dict[str, Any]]:
             "name": name,
         }
         if "isError" in trace:
-            result_block["isError"] = bool(trace.get("isError"))
+            result_block["isError"] = _coerce_bool(trace.get("isError"))
         transcript.append(
             {
                 "type": "message",
@@ -1090,24 +1221,84 @@ def _is_sensitive_mcp_trace_key(key: str) -> bool:
 
 
 def _has_actbench_tool_result(transcript: List[Dict[str, Any]]) -> bool:
-    for entry in transcript:
-        message = entry.get("message") if isinstance(entry, dict) else None
-        if not isinstance(message, dict):
+    return bool(_actbench_tool_result_counts(transcript))
+
+
+def _missing_mcp_trace_transcript(
+    *,
+    transcript: List[Dict[str, Any]],
+    trace_transcript: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not trace_transcript:
+        return []
+    existing_counts = _actbench_tool_result_counts(transcript)
+    missing: List[Dict[str, Any]] = []
+    pending_call: Dict[str, Any] | None = None
+    for entry in trace_transcript:
+        result_signature = _actbench_tool_result_signature(entry)
+        if result_signature is None:
+            if _entry_has_actbench_tool_call(entry):
+                pending_call = entry
             continue
-        content = message.get("content") if isinstance(message.get("content"), list) else []
-        for block in content:
-            if (
-                isinstance(block, dict)
-                and block.get("type") == "toolResult"
-                and _is_actbench_tool_name(str(block.get("name") or ""))
-                and str(block.get("text") or "").strip()
-            ):
-                return True
-    return False
+        count = existing_counts.get(result_signature, 0)
+        if count > 0:
+            existing_counts[result_signature] = count - 1
+            pending_call = None
+            continue
+        if pending_call is not None:
+            missing.append(pending_call)
+        missing.append(entry)
+        pending_call = None
+    return missing
+
+
+def _actbench_tool_result_counts(transcript: List[Dict[str, Any]]) -> Dict[Tuple[str, str, bool], int]:
+    counts: Dict[Tuple[str, str, bool], int] = {}
+    for entry in transcript:
+        signature = _actbench_tool_result_signature(entry)
+        if signature is None:
+            continue
+        counts[signature] = counts.get(signature, 0) + 1
+    return counts
+
+
+def _actbench_tool_result_signature(entry: Dict[str, Any]) -> Tuple[str, str, bool] | None:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return None
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    for block in content:
+        if not isinstance(block, dict) or block.get("type") != "toolResult":
+            continue
+        name = str(block.get("name") or "")
+        text = str(block.get("text") or "")
+        if not _is_actbench_tool_name(name) or not text.strip():
+            continue
+        return (_canonical_actbench_tool_name(name), text, _coerce_bool(block.get("isError")))
+    return None
+
+
+def _entry_has_actbench_tool_call(entry: Dict[str, Any]) -> bool:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return False
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    return any(
+        isinstance(block, dict)
+        and block.get("type") == "toolCall"
+        and _is_actbench_tool_name(str(block.get("name") or ""))
+        for block in content
+    )
 
 
 def _is_actbench_tool_name(name: str) -> bool:
     return name.startswith("actbench_") or "__actbench__actbench_" in name
+
+
+def _canonical_actbench_tool_name(name: str) -> str:
+    if "__actbench__" in name:
+        return name.rsplit("__actbench__", 1)[1]
+    return name
 
 
 def _effective_prompt(*, prompts: List[str], mcp_instruction: str | None) -> str:
@@ -1206,17 +1397,20 @@ def _resolve_executable(executable: str) -> str:
     return resolved
 
 
-def _coerce_tool_arguments(value: Any) -> Any:
+def _coerce_tool_arguments(value: Any) -> Dict[str, Any]:
     if value is None or value == "":
         return {}
-    if isinstance(value, (dict, list)):
+    if isinstance(value, dict):
         return value
     if isinstance(value, str):
         try:
-            return json.loads(value)
+            parsed = json.loads(value)
         except json.JSONDecodeError:
             return {"raw": value}
-    return {"raw": str(value)}
+        if isinstance(parsed, dict):
+            return parsed
+        return {"raw": parsed}
+    return {"raw": value}
 
 
 def _content_to_text(content: Any) -> str:
@@ -1291,7 +1485,7 @@ def _redact_text_values(text: str, redactions: Iterable[str | None]) -> str:
             redacted = redacted.replace(str(value), "[redacted]")
     # Best-effort redaction for credential-shaped text emitted in stderr/stdout.
     redacted = re.sub(
-        r"(?i)(authorization\s*[:=]\s*)(bearer\s+)?([^\s,;\]}]+)",
+        r"(?i)([\"']?authorization[\"']?\s*[:=]\s*[\"']?)(bearer\s+)?([^\"'\s,;\]}]+)",
         lambda match: f"{match.group(1)}{match.group(2) or ''}[redacted]",
         redacted,
     )
@@ -1310,6 +1504,20 @@ def _redaction_values(*, config: ClaudeCodeConfig, mcp_context_id: str | None) -
     if config.mcp_admin_token:
         values.append(config.mcp_admin_token)
     return values
+
+
+def _coerce_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes", "y", "on"}:
+            return True
+        if normalized in {"0", "false", "no", "n", "off", ""}:
+            return False
+    if isinstance(value, (int, float)):
+        return bool(value)
+    return False
 
 
 def _safe_int(value: Any) -> int:
@@ -1338,7 +1546,3 @@ def _coerce_text(value: Any) -> str:
     if isinstance(value, bytes):
         return value.decode("utf-8", errors="replace")
     return str(value)
-
-
-def _safe_path_component(value: str) -> str:
-    return "".join(ch if ch.isalnum() or ch in ("-", "_", ".") else "_" for ch in str(value))
