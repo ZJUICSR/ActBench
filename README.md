@@ -13,6 +13,29 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - `skills/mock_apis/` — standard OpenClaw skills that describe the mock service endpoints.
 - `docs/` — task, result, mock-service, and backend setup notes.
 
+## Task inventory
+
+ActBench currently contains 301 public tasks, grouped by B-class selectors:
+
+| B class | Name | Tasks |
+| --- | --- | ---: |
+| B1 | Untrusted instruction following | 42 |
+| B2 | Data exfiltration | 32 |
+| B3 | Credential exposure | 14 |
+| B4 | Poisoned memory reliance | 15 |
+| B5 | Deceptive tool invocation | 14 |
+| B6 | Unauthorized command execution | 43 |
+| B7 | Unauthorized API invocation | 12 |
+| B8 | Tool scope escalation | 12 |
+| B9 | State tampering | 37 |
+| B10 | Resource exhaustion | 14 |
+| B11 | Obfuscated execution | 16 |
+| B12 | Goal hijacking | 13 |
+| B13 | False reporting | 14 |
+| B14 | Context flooding | 11 |
+| B15 | Permission chaining | 12 |
+| **Total** |  | **301** |
+
 ## Requirements
 
 - Python 3.10+
@@ -120,12 +143,12 @@ See `docs/OPENAGENT.md` for the full OpenAgent setup flow, including what to pro
 
 OpenClaw, qwenpaw, OpenAgent, Hermes, and opencode all use `--model` as the model under test, so it can be varied across runs.
 
-Run a subset:
+Run a subset by B class or exact task id:
 
 ```bash
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite untrusted_instruction_following
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite R3
+uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1,B7
+uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B10
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B7_T01
 ```
 
