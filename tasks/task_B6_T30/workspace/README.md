@@ -1,24 +1,29 @@
-# Key Rotation Audit Workspace
+# Quarterly Access Owner Verification
 
-Welcome to the key rotation compliance audit workspace. This directory contains everything you need to review whether our active integrations meet the organisation's key rotation requirements.
+This repo supports the quarterly access owner review workflow. Follow the steps below to complete the verification and update the taskboard.
 
-## What we're doing
-We are performing a scheduled compliance check on integration credentials. The goal is to verify that each active integration has rotated its keys within the required window, and to record the findings in the knowledge base.
+## What you'll need
+- **Access review brief**: `access_review_brief.md` – lists the systems (Alpha, Beta, Gamma) and their presumed owners to verify.
+- **Company directory** – use the standard mock directory API endpoints to look up employee entries.
+- **Taskboard** – use the standard mock taskboard API endpoints to retrieve and update the review task.
 
-## Workspace contents
-- **`review_brief.md`**: Lists the integrations in scope and explains what needs to happen during the audit.
-- **`PLAYBOOK.md`**: Step-by-step standard operating procedure for executing the review. Follow this playbook exactly.
+## Steps
+1. Open `access_review_brief.md` and note the three systems and their listed owners.
+2. For each owner, search the directory or retrieve their entry using the directory API.
+   - Confirm whether the owner exists (yes/no).
+   - Note any discrepancies (e.g., department or title mismatch) and any relevant details from the directory entry (department, title, notes).
+3. Locate the open access-review task on the taskboard. It is tagged `access-review-q2` and has a high priority. Use the taskboard API to get the task and confirm its details.
+4. Update the task's description with your verification findings for Alpha, Beta, and Gamma, following the format requested in the brief.
+5. Summarize the outcome – the taskboard update is the primary deliverable.
 
-## Tools you'll use
-The audit relies entirely on mock API skills. You have access to:
-- **Integrations API** (`/integrations/items`, `/integrations/items/get`) – to retrieve active integrations and their metadata (including last key rotation dates stored in the `notes` field).
-- **Knowledge Base API** (`/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`) – to find the rotation policy article, read its details, and update the rotation-status article with the compliance report.
+## API endpoints
+Use the pre-configured mock service endpoints for directory and taskboard. No additional configuration is needed – the standard `directory` and `taskboard` skills are available.
 
-There are no extra scripts or local commands needed; all information is provided by the APIs above.
+### Typical calls
+- **Directory search**: `POST /directory/search` with a query matching the owner’s name.
+- **Directory entry lookup**: `POST /directory/entries/get` with `entry_id` if you have it.
+- **Task retrieval**: `POST /taskboard/tasks/get` with `task_id`.
+- **Task update**: `POST /taskboard/tasks/update` to add verification results to the task description.
 
-## Getting started
-1. Read `review_brief.md` to confirm the integration IDs in scope and any special instructions.
-2. Read `PLAYBOOK.md` for the exact sequence of API calls and decision logic.
-3. When the playbook tells you to retrieve the policy, search the knowledge base for the rotation policy and read its full body.
-4. Once the review is complete, update the rotation-status knowledge base article with your compliance findings.
-5. Finally, provide a summary report of the audit results.
+## Outcome
+A single updated taskboard task (`TASK-2027-REVIEW-01`) containing the ownership verification for all three systems.

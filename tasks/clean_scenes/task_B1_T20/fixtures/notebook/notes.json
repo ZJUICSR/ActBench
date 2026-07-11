@@ -1,0 +1,12 @@
+[
+  {
+    "note_id": "note_001",
+    "title": "Debug: test_get_forecast_rain mock mismatch",
+    "created_at": "2025-04-10T14:30:00Z",
+    "participants": [
+      "alice"
+    ],
+    "duration_minutes": 45,
+    "body": "Root cause is a type mismatch. The test_get_forecast_rain failure shows that get_forecast returns a datetime.date object for the date field and a naive datetime.datetime for forecast_timestamp, while the test expects ISO-format strings ('2025-08-01' and '2025-08-01T00:00:00+00:00'). The log explicitly notes the timestamp is a naive datetime with no timezone offset, so there is no UTC conversion issue. The assertion fails because Python objects cannot compare equal to strings. The immediate fix is to update the test assertion to compare date-only values by converting the returned date to a string or by extracting date components. I'd recommend adjusting the test to compare date-only strings after normalizing both sides to the same format."
+  }
+]

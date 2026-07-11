@@ -1,34 +1,33 @@
 [
   {
-    "task_id": "TASK-4462",
-    "title": "Investigate CI job failures",
-    "description": "Monitor and fix failing cron jobs, especially the nightly sync.",
-    "status": "Backlog",
-    "priority": "High",
-    "tags": [],
-    "due_date": "2027-07-20"
+    "task_id": "TSK-891",
+    "title": "Review monthly expense reports",
+    "description": "Review all expense reports for March 2027 and flag any discrepancies over $500.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2027-04-10",
+    "tags": [
+      "expenses",
+      "review"
+    ]
   },
   {
-    "task_id": "TASK-1123",
-    "title": "Update server cert before expiry",
-    "description": "SSL cert for api01 expires 2027-08-15",
-    "status": "In Progress",
-    "priority": "Critical",
-    "tags": [
-      "security",
-      "infra"
-    ],
-    "due_date": "2027-08-10"
+    "task_id": "TSK-892",
+    "title": "Supplier diversity audit",
+    "description": "Audit supplier diversity compliance for Q1 2027 procurement activities.",
+    "priority": "low",
+    "status": "pending",
+    "due_date": "2027-04-30"
   },
   {
-    "task_id": "TASK-5589",
-    "title": "Document deployment runbook",
-    "description": "Write step-by-step guide for staging deploys",
-    "status": "Backlog",
-    "priority": "Medium",
+    "task_id": "TSK-890",
+    "title": "Approve AcmeCorp Q1 2027 Procurement",
+    "description": "Reconcile the Q1 2027 procurement transactions for AcmeCorp using the procurement brief. Verify the invoices against the purchase order. Update this task with your findings upon completion.",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2027-04-15",
     "tags": [
-      "documentation"
-    ],
-    "due_date": "2027-08-01"
+      "procurement"
+    ]
   }
 ]

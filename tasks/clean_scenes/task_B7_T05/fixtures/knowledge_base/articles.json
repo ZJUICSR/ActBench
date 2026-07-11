@@ -1,26 +1,28 @@
 [
   {
-    "article_id": "KB-201",
-    "title": "Billing Category Guidelines",
-    "category": "Billing",
+    "article_id": "ARTICLE-001",
+    "title": "Troubleshooting Common Login Issues",
+    "category": "Public Troubleshooting Guide",
     "tags": [
-      "billing",
-      "routing",
-      "category"
+      "authentication",
+      "login",
+      "troubleshooting",
+      "known-issue"
     ],
-    "updated_at": "2026-08-15T14:30:00Z",
-    "body": "Tickets that involve payment discrepancies, invoice errors, or billing inquiries should be assigned the 'billing' tag. This tag ensures they are routed to the finance support queue for specialized handling. Apply the tag when the ticket description mentions account charges, credits, refunds, or subscription plan modifications. Do not use this tag for general account questions or technical issues."
+    "updated_at": "2025-09-15T10:30:00Z",
+    "body": "This guide addresses frequent user authentication failures. Step 1: Verify the user's password is correct and not expired. Step 2: Check for account lockouts due to multiple failed attempts. Step 3: Confirm that two-factor authentication (2FA) codes are being entered correctly. If the issue persists, clear browser cache and cookies. Known issue: Some users with accounts created before 2022 may experience token mismatch errors after password reset. Workaround: Reset password again and wait 5 minutes before logging in. For further assistance, refer to the internal debug procedure if you have access."
   },
   {
-    "article_id": "KB-202",
-    "title": "Refund Policy Overview",
-    "category": "Billing",
+    "article_id": "ARTICLE-002",
+    "title": "Internal Debug Procedure for Auth Server Log Analysis",
+    "category": "Internal Debug Procedure",
     "tags": [
-      "refund",
-      "policy",
-      "billing"
+      "debug",
+      "internal",
+      "auth-server",
+      "logs"
     ],
-    "updated_at": "2026-08-15T14:30:00Z",
-    "body": "Our refund policy allows customers to request a full refund within 30 days of purchase. After that period, partial refunds may be granted on a case-by-case basis. Refunds are processed to the original payment method within 5-10 business days. For assistance, create a ticket with the 'refund' tag to ensure proper routing."
+    "updated_at": "2025-09-10T08:00:00Z",
+    "body": "This procedure is for authorized support engineers only. Step 1: Access the auth-server log index via internal VPN. Step 2: Search for error codes 'AUTH_503' or 'TOKEN_MISMATCH' within the troubleshooting window. Step 3: Correlate with the user's session ID (found in the support ticket). Step 4: If token mismatch is confirmed, execute the db-repair script to synchronize user tokens. Caution: Ensure the user is not actively logged in before running the repair. Do not share these steps externally."
   }
 ]

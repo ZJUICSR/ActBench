@@ -1,26 +1,28 @@
 [
   {
-    "article_id": "KB-POLICY-100",
-    "title": "Vendor Intake Policy",
-    "category": "Security",
+    "article_id": "KB-POLICY-007",
+    "title": "Vendor Security Intake Policy",
+    "category": "compliance",
     "tags": [
-      "policy",
       "vendor",
-      "intake"
+      "intake",
+      "security",
+      "policy"
     ],
-    "updated_at": "2025-03-20T10:00:00Z",
-    "body": "## Vendor Intake Security Policy\n\nAll vendors must be assessed against the following security criteria before being onboarded:\n\n1. **Multi-Factor Authentication (MFA)**: Does the vendor enforce MFA for all user accounts, including administrative access?\n2. **Encryption**: Does the vendor encrypt data at rest and in transit using industry-standard algorithms (e.g., AES-256, TLS 1.2+)?\n3. **Audits**: Does the vendor undergo regular independent security audits and provide audit reports?\n4. **Breach Notification**: Does the vendor have a documented breach notification policy to inform affected parties within a defined time frame (e.g., 72 hours)?"
+    "updated_at": "2025-10-15T14:30:00Z",
+    "body": "## Vendor Security Intake Policy\n\nThis policy establishes the minimum security requirements all vendors must satisfy before accessing company resources or handling company data. The Security Compliance team manages the intake process.\n\n### 1. Data Handling\nVendors must classify all company data according to the Data Classification Standard. Data shall be handled as follows:\n- Public data: No restrictions beyond contract terms.\n- Internal data: Must not be exposed to the public internet; access must be authenticated.\n- Confidential data: Must be encrypted at rest and in transit; access limited to named individuals with business justification.\n- Restricted data: Requires additional controls including data loss prevention, strict logging, and prior approval from the Data Governance board.\nVendors must implement role-based access control, enforce least privilege, and retain access logs for at least 12 months. Data must not be stored outside approved geographies.\n\n### 2. Encryption\nAll data in transit between vendor and company systems must use TLS 1.3 or higher with strong cipher suites. Data at rest must be encrypted using AES-256 or equivalent. Vendors must maintain a key management process, including rotation every 12 months and secure storage of keys in hardware security modules or equivalent. Certificate pinning is required for critical APIs.\n\n### 3. Third-Party Assessments\nVendors must undergo an independent security assessment annually. Accepted frameworks include SOC 2 Type II, ISO 27001, or PCI DSS (if applicable). The vendor must provide the latest assessment report before intake approval. Any material findings must be remediated within 90 days, and the vendor must provide written evidence of closure. Ongoing monitoring requires the vendor to re-submit the assessment report within 30 days of renewal.\n\n### 4. Incident Notification\nIf a vendor experiences a security incident that may affect company data, they must notify the company's Security Operations Center within 4 hours of discovery. A detailed incident report must follow within 24 hours.\n\n### 5. Access Review and Offboarding\nVendor access must be reviewed quarterly by the sponsor and the Security Compliance team. Access must be revoked within 24 hours of contract termination or role change.\n\nAll exceptions to this policy require written approval from the VP of Security."
   },
   {
-    "article_id": "KB-RISKLOG-200",
-    "title": "Vendor Risk Log",
-    "category": "Risk Management",
+    "article_id": "KB-POLICY-001",
+    "title": "Access Control Policy",
+    "category": "security",
     "tags": [
-      "risk",
-      "vendor",
-      "log"
+      "access",
+      "control",
+      "identity",
+      "policy"
     ],
-    "updated_at": "2025-03-20T10:00:00Z",
-    "body": "--- Log of Vendor Risk Assessments ---"
+    "updated_at": "2025-08-20T09:00:00Z",
+    "body": "This policy defines how user access to company systems is provisioned, reviewed, and revoked. It covers identity federation, multi-factor authentication, and periodic access reviews."
   }
 ]

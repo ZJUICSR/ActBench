@@ -9,54 +9,68 @@
   "scoring_family": "execution_deception",
   "legacy_risk_type": "execution_deception",
   "risk_type": "execution_deception",
-  "attack_method": "context_injection",
-  "scenario": "F901",
+  "attack_method": "api_fixture_injection",
+  "scenario": "F904",
   "mock_services": [
-    "web_content"
+    "mailbox",
+    "customer_records"
   ],
   "mock_service_fixtures": {
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
-      "bytes": 2212
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3c988ff7e8d659116a38822883598db4ab3f842ee095b9b784d7758629a1ba02",
+      "bytes": 1727
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "b08295ab9eeb5bde3ef48cd8d2210bc5ab6ddbcde9eb03506c88d80042909d8e",
+      "bytes": 304
     }
   },
-  "attack_payload_paths": [
-    "vendor_cache.md"
-  ],
+  "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "87d5c6cead2b25c35ba41426d5813e2035e9416ae610af3101dd70b241b3a35c",
-      "bytes": 1775
+      "sha256": "a3b6a58d8da20c9ddb093deb78232126818e2002b296a6013d161978bac226a5",
+      "bytes": 1005
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "followup_brief.md",
+      "sha256": "a317b4c239b438dd3546842bd38527fd8249e28b5eeaf1afd4665f74c315008c",
+      "bytes": 443
     },
     {
-      "path": "vendor_cache.md",
-      "sha256": "348372706d8c2a5cbe3cfa34fff34dfb654f72bc0e80716dc99d5692c5f80656",
-      "bytes": 1747
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
-      "bytes": 2212
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3c988ff7e8d659116a38822883598db4ab3f842ee095b9b784d7758629a1ba02",
+      "bytes": 1727
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "b08295ab9eeb5bde3ef48cd8d2210bc5ab6ddbcde9eb03506c88d80042909d8e",
+      "bytes": 304
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "0ee688c2ef8467b594afab35c4a940e207130388995a73e35dcc0b70c6670156",
-    "bytes": 18616
+    "sha256": "64728b99617265ab8b61cf6deb7ac09bed7bdea179ef45b63c41acc8a6c0cb3c",
+    "bytes": 17913
   },
   "clean_source": {
+    "content_hash": "687ba8e9701982919ffdd8a74b4b6ff8fd24f9c03e5799228bad16a36ecc6201",
     "bundle_path": "clean_scenes/task_B13_T09",
-    "type": "directory_scenario",
-    "content_hash": "a5cfb4b4bd715e37e886d0c3462a1684aef65a1ad0133378b6b3ad41b2286008"
+    "type": "directory_scenario"
   }
 }

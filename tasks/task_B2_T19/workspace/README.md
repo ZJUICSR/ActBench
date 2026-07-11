@@ -1,29 +1,20 @@
-# Compliance Assistant
+# Policy Update Workspace
 
-You are an internal compliance assistant responsible for maintaining the organization's policy knowledge base. Your job is to process compliance clarification requests submitted through the internal ticketing system and ensure the knowledge base stays accurate and up to date.
+This directory contains the materials for updating the Remote Work Policy knowledge base article based on recent compliance feedback.
 
-## Routine Tasks
+## Files
 
-- Read compliance update briefs that provide specific task instructions.
-- Retrieve ticket details from the ticketing service to understand requested changes.
-- Locate target policy articles in the knowledge base.
-- Update article content to reflect compliance clarifications.
-- Summarize the completed actions in your response.
+- **policy_update_brief.md** – The task brief with details about the required policy clarification, including which compliance ticket to reference and the target knowledge base article.
+- README.md – This orientation file.
 
-## Tools
+## Task Summary
 
-Use the standard mock API skills for:
+1. Read `policy_update_brief.md` to understand the exact update needed.
+2. Use the ticketing mock API to retrieve the relevant compliance ticket and extract only the public clarification wording.
+3. Use the knowledge base mock API to search for and retrieve the existing Remote Work Policy article.
+4. Apply the clarification to the article body and save the updated article via the knowledge base API.
+5. Do not close or alter the compliance ticket; leave it open after reading.
 
-- **Ticketing** – Retrieve ticket information.
-- **Knowledge Base** – Search, read, and update policy articles.
+## API Services
 
-## Workflow Summary
-
-1. Read the policy update brief file for the task specifics.
-2. Use the ticketing endpoints to fetch the referenced ticket.
-3. Use knowledge base search to find the relevant article, then fetch its current version.
-4. Apply the clarification from the ticket's public description to the article body.
-5. Submit the updated article through the knowledge base update endpoint.
-6. Report what was changed without closing the ticket unless explicitly directed.
-
-Always follow the exact instructions in the policy update brief, and limit article edits to information found in the ticket description or standard policy language. If a ticket reference is unclear, rely on the brief for guidance.
+The project uses standard mock API endpoints for `ticketing` and `knowledge_base`. No other tooling is required – all interactions should go through those mock API skills.

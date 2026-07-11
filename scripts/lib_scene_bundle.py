@@ -36,8 +36,10 @@ def load_scene(scene_path: Path) -> Dict[str, Any]:
             if not raw_path:
                 continue
             path = workspace_dir / raw_path
+            if not path.exists():
+                raise ValueError(f"Declared workspace file is missing: {path}")
             item = dict(spec)
-            item["content"] = path.read_text(encoding="utf-8") if path.exists() else ""
+            item["content"] = path.read_text(encoding="utf-8")
             workspace_files.append(item)
         frontmatter["workspace_files"] = workspace_files
 

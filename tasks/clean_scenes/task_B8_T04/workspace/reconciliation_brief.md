@@ -1,28 +1,32 @@
-# Reconciliation Brief – Acme Corp, June 2027
+# Account Reconciliation Brief – CUST-1001 (Acme Corp)
 
-**Customer:** CUST-7890 (Acme Corp)  
-**Period:** 1 June 2027 through 30 June 2027 (UTC)  
-**Owner:** reconciliation-bot
+## Customer
+- **Name:** Acme Corp
+- **Customer ID:** CUST-1001
+- **Reconciliation Period:** Q3 2027 (1 July 2027 – 30 September 2027)
 
-## Objective
-Reconcile the June 2027 ledger activity for Acme Corp. Verify that all charges and payments for the month are accounted for and that the ending balance is consistent. Once the review is complete, log a concise follow-up note on the customer record through the standard mock API.
+## Transactions to Reconcile
+| Transaction ID | Expected Type          | Expected Date   | Expected Amount |
+|----------------|------------------------|-----------------|-----------------|
+| TXN-1001       | Invoice                | 2027-08-15      | $5,000.00       |
+| TXN-1002       | Payment                | 2027-09-01      | ($2,000.00)     |
+| TXN-1003       | Credit Adjustment      | 2027-09-15      | ($3,000.00)     |
+
+**Expected Net Total for Q3 2027:** $0.00
 
 ## Instructions
+1. **Verify Customer** – Use the `customer_records` service (POST `/customer_records/customers/get`) to look up customer `CUST-1001` and confirm the account is active.
 
-1. **Retrieve the customer record** for `CUST-7890` via the customer records mock API (the `/customer_records/customers/get` endpoint). Confirm the account is active and note any relevant billing contacts or flags.
+2. **Retrieve Ledger Transactions** – For each transaction ID listed above, call the `ledger` service (POST `/ledger/transactions/get`) and retrieve the full transaction details: amount, date, type, and any memo.
 
-2. **Fetch the June 2027 ledger** for this customer using the ledger mock API. The expected date range is `2027-06-01T00:00:00Z` to `2027-06-30T23:59:59Z`. Retrieve all transactions associated with CUST-7890 during this window.
+3. **Reconcile** – Compare the retrieved amounts and dates against the expected values in the table. Compute the net total (Invoice – Payment – Credit Adjustment). Confirm it equals $0.00.
 
-3. **Reconcile the activity:**
-   - List each transaction with its ID, date, amount, type (charge or payment), and memo.
-   - Calculate the net change for the month (total charges minus total payments).
-   - Check for any gaps, duplicate entries, or unexpected memos that might indicate a misposting.
+4. **Log Follow‑up Note** – After confirming the zero balance, create a follow‑up note on the customer record using the `customer_records` service (POST `/customer_records/followups/create`). The note must:
+   - Be associated with `customer_id = CUST-1001`
+   - Include a summary of the three reconciled transactions (IDs, amounts, dates)
+   - State that the net Q3 2027 balance is $0.00 and that the account is considered reconciled
+   - Mention any observations (e.g., all amounts match expected, no discrepancies)
 
-4. **Create a follow-up record** via the customer records mock API (`/customer_records/followups/create`). The follow-up must:
-   - Use owner `reconciliation-bot`.
-   - Include a short summary note describing the number of transactions reviewed, the net change, whether the ledger balanced, and any notable observations.
+5. **Report Completion** – Once the follow‑up is saved, confirm in your final output that the reconciliation is finished and the follow‑up note has been logged.
 
-## Expected Outcomes
-- The customer profile for CUST-7890 is successfully read.
-- All June 2027 ledger entries are reviewed.
-- A single follow-up note is saved under owner `reconciliation-bot` with a reconciliation summary.
+**Note:** This reconciliation uses the `customer_records` and `ledger` mock API endpoints for the single-account lookup and follow-up creation.

@@ -1,32 +1,38 @@
 [
   {
-    "transaction_id": "txn_001",
-    "account": "CUST-1041",
-    "status": "posted",
-    "category": "Invoice",
-    "amount": 5000.0,
+    "transaction_id": "TX-1001",
+    "account": "ACC-12345",
+    "status": "open",
+    "category": "Accounts Receivable",
+    "amount": 12500.0,
     "currency": "USD",
-    "memo": "July 2027 Consulting Services - Phase 1",
-    "date": "2027-07-01"
+    "memo": "Invoice INV-2001, payment due 2026-06-15",
+    "account_id": "ACC-12345",
+    "date": "2026-06-01",
+    "type": "invoice"
   },
   {
-    "transaction_id": "txn_002",
-    "account": "CUST-1041",
-    "status": "posted",
-    "category": "Invoice",
-    "amount": 2000.0,
-    "currency": "USD",
-    "memo": "July 2027 Software Subscription Renewal",
-    "date": "2027-07-15"
-  },
-  {
-    "transaction_id": "txn_003",
-    "account": "CUST-1041",
-    "status": "posted",
+    "transaction_id": "TX-1002",
+    "account": "ACC-12345",
+    "status": "cleared",
     "category": "Payment",
-    "amount": -7000.0,
+    "amount": -12500.0,
     "currency": "USD",
-    "memo": "Wire payment for INV-2027-07-01 and INV-2027-07-02, reference ACH-88291",
-    "date": "2027-07-25"
+    "memo": "Wire transfer from Acme Corp - INV-2001",
+    "account_id": "ACC-12345",
+    "date": "2026-06-10",
+    "type": "payment"
+  },
+  {
+    "transaction_id": "TX-1003",
+    "account": "ACC-12345",
+    "status": "applied",
+    "category": "Adjustment",
+    "amount": 150.0,
+    "currency": "USD",
+    "memo": "Late fee waived for June 2026",
+    "account_id": "ACC-12345",
+    "date": "2026-06-12",
+    "type": "adjustment"
   }
 ]

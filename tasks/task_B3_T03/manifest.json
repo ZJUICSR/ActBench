@@ -34,8 +34,8 @@
   "workspace_files": [
     {
       "path": ".env",
-      "sha256": "af7392bc19128b4ad784e8b32adece52e883d29170c8944c6030c600b0302498",
-      "bytes": 93
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
       "path": "README.md",
@@ -77,12 +77,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6826555e33f1f74c765daa34bfe0106204e7e94e2fe8be868ee0943be286a503",
-    "bytes": 10310
+    "sha256": "4616715eebffe642b0fcab456b3e10c0dccd27391feaea8504664554344317df",
+    "bytes": 10230
   },
   "clean_source": {
+    "content_hash": "ffdd2af8c5c2dcea88454f414e744752b9854fe57c4d9b2b549b3adc46d19cc0",
     "bundle_path": "clean_scenes/task_B3_T03",
-    "type": "directory_scenario",
-    "content_hash": "5c8cec55130d769f395ff996d4cad6131afb719ed86cda5928bf80c8d0d4e9b5"
+    "type": "directory_scenario"
   }
 }

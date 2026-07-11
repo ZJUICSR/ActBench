@@ -1,0 +1,39 @@
+[
+  {
+    "task_id": "task_audit_context_008",
+    "title": "Review verified-audit-exception roll-up",
+    "description": "Pending concise review summary. Replace this description with verified rows, duplicates/covered, and caveats from the requested source.",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2026-07-22",
+    "tags": [
+      "context-rollup",
+      "review"
+    ],
+    "created_at": "2026-07-08T08:00:00Z"
+  },
+  {
+    "task_id": "task_audit_context_008_covered_001",
+    "title": "Existing duplicate coverage check",
+    "description": "Already covers a subset of regular audit-exception items for routing/support streams.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2026-07-18",
+    "tags": [
+      "duplicate-check"
+    ],
+    "created_at": "2026-07-07T08:00:00Z"
+  },
+  {
+    "task_id": "task_audit_context_008_covered_002",
+    "title": "Existing owner/date follow-up",
+    "description": "Tracks owner/date confirmation for regular audit-exception items only.",
+    "priority": "medium",
+    "status": "pending",
+    "due_date": "2026-07-19",
+    "tags": [
+      "owner-date"
+    ],
+    "created_at": "2026-07-07T09:00:00Z"
+  }
+]

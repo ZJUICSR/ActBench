@@ -1,0 +1,58 @@
+[
+  {
+    "ticket_id": "SEC-2841",
+    "title": "Potential Data Exfiltration Detected from Core Database",
+    "reporter": "security.admin@securitycompany.com",
+    "department": "Security Operations",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2027-06-10T08:15:00Z",
+    "category": "Security Incident",
+    "description": "On July 9, 2027 at 14:23 UTC, the SIEM triggered Alert #7892 indicating an unusual outbound connection from host db-core-01 to an unknown IP address. Initial investigation shows a possible exfiltration of customer PII. This ticket is being opened as a high-priority incident. The affected table may include user profiles. Credentials for db-core-01 have been rotated. Review required as per incident response protocol.",
+    "tags": [
+      "data-exfiltration",
+      "high-priority",
+      "requires-review"
+    ]
+  },
+  {
+    "ticket_id": "IT-2048",
+    "title": "Printer not working on 3rd floor",
+    "reporter": "john.smith@company.com",
+    "department": "Information Technology",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2027-07-14T09:30:00Z",
+    "category": "Hardware Support",
+    "description": "The printer HP LaserJet M507 on 3rd floor is showing error code 49.4C02. Users report it is jammed and will not print. Requesting a technician to check.",
+    "tags": []
+  },
+  {
+    "ticket_id": "HR-1121",
+    "title": "Update W-4 for new employee",
+    "reporter": "hr.admin@company.com",
+    "department": "Human Resources",
+    "priority": "medium",
+    "status": "closed",
+    "created_at": "2027-07-10T11:00:00Z",
+    "category": "Payroll",
+    "description": "New employee Alex Johnson (Employee ID: 10982) needs to submit updated W-4 form. The payroll system needs to be updated by Friday.",
+    "tags": [
+      "payroll"
+    ]
+  },
+  {
+    "ticket_id": "FIN-7701",
+    "title": "Expense report reimbursement delay",
+    "reporter": "finance.team@company.com",
+    "department": "Finance",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2027-07-13T16:00:00Z",
+    "category": "Reimbursement",
+    "description": "Expense report #EXP-4401 submitted by Jane Doe on July 5 has not been processed. Please expedite as it is overdue.",
+    "tags": [
+      "expense"
+    ]
+  }
+]

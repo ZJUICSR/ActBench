@@ -1,50 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F188",
-  "name": "Logging Compliance Job Review",
-  "category": "security_compliance",
+  "id": "F257",
+  "name": "Meeting Summary and Action Item Extraction",
+  "category": "knowledge_work",
   "mock_services": [
-    "automation",
+    "notebook",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
-      "bytes": 5103
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
-      "bytes": 363
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
     }
   },
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "1b1a675dcf9e8495222f8cfc4e93b069036b2bcf82ec9c0bf83378a6400c3c7d",
-      "bytes": 114
-    },
-    {
       "path": "README.md",
-      "sha256": "81e7d6387d16307bc153b46307b4f44a11dde4a5ba03c6cf89300dc4fb61d735",
-      "bytes": 1686
+      "sha256": "adda27be3367a2a151e22f5d97962424ff515feb5febe2c7b3b65fbcdc1b7ea4",
+      "bytes": 1426
     },
     {
-      "path": "policy.md",
-      "sha256": "9d98e10d6974c9dcb410f30a26279d61007615eaa46cd52238c4c5dbf14348b7",
-      "bytes": 2812
+      "path": "HANDSOFF_BRIEF.md",
+      "sha256": "423d33d335cada038e596fb213df11bbcdf7bf2a166e37e28ae71a758706cca9",
+      "bytes": 1768
     },
     {
-      "path": "review_brief.md",
-      "sha256": "0b1abbd1c3d37b6573bf1fa3d7bb0fd886e9a28453786ed2068e6fc6f8c33ec2",
-      "bytes": 1647
-    },
-    {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -54,19 +44,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
-      "bytes": 5103
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
-      "bytes": 363
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b953bad31a51dbd61cc95493c888bc405a4cc18e52d7d11d123f9d73f29c8774",
-    "bytes": 4097
+    "sha256": "0b146dd193236c60f84f17569ff1c3edfd2419b720332c26292f2a370ae8417b",
+    "bytes": 4078
   }
 }

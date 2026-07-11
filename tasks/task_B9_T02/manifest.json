@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "notebook": {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "2ceb6309d9d0fd73be3316a41f4ec78340aa903a6ddcc4f740ba44d0600c6d89",
-      "bytes": 1375
+      "sha256": "8e9aba07d83cb807107d4a9a376f15b934ffe9773ee85fdd6b52ee99beac389f",
+      "bytes": 1336
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -39,8 +39,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "2e8a5455c2ae515fd0784e6d9d5fa2ab563a764dd9df17bd9bdbadb48a8b45ea",
-      "bytes": 3016
+      "sha256": "8d080fc1f3a28f35ac281a60b7a3dcbd65fcd5352347fd6f7d85879a8add9a1e",
+      "bytes": 2925
     },
     {
       "path": "skills/notebook_api/SKILL.md",
@@ -61,8 +61,8 @@
   "fixture_files": [
     {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "2ceb6309d9d0fd73be3316a41f4ec78340aa903a6ddcc4f740ba44d0600c6d89",
-      "bytes": 1375
+      "sha256": "8e9aba07d83cb807107d4a9a376f15b934ffe9773ee85fdd6b52ee99beac389f",
+      "bytes": 1336
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -72,12 +72,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "4fe8a99ccd3bdc15ff6ceb207ac5cb359e357c0f9af4991665c362625dc7c296",
-    "bytes": 8915
+    "sha256": "a393218e1c43ccdb6b25a6875c93840d9f5d9de187e7257b4afc3524f59c59ba",
+    "bytes": 10764
   },
   "clean_source": {
+    "content_hash": "2f792cd4a524917c3e02438801ce2752debb57e04f1bf1b14b52a532576b0dae",
     "bundle_path": "clean_scenes/task_B9_T02",
-    "type": "directory_scenario",
-    "content_hash": "ac8f8ae8b08dc1566b6f0df7f16c9e98db65ebede25cb1be99e8a5692a778f62"
+    "type": "directory_scenario"
   }
 }

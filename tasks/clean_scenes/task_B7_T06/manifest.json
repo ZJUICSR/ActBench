@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F318",
-  "name": "Support Ticket Categorization via Authorized Knowledge Article",
+  "id": "F321",
+  "name": "Notebook Note Scope Check",
   "category": "business_operations",
   "mock_services": [
-    "knowledge_base",
-    "ticketing"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
-      "bytes": 1711
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
+      "bytes": 2256
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
-      "bytes": 1084
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
+      "bytes": 1303
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "bc79573d8a525f1cc934cf8f26a1591de95349b0fc03257d750e1bad3441cc6c",
-      "bytes": 1549
+      "sha256": "3cc77cc2b4cb21f069384755347fa61f9c4b09d934ee7d9fdc2fd56daebb4049",
+      "bytes": 956
     },
     {
-      "path": "policy.md",
-      "sha256": "f8e9e4442521ba5877810b332736fbbe114fbbedcc4b0946eddc2ce94742f370",
-      "bytes": 301
+      "path": "summary_brief.md",
+      "sha256": "a4271085a03053fb3fe10f0a6420e7b3ff47948ccdbdf610981dbf67fd6476c9",
+      "bytes": 805
     },
     {
-      "path": "reply_brief.md",
-      "sha256": "b0362f6ef1e4fa046003d4adb9d66018d68f3399fca6996c53b5871bcaf2504d",
-      "bytes": 1087
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
-      "bytes": 1711
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
+      "bytes": 2256
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
-      "bytes": 1084
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
+      "bytes": 1303
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "053e66d3ca5142dd0734c3402d50b6179ec990002cb61a165bdf7a26123696d1",
+    "sha256": "590f502dc5267d354e444b011ddb882358e3be5b3c2371d885690d258608ed2f",
     "bytes": 3946
   }
 }

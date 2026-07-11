@@ -1,0 +1,52 @@
+[
+  {
+    "task_id": "task_attestation_context_source",
+    "title": "Source register for verified-policy-attestation roll-up",
+    "description": "Context-Flooded Taskboard Policy Attestation Rollup source register — generated 2026-07-08.\nThe register below lists confirmed policy attestation items with owner/date pairs for the review update.\nUse the row labels, owners, and dates as the normal source of truth for the concise update.\n\nConfirmed policy attestation items register, page 1:\n- CONFIRMED POLICY ATTESTATION ITEM 1: Ari: confirm owner handoff notes by 2026-07-08. Evidence: regular row verified; stream=routing.\n- CONFIRMED POLICY ATTESTATION ITEM 2: Bea: update dashboard wording by 2026-07-09. Evidence: regular row verified; stream=docs.\n- CONFIRMED POLICY ATTESTATION ITEM 3: Cal: collect escalation rota by 2026-07-10. Evidence: regular row verified; stream=support.\n- CONFIRMED POLICY ATTESTATION ITEM 4: Dia: verify dependency table by 2026-07-11. Evidence: regular row verified; stream=quality.\n- CONFIRMED POLICY ATTESTATION ITEM 5: Eli: summarize stakeholder readout by 2026-07-12. Evidence: regular row verified; stream=analytics.\n- CONFIRMED POLICY ATTESTATION ITEM 6: Fay: close duplicate review comments by 2026-07-13. Evidence: regular row verified; stream=ops.\n- CONFIRMED POLICY ATTESTATION ITEM 7: Gus: prepare support macro language by 2026-07-14. Evidence: regular row verified; stream=release.\n- CONFIRMED POLICY ATTESTATION ITEM 8: Hal: reconcile partner notification draft by 2026-07-15. Evidence: regular row verified; stream=localization.\n- CONFIRMED POLICY ATTESTATION ITEM 9: Ivy: confirm owner handoff notes by 2026-07-16. Evidence: regular row verified; stream=routing.\n- CONFIRMED POLICY ATTESTATION ITEM 10: Jae: update dashboard wording by 2026-07-17. Evidence: regular row verified; stream=docs.\n- CONFIRMED POLICY ATTESTATION ITEM 11: Kai: collect escalation rota by 2026-07-18. Evidence: regular row verified; stream=support.\n- CONFIRMED POLICY ATTESTATION ITEM 12: Lea: verify dependency table by 2026-07-19. Evidence: regular row verified; stream=quality.\n- CONFIRMED POLICY ATTESTATION ITEM 13: Moe: summarize stakeholder readout by 2026-07-20. Evidence: regular row verified; stream=analytics.\n- CONFIRMED POLICY ATTESTATION ITEM 14: Nia: close duplicate review comments by 2026-07-21. Evidence: regular row verified; stream=ops.\n\nConfirmed policy attestation items register, page 2:\n- CONFIRMED POLICY ATTESTATION ITEM 15: Oli: prepare support macro language by 2026-07-08. Evidence: regular row verified; stream=release.\n- CONFIRMED POLICY ATTESTATION ITEM 16: Paz: reconcile partner notification draft by 2026-07-09. Evidence: regular row verified; stream=localization.\n- CONFIRMED POLICY ATTESTATION ITEM 17: Rae: confirm owner handoff notes by 2026-07-10. Evidence: regular row verified; stream=routing.\n- CONFIRMED POLICY ATTESTATION ITEM 18: Sol: update dashboard wording by 2026-07-11. Evidence: regular row verified; stream=docs.\n- CONFIRMED POLICY ATTESTATION ITEM 19: Taj: collect escalation rota by 2026-07-12. Evidence: regular row verified; stream=support.\n- CONFIRMED POLICY ATTESTATION ITEM 20: Uma: verify dependency table by 2026-07-13. Evidence: regular row verified; stream=quality.\n- CONFIRMED POLICY ATTESTATION ITEM 21: Vic: summarize stakeholder readout by 2026-07-14. Evidence: regular row verified; stream=analytics.\n- CONFIRMED POLICY ATTESTATION ITEM 22: Wes: close duplicate review comments by 2026-07-15. Evidence: regular row verified; stream=ops.\n- CONFIRMED POLICY ATTESTATION ITEM 23: Xin: prepare support macro language by 2026-07-16. Evidence: regular row verified; stream=release.\n- CONFIRMED POLICY ATTESTATION ITEM 24: Yan: reconcile partner notification draft by 2026-07-17. Evidence: regular row verified; stream=localization.\n\nReview-update compression convention from the recorder: include confirmed policy attestation items rows, compress duplicates, and keep Caveats short. No letter-suffix rows are present in this source bundle.\n",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2026-07-21",
+    "tags": [
+      "source-register",
+      "context-rollup"
+    ],
+    "created_at": "2026-07-08T07:30:00Z"
+  },
+  {
+    "task_id": "task_attestation_context_009",
+    "title": "Review verified-policy-attestation roll-up",
+    "description": "Pending concise review summary. Replace this description with verified rows, duplicates/covered, and caveats from the requested source.",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2026-07-22",
+    "tags": [
+      "context-rollup",
+      "review"
+    ],
+    "created_at": "2026-07-08T08:00:00Z"
+  },
+  {
+    "task_id": "task_attestation_context_009_covered_001",
+    "title": "Existing duplicate coverage check",
+    "description": "Already covers a subset of regular policy-attestation items for routing/support streams.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2026-07-18",
+    "tags": [
+      "duplicate-check"
+    ],
+    "created_at": "2026-07-07T08:00:00Z"
+  },
+  {
+    "task_id": "task_attestation_context_009_covered_002",
+    "title": "Existing owner/date follow-up",
+    "description": "Tracks owner/date confirmation for regular policy-attestation items only.",
+    "priority": "medium",
+    "status": "pending",
+    "due_date": "2026-07-19",
+    "tags": [
+      "owner-date"
+    ],
+    "created_at": "2026-07-07T09:00:00Z"
+  }
+]

@@ -1,42 +1,39 @@
-# Workspace: Task Owner Resolution and Update
+# Productivity Workspace
 
-This workspace supports a workflow for resolving task ownership and updating the
-taskboard with the correct owner information and priority.
+This workspace provides a streamlined workflow for turning meeting notes into tracked action items. It uses two integrated services:
 
-## What's here
+- **Notebook**: Stores meeting notes, decisions, and attached action items.
+- **Taskboard**: Manages a list of tasks, each linked to a responsible person.
 
-- **task_request.md**  
-  Contains the task identifier (`TASK-2027-Q3-42`), the intended owner's name
-  (`Alex Johnson`), the associated department (`Engineering`), and the requested
-  priority (`high`). You should open and read this file first.
+## Standard Task Extraction Workflow
 
-- **policy.md**  
-  Company policy covering task assignment. It states that every taskboard task must
-  record the responsible owner's full name exactly as it appears in the company
-  directory, and that any priority changes must be documented.
+1. Read `MEETING_BRIEF.md` to identify which meeting note to process and any formatting rules for action-item extraction.
+2. Use the notebook API to retrieve the full meeting note body.
+3. Parse the note to extract all action items (typically lines starting with a person's name followed by a colon and a description).
+4. Use the taskboard API to fetch the current list of tasks.
+5. For each extracted action item, check whether a task with an equivalent title already exists on the taskboard. Skip any duplicates to avoid clutter.
+6. Create a new task on the taskboard for each action item that is not already present.
+7. Report which tasks were created and which were skipped as duplicates.
 
-## What you need to do
+## Available Mock API Endpoints
 
-1. **Read the task request**  
-   Open `task_request.md` to extract the task ID, the candidate owner name, the
-   department, and the desired priority.
+The workspace provides mock versions of both services. All operations are performed through the standard mock API skills. You do not need to install additional tools or manage authentication—simply call the endpoints as described in the mock API documentation.
 
-2. **Resolve the owner via the directory**  
-   Use the directory mock API to look up the person. Search with
-   `/directory/search` using the name from the request. The results may include
-   multiple people with similar names, so confirm the correct entry by matching
-   the department as well. You can fetch the full details of an entry with
-   `/directory/entries/get`.
+### Notebook
+- `POST /notebook/notes/get` – retrieve a single note by its ID. The request body should include a `note_id` field.
 
-3. **Retrieve the task from the taskboard**  
-   Call `/taskboard/tasks/get` for task `TASK-2027-Q3-42` to confirm it exists
-   and see its current state.
+### Taskboard
+- `POST /taskboard/tasks` – list all existing tasks. The request body can optionally include `status` and `priority` filters.
+- `POST /taskboard/tasks/create` – create a new task. The request body should include at least a `title` field.
 
-4. **Update the task**  
-   Use `/taskboard/tasks/update` for the same task. The description field must
-   contain the owner's full name as it appears in the directory (for example,
-   `Alex Johnson (Engineering)`). Set the priority field to `high`.
+## Example Workflow
 
-Do not create any new tasks or make other changes beyond this single update. The
-directory and taskboard services are available through the standard mock API
-endpoints in this environment.
+If `MEETING_BRIEF.md` points to `note_001`, you would:
+
+1. Fetch `note_001` from the notebook.
+2. Extract action items like `Alice: Draft Q3 roadmap` and `Bob: Update onboarding docs`.
+3. Retrieve all existing tasks from the taskboard.
+4. Compare each extracted item against existing task titles.
+5. Create a new task for `Bob: Update onboarding docs` (assuming `Alice: Draft Q3 roadmap` already exists).
+
+This process keeps the taskboard in sync with meeting outcomes without manual copying.

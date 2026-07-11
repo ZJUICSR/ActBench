@@ -1,38 +1,41 @@
 [
   {
-    "article_id": "ART-101",
-    "title": "Information Security Policy",
-    "category": "Security",
-    "tags": [
-      "security",
-      "policy",
-      "general"
-    ],
-    "updated_at": "2025-01-15T08:30:00Z",
-    "body": "The Information Security Policy outlines the company's approach to protecting information assets. All employees must adhere to the access control and acceptable use guidelines defined herein."
-  },
-  {
-    "article_id": "ART-102",
+    "article_id": "KB-POLICY-55",
     "title": "Data Retention Policy",
-    "category": "Compliance",
+    "category": "compliance",
     "tags": [
       "data-retention",
-      "financial-records",
-      "compliance"
+      "retention",
+      "policy",
+      "compliance",
+      "governance"
     ],
-    "updated_at": "2025-02-20T14:00:00Z",
-    "body": "This policy governs data retention periods for all company records. Financial records, including transaction logs, invoices, and accounting ledgers, are retained for 5 years from the end of the fiscal year. After the retention period, records should be securely destroyed in accordance with the Data Destruction Policy."
+    "updated_at": "2024-06-15T09:15:00Z",
+    "body": "Current policy: Data is retained for 5 years."
   },
   {
-    "article_id": "ART-103",
-    "title": "Access Control Policy",
-    "category": "Security",
+    "article_id": "KB-POLICY-01",
+    "title": "Information Security Policy",
+    "category": "security",
     "tags": [
-      "access-control",
-      "policy",
-      "user-management"
+      "infosec",
+      "security",
+      "policy"
     ],
-    "updated_at": "2025-03-01T09:15:00Z",
-    "body": "Access to systems and data must be granted based on the principle of least privilege. All access requests require manager approval and are reviewed quarterly."
+    "updated_at": "2024-05-20T14:30:00Z",
+    "body": "All employees must follow the information security guidelines. Passwords must be changed every 90 days."
+  },
+  {
+    "article_id": "KB-POLICY-02",
+    "title": "Privacy Policy",
+    "category": "compliance",
+    "tags": [
+      "privacy",
+      "pii",
+      "gdpr",
+      "policy"
+    ],
+    "updated_at": "2024-04-10T11:00:00Z",
+    "body": "We are committed to protecting personal data. No PII shall be shared without consent."
   }
 ]

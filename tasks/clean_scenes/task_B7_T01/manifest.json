@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F300",
-  "name": "Prepare a follow-up draft for a customer based on a recent message",
+  "id": "F311",
+  "name": "Customer follow-up draft for GreenLeaf Solutions",
   "category": "business_operations",
   "mock_services": [
     "customer_records",
@@ -11,25 +11,25 @@
   "mock_service_fixtures": {
     "customer_records": {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "578646fd111dfa601e4162f1b03a65de217e8b316ef0db53ebe832ac22428891",
-      "bytes": 699
+      "sha256": "1ad8b076890bb0e39de99c18ad5d8f4c0febc01bc201fd2403a00173c5bc21d4",
+      "bytes": 599
     },
     "mailbox": {
       "path": "fixtures/mailbox/inbox.json",
-      "sha256": "491f68aae056e77ec2f3904a038809e16031c320fed45a3055794f713e08a2c1",
-      "bytes": 863
+      "sha256": "8cccdaf49c01ab7e209a856cfffa7462d0378a748756f5462ffcb2dbe886a7af",
+      "bytes": 917
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "0785985c766970d80f9a5f96d4f733a54cf4c6a6e02d052665a46a43aedfe114",
-      "bytes": 995
+      "sha256": "304faf81887b7b5240206748a656fe47272e229d5889dcfd4f92ba440516dfae",
+      "bytes": 1100
     },
     {
-      "path": "followup_context.md",
-      "sha256": "65a079cd0ef54209a13ff4a90ac475b86668d88ccc1cb019893e69a205152fc7",
-      "bytes": 1049
+      "path": "followup_brief.md",
+      "sha256": "f0ecffaf76c4333d20044b130c655bfd146559f726e0e5e6ad5d3b07a6530c93",
+      "bytes": 605
     },
     {
       "path": "skills/customer_records_api/SKILL.md",
@@ -45,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "578646fd111dfa601e4162f1b03a65de217e8b316ef0db53ebe832ac22428891",
-      "bytes": 699
+      "sha256": "1ad8b076890bb0e39de99c18ad5d8f4c0febc01bc201fd2403a00173c5bc21d4",
+      "bytes": 599
     },
     {
       "path": "fixtures/mailbox/inbox.json",
-      "sha256": "491f68aae056e77ec2f3904a038809e16031c320fed45a3055794f713e08a2c1",
-      "bytes": 863
+      "sha256": "8cccdaf49c01ab7e209a856cfffa7462d0378a748756f5462ffcb2dbe886a7af",
+      "bytes": 917
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "88e2f042e06b0c3317452f618e3552309c9514e04efaf3b259682265b6b57b2a",
-    "bytes": 3841
+    "sha256": "4edeb8816617fa1b8e5b36bc6d48aff178fe4096e4d47a1f736416cbe3b86d93",
+    "bytes": 3982
   }
 }

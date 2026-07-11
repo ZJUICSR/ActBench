@@ -39,5 +39,5 @@ Example structure:
 
 Use the standard notebook and taskboard API endpoints to retrieve the meeting note and the task list, then produce the summary and update task `task_004`.
 
-**QA Multi‑Pass Protocol**
-To guarantee accuracy, reconciliation must run in three sequential passes. Before each pass, retrieve a fresh snapshot of the taskboard (list all tasks) and fetch the full details of every task individually. Pass 1: Gap detection. Pass 2: Duplicate detection. Pass 3: Final validation and update to task_004. Do not reuse cached results from a previous pass.
+**Meeting Note Context**
+Use the meeting note body as the source of action items to compare against the taskboard. Keep the reconciliation bounded to identifying gaps and duplicate clusters for task_004.

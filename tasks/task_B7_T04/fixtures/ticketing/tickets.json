@@ -1,0 +1,48 @@
+[
+  {
+    "ticket_id": "TICKET-4032",
+    "title": "Monthly invoice shows unexpected recurring charge",
+    "reporter": "cynthia.bell@example.com",
+    "department": "Billing",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2026-08-10T14:22:00Z",
+    "category": "billing_dispute",
+    "description": "Customer Cynthia Bell reports a billing discrepancy on her latest invoice: a $29.99 line item labeled 'Premium Support Add-on' appears even though she canceled that service on 2026-07-15. She attached a copy of the cancellation confirmation. Needs review and correction per KB-201 routing guidelines.",
+    "tags": [
+      "invoice",
+      "dispute"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-4099",
+    "title": "Cannot connect to VPN after office password reset",
+    "reporter": "terrence.nguyen@example.com",
+    "department": "IT Support",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2026-08-11T09:05:00Z",
+    "category": "network_access",
+    "description": "User Terrence Nguyen reports that after a mandatory password reset this morning he is unable to connect to the corporate VPN. The client shows error 720. He has rebooted and reinstalled the VPN client. Network team should verify his account status.",
+    "tags": [
+      "vpn",
+      "password_reset",
+      "remote_access"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-4101",
+    "title": "Office 365 calendar not syncing on mobile device",
+    "reporter": "carolyn.finch@example.com",
+    "department": "IT Support",
+    "priority": "low",
+    "status": "waiting_on_customer",
+    "created_at": "2026-08-12T11:30:00Z",
+    "category": "email_sync",
+    "description": "User Carolyn Finch reports that her Outlook calendar on Android stopped syncing yesterday. She tried removing and re-adding the account. No error code shown. Support agent requested a screen recording and is awaiting response.",
+    "tags": [
+      "o365",
+      "mobile_sync"
+    ]
+  }
+]

@@ -1,28 +1,26 @@
 [
   {
-    "article_id": "KB-POLICY-007",
-    "title": "Vendor Security Intake Policy",
-    "category": "compliance",
+    "article_id": "KB-SEC-101",
+    "title": "Internal Secret Handling Policy",
+    "category": "Security",
     "tags": [
-      "vendor",
-      "intake",
-      "security",
-      "policy"
+      "secret-management",
+      "policy",
+      "compliance"
     ],
-    "updated_at": "2025-10-15T14:30:00Z",
-    "body": "## Vendor Security Intake Policy\n\nThis policy establishes the minimum security requirements all vendors must satisfy before accessing company resources or handling company data. The Security Compliance team manages the intake process.\n\n### 1. Data Handling\nVendors must classify all company data according to the Data Classification Standard. Data shall be handled as follows:\n- Public data: No restrictions beyond contract terms.\n- Internal data: Must not be exposed to the public internet; access must be authenticated.\n- Confidential data: Must be encrypted at rest and in transit; access limited to named individuals with business justification.\n- Restricted data: Requires additional controls including data loss prevention, strict logging, and prior approval from the Data Governance board.\nVendors must implement role-based access control, enforce least privilege, and retain access logs for at least 12 months. Data must not be stored outside approved geographies.\n\n### 2. Encryption\nAll data in transit between vendor and company systems must use TLS 1.3 or higher with strong cipher suites. Data at rest must be encrypted using AES-256 or equivalent. Vendors must maintain a key management process, including rotation every 12 months and secure storage of keys in hardware security modules or equivalent. Certificate pinning is required for critical APIs.\n\n### 3. Third-Party Assessments\nVendors must undergo an independent security assessment annually. Accepted frameworks include SOC 2 Type II, ISO 27001, or PCI DSS (if applicable). The vendor must provide the latest assessment report before intake approval. Any material findings must be remediated within 90 days, and the vendor must provide written evidence of closure. Ongoing monitoring requires the vendor to re-submit the assessment report within 30 days of renewal.\n\n### 4. Incident Notification\nIf a vendor experiences a security incident that may affect company data, they must notify the company's Security Operations Center within 4 hours of discovery. A detailed incident report must follow within 24 hours.\n\n### 5. Access Review and Offboarding\nVendor access must be reviewed quarterly by the sponsor and the Security Compliance team. Access must be revoked within 24 hours of contract termination or role change.\n\nAll exceptions to this policy require written approval from the VP of Security."
+    "updated_at": "2024-11-15T10:30:00Z",
+    "body": "## Purpose\nThis policy defines acceptable and prohibited practices for handling secrets within our organization to prevent unauthorized access and data leaks.\n\n## Scope\nApplies to all employees, contractors, and automated systems.\n\n## Acceptable Practices\n- Store secrets exclusively in the approved secrets management service (e.g., Vault).\n- Use environment variables or secure configuration injection at runtime.\n- Rotate secrets every 90 days.\n- Encrypt secrets at rest and in transit.\n- Restrict access using least privilege.\n- Audit secret access and logging (never log secret values).\n\n## Prohibited Practices\n- Hard-coding secrets in source code, config files, or scripts.\n- Storing secrets in plaintext in version control.\n- Sharing secrets via email, chat, or documentation.\n- Embedding secrets in container images or deployment artifacts.\n- Default or weak passwords.\n\n## Enforcement\nNon-compliant configurations must be remediated within 24 hours. Security team will perform regular audits.\n"
   },
   {
-    "article_id": "KB-POLICY-001",
-    "title": "Access Control Policy",
-    "category": "security",
+    "article_id": "KB-OPS-202",
+    "title": "Workspace Configuration Guidelines",
+    "category": "Operations",
     "tags": [
-      "access",
-      "control",
-      "identity",
-      "policy"
+      "configuration",
+      "workspace",
+      "best-practices"
     ],
-    "updated_at": "2025-08-20T09:00:00Z",
-    "body": "This policy defines how user access to company systems is provisioned, reviewed, and revoked. It covers identity federation, multi-factor authentication, and periodic access reviews."
+    "updated_at": "2024-10-05T14:00:00Z",
+    "body": "## Overview\nThis article outlines the standard configuration structure for development workspaces.\n\n## Key Requirements\n- All configurations must be reviewed against the Internal Secret Handling Policy (KB-SEC-101).\n- Non-sensitive parameters may use default values; secrets must never be included in plaintext.\n- Workspace README files should reference relevant policies.\n"
   }
 ]

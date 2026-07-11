@@ -1,38 +1,39 @@
 [
   {
-    "article_id": "KB-101",
-    "title": "Dependency Management Policy",
-    "category": "Policies",
+    "article_id": "KB-POLICY-010",
+    "title": "Incident Response Policy",
+    "category": "Security",
     "tags": [
-      "dependency-management",
+      "incident-response",
       "security",
-      "vulnerabilities"
+      "procedures"
     ],
-    "updated_at": "2025-09-01T00:00:00Z",
-    "body": "# Dependency Management Policy\n\nThis policy defines how project dependencies are approved, reviewed, and remediated. All third-party and open-source libraries must be scanned for known vulnerabilities using the organization's approved scanning tools.\n\n## Severity-to-Priority Mapping\n\n| Severity   | Ticket Priority | Category  | Tags                   |\n|------------|-----------------|-----------|------------------------|\n| Critical   | high           | security  | urgent, dependency     |\n| High       | high           | security  | urgent, dependency     |\n| Medium     | medium         | security  | dependency             |\n| Low        | low            | security  | dependency             |\n\nWhen a vulnerability is identified, create a ticket in the ticketing system and assign priority, category, and tags according to the table above. The remediation must follow the standard vulnerability response process."
+    "updated_at": "2025-06-01T09:00:00Z",
+    "body": "This policy outlines the steps to be taken in the event of a security incident. All incidents must be reported within 1 hour of detection. The incident response team will assess severity and initiate containment, eradication, and recovery phases. Communication with stakeholders must follow the approved notification plan."
   },
   {
-    "article_id": "KB-102",
-    "title": "Third-Party Library Approval Process",
-    "category": "Procedures",
+    "article_id": "KB-POLICY-011",
+    "title": "Data Retention Policy",
+    "category": "Compliance",
     "tags": [
-      "dependencies",
-      "approval",
-      "compliance"
+      "data-retention",
+      "compliance",
+      "gdpr",
+      "policy"
     ],
-    "updated_at": "2025-08-15T14:30:00Z",
-    "body": "All new third-party libraries must be approved by the architecture team. Submit a request with the library name, version, and intended use. The security team will perform a preliminary vulnerability assessment before approval is granted."
+    "updated_at": "2025-05-20T14:30:00Z",
+    "body": "Purpose: Define how long different types of data are retained. Personal data collected from users must be retained for a period of 12 months from the date of collection. After 12 months, data shall be archived for an additional 3 years before permanent deletion. Financial records are retained for 7 years as per regulatory requirements. Exceptions require approval from the Data Protection Officer."
   },
   {
-    "article_id": "KB-103",
-    "title": "Security Vulnerability Response Guide",
-    "category": "Procedures",
+    "article_id": "KB-POLICY-012",
+    "title": "Data Classification Standard",
+    "category": "Data Governance",
     "tags": [
-      "security",
-      "vulnerability-response",
-      "incidents"
+      "data-classification",
+      "governance",
+      "assets"
     ],
-    "updated_at": "2025-08-20T09:15:00Z",
-    "body": "When a vulnerability is reported, assign an owner, determine severity, and create a ticket following the Dependency Management Policy (KB-101). Critical and High findings must be remediated within 48 hours. All remediation activities must be documented in the tracking ticket."
+    "updated_at": "2025-04-10T11:15:00Z",
+    "body": "This standard establishes four classification levels: Public, Internal, Confidential, and Restricted. All data assets must be assigned a classification level by the data owner. Confidential and Restricted data require encryption at rest and in transit. Access controls must be enforced based on classification. Regular reviews of classifications must be conducted annually."
   }
 ]

@@ -1,32 +1,24 @@
 [
   {
     "transaction_id": "TXN-1001",
-    "account": "CUST-1001",
-    "status": "cleared",
-    "category": "invoice",
-    "amount": 5000,
+    "account": "CUST-7890",
+    "status": "posted",
+    "category": "charge",
+    "amount": -500.0,
     "currency": "USD",
-    "date": "2027-08-15",
-    "memo": "Q3 2027 services invoice"
+    "date": "2027-06-10",
+    "type": "charge",
+    "memo": "Monthly SaaS license fee - June 2027"
   },
   {
     "transaction_id": "TXN-1002",
-    "account": "CUST-1001",
-    "status": "cleared",
+    "account": "CUST-7890",
+    "status": "posted",
     "category": "payment",
-    "amount": -2000,
+    "amount": 500.0,
     "currency": "USD",
-    "date": "2027-09-01",
-    "memo": "Payment received - check #4521"
-  },
-  {
-    "transaction_id": "TXN-1003",
-    "account": "CUST-1001",
-    "status": "cleared",
-    "category": "adjustment",
-    "amount": -3000,
-    "currency": "USD",
-    "date": "2027-09-15",
-    "memo": "Credit adjustment - overcharge correction"
+    "date": "2027-06-15",
+    "type": "payment",
+    "memo": "Payment received - invoice #INV-5342"
   }
 ]

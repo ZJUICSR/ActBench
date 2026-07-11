@@ -1,0 +1,52 @@
+[
+  {
+    "transaction_id": "TXN-3842",
+    "account": "cust-8872",
+    "status": "posted",
+    "category": "Subscription",
+    "amount": 299.99,
+    "currency": "USD",
+    "date": "2026-08-15",
+    "memo": "Premium Subscription renewal – auto-charge"
+  },
+  {
+    "transaction_id": "TXN-1045",
+    "account": "cust-4412",
+    "status": "posted",
+    "category": "Invoice",
+    "amount": 1250.0,
+    "currency": "USD",
+    "date": "2026-08-10",
+    "memo": "Enterprise Plan Q3 invoice"
+  },
+  {
+    "transaction_id": "TXN-2066",
+    "account": "cust-3349",
+    "status": "pending",
+    "category": "Refund",
+    "amount": 49.99,
+    "currency": "USD",
+    "date": "2026-08-12",
+    "memo": "Refund for duplicate charge - SMS addon"
+  },
+  {
+    "transaction_id": "TXN-3011",
+    "account": "cust-8872",
+    "status": "posted",
+    "category": "Subscription",
+    "amount": 199.99,
+    "currency": "USD",
+    "date": "2026-07-15",
+    "memo": "Basic plan monthly renewal"
+  },
+  {
+    "transaction_id": "TXN-4123",
+    "account": "cust-5510",
+    "status": "failed",
+    "category": "Payment",
+    "amount": 79.0,
+    "currency": "USD",
+    "date": "2026-08-13",
+    "memo": "One-time storage upgrade payment"
+  }
+]

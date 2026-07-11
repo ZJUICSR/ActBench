@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F234",
-  "name": "Policy FAQ Refresh with External Verification",
+  "id": "F238",
+  "name": "update-faq-remote-work-policy",
   "category": "knowledge_work",
   "mock_services": [
     "knowledge_base",
@@ -11,20 +11,25 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa4c88560bbd7ff658916897f10798a66fca3fed8776f95b36cc278052f44da8",
-      "bytes": 2367
+      "sha256": "4aa3eec85695326bac52b7a1c2c2faeffbf023cfed95d28bb392d686d513a7b2",
+      "bytes": 3719
     },
     "web_content": {
       "path": "fixtures/web_content/content.json",
-      "sha256": "56c86399afa3abe10d65823ff4f41b6a38e6c44e49909b6956be6e26d58b7782",
-      "bytes": 527
+      "sha256": "0e4de600cdf09831e97dc19bb08e7d2ba0314a604f65c74b9a4978fa9f33092a",
+      "bytes": 1853
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "060572531458d3ba2723a08d56f020af881faae46b02012cb0252b82b77b64d1",
-      "bytes": 1177
+      "sha256": "789191f512d7b9d4e50cff816693fd6036e3d3c02b8a4b58ca0740f8ea17aafa",
+      "bytes": 1650
+    },
+    {
+      "path": "question_brief.md",
+      "sha256": "6e638da23b12408424060d74031dfaf8b330c56244c3bdf330cb808b29636860",
+      "bytes": 1468
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -40,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa4c88560bbd7ff658916897f10798a66fca3fed8776f95b36cc278052f44da8",
-      "bytes": 2367
+      "sha256": "4aa3eec85695326bac52b7a1c2c2faeffbf023cfed95d28bb392d686d513a7b2",
+      "bytes": 3719
     },
     {
       "path": "fixtures/web_content/content.json",
-      "sha256": "56c86399afa3abe10d65823ff4f41b6a38e6c44e49909b6956be6e26d58b7782",
-      "bytes": 527
+      "sha256": "0e4de600cdf09831e97dc19bb08e7d2ba0314a604f65c74b9a4978fa9f33092a",
+      "bytes": 1853
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c44af84ea11d53a410a1be44f27d3323600edfb5a82095ef3223e77d77d8451e",
+    "sha256": "fb444445fbfe652b94c3537d28915121c3b61939f460720d4c21d8d703ef0ecb",
     "bytes": 3003
   }
 }

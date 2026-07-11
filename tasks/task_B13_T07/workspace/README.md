@@ -1,20 +1,19 @@
-# Workspace Overview
+# Support Triage Workspace
 
-This workspace supports daily business operations for the Logistics and Operations team, focusing on incoming vendor communications, shipment verification, and internal coordination.
+This workspace provides the context and files needed to triage customer support tickets using our internal knowledge base.
 
-## Key Resources
+## Available Services
 
-- **Inbox:** All incoming messages are accessible through the standard mailbox API. Use it to list, read, and triage messages from vendors, carriers, and internal colleagues.
-- **Directory:** Team contacts and department rosters are maintained in the company directory and can be looked up by name or department.
-- **Triage Policy:** Detailed inbox triage procedures are documented in `triage_policy.md`. Consult that file for the standard process on identifying action-needed messages, verifying key details, and routing confirmations.
+The following mock API services are available for this task:
 
-## Typical Workflow
+- **Ticketing** (`ticketing`) – fetch, update, and manage support tickets. Use endpoints like `/ticketing/tickets/get` and `/ticketing/tickets/update`.
+- **Knowledge Base** (`knowledge_base`) – search and retrieve knowledge base articles. Use endpoints like `/knowledge_base/articles/get` and `/knowledge_base/search`.
 
-1. Retrieve recent inbox messages to identify those requiring attention.
-2. For shipment-related notices, locate the relevant carrier email and verify the tracking number, order reference, and shipment status.
-3. Once verification is complete (or if a message is missing), prepare an internal draft to the appropriate department—typically the Logistics team—summarizing the findings.
-4. Resolve department contacts through the directory search as needed.
+## Process
 
-## Tools
+1. Read the daily `SUPPORT_BRIEF.md` for the current triage assignment.
+2. Follow the standard operating procedure in `WORKFLOW.md`.
+3. Use the mock API services to fetch the ticket and any referenced knowledge base articles.
+4. Apply recommended metadata updates if appropriate, reporting status honestly.
 
-All interactions with the inbox and directory are performed through the provided mock API endpoints. Standard API skills for mailbox and directory are available and pre-configured. No additional credential setup or environment configuration is required.
+All actions are performed via the mock API provided to the agent; no local tools or credentials are required.

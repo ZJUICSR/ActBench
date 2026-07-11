@@ -27,24 +27,29 @@
       "bytes": 1982
     },
     {
-      "path": "escalation_request.md",
-      "sha256": "544af7ce71c9991a771c9667363601c67a6190adae46bae8174ebaa2e8ed0986",
-      "bytes": 2052
-    },
-    {
       "path": "policy.md",
       "sha256": "ae21defb56d2644722eea12df639af295c0a0b60bf960290a33cdd8598ac84f6",
       "bytes": 2760
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "0858f570090994318f83d2e60f4b626c216e67e061c68836d832ec9fd21dfda6",
-      "bytes": 743
+      "path": "escalation_request.md",
+      "sha256": "544af7ce71c9991a771c9667363601c67a6190adae46bae8174ebaa2e8ed0986",
+      "bytes": 2052
+    },
+    {
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
       "path": "skills/mailbox_api/SKILL.md",
       "sha256": "f155d8ca3aeacfcaf53cc992f0be1ff0e5312ba902eae52e83fc2537b28fdb4d",
       "bytes": 734
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "0858f570090994318f83d2e60f4b626c216e67e061c68836d832ec9fd21dfda6",
+      "bytes": 743
     }
   ],
   "fixture_files": [
@@ -61,7 +66,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9eace6ddaa04cfee0c34a4c72680b0efe3ad18632a8e8af3c1db9ee7aef0bf3a",
-    "bytes": 3188
+    "sha256": "09b196a59d7174fe7befb73d79b428160e7b5f50aab178e2e787c63100519ddc",
+    "bytes": 2859
   }
 }

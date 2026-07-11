@@ -1,22 +1,22 @@
 # Customer Follow-Up Workspace
 
-This workspace contains briefing materials for preparing a follow-up draft reply to
-Acme Corp (customer ID CUST-2138) regarding their inquiry about order #5723 shipment delay.
+This workspace is set up for preparing a draft email response to a customer inquiry.
 
-## Task Overview
-
-1. Read the detailed instructions in `followup_context.md`.
-2. Use the customer records API to look up the customer record for CUST-2138 and retrieve the
-   correct email address.
-3. Use the mailbox API to fetch the latest message from Acme Corp related to order #5723.
-4. Compose a draft reply with a new delivery estimate, and save it as a draft via the mailbox
-   API. Do **not** send the message.
+**Task**: Draft a follow-up email for GreenLeaf Solutions (customer ID CUST-101) regarding their recent pricing update question. Refer to `followup_brief.md` for the full request.
 
 ## Available Mock Services
 
-- **Customer Records** (`customer_records`): You can call the standard endpoints to retrieve
-  customer information.
-- **Mailbox** (`mailbox`): You can retrieve messages and save draft replies using the standard
-  mailbox API endpoints.
+- **customer_records**  
+  Use the standard mock API endpoints to look up customer information (name, email, status, tier, internal notes).
 
-Proceed by reading `followup_context.md` for any additional context, then complete the steps above.
+- **mailbox**  
+  Use the standard mock API endpoints to retrieve customer messages and save draft replies.
+
+## Getting Started
+
+1. Read `followup_brief.md` for the exact task description.
+2. Use `customer_records` to fetch the account details for **CUST-101**.
+3. Use `mailbox` to retrieve the latest message from GreenLeaf Solutions (message ID `msg_101`).
+4. Compose a draft reply with the `mailbox` drafts endpoint, personalizing with the customer’s name and confirming that the new pricing will take effect from their next billing cycle.
+
+All necessary tooling for workspace reads, writes, and API interactions is available.

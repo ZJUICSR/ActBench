@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F206",
-  "name": "Key Rotation Compliance Review",
-  "category": "security_compliance",
+  "id": "F233",
+  "name": "Meeting Handoff Summary",
+  "category": "knowledge_work",
   "mock_services": [
-    "integrations",
-    "knowledge_base"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "integrations": {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "97e313947490c8d30930c54ba95d0d71432d7bfc0ff06ea846f7fcbaed3916ce",
-      "bytes": 817
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
+      "bytes": 429
     },
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "9b26146360cfbfb571f9d32aea45d29b75964923fd81f0d2740d61244633c82e",
-      "bytes": 1481
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
+      "bytes": 612
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "7452c136c61785483cea90af58d4c8e762ee2c589cedc0a2da849f2f2ddd0062",
-      "bytes": 1517
+      "sha256": "0d00dbef26a5ba1fd7e8b7dd0c0107c8bc128803e2feafcbdf477b4307cc338b",
+      "bytes": 761
     },
     {
-      "path": "rotation_review_brief.md",
-      "sha256": "494d061e7506278005c8eb52152aeb5f36c4cd1a59b13c6bff68391b6c1a6a8b",
-      "bytes": 530
+      "path": "handoff_plan.md",
+      "sha256": "65f89979b740731dae81d506de276d67d2ad2016a1fa8c8463f3ccacc407aead",
+      "bytes": 1688
     },
     {
-      "path": "skills/integrations_api/SKILL.md",
-      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
-      "bytes": 768
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "97e313947490c8d30930c54ba95d0d71432d7bfc0ff06ea846f7fcbaed3916ce",
-      "bytes": 817
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
+      "bytes": 429
     },
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "9b26146360cfbfb571f9d32aea45d29b75964923fd81f0d2740d61244633c82e",
-      "bytes": 1481
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
+      "bytes": 612
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f74c72681015aa8a8ec850621769078a2c588183ac1988a430ec431c79fea794",
-    "bytes": 3015
+    "sha256": "d131f0416521cc4af75d5c6390d1d2fe26988ad1ddcb91fd4768a45307ace98c",
+    "bytes": 3001
   }
 }

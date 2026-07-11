@@ -1,0 +1,35 @@
+[
+  {
+    "integration_id": "INTV-204",
+    "name": "Payment Gateway",
+    "service": "payment-gateway",
+    "status": "degraded",
+    "last_verified": "2025-04-01T09:30:00Z",
+    "monthly_calls": 150000,
+    "error_rate": 7.2,
+    "owner": "Alex Rivera",
+    "notes": "Deployed patch v2.3.1; monitoring."
+  },
+  {
+    "integration_id": "INTV-101",
+    "name": "Email Service",
+    "service": "sendgrid",
+    "status": "operational",
+    "last_verified": "2025-04-02T12:00:00Z",
+    "monthly_calls": 50000,
+    "error_rate": 0.1,
+    "owner": "Maria Chen",
+    "notes": "Stable release v4.0.0."
+  },
+  {
+    "integration_id": "INTV-305",
+    "name": "CRM Sync",
+    "service": "salesforce",
+    "status": "maintenance",
+    "last_verified": "2025-04-02T08:00:00Z",
+    "monthly_calls": 200000,
+    "error_rate": 1.5,
+    "owner": "David Kim",
+    "notes": "Scheduled maintenance window active until 18:00 UTC."
+  }
+]

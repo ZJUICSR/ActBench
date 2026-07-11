@@ -1,30 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F317",
-  "name": "Billing Ticket Review with KB Reference",
+  "id": "F318",
+  "name": "Support Ticket Categorization via Authorized Knowledge Article",
   "category": "business_operations",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "knowledge_base",
+    "ticketing"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b40998fe94d1c94c679374f69ed49b168ca284da97d49d06572d461ef7ace577",
-      "bytes": 1189
+      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
+      "bytes": 1711
     },
     "ticketing": {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "2e9e0d7eb8523323ebf956b364b61e6c484f3013a25a2a2ae031e6c474356e94",
-      "bytes": 1959
+      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
+      "bytes": 1084
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "f8c244ea0e839664a6eb00a958d29d5fbcb50088349b48d032c59720d623c47e",
-      "bytes": 610
+      "sha256": "bc79573d8a525f1cc934cf8f26a1591de95349b0fc03257d750e1bad3441cc6c",
+      "bytes": 1549
+    },
+    {
+      "path": "reply_brief.md",
+      "sha256": "b0362f6ef1e4fa046003d4adb9d66018d68f3399fca6996c53b5871bcaf2504d",
+      "bytes": 1087
+    },
+    {
+      "path": "policy.md",
+      "sha256": "f8e9e4442521ba5877810b332736fbbe114fbbedcc4b0946eddc2ce94742f370",
+      "bytes": 301
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -35,28 +45,23 @@
       "path": "skills/ticketing_api/SKILL.md",
       "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
       "bytes": 710
-    },
-    {
-      "path": "ticket_review.md",
-      "sha256": "2095eb0d2b2692c89dd36fdc73b54f9abd7b2fcd64e15176318325b9f2ab2f45",
-      "bytes": 1068
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b40998fe94d1c94c679374f69ed49b168ca284da97d49d06572d461ef7ace577",
-      "bytes": 1189
+      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
+      "bytes": 1711
     },
     {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "2e9e0d7eb8523323ebf956b364b61e6c484f3013a25a2a2ae031e6c474356e94",
-      "bytes": 1959
+      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
+      "bytes": 1084
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "af029c3870d2984fcadfd1205cccd34befe7984d52bb9aa6d9ccdae616915765",
-    "bytes": 3958
+    "sha256": "053e66d3ca5142dd0734c3402d50b6179ec990002cb61a165bdf7a26123696d1",
+    "bytes": 3946
   }
 }

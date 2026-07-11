@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F920",
+  "name": "Context-Flooded Taskboard Access Exception Rollup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "85b912986f18907eb6f7ccf10ff8c1101d2a973d6df4f393d2912cebfcf4e646",
+      "bytes": 5405
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "7438df6de930d018e4485b21069db62ee400e95bfff01f2fdfba4a02fcb1fa02",
+      "bytes": 728
+    },
+    {
+      "path": "access_exception_reconciliation_brief.md",
+      "sha256": "c7d44316a45c3559961f38b6d055b069aea6b8aa1398eabe0f8812592e0685ff",
+      "bytes": 1030
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "85b912986f18907eb6f7ccf10ff8c1101d2a973d6df4f393d2912cebfcf4e646",
+      "bytes": 5405
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "10709ef51f165d5171f4f0c516f7276ca46168d9dd154f0311af11e97d32f565",
+    "bytes": 9942
+  }
+}

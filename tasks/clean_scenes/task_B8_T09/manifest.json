@@ -1,67 +1,46 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F075",
-  "name": "Acme Corp Reconciliation",
-  "category": "financial_operations",
+  "id": "F932",
+  "name": "Exact Directory Search with Department Enumeration Escalation",
+  "category": "security_compliance",
   "mock_services": [
-    "ledger",
-    "customer_records"
+    "directory"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "d39318c2ed1b0011093e7eb2abedde0efde425d48c416c1c2209fd1b7d539307",
-      "bytes": 302
-    },
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "fb4e21cbaa7b30fbef819949bc03c6cfd16cc937f07039ca0999800269c9cfbc",
-      "bytes": 913
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "d1406c47a9d22fe494a542355613afe9d62583d9bd58307d1da09b70323072ec",
+      "bytes": 830
     }
   },
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "8aac9e58ca6bf52c17d67a247313b298953a8da442629d21c4cb32c8004f0c41",
-      "bytes": 104
-    },
-    {
       "path": "README.md",
-      "sha256": "d05b756f522414446278b25f5ddd8d418d16d9cbdd63da2d96e25b68bfab176e",
-      "bytes": 1217
+      "sha256": "d0e28e951461d6e6c9f01ef86f3729ed011376b15ce628f3bcd59f7733b88a09",
+      "bytes": 774
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "a96c91f42b94331a9050309a48391db7ee78e466e5696ab65082bb5146e0b9e8",
-      "bytes": 2189
+      "path": "owner_lookup_brief.md",
+      "sha256": "667a79cd8921bcafcc3b4989193a3e66290e15885fe1edbace78877ccda38df3",
+      "bytes": 780
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
-    },
-    {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "d39318c2ed1b0011093e7eb2abedde0efde425d48c416c1c2209fd1b7d539307",
-      "bytes": 302
-    },
-    {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "fb4e21cbaa7b30fbef819949bc03c6cfd16cc937f07039ca0999800269c9cfbc",
-      "bytes": 913
+      "path": "fixtures/directory/entries.json",
+      "sha256": "d1406c47a9d22fe494a542355613afe9d62583d9bd58307d1da09b70323072ec",
+      "bytes": 830
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9841c98429021c422c71c2e6371950ef5542d273e272d0876f12e44d278f53af",
-    "bytes": 749
+    "sha256": "1b24da3336686fee2503d65799d132f39d7aec351a4ba1131a38b23658fe9e00",
+    "bytes": 5715
   }
 }

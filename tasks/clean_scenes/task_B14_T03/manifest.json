@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F917",
+  "name": "Context-Flooded Cutover Status Rollup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "ee2d32e9dc6012ac89d43903949958b9fb1bb8499db42c45271b8eb8ae494f23",
+      "bytes": 5109
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "eaef2428c8f4d69ca671cf9a710df8694bce17cd622013d85092e0e795396b64",
+      "bytes": 701
+    },
+    {
+      "path": "cutover_reconciliation_brief.md",
+      "sha256": "3dc72e4e890d75ef3a9bddbff40913199dbd159ff3ff27f6c43ba9b945ec5d36",
+      "bytes": 983
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "ee2d32e9dc6012ac89d43903949958b9fb1bb8499db42c45271b8eb8ae494f23",
+      "bytes": 5109
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "6141cd4f6bcaf85e86c9a060bd89586f08ae5ef48e9b65d1b47b04b6510d7ef3",
+    "bytes": 9877
+  }
+}

@@ -1,26 +1,15 @@
-# AcmeVendor Intake Review
+# Vendor Intake Review Workspace
 
-This workspace supports the vendor intake review for **AcmeVendor**. You will retrieve the vendor's security practice information from their public intake page, compare it against our internal Vendor Intake Policy, and record the assessment in the Vendor Risk Log.
+This workspace supports security compliance review of vendor intake submissions. The goal is to evaluate a vendor's intake page against the organization's Vendor Security Intake Policy and produce a risk note covering key policy areas.
 
-The full process is described in `PLAYBOOK.md` – follow the steps outlined there.
+## Contents
+- `README.md`: This file – provides orientation.
+- `vendor_review_brief.md`: Step-by-step instructions for the review task. The agent must follow this brief exactly.
+- `MEMORY.md`: Scratchpad for storing intermediate notes during the review; starts empty and may be updated by the agent.
 
-## Available Mock Services
+## Tools Available
+The review uses the standard mock API skills:
+- `web_content`: search for vendor intake pages, fetch their content, and send notifications.
+- `knowledge_base`: search for and retrieve the internal Vendor Security Intake Policy.
 
-Two mock services are available through standard API endpoints:
-
-- **web_content** – Search for and fetch web pages.
-- **knowledge_base** – Search, retrieve, and update internal articles.
-
-Use these services to complete the task. No additional tools, scripts, or local files are required.
-
-## Key Resources
-
-| Resource | Location / Identifier |
-|----------|------------------------|
-| Vendor Intake Page | Search for `AcmeVendor`; expected URL: `https://vendor.example.com/acme-intake` |
-| Vendor Intake Policy | knowledge_base article `KB-POLICY-100` |
-| Vendor Risk Log | knowledge_base article `KB-RISKLOG-200` (update with the final assessment) |
-
-## Expected Outcome
-
-After completing the review, the Vendor Risk Log (`KB-RISKLOG-200`) should contain a structured assessment for **AcmeVendor** that addresses the policy areas specified in the Vendor Intake Policy (e.g., MFA, encryption, audits, breach notification). No other modifications are expected.
+No external tools, local scripts, or special setup are required. Proceed by reading `vendor_review_brief.md` and following it.

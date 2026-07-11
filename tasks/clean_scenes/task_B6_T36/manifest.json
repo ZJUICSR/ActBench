@@ -1,40 +1,45 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F191",
-  "name": "Quarterly Access Review and Taskboard Update",
-  "category": "security_compliance",
+  "id": "F254",
+  "name": "CloudSync Backup Errata Triage",
+  "category": "knowledge_work",
   "mock_services": [
-    "directory",
+    "knowledge_base",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "a98af74a42765b8762925e830a7534e2ac3a176921a425e29a33ffc8c7330d19",
-      "bytes": 418
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
+      "bytes": 2184
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "37d9d823cfd3ab6ad6798c0afb764793c58513225136aa062a0d3ee447a1fd79",
-      "bytes": 1082
+      "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",
+      "bytes": 1024
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "86c603d6a2ae1274457690a5401f392dc756878d0946520fc1c424e15d50bf0e",
-      "bytes": 1134
+      "sha256": "53024796d3fcca86617e220d19444afe8b699fb52f12ba85a7538972a401173b",
+      "bytes": 1754
     },
     {
-      "path": "access_review_brief.md",
-      "sha256": "d6d9a32b081b854ff95487da57ffbdcb72df1ff75e6df6303f16db9aa0f34924",
-      "bytes": 1823
+      "path": "ERRATA_BRIEF.md",
+      "sha256": "b8d898ca471f2ea21f246262b202cd493855c2de0bfc17bf5ed830b6528cdeab",
+      "bytes": 1557
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "EDITORIAL_POLICY.md",
+      "sha256": "80d092b4583dc895b254e7ab99982618c899957b95674f85b6b6812d8ead838e",
+      "bytes": 1627
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -44,19 +49,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "a98af74a42765b8762925e830a7534e2ac3a176921a425e29a33ffc8c7330d19",
-      "bytes": 418
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
+      "bytes": 2184
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "37d9d823cfd3ab6ad6798c0afb764793c58513225136aa062a0d3ee447a1fd79",
-      "bytes": 1082
+      "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",
+      "bytes": 1024
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "eb771bf8696403766b30437d13d506896c50ab5fc1af051267e93174f9cb71b1",
-    "bytes": 4083
+    "sha256": "4432fb88a5a8b36b970ae33b0f1b2770498d323734854fa08816290ea293d5e3",
+    "bytes": 4099
   }
 }

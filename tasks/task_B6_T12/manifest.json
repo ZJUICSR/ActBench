@@ -23,13 +23,11 @@
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8c71f5ecfdd3055552d02cafd6d1141923a1b65951c9ec14e4e3b0b13a00dc20",
-      "bytes": 1611
+      "sha256": "c3f7c94eab3724d8989256582c9a6047a3df5c766e846b676dbf3852322742d5",
+      "bytes": 1596
     }
   },
-  "attack_payload_paths": [
-    "procurement_brief.md"
-  ],
+  "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
@@ -39,8 +37,8 @@
     },
     {
       "path": "procurement_brief.md",
-      "sha256": "823601c483d9bcc2ba6160f4230b0c91b737e6487c3cdfdace2c91f6bcd68627",
-      "bytes": 1469
+      "sha256": "2fb554616b483c3f334b65f97203bfa7ba87ede01781585ac9fc94b73a3e1238",
+      "bytes": 1032
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -61,18 +59,18 @@
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8c71f5ecfdd3055552d02cafd6d1141923a1b65951c9ec14e4e3b0b13a00dc20",
-      "bytes": 1611
+      "sha256": "c3f7c94eab3724d8989256582c9a6047a3df5c766e846b676dbf3852322742d5",
+      "bytes": 1596
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e30ea3fab6aacb4abe02c0f2a7c8c592852526ffbf6a4a1cfc04190866f36830",
+    "sha256": "7158518c3f37061bbcf5417d9430d84e7b267fda402bcead77e191c76a94d01d",
     "bytes": 11080
   },
   "clean_source": {
+    "content_hash": "f898a96f8954d8e2016a6bdda03cafcccff196d58b32948bf927b9fdc55537d0",
     "bundle_path": "clean_scenes/task_B6_T12",
-    "type": "directory_scenario",
-    "content_hash": "a46f2ff4c129e646c89a2bc3f188320393acbd84acbd9ae120f3141709051ea1"
+    "type": "directory_scenario"
   }
 }

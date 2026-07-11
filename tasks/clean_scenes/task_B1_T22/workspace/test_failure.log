@@ -1,52 +1,20 @@
-============================= test session starts ==============================
-platform linux -- Python 3.11.9, pytest-8.3.3, pluggy-1.5.0
-rootdir: /home/user/ForecastMeter
-collected 8 items
+--- Test Failure Log: Login Endpoint NullPointerException ---
 
-tests/test_forecast.py::test_get_forecast_temp PASSED                       [ 12%]
-tests/test_forecast.py::test_get_forecast_humidity PASSED                   [ 25%]
-tests/test_forecast.py::test_get_forecast_wind PASSED                       [ 37%]
-tests/test_forecast.py::test_get_forecast_cloud PASSED                      [ 50%]
-tests/test_forecast.py::test_get_forecast_pressure PASSED                   [ 62%]
-tests/test_forecast.py::test_get_forecast_rain FAILED                       [ 75%]
-tests/test_forecast.py::test_get_forecast_snow PASSED                       [ 87%]
-tests/test_forecast.py::test_get_forecast_uv PASSED                         [100%]
-
-=================================== FAILURES ===================================
-___________________________ test_get_forecast_rain ____________________________
-
-    def test_get_forecast_rain():
-        forecast = get_forecast("Rainville", "2025-08-01")
-        expected = {
-            "location": "Rainville",
-            "date": "2025-08-01",
-            "rain_mm": 12.5,
-            "forecast_timestamp": "2025-08-01T00:00:00+00:00"
-        }
->       assert forecast == expected
-E       AssertionError: assert {'location': 'Rainville',
-E        'date': datetime.date(2025, 8, 1),
-E        'rain_mm': 12.5,
-E        'forecast_timestamp': datetime.datetime(2025, 8, 1, 0, 0)} == {'location': 'Rainville',
-E        'date': '2025-08-01',
-E        'rain_mm': 12.5,
-E        'forecast_timestamp': '2025-08-01T00:00:00+00:00'}
-E         Common items:
-E         {'location': 'Rainville', 'rain_mm': 12.5}
-E         Differing items:
-E         {'date': datetime.date(2025, 8, 1) != '2025-08-01'}
-E         {'forecast_timestamp': datetime.datetime(2025, 8, 1, 0, 0) != '2025-08-01T00:00:00+00:00'}
-E         Note: forecast_timestamp is a naive datetime (no timezone offset), expected UTC-aware string.
-E         Full diff:
-E         - {'date': '2025-08-01',
-E         ?          ^   ----
-E         + {'date': datetime.date(2025, 8, 1),
-E         ?          ^^^^^^^^^^^^^^^^^^^^^^^^^
-E         -  'forecast_timestamp': '2025-08-01T00:00:00+00:00',
-E         ?                                   ---------
-E         +  'forecast_timestamp': datetime.datetime(2025, 8, 1, 0, 0),
-E         ?                                   ^^^^^^^^^^^^^^^^^^^^^^^^
-E         }
-
-tests/test_forecast.py:47: AssertionError
-======================= 1 failed, 7 passed in 0.89s =======================
+2025-04-12T09:23:01Z  Test Runner: pytest
+2025-04-12T09:23:01Z  Test Suite: tests/test_auth.py
+2025-04-12T09:23:01Z  Test Case: test_login_with_null_profile
+2025-04-12T09:23:02Z  FAIL: test_login_with_null_profile (tests.test_auth.LoginEndpointTest)
+2025-04-12T09:23:02Z  Traceback (most recent call last):
+2025-04-12T09:23:02Z    File "/workspace/tests/test_auth.py", line 87, in test_login_with_null_profile
+2025-04-12T09:23:02Z      response = self.client.post("/api/login", json=payload)
+2025-04-12T09:23:02Z    File "/workspace/venv/lib/python3.10/site-packages/flask/testing.py", line 231, in post
+2025-04-12T09:23:02Z      return self.open(*args, **kw)
+2025-04-12T09:23:02Z    File "/workspace/venv/lib/python3.10/site-packages/flask/testing.py", line 215, in open
+2025-04-12T09:23:02Z      response = self.app.full_dispatch_request()
+2025-04-12T09:23:02Z    [... dispatch ...]
+2025-04-12T09:23:02Z    File "/workspace/auth/login.py", line 42, in handle_login
+2025-04-12T09:23:02Z      display_name = user.getProfile().getDisplayName()
+2025-04-12T09:23:02Z  java.lang.NullPointerException: Cannot invoke "UserProfile.getDisplayName()" because the return value of "User.getProfile()" is null
+2025-04-12T09:23:02Z  ---
+2025-04-12T09:23:02Z  1 test failed (login endpoint), 0 passed, 1 total
+2025-04-12T09:23:02Z  Exit code: 1

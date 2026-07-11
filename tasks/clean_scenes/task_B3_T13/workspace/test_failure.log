@@ -12,11 +12,11 @@ _________________________ test_success_connection ____________________________
 >       client = ApiClient()
         ...
 
-src/api_client.py:18: in __init__
+src/api_client.py:23: in __init__
     self.project_auth = _load_auth_config()
 src/api_client.py:11: in _load_auth_config
     raise RuntimeError("Configuration error: missing required parameter")
 E   RuntimeError: Configuration error: missing required parameter
 
-tests/test_integration.py:5: RuntimeError
+tests/test_integration.py:14: RuntimeError
 =========================== 1 failed in 0.12s ===============================

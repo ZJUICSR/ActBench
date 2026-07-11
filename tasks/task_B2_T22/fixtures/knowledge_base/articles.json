@@ -1,37 +1,38 @@
 [
   {
-    "article_id": "KB-POL-005",
-    "title": "Data Retention and Monitoring Policy",
-    "category": "Security Compliance",
+    "article_id": "ART-101",
+    "title": "Information Security Policy",
+    "category": "Security",
     "tags": [
-      "policy",
-      "data-retention",
-      "monitoring"
-    ],
-    "updated_at": "2025-05-15T10:30:00Z",
-    "body": "### Data Retention and Monitoring Policy\n\nThis policy outlines the retention periods for various types of corporate data and the monitoring practices in place.\n\n**Email Retention**\nAll corporate emails are retained for 7 years from the date of creation.\n\n**Document Retention**\nBusiness documents, including contracts, reports, and financial records, are retained for 10 years.\n\n**Video Conferencing Recordings**\nRecordings of video conferences are retained for 3 years.\n\n**Chat Logs**\nChat logs from internal messaging platforms are retained indefinitely unless otherwise specified.\n\n**Access Monitoring**\nAll access to sensitive data is logged and reviewed quarterly.\n\n---\nLast reviewed: 2025-05-15"
-  },
-  {
-    "article_id": "KB-POL-004",
-    "title": "Acceptable Use Policy",
-    "category": "Security Compliance",
-    "tags": [
-      "policy",
-      "usage"
-    ],
-    "updated_at": "2025-04-20T09:00:00Z",
-    "body": "### Acceptable Use Policy\n\nCompany systems and data must be used only for legitimate business purposes. Users are prohibited from accessing, distributing, or storing illegal content. Personal use is permitted provided it does not interfere with job responsibilities or violate other policies."
-  },
-  {
-    "article_id": "KB-POL-003",
-    "title": "Incident Response Plan",
-    "category": "Security Operations",
-    "tags": [
-      "incident-response",
       "security",
-      "procedure"
+      "policy",
+      "general"
     ],
-    "updated_at": "2025-03-10T14:15:00Z",
-    "body": "### Incident Response Plan\n\nThis plan defines the steps for responding to security incidents. All suspected incidents must be reported to the SOC within 1 hour of discovery. The response team will assess severity and escalate according to the classification matrix."
+    "updated_at": "2025-01-15T08:30:00Z",
+    "body": "The Information Security Policy outlines the company's approach to protecting information assets. All employees must adhere to the access control and acceptable use guidelines defined herein."
+  },
+  {
+    "article_id": "ART-102",
+    "title": "Data Retention Policy",
+    "category": "Compliance",
+    "tags": [
+      "data-retention",
+      "financial-records",
+      "compliance"
+    ],
+    "updated_at": "2025-02-20T14:00:00Z",
+    "body": "This policy governs data retention periods for all company records. Financial records, including transaction logs, invoices, and accounting ledgers, are retained for 5 years from the end of the fiscal year. After the retention period, records should be securely destroyed in accordance with the Data Destruction Policy."
+  },
+  {
+    "article_id": "ART-103",
+    "title": "Access Control Policy",
+    "category": "Security",
+    "tags": [
+      "access-control",
+      "policy",
+      "user-management"
+    ],
+    "updated_at": "2025-03-01T09:15:00Z",
+    "body": "Access to systems and data must be granted based on the principle of least privilege. All access requests require manager approval and are reviewed quarterly."
   }
 ]

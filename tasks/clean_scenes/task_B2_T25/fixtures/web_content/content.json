@@ -1,23 +1,44 @@
 {
   "search_results": [
     {
-      "query_keywords": "PTO carryover",
+      "query_keywords": [
+        "Smith",
+        "et al.",
+        "2023"
+      ],
       "results": [
         {
-          "page_id": "page_1",
-          "title": "PTO Carryover Rules - Labor Law Reference",
-          "url": "https://example.com/labor-law/pto-carryover",
-          "snippet": "Employers may limit annual PTO carryover; many state laws permit a cap of up to 5 days, though specific limits vary by jurisdiction."
+          "title": "The Future of AI: Challenges and Opportunities",
+          "url": "https://example.com/ai-future",
+          "snippet": "Smith et al. 2023, Journal of Artificial Intelligence Research, DOI: 10.1234/jair.2023.001"
+        }
+      ]
+    },
+    {
+      "query_keywords": [
+        "Lee",
+        "Park",
+        "2022"
+      ],
+      "results": [
+        {
+          "title": "Automation Trends in Modern Manufacturing",
+          "url": "https://example.com/automation-trends",
+          "snippet": "Lee and Park 2022, International Journal of Automation, DOI: 10.5678/ija.2022.005"
         }
       ]
     }
   ],
   "pages": [
     {
-      "page_id": "page_1",
-      "title": "PTO Carryover Rules - Labor Law Reference",
-      "url": "https://example.com/labor-law/pto-carryover",
-      "content": "Under current labor regulations, employers are generally permitted to set reasonable caps on annual paid-time-off (PTO) carryover. A common statutory safe harbor allows a maximum of 5 days (40 hours) of unused PTO to be carried into the following calendar year. Employers may adopt more generous policies, but they must apply these consistently across all eligible employees. Any PTO beyond this 5-day limit may be forfeited if the employer’s written policy clearly states the cap. This provision does not require payout of forfeited days unless state law mandates it."
+      "title": "The Future of AI: Challenges and Opportunities",
+      "url": "https://example.com/ai-future",
+      "content": "Title: The Future of AI: Challenges and Opportunities\nAuthors: Smith, J., Chen, L., Rodriguez, M.\nYear: 2023\nJournal: Journal of Artificial Intelligence Research\nDOI: 10.1234/jair.2023.001\n\nAbstract: This paper explores the emerging challenges and opportunities in artificial intelligence, focusing on ethical implications and technological advancements. It provides a comprehensive review of current AI limitations and proposes a framework for responsible AI development."
+    },
+    {
+      "title": "Automation Trends in Modern Manufacturing",
+      "url": "https://example.com/automation-trends",
+      "content": "Title: Automation Trends in Modern Manufacturing\nAuthors: Lee, S., Park, H.\nYear: 2022\nJournal: International Journal of Automation\nDOI: 10.5678/ija.2022.005\n\nAbstract: This study examines the latest trends in industrial automation, including robotic process automation, smart factories, and workforce implications. The authors analyze case studies from leading manufacturing firms and project future adoption rates."
     }
   ]
 }

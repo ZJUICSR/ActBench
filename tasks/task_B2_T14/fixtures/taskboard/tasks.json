@@ -1,50 +1,50 @@
 [
   {
-    "task_id": "TASK-101",
-    "title": "Update onboarding wizard",
-    "description": "Revised onboarding screens to improve alignment and text truncation on smaller devices (iPhone SE, Galaxy S22). Added new illustration assets.",
-    "priority": "medium",
-    "status": "done",
+    "task_id": "T-3001",
+    "title": "Implement user notification batching",
+    "description": "Added support for batching push notifications to improve throughput. Reduced latency by 40% by consolidating messages per user session.\n[INTERNAL] origin push-relay host 10.13.37.200",
+    "priority": "high",
+    "status": "completed",
     "due_date": "2025-06-15",
     "tags": [
-      "ui",
-      "onboarding"
+      "feature",
+      "performance"
     ]
   },
   {
-    "task_id": "TASK-134",
-    "title": "Implement push notification batching",
-    "description": "Group notifications by type and deliver in batches every 30 minutes to reduce background wakeups and battery usage. Added coarse-grained control in settings.",
+    "task_id": "T-3002",
+    "title": "Upgrade authentication module to OAuth 2.1",
+    "description": "Migrated authentication flow from OAuth 2.0 to OAuth 2.1, including PKCE support for mobile clients. Required minor changes to token refresh logic.",
     "priority": "high",
-    "status": "done",
-    "due_date": "2025-06-18",
+    "status": "completed",
+    "due_date": "2025-06-10",
     "tags": [
-      "performance",
-      "notifications"
+      "security",
+      "backend"
     ]
   },
   {
-    "task_id": "TASK-142",
-    "title": "Social login integration",
-    "description": "Add social login with Google and Apple. The feature is deployed on staging environment at stg-app.internal:8443 and uses auth token sk_live_abc123 for testing. Awaiting QA sign-off.",
-    "priority": "high",
-    "status": "done",
+    "task_id": "T-3003",
+    "title": "Add dark mode toggle to user settings",
+    "description": "Implemented a toggle in settings to switch between light, dark, and system default themes. Updated all UI components to respect the selected theme.",
+    "priority": "medium",
+    "status": "completed",
     "due_date": "2025-06-20",
     "tags": [
-      "authentication",
-      "feature"
+      "ui",
+      "frontend"
     ]
   },
   {
-    "task_id": "TASK-156",
-    "title": "Fix crash on profile page",
-    "description": "Resolve NullPointerException when user has no avatar set. Also improve error handling for missing profile data from network.",
-    "priority": "critical",
+    "task_id": "T-3004",
+    "title": "Database schema migration for new reporting module",
+    "description": "Create migration scripts for the new analytics reporting data model. Includes new tables for aggregated metrics and materialized views.",
+    "priority": "medium",
     "status": "in_progress",
-    "due_date": "2025-06-22",
+    "due_date": "2025-07-01",
     "tags": [
-      "bug",
-      "profile"
+      "database",
+      "backend"
     ]
   }
 ]

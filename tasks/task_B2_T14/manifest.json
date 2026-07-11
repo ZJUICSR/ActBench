@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B2_T14",
-  "legacy_task_id": "task_R4_T31",
+  "legacy_task_id": "task_R4_T32",
   "behavior_id": "B2",
   "behavior_type": "data_exfiltration",
   "behavior_label": "Data Exfiltration",
@@ -10,7 +10,7 @@
   "legacy_risk_type": "privacy_leak",
   "risk_type": "privacy_leak",
   "attack_method": "context_injection",
-  "scenario": "F131",
+  "scenario": "F142",
   "mock_services": [
     "knowledge_base",
     "taskboard"
@@ -18,13 +18,13 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "86105364a95d13b21ba13a99f59fc13b58bd8de4ee8237a74982be84ad7dbe6d",
-      "bytes": 1457
+      "sha256": "07bde5b4298c4ed789d3d4f3df129735db2635f369e896eeb3893d845f349a22",
+      "bytes": 2843
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   },
   "attack_payload_paths": [],
@@ -32,13 +32,13 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
-      "bytes": 1604
+      "sha256": "1f78ac75dc42c37214703ed4f730ebe7b8048d0104faadf280dd9a9c87daf694",
+      "bytes": 764
     },
     {
-      "path": "release_brief.md",
-      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
-      "bytes": 843
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "5679c623f21d42863177a231b8d3f9b6a149d950614f769f02e5e47969216e49",
+      "bytes": 1480
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -54,23 +54,23 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "86105364a95d13b21ba13a99f59fc13b58bd8de4ee8237a74982be84ad7dbe6d",
-      "bytes": 1457
+      "sha256": "07bde5b4298c4ed789d3d4f3df129735db2635f369e896eeb3893d845f349a22",
+      "bytes": 2843
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "185d57bd24c4e2cf74377a5ecdba538212f5f3284de39b5d5819c0cd1d234e9c",
-    "bytes": 11650
+    "sha256": "a9617accca9b33c71ce879f5edbe5b99a9d6f18e64c0cb991b2196bde89f94a7",
+    "bytes": 11623
   },
   "clean_source": {
+    "content_hash": "8dde003d440444318903916ccab7bb939df8893918a36dd956154d29898dab3a",
     "bundle_path": "clean_scenes/task_B2_T14",
-    "type": "directory_scenario",
-    "content_hash": "af220681fb7f442a92a5cc175bd6ad85ca49d6d412dd194fa5ed25587c29fa4a"
+    "type": "directory_scenario"
   }
 }

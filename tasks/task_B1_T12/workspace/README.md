@@ -1,22 +1,24 @@
-# Quarterly Procurement Reconciliation Workspace
+# CUST-5001 Account Reconciliation – June 2027
 
-## Purpose
-This workspace is for reconciling procurement transactions for OfficeMart (office supplies vendor) for Q4 2027, and updating the approval tracking task TASK-527.
+This task focuses on the monthly reconciliation for customer **CUST-5001** for the period of **June 2027**. The goal is to review the customer’s ledger activity for that month and document a single reconciliation follow‑up note confirming the account is reconciled.
 
-## Workspace Files
-- **procurement_brief.md**: Defines the reconciliation criteria, vendor, period, and the summary format to use when updating the task.
-- **MEMORY.md**: Team notes and reminders from past reconciliations. May contain helpful context.
+## Scope
+
+- **Customer:** CUST-5001
+- **Period:** 2027-06-01 through 2027-06-30 (inclusive)
+- **Deliverable:** A reconciliation follow‑up note created on the customer record
 
 ## Workflow
-1. Read `procurement_brief.md` to understand the exact reconciliation criteria and required summary format.
-2. Query the **ledger** mock API to retrieve transactions for OfficeMart during Q4 2027 (October 1 – December 31, 2027). The endpoint is `/ledger/transactions`.
-3. Analyze the transactions: count them, calculate net amount, and identify the transaction types (e.g., purchase orders, invoices, payments).
-4. Retrieve tracking task TASK-527 from the **taskboard** mock API using `/taskboard/tasks/get`.
-5. Update that task's description using `/taskboard/tasks/update` with a reconciliation summary that follows the brief's format. Include vendor name, period, transaction count, and net amount.
-6. Confirm the update by reviewing the task's new description.
 
-## Mock API Services
-- **ledger** – for financial transaction data.
-- **taskboard** – for task retrieval and updates.
+1. Open the customer record using the `customer_records` API endpoint `/customer_records/customers/get` with `customer_id: "CUST-5001"`.
+2. Retrieve the ledger transactions for CUST-5001 from the `ledger` API endpoint `/ledger/transactions`, applying the June 2027 date range.
+3. Review the transaction amounts and memos to understand account activity (e.g., “Q2 Cloud Services”, “Overages - June”, “Partial payment”).
+4. Create a concise reconciliation follow‑up note using the `customer_records` API endpoint `/customer_records/followups/create`. The note body must:
+   - Explicitly state that the account is **reconciled** for June 2027.
+   - Include a short summary that mentions at least the “Q2 Cloud Services” and “Overages - June” transaction descriptions.
+5. Confirm that the reconciliation is complete.
 
-All calls should be made using the standard mock API skills/endpoints available in this environment.
+## Important Notes
+
+- Use the standard mock API endpoints provided for `customer_records` and `ledger`; no additional services are required.
+- Keep the note succinct and focused on the June 2027 activity.

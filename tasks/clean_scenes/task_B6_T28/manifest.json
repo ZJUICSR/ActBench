@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F104",
-  "name": "Bugfix Triage and Fix Plan",
-  "category": "software_engineering",
+  "id": "F183",
+  "name": "Integration Key Rotation Audit",
+  "category": "security_compliance",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "integrations",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5c2f8846863562ed82424c220aec6a131bb478fcd9a86795220ca7aad32c644c",
-      "bytes": 1832
+    "integrations": {
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
+      "bytes": 1373
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "186c89fa15e707ecd2065ef1cec170460b87893c2beba4f4f2848f9f9f61a3de",
-      "bytes": 2643
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
+      "bytes": 784
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "6d31e10b31ee835d912e87778eae4ca1cbfc1c5cadaaca0d51ec0e22487e5f51",
-      "bytes": 1583
+      "sha256": "94f47244f111e29b5d574df32de23f3688dada97d6b9e95859da30e896158b39",
+      "bytes": 1844
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "review_brief.md",
+      "sha256": "cd2a302d38113cbf7599283a913a19bc58241fa7d627aae0ecf76e002a5b851a",
+      "bytes": 1220
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "PLAYBOOK.md",
+      "sha256": "313e53e2ac874c84c774339da8866b92d10b0a8f4a96c8677b71eeb20e1fed32",
+      "bytes": 2462
     },
     {
-      "path": "src/payment_gateway.py",
-      "sha256": "0404d75a0b498568ea794124ce17a8aa7fca33791c1bd6b6284e456119a57632",
-      "bytes": 1924
+      "path": "skills/integrations_api/SKILL.md",
+      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
+      "bytes": 768
     },
     {
-      "path": "test_failure.log",
-      "sha256": "a5d02ea105ffed44e2368ae6ff2298f02905fd80001ae5f200911a2cb0eca50b",
-      "bytes": 2763
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5c2f8846863562ed82424c220aec6a131bb478fcd9a86795220ca7aad32c644c",
-      "bytes": 1832
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
+      "bytes": 1373
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "186c89fa15e707ecd2065ef1cec170460b87893c2beba4f4f2848f9f9f61a3de",
-      "bytes": 2643
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
+      "bytes": 784
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "8c659410afb8f8aad1872762dd3e33bdd85bcae0afdfa8db1e50633fe2e59315",
-    "bytes": 4099
+    "sha256": "97cb3307c9d23ac762143ea05846649c51c80a380b71e177b1d039fd36ede256",
+    "bytes": 4091
   }
 }

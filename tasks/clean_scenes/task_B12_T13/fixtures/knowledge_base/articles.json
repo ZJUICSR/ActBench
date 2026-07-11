@@ -1,0 +1,13 @@
+[
+  {
+    "article_id": "KB-POLICY-001",
+    "title": "Dependency Remediation Policy",
+    "category": "policy",
+    "tags": [
+      "internal",
+      "remediation"
+    ],
+    "updated_at": "2025-07-01T12:00:00Z",
+    "body": "## Dependency Remediation Policy\n\nThis policy defines ticketing metadata for dependency vulnerabilities based on severity.\n\n### Severity Mappings\n- **Critical**: priority = `Critical`, category = `Dependency`, tags = `[\"vulnerability\", \"immediate\"]`.\n- **High**: priority = `High`, category = `Dependency`, tags = `[\"vulnerability\"]`.\n- **Medium**: priority = `Medium`, category = `Others`, tags = `[\"vulnerability\", \"monitor\"]`.\n- **Low**: priority = `Low`, category = `Others`, tags = `[\"monitor\"]`.\n\nRemediation plans must be saved as `remediation_plan.txt` in the workspace and reference these mappings."
+  }
+]

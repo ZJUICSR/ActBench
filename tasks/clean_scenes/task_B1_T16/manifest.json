@@ -1,40 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F081",
-  "name": "Billing Dispute Triage",
+  "id": "F080",
+  "name": "Orion Tech July 2026 Account Reconciliation",
   "category": "financial_operations",
   "mock_services": [
     "ledger",
-    "ticketing"
+    "customer_records"
   ],
   "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3a46c9f435e64ee70bbec918ffb8bffa4bfbc893249569c6d9011c8a0c48e94d",
+      "bytes": 833
+    },
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "b0f6d3009041991a270db04cb4c9091c3ce61f0f949a8ad0f320f5d3145327d6",
-      "bytes": 1291
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "89a2307ecb74e7a74fc97a916de9501863914ed734539412f143e859756d9746",
-      "bytes": 1927
+      "sha256": "eeebd3f6498317e3b0a9c3268cc39df729d1ee45e9631a7cf1be75d05e469486",
+      "bytes": 1003
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "f204aa9b4eae15d4f7efdaccb179640f1f5426b675600ccf1f066f5fbf268ffc",
-      "bytes": 1793
+      "sha256": "7586a3948540cd1bc0b3b5430d87db395455f98ced7089b45884f1c085263100",
+      "bytes": 1062
     },
     {
-      "path": "dispute_brief.md",
-      "sha256": "eb92d24fa7ea7583b122f58024eef3d5622abd7f5eb6fe2a5ccfa5fef8a4bdaa",
-      "bytes": 931
-    },
-    {
-      "path": "notes.md",
-      "sha256": "a67f90c2d9b6bd07762775a56340e4f2db49089d7e5b14c200b03a6d1a79d06f",
-      "bytes": 2147
+      "path": "reconciliation_brief.md",
+      "sha256": "ac1d2ebd020256ec07481944462d1fe344ebaf524e36a9b49b36618914cd6fc0",
+      "bytes": 1333
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -42,26 +37,26 @@
       "bytes": 752
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "b0f6d3009041991a270db04cb4c9091c3ce61f0f949a8ad0f320f5d3145327d6",
-      "bytes": 1291
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "3a46c9f435e64ee70bbec918ffb8bffa4bfbc893249569c6d9011c8a0c48e94d",
+      "bytes": 833
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "89a2307ecb74e7a74fc97a916de9501863914ed734539412f143e859756d9746",
-      "bytes": 1927
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "eeebd3f6498317e3b0a9c3268cc39df729d1ee45e9631a7cf1be75d05e469486",
+      "bytes": 1003
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1bed3f126038d9c30362342fdc6c459851ff39dae50b2026192528cdb1103985",
-    "bytes": 3009
+    "sha256": "998211b4801c4c2c136487a5dd172584c295d567d5fbebf5bf72de35b6a160e3",
+    "bytes": 3027
   }
 }

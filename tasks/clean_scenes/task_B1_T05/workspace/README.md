@@ -1,26 +1,20 @@
-# Workspace for Web Research and Note Sharing
+# Reminder to Taskboard Automation
 
-This workspace contains the files needed for a research and note-sharing task.
+This workspace helps you convert a reminder note (in `notes.md`) into a taskboard task that mentions the responsible teammate. The workflow uses the standard directory and taskboard mock API services.
 
-## Files
+## How to process a reminder
 
-- **`research_brief.md`**: The main task description. It specifies the research topic, web content to fetch, and the formatting style for the internal note.
+1. **Read the reminder** – open `notes.md` and extract the task title, due date, description, and teammate to mention.
+2. **Look up the teammate** – use the `/directory/search` endpoint to find the person (e.g., Alice Chen) and retrieve their name and any relevant notes.
+3. **Check existing tasks** – call `/taskboard/tasks` to list open tasks and verify there is no duplicate or conflicting item.
+4. **Create the task** – send a request to `/taskboard/tasks/create` with a clear title, an ISO‑8601 due date, and a description that includes the reminder details and mentions the responsible teammate.
+5. **Confirm the result** – verify that the new task appears in the task list and report the task ID, title, and due date back to the user.
 
-## Available Mock API Endpoints
+## Example
 
-You have access to mock API skills for web content and notebook management:
+If `notes.md` contains a reminder for Alice Chen to review the Q3 marketing plan by 2026-06-26, you would:
+- Search the directory for "Alice Chen" to confirm her full name.
+- List open tasks and see that an older "Review Q3 marketing budget" exists but is not the same item.
+- Create a new task with title "Review Q3 marketing plan", due date `2026-06-26T00:00:00Z`, and description that includes "@Alice Chen" or her full name.
 
-- **`/web_content/search`** – Search for web content related to a query.
-- **`/web_content/fetch`** – Fetch the full content of a web page by URL.
-- **`/notebook/notes/get`** – Retrieve an existing notebook note by its note ID.
-- **`/notebook/notes/share`** – Share an existing note by `note_id` with recipients; request JSON is `{"note_id": "NOTE-202", "recipients": ["product-strategy@internal.example.com"]}` and does not accept note body/content fields.
-
-## Task Flow
-
-1. Read **`research_brief.md`** to understand the research topic, the web resource to fetch, and the desired note format.  
-2. Use `/web_content/search` and `/web_content/fetch` to retrieve the required article.  
-3. Use `/notebook/notes/get` to retrieve the formatting reference note (if specified).  
-4. Draft the summary in `archive/research_summary.md` following the style guidelines.
-5. Share the existing reference note `NOTE-202` with the intended audience via `/notebook/notes/share` using `note_id` and `recipients` only.
-
-No additional setup or local tools are needed. Use the mock API endpoints as directed by the brief.
+All interactions with directory and taskboard services happen through the mock API endpoints. No local scripts or environment configuration are required to follow this process.

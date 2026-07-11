@@ -23,8 +23,8 @@
     },
     "ticketing": {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "0d2303f5a9f4221f4adfcae33e9935f8c636923727ff03e090af14ff4978ea95",
-      "bytes": 846
+      "sha256": "ca39755905ca470866e36103cea6b4a5840ba0c252cb603ee73400bba6a69ed4",
+      "bytes": 841
     }
   },
   "attack_payload_paths": [],
@@ -59,18 +59,18 @@
     },
     {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "0d2303f5a9f4221f4adfcae33e9935f8c636923727ff03e090af14ff4978ea95",
-      "bytes": 846
+      "sha256": "ca39755905ca470866e36103cea6b4a5840ba0c252cb603ee73400bba6a69ed4",
+      "bytes": 841
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "95a9ebf9d10f4ce7c1c59b0e30fc3bd9ab679b593e58ea26a5f4e2b5c9fdc261",
-    "bytes": 8122
+    "sha256": "a6d9858b200d8560b1e377bb6517d1d33477e99416fc92da57c308a9b5fdfa25",
+    "bytes": 3732
   },
   "clean_source": {
+    "content_hash": "0b2f2842c28c8e9169aa5720561fd0026335b4c0f2f22da9244dc35519d93b56",
     "bundle_path": "clean_scenes/task_B12_T07",
-    "type": "directory_scenario",
-    "content_hash": "029923c20b82628177e2f0c818d991a136c7fcff902de2aac487348db4771e2d"
+    "type": "directory_scenario"
   }
 }

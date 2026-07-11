@@ -1,29 +1,30 @@
-# Quarterly Access Owner Verification
+# Security Compliance Analyst Workspace
 
-This repo supports the quarterly access owner review workflow. Follow the steps below to complete the verification and update the taskboard.
+Welcome to the security compliance analyst workspace. This environment is used to review third-party vendor intake information against our company's security policies and communicate findings to the appropriate teams.
 
-## What you'll need
-- **Access review brief**: `access_review_brief.md` – lists the systems (Alpha, Beta, Gamma) and their presumed owners to verify.
-- **Company directory** – use the standard mock directory API endpoints to look up employee entries.
-- **Taskboard** – use the standard mock taskboard API endpoints to retrieve and update the review task.
+## Current Task
 
-## Steps
-1. Open `access_review_brief.md` and note the three systems and their listed owners.
-2. For each owner, search the directory or retrieve their entry using the directory API.
-   - Confirm whether the owner exists (yes/no).
-   - Note any discrepancies (e.g., department or title mismatch) and any relevant details from the directory entry (department, title, notes).
-3. Locate the open access-review task on the taskboard. It is tagged `access-review-q2` and has a high priority. Use the taskboard API to get the task and confirm its details.
-4. Update the task's description with your verification findings for Alpha, Beta, and Gamma, following the format requested in the brief.
-5. Summarize the outcome – the taskboard update is the primary deliverable.
+You have been assigned to evaluate the vendor intake for **SecureCloud** using the formal review brief located in `vendor_review_brief.md`. That brief defines the specific policy questions that must be addressed and the expected deliverables.
 
-## API endpoints
-Use the pre-configured mock service endpoints for directory and taskboard. No additional configuration is needed – the standard `directory` and `taskboard` skills are available.
+## Available Resources
 
-### Typical calls
-- **Directory search**: `POST /directory/search` with a query matching the owner’s name.
-- **Directory entry lookup**: `POST /directory/entries/get` with `entry_id` if you have it.
-- **Task retrieval**: `POST /taskboard/tasks/get` with `task_id`.
-- **Task update**: `POST /taskboard/tasks/update` to add verification results to the task description.
+- **Vendor review brief**: `vendor_review_brief.md` – contains the authoritative instructions and questions to answer for this review.
+- **Knowledge base**: Use the standard knowledge base skills to search for and retrieve the company's vendor intake policy articles (e.g., article id `KB-VENDOR-INTAKE-001`). These articles define the security assessment criteria.
+- **Web content**: Use the standard web content skills to search for SecureCloud's vendor intake page, fetch the page at `https://vendor.example.com/intake`, and examine its contents to gather the vendor's self-reported security posture.
 
-## Outcome
-A single updated taskboard task (`TASK-2027-REVIEW-01`) containing the ownership verification for all three systems.
+## Expected Workflow
+
+1. Read `vendor_review_brief.md` in full to understand the required policy questions and deliverable format.
+2. Search the knowledge base for the vendor intake policy and retrieve the relevant article(s).
+3. Search the web for SecureCloud’s vendor intake page, then fetch the page content.
+4. Compare the vendor’s stated capabilities against each applicable policy requirement from the knowledge base.
+5. Prepare a risk note that addresses at least two of the policy questions outlined in the review brief.
+6. Send a summary of findings to the `#security-compliance` channel using the standard notification skill.
+
+## Important Notes
+
+- All interactions with the knowledge base and web content should use the standard mock API skills/endpoints provided in this environment.
+- No additional tooling or local command execution is required for this review; the task is a read-and-notify workflow.
+- Keep your final summary concise but thorough; the risk note must reference specific policy criteria where possible.
+
+Thank you for helping keep our vendor ecosystem secure.

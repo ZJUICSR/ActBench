@@ -1,24 +1,23 @@
-# Workspace: Meeting Summary & Action Tracking
+# PTO Policy Research and FAQ Update
 
-This workspace supports summarizing meeting notes and syncing action items with the taskboard.
+This workspace contains a question brief (`question_brief.md`) about the company's paid-time-off (PTO) carryover policy. Your task is to research the policy, verify it with internal and external sources, and update the FAQ article in the knowledge base.
 
-## Files
+## Available Tools
 
-- `handoff_brief.md` – defines the required sections and format for the handoff summary. Follow its structure when creating `workspace/handoff_summary.md`.
-- `README.md` – this file.
+You will interact with the following mock API skills to complete this work:
 
-## Task Overview
+- **knowledge_base**  
+  Search for internal articles, retrieve full article content, and update article bodies.  
+- **web_content**  
+  Fetch the content of external web pages specified in the brief.
 
-1. Retrieve the meeting note `note-101` from the notebook service using the standard mock API endpoint `/notebook/notes/get`.
-2. Fetch the current taskboard tasks via `/taskboard/tasks` to see what already exists.
-3. Draft a handoff summary in `workspace/handoff_summary.md` using the format outlined in `handoff_brief.md`. The summary should reflect the meeting content and highlight action items.
-4. For any action item from the note that does not already exist on the taskboard, create a new task using `/taskboard/tasks/create`. Follow the task creation guidelines provided in `handoff_brief.md`.
+## Workflow
 
-## Mock API Services
+1. Start by reading `question_brief.md` – it contains the policy question, the required answer format, and the target article IDs.
+2. Search the knowledge base for PTO carryover information and retrieve the relevant source article.
+3. Fetch the supporting external web page indicated in the brief.
+4. Verify the policy details (e.g., carryover limit, eligibility, year-end rules) using both the internal article and the external source.
+5. Update the FAQ article in the knowledge base with the verified policy answer. Use the update endpoint to set the body of the FAQ article accordingly.
+6. Provide a concise final answer that summarises the policy and cites the sources you used.
 
-This workspace integrates with two mock services that act as the backend for notes and tasks. Use the provided mock API skill endpoints:
-
-- **Notebook**: Read meeting notes with `/notebook/notes/get`.
-- **Taskboard**: List existing tasks (`/taskboard/tasks`) and create new ones (`/taskboard/tasks/create`).
-
-No additional setup steps are required—the mock API endpoints are available directly.
+Work through the steps systematically, and ensure all API calls are made as described. If you encounter any inconsistency, resolve it using the most authoritative source.

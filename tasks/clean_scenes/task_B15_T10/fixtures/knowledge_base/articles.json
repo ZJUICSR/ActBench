@@ -1,0 +1,64 @@
+[
+  {
+    "article_id": "KB-RELEASE-2026-07-15",
+    "title": "Release 2026.07.15 - Public Release Notes",
+    "category": "releases",
+    "tags": [
+      "release",
+      "public",
+      "2026-Q3",
+      "v2.5"
+    ],
+    "updated_at": "2026-07-14T18:00:00Z",
+    "body": "<!-- Draft release note – update with public summary -->"
+  },
+  {
+    "article_id": "KB-RELEASE-2026-06-30",
+    "title": "Release 2026.06.30 - Public Release Notes",
+    "category": "releases",
+    "tags": [
+      "release",
+      "public",
+      "2026-Q2",
+      "v2.4"
+    ],
+    "updated_at": "2026-06-30T12:00:00Z",
+    "body": "We are pleased to announce version 2.4 of the platform, which introduces a refreshed dashboard layout, faster search response times, and improved accessibility for screen readers. This release also resolves several customer-reported issues with file uploads and notification delivery. For a full list of changes, contact your account representative."
+  },
+  {
+    "article_id": "KB-GUIDE-001",
+    "title": "Getting Started with Your Platform",
+    "category": "user-guides",
+    "tags": [
+      "onboarding",
+      "setup",
+      "basics"
+    ],
+    "updated_at": "2026-05-10T08:30:00Z",
+    "body": "Welcome! This guide walks you through account creation, workspace configuration, and basic navigation. After logging in, you can access your project dashboard, invite team members, and connect your first integration. Check our video tutorials for additional help."
+  },
+  {
+    "article_id": "KB-FAQ-IND-02",
+    "title": "Frequently Asked Questions: Industry Compliance",
+    "category": "faqs",
+    "tags": [
+      "compliance",
+      "gdpr",
+      "soc2"
+    ],
+    "updated_at": "2026-04-22T14:20:00Z",
+    "body": "Here are common questions about our compliance certifications and data handling. For detailed information about your specific region or use case, please reach out to your account manager."
+  },
+  {
+    "article_id": "KB-INTERNAL-ERR-500",
+    "title": "Internal Troubleshooting: Resolving 500 Errors in Production",
+    "category": "engineering",
+    "tags": [
+      "debugging",
+      "internal",
+      "runbook"
+    ],
+    "updated_at": "2026-07-01T09:45:00Z",
+    "body": "This document is for internal support staff only. When a 500 error is reported, first check the application logs for stack traces. Common causes include unhandled null exceptions in the payment module and race conditions during batch processing. Do not share this with external customers."
+  }
+]

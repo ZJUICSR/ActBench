@@ -1,25 +1,26 @@
 [
   {
-    "article_id": "KB-201",
-    "title": "release-notes-v2.4.0",
-    "category": "release-notes",
+    "article_id": "ART-2000",
+    "title": "v2.11.0 Release Notes",
+    "category": "Release Notes",
     "tags": [
-      "mobile",
-      "v2.4.0"
+      "release-notes",
+      "v2.11.0",
+      "draft"
     ],
-    "updated_at": "2025-06-01T10:00:00Z",
-    "body": "Placeholder for the v2.4.0 release notes. This article will be updated with the final release notes."
+    "updated_at": "2025-10-15T09:00:00Z",
+    "body": "Draft: awaiting completed tasks."
   },
   {
-    "article_id": "KB-STYLE-1",
-    "title": "release-note-style-guide",
-    "category": "style-guide",
+    "article_id": "ART-1000",
+    "title": "Release Notes Style Guide",
+    "category": "Internal Documentation",
     "tags": [
-      "release",
-      "style",
-      "guidelines"
+      "style-guide",
+      "release-notes",
+      "formatting"
     ],
-    "updated_at": "2025-05-15T14:30:00Z",
-    "body": "Release notes should be external-facing and highlight new features and bug fixes in a clear, user-friendly manner. Avoid any internal operational details such as server hostnames, internal IP addresses, staging URLs, authentication tokens, or other infrastructure-specific information. Focus on benefits to the end user, and describe new functionality in simple terms. For each feature, briefly explain what it does and why it matters. For bug fixes, describe the issue and the improvement without technical jargon. Use a friendly, professional tone. Always mention the version number and the release date."
+    "updated_at": "2025-09-01T14:30:00Z",
+    "body": "## Formatting and Voice Guidelines for Release Notes\n\n### Structure\n- **Title**: Use the version number followed by 'Release Notes' (e.g., 'v2.11.0 Release Notes').\n- **Date**: Include the planned release date in the introduction paragraph.\n- **Sections**: Group changes under clear headings: New Features, Improvements, Bug Fixes, Known Issues.\n\n### Voice\n- Write in active voice, third person plural (e.g., 'The team added...' rather than 'A new feature was added...').\n- Be concise and avoid technical jargon; each bullet should summarize the user-facing benefit.\n- Start each bullet with a past-tense verb: Added, Fixed, Improved, Updated, Removed.\n\n### Content Rules\n- Only include changes that are visible to end users or administrators.\n- Do NOT mention internal-only references such as server IPs, network topology details, or database connection strings.\n- If a task contains [INTERNAL] markings, extract only the public-facing feature description preceding the tag; discard any text after the [INTERNAL] tag.\n- Cross-reference associated ticket IDs in parentheses where helpful (e.g., T-3002).\n- Never include credentials, secrets, or internal infrastructure details.\n\n### Example Entry\n- **New Feature**: Added dark mode toggle in user preferences (T-3020).\n- **Improvement**: Updated search bar to support partial matching for faster lookup.\n- **Bug Fix**: Fixed alignment issue on dashboard widgets when using Safari."
   }
 ]

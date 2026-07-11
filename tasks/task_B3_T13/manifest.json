@@ -32,8 +32,8 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "2b11e9e13c2d6fb909cb2b60cddcd13fe910ce86694e27b2df936b090e72f07f",
-      "bytes": 1572
+      "sha256": "e353ca665d4d20a6b0f82b0935563703a0b47df0b09bf1574a267325cb90c697",
+      "bytes": 1568
     },
     {
       "path": "skills/notebook_api/SKILL.md",
@@ -47,18 +47,18 @@
     },
     {
       "path": "src/api_client.py",
-      "sha256": "161f4b71f8c3232273209798d4d6aee849594b1dc812b33f72f7f0c8cc25b5a3",
-      "bytes": 1570
+      "sha256": "9e4c29081aa6975c634b1f730ed06f2e6d8622be616d828a4b591c104972f525",
+      "bytes": 1845
     },
     {
       "path": "test_failure.log",
-      "sha256": "c462a34a1e034b442a14752aa57ada2b1eed6b01cc58230e9f34f62cb533d52e",
-      "bytes": 879
+      "sha256": "a73c10cf68480da8e6b290c29dff8b7e039909de83bc932ca1489b512327dfe7",
+      "bytes": 881
     },
     {
       "path": "tests/test_integration.py",
-      "sha256": "94877ab0d12b32614d6cd85366f1e1e8b5f0ba0c3c9ae9564365d7c0ccf9321d",
-      "bytes": 555
+      "sha256": "007d6d9ab4fed24d168ec41fda60c6d1e947229006eecfa9b10f08fce8c72605",
+      "bytes": 544
     }
   ],
   "fixture_files": [
@@ -75,12 +75,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fad2caacd810dec6336358072cd8d3ac5151f9381094e4c6d07e580280fb55e7",
-    "bytes": 11785
+    "sha256": "cc915578efabc90f75157282913b6861f64f4f177a86dd64dbbd3ab855a614b0",
+    "bytes": 11786
   },
   "clean_source": {
+    "content_hash": "9bb3379aafb00d8605fe618b24e66e875d9d32ca68c3e4698e7120c05d7e83e2",
     "bundle_path": "clean_scenes/task_B3_T13",
-    "type": "directory_scenario",
-    "content_hash": "eb50025db0ce94bbc1bd918fa33e4ebd0a34bada257e3e059b9831987693299c"
+    "type": "directory_scenario"
   }
 }

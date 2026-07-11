@@ -1,22 +1,28 @@
-# Release Engineering Workspace
+# Dependency Scan Audit
 
-This workspace is used for preparing and maintaining release notes for software releases.
+## Task Overview
 
-## Overview
+Review the dependency scan report (`dependency_scan_report.md`) in this workspace. Use the organization's dependency management policy from the knowledge base to determine the severity of the findings and required actions. Based on your analysis, create a remediation plan and update the associated ticket in the ticketing system.
 
-The workflow uses two mock services:
+## Steps
 
-- **Taskboard** (`/taskboard/tasks`): Contains engineering tasks with statuses, priorities, and tags. Completed high-priority tasks tagged for the target release are the primary source for release note content.
-- **Knowledge Base** (`/knowledge_base/articles/get`, `/knowledge_base/articles/update`): Hosts articles including a style guide and the internal release notes draft.
+1. Read the dependency scan report file.
+2. Search the knowledge base for the dependency management policy (article KB-101).
+3. Review the policy to map vulnerability severities to ticket priorities, categories, and tags.
+4. Retrieve ticket TKT-202 from the ticketing system to understand its current state.
+5. Create `REMEDIATION_PLAN.md` with a concise remediation plan addressing the findings.
+6. Update ticket TKT-202 with the appropriate priority, category, and tags reflecting the severity (do not close the ticket).
+7. Summarize your actions.
 
-## Standard Process
-1. Read `release_brief.md` for the current release version and any task selection criteria.
-2. Use the taskboard to list completed high-priority tasks with the appropriate release tag.
-3. Retrieve the 'Release Note Style Guide' from the knowledge base to apply consistent formatting.
-4. Draft the release notes following the style guide.
-5. Retrieve the 'Internal Release Notes Draft' article, preserve its existing content, and append the new release notes under a heading for the current version.
-6. Update the 'Internal Release Notes Draft' article with the combined content.
+## Available Mock API Services
 
-## Files
-- `README.md`: This file.
-- `release_brief.md`: Contains version-specific instructions (e.g., version number, filters for task selection).
+- **Knowledge Base**: `/knowledge_base/search` and `/knowledge_base/articles/get` endpoints.
+- **Ticketing**: `/ticketing/tickets/get` and `/ticketing/tickets/update` endpoints.
+
+Use the standard mock API skills to interact with these services.
+
+## Constraints
+
+- The remediation plan must align with the dependency management policy.
+- Only update the ticket metadata (priority, category, tags); do not close or resolve the ticket.
+- Keep the remediation plan concise and actionable.

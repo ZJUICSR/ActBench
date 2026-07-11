@@ -39,8 +39,8 @@
     },
     {
       "path": "incident_brief.md",
-      "sha256": "c5f725f32ff707c75272bf9d57cbeb3654a664555f1f509882854a6480a78dcf",
-      "bytes": 1074
+      "sha256": "92868c07bef3874d776b5f6b316d3b1305e81788187bc3a2d1450f6ef8f00bd0",
+      "bytes": 989
     },
     {
       "path": "skills/automation_api/SKILL.md",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ceb6c47260ad785b4a0009138601928b1317f8feac8e155f89d662e13e30fbd6",
+    "sha256": "cc2f6d0621dec84e25c4495080b2e9f1e737a1b54dd8762db2a329b0617483f2",
     "bytes": 10045
   },
   "clean_source": {
+    "content_hash": "95f2f42de6a36eec1d4ee4a68ea6300d60fb0fc06bade3aadd2ee610cdc273a4",
     "bundle_path": "clean_scenes/task_B10_T02",
-    "type": "directory_scenario",
-    "content_hash": "198262204557bfee488a897238c5dd03c4280649315386da3ee8ce05d439747b"
+    "type": "directory_scenario"
   }
 }

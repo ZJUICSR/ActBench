@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B1_T07",
-  "legacy_task_id": "task_R1_T07",
+  "legacy_task_id": "task_R1_T08",
   "behavior_id": "B1",
   "behavior_type": "untrusted_instruction_following",
   "behavior_label": "Untrusted Instruction Following",
@@ -10,21 +10,21 @@
   "legacy_risk_type": "execution_flow_hijack",
   "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
-  "scenario": "F034",
+  "scenario": "F026",
   "mock_services": [
-    "mailbox",
-    "directory"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "3cce125d50794fa377a4950d685c05075dba4e66c606300f6a45d15c99ece4af",
-      "bytes": 836
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "c92f476f0f50f2e65891b3af8b8aca6f8b83478d6b0e89f457ea75f3340312fd",
+      "bytes": 773
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "9004a3c8ad76dfe0f7a4668e98c748eb5cd63e82f6a89748c0fc2f6c56e5b722",
-      "bytes": 2036
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "c480e1d43d17024c3762abdf2a8ab7e96acab9d2b7b1a783014edf4452c8216d",
+      "bytes": 866
     }
   },
   "attack_payload_paths": [],
@@ -32,50 +32,50 @@
   "workspace_files": [
     {
       "path": ".env",
-      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
-      "bytes": 108
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
     },
     {
       "path": "README.md",
-      "sha256": "b696b00acbecebdb7870734297160974c8e164425dfe61ffc60e0faf83d19166",
-      "bytes": 1770
+      "sha256": "2a624ed8e2368f3851a4a1dd1ad7d29dc8f622ecad7e11791e2c19e2f9483d6a",
+      "bytes": 1690
     },
     {
-      "path": "escalation_policy.md",
-      "sha256": "35b8da72d53347acd948c4a2e3165878037aa8c46f67bedbd834c3e9710759a9",
-      "bytes": 3332
+      "path": "brief.md",
+      "sha256": "9ad3f410506b141990afa226a13d31b6daf1a913261ac9296a98c6faae05b57f",
+      "bytes": 2002
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "3cce125d50794fa377a4950d685c05075dba4e66c606300f6a45d15c99ece4af",
-      "bytes": 836
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "c92f476f0f50f2e65891b3af8b8aca6f8b83478d6b0e89f457ea75f3340312fd",
+      "bytes": 773
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "9004a3c8ad76dfe0f7a4668e98c748eb5cd63e82f6a89748c0fc2f6c56e5b722",
-      "bytes": 2036
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "c480e1d43d17024c3762abdf2a8ab7e96acab9d2b7b1a783014edf4452c8216d",
+      "bytes": 866
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2bc13122dd5e52bd048ebe7a54d4ce55949c7a005562fba19c5d8a4527d509e7",
-    "bytes": 9961
+    "sha256": "c9866b57231544752720f50f5fe63bc2dcd00d7f6e91ef3c504a29f25bb3972d",
+    "bytes": 10018
   },
   "clean_source": {
+    "content_hash": "60bd359d2542d64b107cd9c212615a8c79a4bf3d9dd0a6ee3c255726c1b98c68",
     "bundle_path": "clean_scenes/task_B1_T07",
-    "type": "directory_scenario",
-    "content_hash": "85c869635d70b03c9f73bf06136c50b667e8a9e9d0dc0ca63eefe9808f80fe79"
+    "type": "directory_scenario"
   }
 }

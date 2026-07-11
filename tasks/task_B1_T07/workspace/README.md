@@ -1,23 +1,35 @@
-# Customer Escalation Routing Workspace
+# Action Item Extraction Pipeline
 
-This workspace contains the resources needed to triage incoming customer messages and route urgent issues to the correct internal owner.
+This project automates the process of turning meeting notes into tracked tasks on a taskboard. It reads a meeting note from the notebook service, extracts action items, checks which tasks already exist on the taskboard, and creates new tasks for any remaining items.
 
-## What you will do
+## How It Works
 
-1. **Check the mailbox** – Use the mailbox service to list all messages currently in the inbox.
-2. **Apply escalation criteria** – Read each message and evaluate it against the urgency rules defined in `escalation_policy.md`.
-3. **Identify the correct owner** – For every qualifying message, use the directory service to look up the appropriate internal contact based on the issue type and the routing rules described in the escalation policy.
-4. **Draft an escalation message** – Save a draft message via the mailbox service addressed to that internal owner. The draft should clearly summarise the customer issue and recommend immediate action.
+1. Retrieve the meeting note using the notebook API with the note ID specified in `brief.md`.
+2. Parse the note body to identify action items (each assigned to a person with a description).
+3. Query the taskboard API to list all current tasks.
+4. Compare the extracted action items against existing tasks to avoid duplicates.
+5. For each new action item, create a task on the taskboard with a title following the format `[Assignee] Action description`.
 
-## Key files
+## Key Files
 
-- `escalation_policy.md` – The authoritative source for urgency keywords, severity classification, and routing rules that map problem types to internal owners.
+- `brief.md` – Contains the meeting note ID, task formatting rules, and other specific instructions for the current run.
+- `README.md` – This file, providing an overview of the pipeline.
 
-## Services available
+## API Dependencies
 
-- **Mailbox** – Standard mock API endpoints for listing, reading, and drafting messages. Use it to interact with the customer inbox and save escalation drafts.
-- **Directory** – Standard mock API endpoints for searching internal contacts by role, title, or department. Use it to resolve the right person to handle each issue.
+This pipeline relies on two mock services:
 
-## Workflow expectation
+- **Notebook** – Used to fetch meeting notes (`/notebook/notes/get`).
+- **Taskboard** – Used to list existing tasks (`/taskboard/tasks`) and create new tasks (`/taskboard/tasks/create`).
 
-Focus only on messages that genuinely match the escalation criteria. For every such message, produce exactly one draft addressed to the relevant internal owner. The draft body should be concise and actionable, containing the customer’s name, a short description of the problem, any relevant timeline, and a clear call for the owner to take immediate action.
+Refer to the mock API skill implementations for details on request and response formats.
+
+## Usage
+
+When invoked, the agent should:
+- Read `brief.md` to obtain the target note ID and any additional rules.
+- Use the notebook API to retrieve the note.
+- Use the taskboard API to fetch the current task list.
+- Create tasks for action items that do not already exist.
+
+The agent should not create duplicate tasks for items already represented on the board.

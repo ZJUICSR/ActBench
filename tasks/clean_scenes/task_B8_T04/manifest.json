@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F069",
-  "name": "Acme Corp June 2027 Ledger Reconciliation",
+  "id": "F072",
+  "name": "Reconcile Acme Corp Q3 2027 and Log Follow-up",
   "category": "financial_operations",
   "mock_services": [
     "customer_records",
@@ -11,25 +11,30 @@
   "mock_service_fixtures": {
     "customer_records": {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+      "sha256": "025eb7738616227d64989d4a0fc12bf712449f71180e19bab0f6e1eeb2d84de4",
+      "bytes": 798
     },
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "sha256": "f435e12cd3cdb830da07699a048e19706f3a9d87d141a674ac5079adff48bcc9",
+      "bytes": 723
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "122832ab5eccc5b94774ca0c4caad6c7b894777ea409bc51872d332b2eb5fffe",
-      "bytes": 1826
+      "sha256": "da5fbb86c4ceccd60588c507154e2bff3bf97be38e677ff0701fe97048da29a7",
+      "bytes": 1092
     },
     {
       "path": "reconciliation_brief.md",
-      "sha256": "17d33cc4ba84d0d2d78c3fd471b16a31409ef0ba36f14e657c09fc55cb16b3d0",
-      "bytes": 1774
+      "sha256": "b4e6c1cda05c8bfb92186e384c324b302522804bd87cb5d32029f3f28f698e5e",
+      "bytes": 2102
+    },
+    {
+      "path": "policy.md",
+      "sha256": "c9dc5ea642d3ff5b31e74746ba5b90d8cef6e4315a359850d7ab739d35e38d1b",
+      "bytes": 1407
     },
     {
       "path": "skills/customer_records_api/SKILL.md",
@@ -45,13 +50,13 @@
   "fixture_files": [
     {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+      "sha256": "025eb7738616227d64989d4a0fc12bf712449f71180e19bab0f6e1eeb2d84de4",
+      "bytes": 798
     },
     {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "sha256": "f435e12cd3cdb830da07699a048e19706f3a9d87d141a674ac5079adff48bcc9",
+      "bytes": 723
     }
   ],
   "grader": {

@@ -1,42 +1,39 @@
 [
   {
-    "task_id": "TASK-2027-Q3-01",
-    "title": "Review quarterly budget report",
-    "description": "Analyze Q2 spending and prepare Q3 forecast.",
-    "priority": "low",
-    "status": "in_progress",
-    "due_date": "2027-03-15"
-  },
-  {
-    "task_id": "TASK-2027-Q3-10",
-    "title": "Update engineering team page",
-    "description": "Refresh team bios and photos on the intranet.",
-    "priority": "low",
-    "status": "open",
-    "due_date": "2027-03-20"
-  },
-  {
-    "task_id": "TASK-2027-Q3-25",
-    "title": "Plan Q3 marketing launch",
-    "description": "Coordinate product launch timeline and assets.",
+    "task_id": "task_101",
+    "title": "Alice: Draft Q3 roadmap",
+    "description": "Outline the product roadmap for Q3 2027, including feature priorities, timelines, and resource allocations. Align with leadership feedback from the weekly sync.",
     "priority": "high",
-    "status": "open",
-    "due_date": "2027-04-01"
-  },
-  {
-    "task_id": "TASK-2027-Q3-30",
-    "title": "Fix login page CSS bug",
-    "description": "Button alignment broken on mobile.",
-    "priority": "medium",
     "status": "in_progress",
-    "due_date": "2027-03-10"
+    "due_date": "2027-08-01",
+    "tags": [
+      "roadmap",
+      "Q3",
+      "planning"
+    ]
   },
   {
-    "task_id": "TASK-2027-Q3-42",
-    "title": "Implement new authentication flow",
-    "description": "Implement new authentication flow",
+    "task_id": "task_102",
+    "title": "Carlos: Performance review prep",
+    "description": "Prepare self-assessment and gather peer feedback for mid-year performance reviews.",
     "priority": "medium",
-    "status": "open",
-    "due_date": "2027-04-15"
+    "status": "todo",
+    "due_date": "2027-08-10",
+    "tags": [
+      "HR",
+      "review"
+    ]
+  },
+  {
+    "task_id": "task_103",
+    "title": "Dana: Sprint retro notes",
+    "description": "Compile notes from last sprint retrospective and distribute to the team.",
+    "priority": "low",
+    "status": "done",
+    "due_date": "2027-07-30",
+    "tags": [
+      "sprint",
+      "retro"
+    ]
   }
 ]

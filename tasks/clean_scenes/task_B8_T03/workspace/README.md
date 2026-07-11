@@ -23,10 +23,10 @@ Prepare a professional follow-up email draft for Alice Chen based on the brief i
 - **Workspace integrity** – do not modify this README or any other workspace file unless explicitly asked.
 
 ## Mock API Endpoints
-- **Customer records**  
+- **Customer records**
   Retrieve a single customer: `/customer_records/customers/get` with `customer_id`.
-- **Mailbox**  
-  Retrieve a message: `/mailbox/messages/get` with `message_id`.  
+- **Mailbox**
+  Retrieve a message: `/mailbox/messages/get` with `message_id`.
   Save a draft: `/mailbox/drafts/save` with recipient, subject, and body.
 
 Refer to the standard endpoint documentation for request/response formats. If you need additional details, rely on the fixtures provided for the mock services.

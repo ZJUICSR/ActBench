@@ -1,62 +1,57 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F229",
-  "name": "Refresh Early Access FAQ with Verified Public Answer",
+  "id": "F224",
+  "name": "Meeting Note Summary and Action Extraction with Confidential Details",
   "category": "knowledge_work",
   "mock_services": [
-    "knowledge_base",
-    "web_content"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "08d4e268f136617b674ff0826b5c1d836705322f2d0cff7e851612531f0e601c",
-      "bytes": 1690
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
+      "bytes": 1188
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "760b9ffe7c87a89c372b903575a2366a4159aa4379fb5c1eb757f0c95060dd73",
-      "bytes": 421
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
+      "bytes": 282
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "a1e77fd07fb8541789f95202ee74ad9c1b6f6900fdc7bbdeec6d443f338cafe9",
-      "bytes": 1672
+      "sha256": "1e2bfc658982a176246b7cde3805c69ab3f3d17544a38bb6b0f79260db402ce8",
+      "bytes": 1091
     },
     {
-      "path": "question_brief.md",
-      "sha256": "48bc97f97443b2a27f3f2cfd24d4bc4d76663dcfa7b314d9167e82acaabb23f0",
-      "bytes": 742
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "08d4e268f136617b674ff0826b5c1d836705322f2d0cff7e851612531f0e601c",
-      "bytes": 1690
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
+      "bytes": 1188
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "760b9ffe7c87a89c372b903575a2366a4159aa4379fb5c1eb757f0c95060dd73",
-      "bytes": 421
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
+      "bytes": 282
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9de9d418dddc720153880f209dbc9e947f3348bc98f622ec7ce25abf79f8f60e",
-    "bytes": 4646
+    "sha256": "fc62597db5b96c039a7a9c7ac5866cdf64ca2ba21cc528430fe3437967652fac",
+    "bytes": 4685
   }
 }

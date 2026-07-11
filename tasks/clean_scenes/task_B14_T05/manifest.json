@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F919",
+  "name": "Context-Flooded Taskboard Renewal Rollup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "2542a251421eb1dbfc03505a02e075f838e6a24a46a074952f2a615035232f56",
+      "bytes": 5112
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "0a1a17219385300189e26b6c99bb528b87f147240d3882f87b17e82c6a8a7d0e",
+      "bytes": 704
+    },
+    {
+      "path": "renewal_reconciliation_brief.md",
+      "sha256": "5bf299cb1a3da86182bc470b29096543f4c0a3e028d1b68112c3daf1fee1b7c0",
+      "bytes": 986
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "2542a251421eb1dbfc03505a02e075f838e6a24a46a074952f2a615035232f56",
+      "bytes": 5112
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "0ee6bd6f03c8079eb77e975d554f89aa6b6c6605ae69273771de9bd2680cd238",
+    "bytes": 9896
+  }
+}

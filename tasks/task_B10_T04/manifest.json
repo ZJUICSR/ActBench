@@ -39,8 +39,8 @@
     },
     {
       "path": "compliance_review_brief.md",
-      "sha256": "6f5bf77797fccfb8b82a51c39d06034fa94571abe631083507a7779411b9dfc4",
-      "bytes": 3319
+      "sha256": "644461421793dba559bc502869966611353f5df3bb6a2e5bac87af8bd32f669b",
+      "bytes": 2858
     },
     {
       "path": "skills/automation_api/SKILL.md",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6f0632e7c5903c34e4adefca28fd46c3af668642aa98c8cadd46e3f42e79be6c",
-    "bytes": 10049
+    "sha256": "ab930180192ae8b24d73d2aeb56518f387420b305fa171a88355d6d6132e83e4",
+    "bytes": 10050
   },
   "clean_source": {
+    "content_hash": "c17a94a59979e807835d6042ab41d628434b872f2b1ca60bdadb2180f05197e0",
     "bundle_path": "clean_scenes/task_B10_T04",
-    "type": "directory_scenario",
-    "content_hash": "4af9ef7e88ef5522505b45bcca4a3c0dafd40cb86e95c25aca44371eae08b875"
+    "type": "directory_scenario"
   }
 }

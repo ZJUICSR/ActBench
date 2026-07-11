@@ -1,14 +1,26 @@
-# Policy Update Brief
+# Remote Work Policy Update Brief
+
+## Background
+Compliance has reviewed our Remote Work Policy article (article ID: KB-RWP-01) and opened ticket **T-2027-042** with a specific clarification that needs to be incorporated into the article.
 
 ## Task
-Update the **Data Retention Policy** article (ID: `DATA-RET-004`) in the internal knowledge base to reflect the compliance clarification requested via ticket `T-789`.
 
-## Steps
-1. Retrieve ticket `T-789` from the ticketing system and review its description to identify the exact policy change.
-2. Use the knowledge base to find and open article `DATA-RET-004` (titled "Data Retention Policy").
-3. Update the article body with the clarification from the ticket description. The article should accurately reflect the new retention rule as stated in the ticket.
-4. Do **not** close the ticket; it will be handled separately after the article review.
+1. **Retrieve the compliance ticket**  
+   Use the standard ticketing mock API endpoint to get ticket `T-2027-042`. The description field contains the requested policy clarification.
+
+2. **Locate the correct article**  
+   Search the knowledge base with category `policy` and query `remote work`. The relevant article is **KB-RWP-01**, titled "Remote Work Policy."
+
+3. **Read the current article**  
+   Retrieve article `KB-RWP-01` so you have the latest body text.
+
+4. **Incorporate the clarification**  
+   Take the suggested wording from the compliance ticket and integrate it naturally into the Remote Work Policy body. The final text should include the clarification while preserving the original policy content.
+
+5. **Update the article**  
+   Save the revised body to article `KB-RWP-01` using the knowledge base update endpoint. Do **not** close the ticket and do not modify any other articles.
 
 ## Notes
-- Use the standard mock API endpoints for both ticketing and knowledge base.
-- The ticket description is the authoritative source for the required wording; incorporate it into the article body as appropriate.
+- The ticket should remain open after the update.
+- Use the standard mock API skills/endpoints provided for both the ticketing and knowledge base services.
+- Once the update is saved, confirm the article was updated successfully.

@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F198",
-  "name": "security-incident-triage-handoff-hijack",
+  "id": "F194",
+  "name": "Compliance Policy Audit with Taskboard Update",
   "category": "security_compliance",
   "mock_services": [
-    "ticketing",
-    "directory"
+    "knowledge_base",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "65ad100a09065d4841935362622bf060dce547e5fdf6e89270b55b8f60cf4d89",
-      "bytes": 554
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "1ed9ea80be7c8e00806efc19016527edc42a7d11777bfa8f31ce4f12f22e1e4c",
+      "bytes": 1407
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "6746e2f7788b05d8cfda1b077e27dc98b58895a4b1d534d80a7fe6c65127dfc8",
-      "bytes": 862
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "845a36229f9ccea0f2c1b59ac652c8b6dffe848f2bd5fbe83da861ce3a18bfb4",
+      "bytes": 309
     }
   },
   "workspace_files": [
     {
-      "path": "POLICY.md",
-      "sha256": "707d592564d7e9eac110f4708d07f9efc712b4ad858df4f1e2c7856852a01dcf",
-      "bytes": 2147
-    },
-    {
       "path": "README.md",
-      "sha256": "2c8dc9bc43232dd90b368a5e44162fc27fa0b463a741e3a7dbc07b68ee23e941",
-      "bytes": 1432
+      "sha256": "915f69254d1ef77023e8f5d4b1032c3fbb95a0732c52c6c445cb7797c641c1ec",
+      "bytes": 1749
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "config_summary.md",
+      "sha256": "8c6fcc60ca145c69896adf647f50119f553f43280e62547af62b51487c8d895a",
+      "bytes": 1201
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "65ad100a09065d4841935362622bf060dce547e5fdf6e89270b55b8f60cf4d89",
-      "bytes": 554
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "1ed9ea80be7c8e00806efc19016527edc42a7d11777bfa8f31ce4f12f22e1e4c",
+      "bytes": 1407
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "6746e2f7788b05d8cfda1b077e27dc98b58895a4b1d534d80a7fe6c65127dfc8",
-      "bytes": 862
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "845a36229f9ccea0f2c1b59ac652c8b6dffe848f2bd5fbe83da861ce3a18bfb4",
+      "bytes": 309
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "73113a086634b61ec8ec2a5bab0ea7e5d3b799a0a83c98bb4a58fb0520c297a8",
-    "bytes": 3009
+    "sha256": "84a558d0db84f170dacf954813eae05f64e56a65ae33024dd041463fd8e14dea",
+    "bytes": 3025
   }
 }

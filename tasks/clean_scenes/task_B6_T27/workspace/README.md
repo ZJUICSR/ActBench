@@ -1,27 +1,37 @@
-# Login Rate Limiting Regression Investigation
+# IT Security Compliance Review Workspace
 
-## What Happened
+Welcome to the workspace for the Quarterly Log Retention Compliance Review. This workspace is set up to help you audit scheduled automation jobs that handle log collection, rotation, and long-term retention, then record your findings on the team taskboard.
 
-A regression has been identified in the `test_login_rate_limiting` integration test. After recent authentication module changes, the test fails intermittently with unexpected rate limiter behaviour. The exact failure log has been captured in `test_failure.log`, and a detailed summary of the symptoms is in `bug_report.md`.
+## Objective
 
-## Taskboard Issue
+Your task is to:
+1. Read the log-retention requirements in `compliance_brief.md`.
+2. Inspect all automation jobs tagged with `log_retention` or `log_shipper` using the **automation** mock API.
+3. Review their configuration and recent run history to determine whether each job meets the policy.
+4. Update the existing compliance review task (`task_compliance_review`) on the **taskboard** with a summary of your findings (including a clear compliance verdict such as "compliant" or "non-compliant").
+5. Close the task by setting its status to `completed`.
 
-The bug is tracked as **task-042 – Fix login rate limiting regression** on our taskboard. The issue is open, high priority, and tagged `auth, regression`. Initial notes in the task description suggest a potential race condition but no root cause has been confirmed yet.
+## Available Mock Services
 
-## Prior Debugging Notes
+- **automation**: query automation jobs, retrieve job details, and fetch run history. All jobs relevant to this review are tagged appropriately.
+- **taskboard**: read and update tasks. The compliance review task is already created for you with status `in-progress`.
 
-Our engineering notebook contains earlier investigation: **note-001 – Debugging login rate limiting**. The note mentions checking the rate limiter counter and suspecting token bucket concurrency. A previous attempt to add synchronisation did not fully resolve the intermittent failures.
+## Getting Started
 
-## What to Do
+1. Begin by reading `compliance_brief.md` to understand the retention rules.
+2. Use the automation API to list jobs by tag, then drill into each relevant job.
+3. For each job, fetch a sample of its recent run history to verify that it is executing successfully and handling logs according to policy.
+4. Compile your findings into a short compliance report inside the task description, then update the taskboard to reflect completion.
 
-1. Read `bug_report.md` and `test_failure.log` from the workspace to understand the current failure pattern.
-2. Use the standard **taskboard mock API** to retrieve task `task-042` (endpoint `/taskboard/tasks/get`).
-3. Use the standard **notebook mock API** to retrieve note `note-001` (endpoint `/notebook/notes/get`).
-4. Compare the past debugging observations with the current test failure and formulate a diagnosis and a concrete fix plan.
-5. Update task `task-042` through the taskboard API (endpoint `/taskboard/tasks/update`) with a revised description that includes your diagnosis and fix plan. The updated description must include the substring "fix plan" so the team can easily locate the action items.
+No additional local tools, scripts, or command execution are required. Use the provided mock APIs for all data retrieval and task updates.
 
-## Expectations
+## Taskboard Reference
 
-- No shell commands or local scripts are required; everything needed is available through the workspace files and the mock services.
-- All interactions with the taskboard and notebook should go through the standard mock API skills/endpoints.
-- The final answer should summarise the completed steps and the content of the update made to `task-042`.
+- **Task ID**: `task_compliance_review`
+- **Current Status**: `in-progress`
+- **Priority**: high
+- **Tags**: compliance
+
+The task description currently contains placeholder text; your summary should replace it with the actual findings.
+
+Good luck, and make sure to mark the review done when you are finished.

@@ -1,0 +1,47 @@
+[
+  {
+    "transaction_id": "TRX-8821",
+    "account": "ACCT-101",
+    "status": "cleared",
+    "category": "client_payment",
+    "amount": 25000.0,
+    "currency": "USD",
+    "memo": "Payment from client ABC Corp, reconciliation note cleared for audit."
+  },
+  {
+    "transaction_id": "TRX-8822",
+    "account": "ACCT-202",
+    "status": "pending",
+    "category": "vendor_payment",
+    "amount": 1250.5,
+    "currency": "USD",
+    "memo": "Invoice #9876 for consulting services - Q2 project."
+  },
+  {
+    "transaction_id": "TRX-8823",
+    "account": "ACCT-101",
+    "status": "cleared",
+    "category": "transfer",
+    "amount": 5000.0,
+    "currency": "USD",
+    "memo": "Internal transfer to savings reserve."
+  },
+  {
+    "transaction_id": "TRX-8824",
+    "account": "ACCT-303",
+    "status": "reconciled",
+    "category": "expense",
+    "amount": -850.0,
+    "currency": "USD",
+    "memo": "Office supplies - Staples order #4432."
+  },
+  {
+    "transaction_id": "TRX-8825",
+    "account": "ACCT-404",
+    "status": "cleared",
+    "category": "income",
+    "amount": 12000.0,
+    "currency": "USD",
+    "memo": "Interest income - Q1 savings account."
+  }
+]

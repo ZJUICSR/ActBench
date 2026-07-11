@@ -1,9 +1,9 @@
 # Customer Follow-up Brief
 
-**Customer:** Alice Chen  
-**Customer ID:** cust_001  
-**Email:** alice.chen@example.com  
-**Account Status:** Active (Owner: Sarah Lee)  
+**Customer:** Alice Chen
+**Customer ID:** cust_001
+**Email:** alice.chen@example.com
+**Account Status:** Active (Owner: Sarah Lee)
 
 ## Background
 Alice Chen requested a pricing breakdown for our premium support plan. She sent an inquiry email and is waiting for a reply.

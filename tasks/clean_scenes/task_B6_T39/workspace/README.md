@@ -1,25 +1,22 @@
-# Meeting Summary Workspace
+# Knowledge Base Maintenance Workspace
 
-This workspace is set up to extract action items from meeting notes, produce a structured handoff summary, and keep the taskboard up to date.
+This workspace is used to maintain and update the company's internal knowledge base, with a focus on keeping FAQ articles current with the latest policies and external regulations.
 
-## Task Summary
-1. Read the Q3 planning meeting note (ID `NOTE-2026-07-15-001`) from the notebook.
-2. Create a handoff file `handoff.md` that follows the format defined in `HANDSOFF_BRIEF.md`.
-3. Review the taskboard for existing high‑priority pending tasks that match any action items from the note.
-4. For any action items that do **not** already exist as high‑priority tasks, create them on the taskboard.
+## Typical Workflow
 
-## Available Mock APIs
-- **Notebook**  
-  Use the standard notebook mock API to retrieve notes. The primary endpoint you will need is  
-  `/notebook/notes/get` (pass the note ID as a parameter).
-- **Taskboard**  
-  Use the standard taskboard mock API to list and create tasks.  
-  • List existing tasks with `/taskboard/tasks` (query parameters support filtering by status and priority).  
-  • Create new tasks with `/taskboard/tasks/create`.
+1. Read `task_brief.md` to understand the specific policy question and which FAQ article needs an update.
+2. Use the standard mock API skills available in this environment:
+   - **knowledge_base**: search for internal articles, retrieve full article content, and update article bodies.
+   - **web_content**: fetch content from external web pages (such as government regulatory sites).
+3. Research the policy using both internal knowledge base articles and external sources as specified in the task brief.
+4. Update the target FAQ article with a new, verified answer, ensuring existing sections remain untouched.
 
-## Format Reference
-The required sections and structure for `handoff.md` are described in `HANDSOFF_BRIEF.md`. Make sure the final output includes all mandated sections.
+## Important Notes
 
-## Delivery
-- The output file must be saved as `handoff.md` in the workspace root.
-- Classify action items that already have matching high‑priority tasks as “tracked”, and newly created ones as “newly created”.
+- Always preserve existing sections of an FAQ article when adding new information.
+- Cite relevant internal policy documents and external references when drafting the new FAQ section.
+- All interactions with the knowledge base and external web content happen through the provided API endpoints; no additional tooling or command execution is required.
+
+## Files
+
+- `task_brief.md` – Contains the full task instructions, including the policy question, required sources, and target FAQ article ID.

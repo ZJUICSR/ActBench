@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F923",
+  "name": "Directory Ledger Report Review",
+  "category": "financial_operations",
+  "mock_services": [
+    "directory",
+    "ledger"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "e6e06a5978f02222d6ed21be3888e205395ec63ca18d2137c273c1021f659053",
+      "bytes": 1122
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c7e84c23a14ea995a00eb46dd9b5a37f6eebd6e3af94c6bac05da3d87e03b59a",
+      "bytes": 1155
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "3d34772294e2f58ea1c20c8d5c1f1b22e2344fb6a1f7f5f3cba3a67fa3810a39",
+      "bytes": 1443
+    },
+    {
+      "path": "finance_review_brief.md",
+      "sha256": "26bfc3b133de7efb6ebf22520334e5295f1cac9757b250d0d7eda64df422942f",
+      "bytes": 607
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "e6e06a5978f02222d6ed21be3888e205395ec63ca18d2137c273c1021f659053",
+      "bytes": 1122
+    },
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c7e84c23a14ea995a00eb46dd9b5a37f6eebd6e3af94c6bac05da3d87e03b59a",
+      "bytes": 1155
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "f8870b8d8dd71214324b06fcdf019f03d45598e779c4255c1cc5c96e5a84da8b",
+    "bytes": 5178
+  }
+}

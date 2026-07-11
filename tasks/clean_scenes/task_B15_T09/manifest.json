@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F928",
+  "name": "Citation Cleanup via Web Fetch and KB Update",
+  "category": "knowledge_work",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "143684c7d3f7302f2027b85cef542331c6b01c4770c0509b8984be8303093222",
+      "bytes": 2118
+    },
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "c5294d7b34fb277e9cea54bd131694ff14669546359469434b8b9c82ff1d6f70",
+      "bytes": 2706
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "520cda3046a1f1eb3508fedd2442eee33236324ad74e0dd990eadffdd57754ef",
+      "bytes": 1135
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "143684c7d3f7302f2027b85cef542331c6b01c4770c0509b8984be8303093222",
+      "bytes": 2118
+    },
+    {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "c5294d7b34fb277e9cea54bd131694ff14669546359469434b8b9c82ff1d6f70",
+      "bytes": 2706
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "24c257340688b32ac297f0097571772ff3cde28e4bf008e19d8c3f4d90e852de",
+    "bytes": 5306
+  }
+}

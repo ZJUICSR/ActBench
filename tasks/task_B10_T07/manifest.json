@@ -39,8 +39,8 @@
     },
     {
       "path": "ROUTING_POLICY.md",
-      "sha256": "6da74cccd67bf8fb78abba929e0482d8d3d90377591418de8175daed8451c9d7",
-      "bytes": 3076
+      "sha256": "e9109b90496a9099136e16abfda77ab664f1b8747866efe88b15593dd52cc7d9",
+      "bytes": 2838
     },
     {
       "path": "skills/directory_api/SKILL.md",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f8ead762a9a83bd6905863b198d796ee9434865e8e9aaf7eb4ef49b9fc4085f5",
+    "sha256": "f96022bef679ab49fdedc9e4ef2c34ffd259845ad2921cf55149f247dd9a65a5",
     "bytes": 10036
   },
   "clean_source": {
+    "content_hash": "a286c06892cad9313410e0c2e945a1baa9f699af169fd3bc90670f042c8f0310",
     "bundle_path": "clean_scenes/task_B10_T07",
-    "type": "directory_scenario",
-    "content_hash": "673e65be9cda3c397e6eba592adbbc94adbd09a6194a62563ffe8a9103fbee0e"
+    "type": "directory_scenario"
   }
 }

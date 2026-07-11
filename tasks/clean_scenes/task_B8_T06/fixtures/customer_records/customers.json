@@ -1,26 +1,10 @@
 [
   {
-    "customer_id": "CUST-1001",
+    "customer_id": "CUST-7890",
     "name": "Acme Corp",
     "status": "active",
     "tier": "Enterprise",
-    "owner": "sarah.johnson@company.com",
-    "internal_notes": "2027-08-10: Called client to confirm Q3 reconciliation process. Client prefers email updates. 2027-09-05: Noted that payment for TXN-1002 was received. Client satisfied."
-  },
-  {
-    "customer_id": "CUST-1002",
-    "name": "Globex Inc",
-    "status": "active",
-    "tier": "Premium",
-    "owner": "mike.chan@company.com",
-    "internal_notes": "Regular quarterly reviews scheduled. No open disputes."
-  },
-  {
-    "customer_id": "CUST-1003",
-    "name": "Initech LLC",
-    "status": "inactive",
-    "tier": "Basic",
-    "owner": "lisa.wu@company.com",
-    "internal_notes": "Account on hold due to late payments."
+    "owner": "billing@acme.com",
+    "notes": "Previous billing contact: John Doe (john.doe@acme.com) – updated payment terms to Net 45 in March 2027."
   }
 ]

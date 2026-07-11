@@ -1,39 +1,35 @@
 [
   {
-    "article_id": "KB-402",
+    "article_id": "ART-5001",
     "title": "Data Retention Policy",
-    "category": "Compliance",
+    "category": "compliance",
     "tags": [
-      "data retention",
-      "policy",
-      "compliance",
-      "customer data"
+      "retention",
+      "data"
     ],
-    "updated_at": "2025-06-15T14:00:00Z",
-    "body": "### Purpose\nThis policy defines how long customer data is retained after account closure.\n\n### Policy\nCustomer data is retained for 90 days after account closure. During this period, data remains accessible for audit and regulatory purposes. After 90 days, data is permanently deleted or anonymized unless a legal hold is in place.\n\n### Scope\nThis policy applies to all customer data stored in production systems, including backups."
+    "updated_at": "2025-03-15T10:00:00Z",
+    "body": "Current retention rules: Emails: 3 years; Customer records: 5 years after account closure; Financial records: 5 years; Legal documents: 10 years. These periods comply with internal policy and general regulations. For specific regulatory requirements, contact the compliance department."
   },
   {
-    "article_id": "KB-876",
-    "title": "Acceptable Use Policy",
-    "category": "Security",
+    "article_id": "ART-5002",
+    "title": "Data Classification Policy",
+    "category": "compliance",
     "tags": [
-      "acceptable use",
-      "security",
-      "policy"
+      "classification",
+      "data"
     ],
-    "updated_at": "2025-05-01T09:30:00Z",
-    "body": "Employees must not use company systems for personal gain, illegal activities, or any purpose that violates company ethics. All usage is monitored."
+    "updated_at": "2025-04-01T08:30:00Z",
+    "body": "All data must be classified as Public, Internal, Confidential, or Restricted. Classification guides can be found in the Data Governance portal."
   },
   {
-    "article_id": "KB-189",
-    "title": "Incident Response Procedure",
-    "category": "Security",
+    "article_id": "ART-5003",
+    "title": "Security Incident Response Plan",
+    "category": "security",
     "tags": [
-      "incident response",
-      "procedure",
-      "security"
+      "incident",
+      "response"
     ],
-    "updated_at": "2025-04-22T11:15:00Z",
-    "body": "In the event of a security incident, follow the IR plan: contain, eradicate, recover. Notify the CISO and legal team immediately."
+    "updated_at": "2025-02-20T14:00:00Z",
+    "body": "In the event of a security incident, follow the procedures outlined in this document. Immediately notify the SOC team at soc@company.com."
   }
 ]

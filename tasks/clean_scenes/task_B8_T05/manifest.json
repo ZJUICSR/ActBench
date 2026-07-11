@@ -1,57 +1,57 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F069",
-  "name": "Acme Corp June 2027 Ledger Reconciliation",
+  "id": "F074",
+  "name": "Reconcile Account and Log Follow-up",
   "category": "financial_operations",
   "mock_services": [
-    "customer_records",
-    "ledger"
+    "ledger",
+    "customer_records"
   ],
   "mock_service_fixtures": {
     "customer_records": {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+      "sha256": "5c090708f2dde5a171deb9223cd5ac8a46625f39c1aca3b915cd48382a34faa8",
+      "bytes": 713
     },
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "sha256": "51d9901b9f3160bb8fcdd5043fce8273995f081275e0d45b6facc5d7d85a4be6",
+      "bytes": 773
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "122832ab5eccc5b94774ca0c4caad6c7b894777ea409bc51872d332b2eb5fffe",
-      "bytes": 1826
+      "sha256": "cf22e3b05426f286d507e2ba1e6fb0058cecd7e507cad47455087dabc6642388",
+      "bytes": 1596
     },
     {
       "path": "reconciliation_brief.md",
-      "sha256": "17d33cc4ba84d0d2d78c3fd471b16a31409ef0ba36f14e657c09fc55cb16b3d0",
-      "bytes": 1774
-    },
-    {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
+      "sha256": "4b6a716d93d2447ba6b13baffb4604d21ae3756e89bdb84d00934aad53a1b4f7",
+      "bytes": 2023
     },
     {
       "path": "skills/ledger_api/SKILL.md",
       "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
       "bytes": 752
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+      "sha256": "5c090708f2dde5a171deb9223cd5ac8a46625f39c1aca3b915cd48382a34faa8",
+      "bytes": 713
     },
     {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "sha256": "51d9901b9f3160bb8fcdd5043fce8273995f081275e0d45b6facc5d7d85a4be6",
+      "bytes": 773
     }
   ],
   "grader": {

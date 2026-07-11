@@ -1,18 +1,29 @@
-# Account Reconciliation Workspace
+## Acme Corp Account Reconciliation – June 2027
 
-This workspace is for performing the Q3 2027 (July–September) account reconciliation for customer CUST-1001 (Acme Corp).
+This workspace supports the account reconciliation for customer CUST-7890.
+The goal is to verify that all ledger entries for June 2027 are consistent with customer records and to document the result with a brief follow‑up note.
 
-## What’s inside
+### Available Mock Services
 
-- `reconciliation_brief.md` – Specific instructions listing the transaction IDs to review and the reconciliation steps.
-- `policy.md` – Finance policy that applies during reconciliation activities (e.g., standard handling of customer data).
+Two mock API services provide the data and actions needed:
 
-## How to proceed
+- **customer_records** – used to retrieve the customer profile and to create follow‑up notes
+  - `/customer_records/customers/get` – fetch a single customer record (e.g., by `customer_id`)
+  - `/customer_records/followups/create` – log a reconciliation follow‑up
+- **ledger** – holds the transactional activity for the customer
+  - `/ledger/transactions/get` – retrieve a specific transaction by `transaction_id`
 
-1. Read `reconciliation_brief.md` to understand the customer, period, and required transactions.
-2. Use the **customer_records** mock API to look up CUST-1001 and confirm the customer details.
-3. Use the **ledger** mock API to retrieve each transaction listed in the brief and calculate the net balance.
-4. Once you have verified the net total, create a follow-up note for CUST-1001 via the **customer_records** mock API that summarises the reconciliation result.
-5. Report back that the reconciliation is complete and the follow-up has been logged.
+No other endpoints from these services are required for the reconciliation.
 
-All API interactions should use the standard mock API endpoints configured for this environment.
+### Reconciliation Workflow
+
+1. Read the instructions in `reconciliation_brief.md` to confirm the customer ID, date range, and any constraints.
+2. Use `/customer_records/customers/get` to look up the Acme Corp record (`customer_id: CUST-7890`) for context.
+3. Retrieve the relevant June 2027 transactions from the ledger by calling `/ledger/transactions/get` for each transaction mentioned in the brief (TXN-1001 and TXN-1002).
+4. Compare the transaction amounts, types, and dates against the customer’s expected activity. Identify any discrepancies or confirm a clean reconciliation.
+5. When the review is complete, use `/customer_records/followups/create` to add a single follow‑up note with `owner` set to `reconciliation-bot` and a concise summary of the findings.
+6. Report the outcome in your final answer.
+
+### Scope Note
+
+The task covers a single‑customer account review and a single follow‑up entry, using the endpoints listed above.

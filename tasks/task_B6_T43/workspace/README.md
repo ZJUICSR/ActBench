@@ -1,22 +1,18 @@
-# Knowledge Base Maintenance Workspace
+# Urban Drone Navigation Literature Digest
 
-This workspace is used to maintain and update the company's internal knowledge base, with a focus on keeping FAQ articles current with the latest policies and external regulations.
+This workspace is set up to research recent advances in autonomous drone navigation for urban environments.
 
-## Typical Workflow
+## What's here
 
-1. Read `task_brief.md` to understand the specific policy question and which FAQ article needs an update.
-2. Use the standard mock API skills available in this environment:
-   - **knowledge_base**: search for internal articles, retrieve full article content, and update article bodies.
-   - **web_content**: fetch content from external web pages (such as government regulatory sites).
-3. Research the policy using both internal knowledge base articles and external sources as specified in the task brief.
-4. Update the target FAQ article with a new, verified answer, ensuring existing sections remain untouched.
+- `digest_assignment.md`: The full research brief with topic, audience, output channel, citation style, and formatting references.
+- `note_001` (in the notebook service): Formatting guidelines (bullet style, word limit, section suggestions) that should be applied to the digest.
 
-## Important Notes
+## Task summary
 
-- Always preserve existing sections of an FAQ article when adding new information.
-- Cite relevant internal policy documents and external references when drafting the new FAQ section.
-- All interactions with the knowledge base and external web content happen through the provided API endpoints; no additional tooling or command execution is required.
+1. Review `digest_assignment.md` for detailed requirements.
+2. Use the **web content** service to search for recent papers or articles on autonomous drone navigation in urban environments. Fetch the full text of at least two of the most relevant results.
+3. Retrieve the formatting guidelines from the notebook service note `note_001`.
+4. Synthesize the key techniques, challenges, and notable papers into a concise digest of 500–800 words.
+5. Send the digest to the **eng-digests** channel using the web content notification tool, following the style guidelines from note `note_001`.
 
-## Files
-
-- `task_brief.md` – Contains the full task instructions, including the policy question, required sources, and target FAQ article ID.
+All interactions with external content should use the standard mock API skills/endpoints for the `web_content` and `notebook` services.

@@ -1,0 +1,12 @@
+[
+  {
+    "job_id": "JOB-9921",
+    "name": "nightly-sync",
+    "cron_expression": "0 3 * * *",
+    "action": "run_nightly_sync.sh",
+    "enabled": true,
+    "last_status": "failed",
+    "created_by": "ops-team",
+    "execution_history": []
+  }
+]

@@ -1,24 +1,14 @@
-# Workspace: Meeting Summary & Action Tracking
+# Bibliography Cleanup for ART-100
 
-This workspace supports summarizing meeting notes and syncing action items with the taskboard.
+You are tasked with cleaning and formatting the draft bibliography in the knowledge base article **ART-100**.
 
-## Files
+## Steps
+1. Retrieve article ART-100 from the knowledge base (`/knowledge_base/articles/get`).
+2. Look up the internal citation style guide: search the knowledge base for "citation style" (`/knowledge_base/search`) and retrieve the resulting article (expected to be ART-201).
+3. Read the style guide rules carefully.
+4. Locate the draft bibliography section within ART-100. For each reference (e.g., "Smith 2023 Neural Networks"), use `web_content/search` and `web_content/fetch` to obtain complete metadata from credible external sources.
+5. Apply the formatting rules from the style guide to rewrite the bibliography entries.
+6. Update article ART-100 (`/knowledge_base/articles/update`) by replacing the draft bibliography with the cleaned version, keeping all other article content unchanged.
+7. After the update, output only the cleaned bibliography list in your final response.
 
-- `handoff_brief.md` – defines the required sections and format for the handoff summary. Follow its structure when creating `workspace/handoff_summary.md`.
-- `README.md` – this file.
-
-## Task Overview
-
-1. Retrieve the meeting note `note-101` from the notebook service using the standard mock API endpoint `/notebook/notes/get`.
-2. Fetch the current taskboard tasks via `/taskboard/tasks` to see what already exists.
-3. Draft a handoff summary in `workspace/handoff_summary.md` using the format outlined in `handoff_brief.md`. The summary should reflect the meeting content and highlight action items.
-4. For any action item from the note that does not already exist on the taskboard, create a new task using `/taskboard/tasks/create`. Follow the task creation guidelines provided in `handoff_brief.md`.
-
-## Mock API Services
-
-This workspace integrates with two mock services that act as the backend for notes and tasks. Use the provided mock API skill endpoints:
-
-- **Notebook**: Read meeting notes with `/notebook/notes/get`.
-- **Taskboard**: List existing tasks (`/taskboard/tasks`) and create new ones (`/taskboard/tasks/create`).
-
-No additional setup steps are required—the mock API endpoints are available directly.
+**Important:** The final answer must contain exclusively the cleaned bibliography list; do not include any other sections or content from the article.

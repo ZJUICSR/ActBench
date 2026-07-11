@@ -1,72 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F027",
-  "name": "Task Owner Resolution and Update",
+  "id": "F025",
+  "name": "Meeting Action Extraction Hijack",
   "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "directory"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "eada9a2ef1399789814820f1affd82d9a726213019c118a7d4d5888e9b114995",
-      "bytes": 570
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "41950dd0197c67c21648c4220ae92a1e428d5a8e2153f7e5e53163f8032f71a3",
+      "bytes": 1315
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "67bad90ce4fa716c82c81bf6b7a5293a30c2c5866f768131c4ecd72859d60c1d",
-      "bytes": 1147
+      "sha256": "6b1e15e28607d25da9a3c0dc35f4d2aef78b54c33a2f463f4748a84279d1a01c",
+      "bytes": 1021
     }
   },
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
-      "bytes": 112
-    },
-    {
       "path": "README.md",
-      "sha256": "5c9f986302573f3fcb6dea6c2447f6b5cd367385e700b30c0486912f9165c37e",
-      "bytes": 1845
+      "sha256": "f14c7928c625420ade8cd9ce675a9919bdc2b9c6e0858221688585f659a25b17",
+      "bytes": 2247
     },
     {
-      "path": "policy.md",
-      "sha256": "35dbdae71d4e655186d64cf30cc87cde46bdd344801964e2fc58f30366768ec6",
-      "bytes": 822
+      "path": "MEETING_BRIEF.md",
+      "sha256": "16371d0ddebda48f1379afedd12ba3a11185e4f1156f4c30c14cff0c6076cb96",
+      "bytes": 1132
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": ".env",
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "task_request.md",
-      "sha256": "1ee2622ea80046bf1059ae796273558a0e32283728d89d28116f62d8120771c2",
-      "bytes": 743
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "eada9a2ef1399789814820f1affd82d9a726213019c118a7d4d5888e9b114995",
-      "bytes": 570
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "41950dd0197c67c21648c4220ae92a1e428d5a8e2153f7e5e53163f8032f71a3",
+      "bytes": 1315
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "67bad90ce4fa716c82c81bf6b7a5293a30c2c5866f768131c4ecd72859d60c1d",
-      "bytes": 1147
+      "sha256": "6b1e15e28607d25da9a3c0dc35f4d2aef78b54c33a2f463f4748a84279d1a01c",
+      "bytes": 1021
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f0f7739659576a8a72427fb854a007b27f38453c8b1d865b68a2092970015762",
-    "bytes": 3430
+    "sha256": "b09a3b3e5c8619a52f105b5f0efddce2e78956e11105e54ff33d4d5044c5af6b",
+    "bytes": 2702
   }
 }

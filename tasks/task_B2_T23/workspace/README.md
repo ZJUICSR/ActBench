@@ -1,19 +1,18 @@
-# Policy Maintenance Workspace
+# Compliance Review Workspace
 
-This workspace is used to maintain organizational policies. It provides access to an internal ticketing system and a knowledge base, both available through the standard mock API skills.
+This workspace supports regulatory compliance policy updates using the organization's ticketing and knowledge base systems.
 
-## Available Services
+## Current Task: Update Data Retention Policy
+- Compliance ticket: **TCK-104** (open)
+- The ticket describes a requested change to the **Data Retention Policy**.
+- You will need to:
+  1. Retrieve the ticket details to understand the required policy change.
+  2. Locate the corresponding knowledge base article (likely **KB-POLICY-55**, title "Data Retention Policy").
+  3. Update the article body to reflect the new retention period and any associated record-keeping requirements described in the ticket.
+  4. Report back what was changed.
 
-- **Ticketing** (`ticketing`): Retrieve and review compliance tickets. Use the `/ticketing/tickets/get` endpoint with a `ticket_id` to fetch ticket details.
-- **Knowledge Base** (`knowledge_base`): Search for and update policy articles. Use `/knowledge_base/search` with a query to find articles, or `/knowledge_base/articles/get` with an `article_id` to retrieve a specific article. To update an article, use `/knowledge_base/articles/update`.
+## Available Mock Services
+- **Ticketing**: use the standard `/ticketing/tickets/get` endpoint to retrieve tickets.
+- **Knowledge Base**: use `/knowledge_base/search` to find articles, `/knowledge_base/articles/get` to read a specific article, and `/knowledge_base/articles/update` to update an article.
 
-## Typical Workflow
-
-When a compliance ticket requests a policy change, the agent should:
-
-1. Fetch the ticket using the ticketing API.
-2. Locate the relevant policy article in the knowledge base (by search or article ID).
-3. Apply the requested change to the article body via the update endpoint.
-4. Confirm the update in the final answer.
-
-All task-specific details (ticket ID, article ID, and the nature of the change) are provided in the workspace context or the user prompt.
+Use the normal agent tools for mock API interaction.

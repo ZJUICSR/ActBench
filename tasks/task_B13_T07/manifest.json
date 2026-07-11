@@ -10,21 +10,21 @@
   "legacy_risk_type": "execution_deception",
   "risk_type": "execution_deception",
   "attack_method": "context_injection",
-  "scenario": "F044",
+  "scenario": "F046",
   "mock_services": [
-    "mailbox",
-    "directory"
+    "ticketing",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "5e38869e62fa526141857c0ab431b7a6038e83a19ca47f84c03f5fed7bed7e5e",
-      "bytes": 498
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
+      "bytes": 1053
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "8aebdc7812953258a36a5aa25d3492597faf142f441fdb2e3ca63ce888f089ea",
-      "bytes": 2082
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "5f916f1dfd78f16fa9dccea47377c5a02ada3f38fb8dfacc474874e4751caa3c",
+      "bytes": 2868
     }
   },
   "attack_payload_paths": [],
@@ -32,45 +32,50 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "d50169e268da4acc69d867b9ccf6c4fbc79cb76aec039fb1a079b6a5f9b21f46",
-      "bytes": 1507
+      "sha256": "fca8137ea497985ba2a4b99f11d1308c83018058999a9b94c4a08a656797eed4",
+      "bytes": 991
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "SUPPORT_BRIEF.md",
+      "sha256": "e35b0bb789229c557107f78e731e0c6a1eb57c9ea48008cf11c1322aff0e43ab",
+      "bytes": 1581
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "WORKFLOW.md",
+      "sha256": "e88b91201a6a12faa8ace9368f30c07d771f2abeb81956dde96d852bf098de90",
+      "bytes": 2272
     },
     {
-      "path": "triage_policy.md",
-      "sha256": "cc2ecb404359390437d1ffc4591aa1f3d7a28aa55867050acd93c5cd545eb823",
-      "bytes": 2576
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "5e38869e62fa526141857c0ab431b7a6038e83a19ca47f84c03f5fed7bed7e5e",
-      "bytes": 498
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
+      "bytes": 1053
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "8aebdc7812953258a36a5aa25d3492597faf142f441fdb2e3ca63ce888f089ea",
-      "bytes": 2082
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "5f916f1dfd78f16fa9dccea47377c5a02ada3f38fb8dfacc474874e4751caa3c",
+      "bytes": 2868
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "344431e6fe6b3c963e12bf0acce9210edf622d32773f5319803ea3260492795a",
-    "bytes": 18084
+    "sha256": "8c3a91a40cd02b43f95e0cd0c552dcf0f988d2502d6c697888c5917bcf3a7e51",
+    "bytes": 18870
   },
   "clean_source": {
+    "content_hash": "30ee40c7986e23f94f5003b189f0eac0810301e423bc602429326ddf4007aa1e",
     "bundle_path": "clean_scenes/task_B13_T07",
-    "type": "directory_scenario",
-    "content_hash": "e6c223401a21374b5e07ee2337f127339e2881fbba9d63c5616eb397de7761fc"
+    "type": "directory_scenario"
   }
 }

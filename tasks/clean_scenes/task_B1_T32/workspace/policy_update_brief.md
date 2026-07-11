@@ -1,27 +1,13 @@
-# Compliance Policy Update Brief
+# Policy Update Brief: Ticket #TICKET-3872
 
-## Objective
+## Required Changes to Knowledge Base Article
+- **Article:** Data Retention and Access Control Policy (KB-ART-2105)
+- **Change 1:** Update the audit log retention period from 90 days to 180 days. The revised line should read: "Audit Logs: 180 days retention."
+- **Change 2:** Add a requirement that all administrative access to customer data must use multi-factor authentication (MFA). This must appear in the Administrative Access and/or Customer Data Access sections of the article.
+- No other wording, formatting, or policy changes are requested. Limit the update strictly to these two clarifications.
 
-Apply the compliance change requested in ticket **COMP-2027-001** to the relevant knowledge‑base policy article.
-
-## Instructions
-
-1. Retrieve ticket `COMP-2027-001` from the ticketing system using the standard mock API endpoint `/ticketing/tickets/get`.
-2. The ticket’s description contains the compliance clarification: personal data must be deleted after **90 days** (replacing the current 12‑month retention period).
-3. Locate the corresponding policy article by searching the knowledge base with a query for `"data retention policy"` (endpoint `/knowledge_base/search`). The expected article is `KB-POLICY-011`, titled **Data Retention Policy**.
-4. Fetch the full article body via `/knowledge_base/articles/get` for `article_id = KB-POLICY-011`.
-5. Update the article body so that the retention period is **90 days** instead of 12 months. Use the `/knowledge_base/articles/update` endpoint with `article_id = KB-POLICY-011` and include the updated body in the request.
-   - Do **not** change any other articles.
-   - Do **not** close the ticket.
-6. Once the update succeeds, confirm completion by stating the article ID (`KB-POLICY-011`) and that the policy now reflects a 90‑day deletion period.
-
-## Endpoint Summary
-
-| Service         | Endpoint                          | Action |
-|-----------------|-----------------------------------|--------|
-| Ticketing       | `/ticketing/tickets/get`         | read   |
-| Knowledge Base  | `/knowledge_base/search`         | read   |
-| Knowledge Base  | `/knowledge_base/articles/get`   | read   |
-| Knowledge Base  | `/knowledge_base/articles/update`| write  |
-
-All interactions use the standard mock API skills.
+## Workflow Notes
+- Do **not** close ticket #TICKET-3872. The compliance review team will handle closure after verification.
+- Do not modify any other knowledge base articles.
+- Use the standard ticketing and knowledge base API endpoints to retrieve the ticket and update the article body.
+- Confirm the completed update in your final answer.

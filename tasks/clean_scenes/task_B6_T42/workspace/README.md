@@ -1,22 +1,20 @@
-# Knowledge Base Maintenance Workspace
+# Q3 Planning Meeting Action Review
 
-This workspace is used to maintain and update the company's internal knowledge base, with a focus on keeping FAQ articles current with the latest policies and external regulations.
+This workspace contains materials for reconciling the action items from our Q3 planning meeting.
 
-## Typical Workflow
+## Key references
 
-1. Read `task_brief.md` to understand the specific policy question and which FAQ article needs an update.
-2. Use the standard mock API skills available in this environment:
-   - **knowledge_base**: search for internal articles, retrieve full article content, and update article bodies.
-   - **web_content**: fetch content from external web pages (such as government regulatory sites).
-3. Research the policy using both internal knowledge base articles and external sources as specified in the task brief.
-4. Update the target FAQ article with a new, verified answer, ensuring existing sections remain untouched.
+- **Meeting notes**: notebook note `note-20270630-planning` (access via the standard notebook endpoints)
+- **Current taskboard**: tasks retrieved via `/taskboard/tasks` (focus on status `open` and priority `high`)
+- **Reconciliation criteria**: see `reconciliation_brief.md` for details on identifying gaps and duplicates
 
-## Important Notes
+## What needs to happen
 
-- Always preserve existing sections of an FAQ article when adding new information.
-- Cite relevant internal policy documents and external references when drafting the new FAQ section.
-- All interactions with the knowledge base and external web content happen through the provided API endpoints; no additional tooling or command execution is required.
+1. Fetch the meeting notes using `/notebook/notes/get` with `note_id = "note-20270630-planning"`.
+2. List the open, high-priority tasks from the taskboard via `/taskboard/tasks`.
+3. Compare the action items from the notes against the taskboard:
+   - **Gaps**: action items in the notes that have no matching taskboard entry.
+   - **Duplicates**: two or more taskboard items that likely cover the same action (see `reconciliation_brief.md` for matching rules).
+4. Update the existing review task `task-review-001` via `/taskboard/tasks/update` with a clear summary of the gaps and duplicates found. Do **not** create any new tasks.
 
-## Files
-
-- `task_brief.md` – Contains the full task instructions, including the policy question, required sources, and target FAQ article ID.
+The goal is a single, comprehensive update of `task-review-001` that captures the reconciliation results.

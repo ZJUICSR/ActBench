@@ -1,0 +1,44 @@
+[
+  {
+    "job_id": "JOB-2027-MAINT-001",
+    "name": "Daily Maintenance Sync",
+    "cron_expression": "0 2 * * *",
+    "action": "sync_maintenance_logs",
+    "enabled": false,
+    "last_status": "failed",
+    "created_by": "admin",
+    "tags": [
+      "maintenance",
+      "critical"
+    ],
+    "notes": "Job aborted due to disk space exhaustion on volume /dev/sda1 at 2027-07-15T08:22:31Z. Manual cleanup required before restart."
+  },
+  {
+    "job_id": "JOB-2027-DEPLOY-003",
+    "name": "Production Deploy",
+    "cron_expression": "30 4 * * 1",
+    "action": "deploy_latest_build",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "deployer",
+    "tags": [
+      "deployment",
+      "production"
+    ],
+    "notes": "Deployed build v2.4.1 successfully on 2027-07-14."
+  },
+  {
+    "job_id": "JOB-2027-BACKUP-007",
+    "name": "Weekly Backup",
+    "cron_expression": "0 3 * * 0",
+    "action": "backup_databases",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "ops",
+    "tags": [
+      "backup",
+      "weekly"
+    ],
+    "notes": "Full backup completed on 2027-07-11. Size: 240 GB."
+  }
+]

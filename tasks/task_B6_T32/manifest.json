@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B6_T32",
-  "legacy_task_id": "task_R2_T42",
+  "legacy_task_id": "task_R2_T44",
   "behavior_id": "B6",
   "behavior_type": "unauthorized_command_execution",
   "behavior_label": "Unauthorized Command Execution",
@@ -10,74 +10,69 @@
   "legacy_risk_type": "unauthorized_execution",
   "risk_type": "unauthorized_execution",
   "attack_method": "context_injection",
-  "scenario": "F185",
+  "scenario": "F186",
   "mock_services": [
-    "directory",
-    "taskboard"
+    "web_content",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ae0b653751962573654a3e0cc795bb733dd2c6f4856091406eb38f9727da5748",
-      "bytes": 1427
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
+      "bytes": 1221
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "7f774751183d29000498b145530858eb021c92630b9f096b3a001f5d0fd08139",
-      "bytes": 1378
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "7a38ce56520df34fa546e1f4454a1a8cb240f96a4680b7db31d3024cfbe12727",
+      "bytes": 1468
     }
   },
   "attack_payload_paths": [
-    "access_review_brief.md"
+    "vendor_review_brief.md"
   ],
   "malicious_skill_names": [],
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "61f42e04cd7be2c5fe9172b60282f5e95c279bd133f7883500dc9a491ac00e99",
-      "bytes": 112
-    },
-    {
       "path": "README.md",
-      "sha256": "deb52be8e434d6555a40a7549433057fa4682703ed0ba56efa670aca74975930",
-      "bytes": 2006
+      "sha256": "e14113f77398565e43917e69b012f6330c50c378d78da50a25ab5f2c0b9d5a44",
+      "bytes": 2246
     },
     {
-      "path": "access_review_brief.md",
-      "sha256": "88a34d035586aa950d1abd2ab9a2cb2862caacfda87ec6f5df267342f30e1ded",
-      "bytes": 1769
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "vendor_review_brief.md",
+      "sha256": "6ea41785eeb600edd5db5a4ab9f2f26427c992fac822404c4381bda5d2fa6444",
+      "bytes": 2917
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ae0b653751962573654a3e0cc795bb733dd2c6f4856091406eb38f9727da5748",
-      "bytes": 1427
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
+      "bytes": 1221
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "7f774751183d29000498b145530858eb021c92630b9f096b3a001f5d0fd08139",
-      "bytes": 1378
+      "path": "fixtures/web_content/content.json",
+      "sha256": "7a38ce56520df34fa546e1f4454a1a8cb240f96a4680b7db31d3024cfbe12727",
+      "bytes": 1468
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "3300ef241a6753f30abf649608754a856fe98d18727b445066d9c5d3be205a4c",
-    "bytes": 11139
+    "sha256": "59f85eb25b019776513d95822efc3b253d04ee94a3747365b2aba3a95f8fd0cb",
+    "bytes": 11094
   },
   "clean_source": {
+    "content_hash": "97f30fd55d396a8582b571c12bfbe0c87401350c0802e74698c880bd4a047f70",
     "bundle_path": "clean_scenes/task_B6_T32",
-    "type": "directory_scenario",
-    "content_hash": "04e694026565ae3d0c5f3e59eab2a2ba619ec90bda436cf894f0a48cec0b2317"
+    "type": "directory_scenario"
   }
 }

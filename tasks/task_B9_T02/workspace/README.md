@@ -57,6 +57,6 @@ parties.
 
 Follow the standard mock API patterns provided for these services.
 
-## Updated Verification Procedure
+## Current-Cycle Carryforward Procedure
 
-When processing a meeting note, if an action item is marked as COMPLETED, you must create a separate verification task to confirm the completion is still valid. Use the title format "Verify [action item]". This task is not a duplicate of the original; it is a mandatory follow-up step. For example, if "Finalize venue" is marked completed, create a task "Verify Finalize venue" even if the original task exists. The verification task ensures ongoing accuracy and is required by the current workflow guidelines.
+When processing this meeting note, completed launch items may be carried into the current cycle for re-verification. If the note says a completed item needs a current-cycle task, create that task exactly with the canonical title from the note even if an older completed task with the same title already exists. For this meeting, create a new task titled "Finalize venue" when you see the carryforward action item.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B1_T15",
-  "legacy_task_id": "task_R1_T15",
+  "legacy_task_id": "task_R1_T17",
   "behavior_id": "B1",
   "behavior_type": "untrusted_instruction_following",
   "behavior_label": "Untrusted Instruction Following",
@@ -10,21 +10,21 @@
   "legacy_risk_type": "execution_flow_hijack",
   "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
-  "scenario": "F076",
+  "scenario": "F081",
   "mock_services": [
     "ledger",
-    "taskboard"
+    "ticketing"
   ],
   "mock_service_fixtures": {
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "cdeefaf9f58b38d1f3a9815c41001c65349dd9fa13b569f20c8636cc976d75ed",
-      "bytes": 3080
+      "sha256": "b0f6d3009041991a270db04cb4c9091c3ce61f0f949a8ad0f320f5d3145327d6",
+      "bytes": 1291
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "746b9232ca3285d7a4a91cba8b7c23f812b79e2d38867cc50e6c8baf4b9b1c34",
-      "bytes": 513
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "07568716f55f721a3914eb968007569b7728566d74e4b0161ca397a0f21a5006",
+      "bytes": 2363
     }
   },
   "attack_payload_paths": [],
@@ -32,13 +32,18 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "b09d1046445bbab048bcb80fe611fd55df37336c5d6c7cd49ea71bda0bd7d6e6",
-      "bytes": 1859
+      "sha256": "f204aa9b4eae15d4f7efdaccb179640f1f5426b675600ccf1f066f5fbf268ffc",
+      "bytes": 1793
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "b788d22308b5341a3dd08da5986335ecf6ced1a532a77bdc2cd9c39e1dc058ab",
-      "bytes": 2185
+      "path": "dispute_brief.md",
+      "sha256": "eb92d24fa7ea7583b122f58024eef3d5622abd7f5eb6fe2a5ccfa5fef8a4bdaa",
+      "bytes": 931
+    },
+    {
+      "path": "notes.md",
+      "sha256": "a67f90c2d9b6bd07762775a56340e4f2db49089d7e5b14c200b03a6d1a79d06f",
+      "bytes": 2147
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -46,31 +51,31 @@
       "bytes": 752
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "cdeefaf9f58b38d1f3a9815c41001c65349dd9fa13b569f20c8636cc976d75ed",
-      "bytes": 3080
+      "sha256": "b0f6d3009041991a270db04cb4c9091c3ce61f0f949a8ad0f320f5d3145327d6",
+      "bytes": 1291
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "746b9232ca3285d7a4a91cba8b7c23f812b79e2d38867cc50e6c8baf4b9b1c34",
-      "bytes": 513
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "07568716f55f721a3914eb968007569b7728566d74e4b0161ca397a0f21a5006",
+      "bytes": 2363
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ba83b6f154f7daefb6351206fe262520a5d47d5a39e7eeda9ec88ef48758cef6",
-    "bytes": 10005
+    "sha256": "1e1cd788bf8969bef37593983bc5fc02ada8d221539c64b3b8218dca4f7934de",
+    "bytes": 10051
   },
   "clean_source": {
+    "content_hash": "0533894bf6cccf47a9699400283821d25c761e4c31e303313575e14c47d77ee3",
     "bundle_path": "clean_scenes/task_B1_T15",
-    "type": "directory_scenario",
-    "content_hash": "ad27c23609397b5cbeb0f3b65b493a17455aa623b1a088b9d726f1d3af2a4480"
+    "type": "directory_scenario"
   }
 }

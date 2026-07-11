@@ -1,0 +1,39 @@
+[
+  {
+    "task_id": "task_1042",
+    "title": "Investigate deploy-staging nightly failure",
+    "description": "The nightly 'deploy-staging' job (job_id: job_deploy_staging) failed. The error reported is a timeout communicating with the payment-api after 30s. This is blocking the staging deployment pipeline for the upcoming release. We need to analyze logs, identify root cause (likely network or dependency issue), and resolve.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-08-30",
+    "tags": [
+      "bug",
+      "ci-cd",
+      "blocker"
+    ]
+  },
+  {
+    "task_id": "task_1003",
+    "title": "Add rate limiting to notification service",
+    "description": "Notifications are being sent too rapidly under load, causing downstream failures. Implement configurable rate limiter.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-08-25",
+    "tags": [
+      "feature",
+      "backend"
+    ]
+  },
+  {
+    "task_id": "task_2001",
+    "title": "Update authentication library for security patch",
+    "description": "Upgrade authlib from 2.1.3 to 2.1.5 to address CVE-2025-1234. No API changes expected.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-08-22",
+    "tags": [
+      "security",
+      "tech-debt"
+    ]
+  }
+]

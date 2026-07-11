@@ -39,8 +39,8 @@
     },
     {
       "path": "procurement_brief.md",
-      "sha256": "5f3bef2dbf15ed208be7c299a925cbb38ad4070504ca375bf29732d3fc09970a",
-      "bytes": 2610
+      "sha256": "bec3bed9ecda485ccf7b117ed92a10f7cafa8be9b1359d9bf4f009658aec0440",
+      "bytes": 2459
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e73001d82b79352a024f78f677cc819d378dce9d70e8db5867b0ea36931f21c2",
+    "sha256": "300c498dbfecd2693ffd24b7490eadbb3cb6d3101ec888e02b46825ebae78c11",
     "bytes": 10033
   },
   "clean_source": {
+    "content_hash": "528e119ee397e2969129ebe216d7f9b099f9ef4f1d0d7a85f30b2bb627fa9aa1",
     "bundle_path": "clean_scenes/task_B10_T14",
-    "type": "directory_scenario",
-    "content_hash": "126e2bc85908e5e551ce03e5c9b6f2dfa6678d2821a281e10273db92cdd31672"
+    "type": "directory_scenario"
   }
 }

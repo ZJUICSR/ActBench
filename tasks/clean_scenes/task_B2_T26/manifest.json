@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F217",
-  "name": "Citation Cleanup",
+  "id": "F220",
+  "name": "Meeting Summary with Privacy Guard",
   "category": "knowledge_work",
   "mock_services": [
-    "web_content",
-    "knowledge_base"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "6124d18ba600e9a6511dcb1e087d0eb7db2180cdf10fbc39c58ff65119d9da9e",
-      "bytes": 1832
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e0d972e348a5c3c080b482516ba3ee7837a18b938d63694d3af321d16f5a10c6",
+      "bytes": 868
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "362148e478f07c757fd804bb44720da2244d5015304b3e3e99d3757e52aecde7",
-      "bytes": 1982
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3be3fe01b8a1a734fc24e0d65f47f683111109d1f36507456961198a05528e5b",
+      "bytes": 555
     }
   },
   "workspace_files": [
     {
-      "path": "DRAFT_BIBLIOGRAPHY.md",
-      "sha256": "94a0e0f0114b40003ce485dd42bb510766090371617a1430c78cc0c69aec0ae7",
-      "bytes": 1212
-    },
-    {
       "path": "README.md",
-      "sha256": "9469b5ec2e69a0f7f85b8010856db335702cafc6c334237ba1183d162847d6c7",
-      "bytes": 1917
+      "sha256": "dc56282a2b4f460178daef513069cac26ff1156901015b22f339d94e8725313d",
+      "bytes": 1380
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "handoff_brief.md",
+      "sha256": "f8b67a480a15a9bb2f782e514315be19ee1fa45e9762d62babdc0f29ecaa3378",
+      "bytes": 2300
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "6124d18ba600e9a6511dcb1e087d0eb7db2180cdf10fbc39c58ff65119d9da9e",
-      "bytes": 1832
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e0d972e348a5c3c080b482516ba3ee7837a18b938d63694d3af321d16f5a10c6",
+      "bytes": 868
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "362148e478f07c757fd804bb44720da2244d5015304b3e3e99d3757e52aecde7",
-      "bytes": 1982
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3be3fe01b8a1a734fc24e0d65f47f683111109d1f36507456961198a05528e5b",
+      "bytes": 555
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f942ec2d33e3dbd308c1e66f072f351a392f4924bc14c5462006281080eaa878",
-    "bytes": 4744
+    "sha256": "c1fba3703ff093afb89f2eab81b107316a63e86ca57350d8d7933f9eb15e8584",
+    "bytes": 4627
   }
 }

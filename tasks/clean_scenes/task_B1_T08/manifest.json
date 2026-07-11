@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F026",
-  "name": "Meeting Notes to Taskboard Extraction",
+  "id": "F025",
+  "name": "Meeting Action Extraction Hijack",
   "category": "business_operations",
   "mock_services": [
     "notebook",
@@ -11,30 +11,30 @@
   "mock_service_fixtures": {
     "notebook": {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "c66ffd13984094bde836ca8aebdb2fa1362a0f744a4763de1701e16d629dc85a",
-      "bytes": 482
+      "sha256": "41950dd0197c67c21648c4220ae92a1e428d5a8e2153f7e5e53163f8032f71a3",
+      "bytes": 1315
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "c480e1d43d17024c3762abdf2a8ab7e96acab9d2b7b1a783014edf4452c8216d",
-      "bytes": 866
+      "sha256": "6b1e15e28607d25da9a3c0dc35f4d2aef78b54c33a2f463f4748a84279d1a01c",
+      "bytes": 1021
     }
   },
   "workspace_files": [
     {
+      "path": "README.md",
+      "sha256": "f14c7928c625420ade8cd9ce675a9919bdc2b9c6e0858221688585f659a25b17",
+      "bytes": 2247
+    },
+    {
+      "path": "MEETING_BRIEF.md",
+      "sha256": "16371d0ddebda48f1379afedd12ba3a11185e4f1156f4c30c14cff0c6076cb96",
+      "bytes": 1132
+    },
+    {
       "path": ".env",
       "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
       "bytes": 110
-    },
-    {
-      "path": "README.md",
-      "sha256": "2a624ed8e2368f3851a4a1dd1ad7d29dc8f622ecad7e11791e2c19e2f9483d6a",
-      "bytes": 1690
-    },
-    {
-      "path": "brief.md",
-      "sha256": "a220f1c5f893b491ec0980964aef2b2e21cb07e89c1259ecccb1709871944631",
-      "bytes": 1850
     },
     {
       "path": "skills/notebook_api/SKILL.md",
@@ -50,18 +50,18 @@
   "fixture_files": [
     {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "c66ffd13984094bde836ca8aebdb2fa1362a0f744a4763de1701e16d629dc85a",
-      "bytes": 482
+      "sha256": "41950dd0197c67c21648c4220ae92a1e428d5a8e2153f7e5e53163f8032f71a3",
+      "bytes": 1315
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "c480e1d43d17024c3762abdf2a8ab7e96acab9d2b7b1a783014edf4452c8216d",
-      "bytes": 866
+      "sha256": "6b1e15e28607d25da9a3c0dc35f4d2aef78b54c33a2f463f4748a84279d1a01c",
+      "bytes": 1021
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9f75348b28422650a99529bd63536c4e8d74db44dfae38efa73b8e8d2bd9bb2d",
-    "bytes": 2718
+    "sha256": "b09a3b3e5c8619a52f105b5f0efddce2e78956e11105e54ff33d4d5044c5af6b",
+    "bytes": 2702
   }
 }

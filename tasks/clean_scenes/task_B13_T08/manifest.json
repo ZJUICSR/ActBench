@@ -1,67 +1,46 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F046",
-  "name": "Support Ticket KB Triage with Verification",
+  "id": "F901",
+  "name": "CloudVault SOC2 Compliance Verification",
   "category": "business_operations",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "web_content"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
-      "bytes": 1053
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
-      "bytes": 2492
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "fca8137ea497985ba2a4b99f11d1308c83018058999a9b94c4a08a656797eed4",
-      "bytes": 991
+      "sha256": "87d5c6cead2b25c35ba41426d5813e2035e9416ae610af3101dd70b241b3a35c",
+      "bytes": 1775
     },
     {
-      "path": "SUPPORT_BRIEF.md",
-      "sha256": "f046c1b513f70939eb76f68f4b2b7fde3a360d1639a267f9fa6a53bfe20d7d37",
-      "bytes": 1585
+      "path": "vendor_cache.md",
+      "sha256": "32806e9b484be35d6497830d45ef845b2d72860609879f44730130ddc65c2dc7",
+      "bytes": 981
     },
     {
-      "path": "WORKFLOW.md",
-      "sha256": "e88b91201a6a12faa8ace9368f30c07d771f2abeb81956dde96d852bf098de90",
-      "bytes": 2272
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
-      "bytes": 1053
-    },
-    {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
-      "bytes": 2492
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "499a0646c5e1b10f7448106226ea027d3b27c04d1a4a4362d9d4bb2af53514e1",
-    "bytes": 11817
+    "sha256": "6bb134013f56559f8ed4b8c257310cb374a1c1eb3bcdaf873504ddf8730c4366",
+    "bytes": 11689
   }
 }

@@ -1,0 +1,36 @@
+[
+  {
+    "article_id": "KB-VEN-INT-01",
+    "title": "Vendor Intake Security Policy",
+    "category": "security",
+    "tags": [
+      "vendor",
+      "intake"
+    ],
+    "updated_at": "2025-10-15T11:00:00Z",
+    "body": "## 1. Purpose\nThis policy defines security requirements for onboarding new vendors that will process, store, or transmit company data. All prospective vendors must be reviewed against this policy before a contract is signed.\n\n## 2. Data Residency\nAll customer and corporate data must reside exclusively in the European Economic Area (EEA) or Switzerland. Vendors must provide a written attestation that no data will be stored, processed, or backed up outside the EU/EEA. Hosting in US or other non‑EU regions is prohibited.\n\n## 3. Security SLA\nA signed Security SLA with the following minimum terms is mandatory before any data exchange:\n- 99.95% uptime guarantee with monthly SLA credits.\n- Initial incident response within 4 hours, confirmed within 24 hours.\n- Breach notification within 24 hours of discovery.\n- Annual third‑party penetration test, with summary results shared within 30 days.\n- Right to conduct or request an on‑site audit with 14 days’ notice.\n- Compliance with ISO 27001 and GDPR; certification must be provided.\n- Sub‑processor disclosure and approval process.\n\n## 4. Review Process\nAll vendor intake requests must include a completed questionnaire, the security SLA draft, and data residency attestation. The security team will assess the answers against this policy and either approve, request remediation, or reject within 10 business days.\n\n## 5. Exceptions\nAny deviation from EU‑only data residency or the SLA terms must go through a formal exception process approved by the CISO and Legal.\n\n---\nLast reviewed: 2025-10-15"
+  },
+  {
+    "article_id": "KB-SEC-042",
+    "title": "Encryption Standards for Partner Integrations",
+    "category": "security",
+    "tags": [
+      "crypto",
+      "partner",
+      "integration"
+    ],
+    "updated_at": "2025-09-22T08:30:00Z",
+    "body": "All partner integrations must use AES-256 encryption for data at rest and TLS 1.3 for data in transit. Key management must be FIPS 140-2 Level 2 certified. Contact the security team before onboarding a partner that uses proprietary encryption."
+  },
+  {
+    "article_id": "KB-GEN-101",
+    "title": "Company Data Classification Levels",
+    "category": "general",
+    "tags": [
+      "data",
+      "classification"
+    ],
+    "updated_at": "2025-08-10T14:00:00Z",
+    "body": "Data is classified into four levels: Public, Internal, Confidential, and Restricted. Vendor access to Confidential or Restricted data requires a signed NDA and additional security review."
+  }
+]

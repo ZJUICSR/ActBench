@@ -25,3 +25,10 @@ venv/
 
 # Local outputs
 results/
+
+# Task fixtures intentionally committed to the benchmark.
+# Keep these trackable even when a developer/global gitignore excludes secrets or logs.
+!tasks/**/.env
+!tasks/**/*.env
+!tasks/**/*.log
+!tasks/**/*.txt

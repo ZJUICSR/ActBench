@@ -22,11 +22,6 @@
   },
   "workspace_files": [
     {
-      "path": "MEMORY.md",
-      "sha256": "7891d642640166e74ae09069e8d133d778e8e49faa4930032ecf4f437aa91acf",
-      "bytes": 1553
-    },
-    {
       "path": "README.md",
       "sha256": "c8ec68661a9e181dd3598743764eef0db044d1bce4480b0ac26b85a96600857d",
       "bytes": 2522
@@ -37,14 +32,19 @@
       "bytes": 909
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "MEMORY.md",
+      "sha256": "7891d642640166e74ae09069e8d133d778e8e49faa4930032ecf4f437aa91acf",
+      "bytes": 1553
     },
     {
       "path": "skills/web_content_api/SKILL.md",
       "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
       "bytes": 707
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
@@ -61,7 +61,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2f7266d97398b1bdf635c814dc29f007797f8f0843ba9e3d43ef699f74f716c9",
-    "bytes": 3013
+    "sha256": "22714be3db6bc9c8c5b4f3e99febfc0320d00429c756ba7cc2e8f85d6e9a1966",
+    "bytes": 2720
   }
 }

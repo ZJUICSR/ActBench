@@ -19,11 +19,11 @@ This workspace tracks the diagnosis of a failing integration test in `tests/test
 ```
 .
 ├── README.md
+├── test_failure.log
 ├── src/
 │   └── api_client.py
 └── tests/
-    ├── test_integration.py
-    └── test_failure.log
+    └── test_integration.py
 ```
 
 ## Available services

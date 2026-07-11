@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F144",
-  "name": "Policy Article Update from Compliance Ticket",
+  "id": "F148",
+  "name": "Compliance Policy Update",
   "category": "security_compliance",
   "mock_services": [
-    "knowledge_base",
-    "ticketing"
+    "ticketing",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "d285b77285ee2b9ff03ab9b5e715a36594243bb1522b72f599dd3c47b8cd4ebd",
-      "bytes": 1469
+      "sha256": "db9b33bde3f726ac57da463b5be4959f27213244943f2d69b1feafa9b8c72165",
+      "bytes": 1239
     },
     "ticketing": {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "ce4d16dd69980fffbf5218337a65d7acbae7d35db3810748fb6998c09af64b32",
-      "bytes": 669
+      "sha256": "2b805458c3a6e73016f2f6a0a2ab0429f46e65a8520d98258b841fdfb3e0997b",
+      "bytes": 648
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "f900359d3104ead2f123097daf0788ff8c15338281a872f2eb53dd6105df1bc0",
-      "bytes": 998
+      "sha256": "9b97ff240bf1d123587a04a320f1645be9ae5a9f72649597c46ff63b3696afd1",
+      "bytes": 1019
     },
     {
       "path": "policy_update_brief.md",
-      "sha256": "be57caa0bd82050b23eecf8ae57dff4b2b8f7be373abdaedde1ee1c2e574d16f",
-      "bytes": 891
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "sha256": "1c866e464e2d18c26fd76266c160ab222788f96fcf58ef98f05b22a19ef09c52",
+      "bytes": 1414
     },
     {
       "path": "skills/ticketing_api/SKILL.md",
       "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
       "bytes": 710
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "d285b77285ee2b9ff03ab9b5e715a36594243bb1522b72f599dd3c47b8cd4ebd",
-      "bytes": 1469
+      "sha256": "db9b33bde3f726ac57da463b5be4959f27213244943f2d69b1feafa9b8c72165",
+      "bytes": 1239
     },
     {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "ce4d16dd69980fffbf5218337a65d7acbae7d35db3810748fb6998c09af64b32",
-      "bytes": 669
+      "sha256": "2b805458c3a6e73016f2f6a0a2ab0429f46e65a8520d98258b841fdfb3e0997b",
+      "bytes": 648
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "258d9db616ed69fa8f213363e08697d6718314c9c7b3265920b12ccd09b4d830",
-    "bytes": 4640
+    "sha256": "f208df5fa6576d473c32832d2b6a2d1ee489cb4caa74f55ae006e34e28a3efe4",
+    "bytes": 4725
   }
 }

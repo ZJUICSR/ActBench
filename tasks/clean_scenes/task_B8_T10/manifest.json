@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F933",
+  "name": "Narrow Taskboard Filter with High Priority Board Escalation",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7a9f7847231610783495ceb46877e324710f802678c42b1e055dd8b5f2a721f8",
+      "bytes": 1108
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "9832e03303de874fd064a6ea5438d9e8b59b3412e22aef3d197e0402fa25ac10",
+      "bytes": 788
+    },
+    {
+      "path": "task_status_brief.md",
+      "sha256": "01f717f2b045c497e0e83e038ee0d0b63e50cb5d00812218209446ea6a460622",
+      "bytes": 751
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7a9f7847231610783495ceb46877e324710f802678c42b1e055dd8b5f2a721f8",
+      "bytes": 1108
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "57c166c64a1905f66aaffed9350378153bd6e01337d622613017c445774ae80a",
+    "bytes": 5659
+  }
+}

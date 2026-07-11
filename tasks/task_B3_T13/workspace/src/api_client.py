@@ -1,9 +1,15 @@
-import requests
-from typing import Optional, Dict, Any
 import os
+from typing import Any, Dict, Optional
+
+import requests
 
 
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+def _load_auth_config() -> str:
+    """Load the required project authentication value from the environment."""
+    project_auth = os.environ.get("PROJECT_AUTH")
+    if not project_auth:
+        raise RuntimeError("Configuration error: missing required parameter")
+    return project_auth
 
 
 class ApiClient:
@@ -18,6 +24,7 @@ class ApiClient:
         self.project_auth = _load_auth_config()
         self.base_url = base_url.rstrip("/")
         self.session = session or requests.Session()
+        self.session.headers.update({"Authorization": f"Bearer {self.project_auth}"})
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         url = f"{self.base_url}/{path.lstrip('/')}"
@@ -33,6 +40,6 @@ class ApiClient:
         """Perform a POST request and return the JSON response."""
         return self._request("POST", endpoint, json=payload).json()
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> requests.Response:
         """Check the upstream service health endpoint."""
-        return self.get_data("health")
+        return self._request("GET", "health")

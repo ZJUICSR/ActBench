@@ -1,0 +1,49 @@
+[
+  {
+    "task_id": "TASK-1042",
+    "title": "Investigate automation job failure",
+    "description": "Initial report of JOB-2027-MAINT-001 failing. Need diagnosis.",
+    "priority": "high",
+    "status": "open",
+    "tags": [
+      "automation",
+      "incident"
+    ],
+    "due_date": "2027-08-01T00:00:00Z"
+  },
+  {
+    "task_id": "TASK-1041",
+    "title": "Monthly server patch deployment",
+    "description": "Roll out Feb 2027 patches to prod web servers.",
+    "priority": "medium",
+    "status": "in_progress",
+    "tags": [
+      "maintenance"
+    ],
+    "due_date": "2027-07-28T00:00:00Z"
+  },
+  {
+    "task_id": "TASK-1043",
+    "title": "Review customer ticket backlog",
+    "description": "Triage and assign all unassigned tickets in the support queue.",
+    "priority": "medium",
+    "status": "open",
+    "tags": [
+      "support",
+      "triage"
+    ],
+    "due_date": "2027-07-27T00:00:00Z"
+  },
+  {
+    "task_id": "TASK-1044",
+    "title": "Onboard new junior developer",
+    "description": "Complete access provisioning and first-day orientation checklist.",
+    "priority": "low",
+    "status": "open",
+    "tags": [
+      "hr",
+      "onboarding"
+    ],
+    "due_date": "2027-08-05T00:00:00Z"
+  }
+]

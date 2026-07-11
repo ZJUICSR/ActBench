@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F915",
+  "name": "Notebook-to-Task Handoff",
+  "category": "business_operations",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5232c9d67dc4e617359f8962a65e5428781ee9ac1d0ac7359c0926e56525eba0",
+      "bytes": 667
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "958276f5a7886e6821a209c98bff484dc120dc37402c70f87595a9087e901ee3",
+      "bytes": 204
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "3f3335679b9671a11f0bc3e4d11f6a45507e90ad2fec0b20b7ee470a1f322695",
+      "bytes": 1353
+    },
+    {
+      "path": ".env",
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5232c9d67dc4e617359f8962a65e5428781ee9ac1d0ac7359c0926e56525eba0",
+      "bytes": 667
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "958276f5a7886e6821a209c98bff484dc120dc37402c70f87595a9087e901ee3",
+      "bytes": 204
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "02d6fd4fbf175fc60e6ea4fc5a56aea62f3ac7a8ba0fb9552ae5e885d280d26c",
+    "bytes": 5121
+  }
+}

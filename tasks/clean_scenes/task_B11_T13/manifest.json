@@ -22,11 +22,6 @@
   },
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "342d67c0615dbb8ca456958a4fef0a578dcfdf6dfc375235616434891478c3a3",
-      "bytes": 102
-    },
-    {
       "path": "README.md",
       "sha256": "cc5251679e77db2bdf12815647c303c41d22faaf2e99c8e170607a488cfd6f58",
       "bytes": 2844
@@ -35,6 +30,11 @@
       "path": "invoice_brief.md",
       "sha256": "5c26e3f817554a989b0c219fad689d0bf4db5e078ed1ded8e02a89b60338a1c0",
       "bytes": 1467
+    },
+    {
+      "path": ".env",
+      "sha256": "342d67c0615dbb8ca456958a4fef0a578dcfdf6dfc375235616434891478c3a3",
+      "bytes": 102
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -61,7 +61,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6377b95d2a8210429be0bfb3f9f4b088d3e8cd6ec3c857fdb2c02138ba11a12e",
-    "bytes": 4085
+    "sha256": "a18fb9cfcec91567b1ae7b31606648f69602c4b3b11c1ea74b287bdce06b8ee2",
+    "bytes": 4073
   }
 }

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F196",
-  "name": "AcmeVendor Intake Review with Risk Log Update",
+  "id": "F203",
+  "name": "Vendor Intake Security Review",
   "category": "security_compliance",
   "mock_services": [
     "web_content",
@@ -11,52 +11,57 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "16172c4109c4ab0721b17e577894fa2346d480e3c14db6b0bcb34cd18d523f4a",
-      "bytes": 1163
+      "sha256": "c6a7ab0398c2a6a32282b59a8cfc51b1ceaae2c620a8872ffa16dab6e6dfb177",
+      "bytes": 3097
     },
     "web_content": {
       "path": "fixtures/web_content/content.json",
-      "sha256": "75e0e1c0ffca38e3d62c5df3dcb5264afb474610e1502932676ccb9ed355d1bc",
-      "bytes": 2007
+      "sha256": "5641f4d3ece1bfdb8deaf64824e55f14e1653e209f995197ea9cbd7ccdf09c8a",
+      "bytes": 2482
     }
   },
   "workspace_files": [
     {
-      "path": "PLAYBOOK.md",
-      "sha256": "3a5a27fc339e67c7927acfdebfb937d218a3a292824e58d4c51363ad88806e31",
-      "bytes": 2548
-    },
-    {
       "path": "README.md",
-      "sha256": "dc3247af2825d196e18f5e83d4119215c5c8ae77c66cf657d6ea29b425690043",
-      "bytes": 1371
+      "sha256": "947375f6fcdffaadbcea847053ed77c4743a060abff1f08bbe5043ce19683d0e",
+      "bytes": 948
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "vendor_review_brief.md",
+      "sha256": "f00bb875406030ec518acbd7616ff69e89043fd041de7203c5e20db91548fcf7",
+      "bytes": 2133
+    },
+    {
+      "path": "MEMORY.md",
+      "sha256": "b17c3f37a84574cd9fe94c55d96236916cceea6f16159e4ba7a089425885539f",
+      "bytes": 116
     },
     {
       "path": "skills/web_content_api/SKILL.md",
       "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
       "bytes": 707
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "16172c4109c4ab0721b17e577894fa2346d480e3c14db6b0bcb34cd18d523f4a",
-      "bytes": 1163
+      "sha256": "c6a7ab0398c2a6a32282b59a8cfc51b1ceaae2c620a8872ffa16dab6e6dfb177",
+      "bytes": 3097
     },
     {
       "path": "fixtures/web_content/content.json",
-      "sha256": "75e0e1c0ffca38e3d62c5df3dcb5264afb474610e1502932676ccb9ed355d1bc",
-      "bytes": 2007
+      "sha256": "5641f4d3ece1bfdb8deaf64824e55f14e1653e209f995197ea9cbd7ccdf09c8a",
+      "bytes": 2482
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b5eae1b9d258490d4f700eb02d60937ec2d2f2fc20ce9cb387d8bf10ccbf5ce6",
-    "bytes": 3013
+    "sha256": "f0e85c07944f4075f922d5a2cc1c7c1c336564576c611031fcd05a025872fc8f",
+    "bytes": 3023
   }
 }

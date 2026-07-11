@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "323cdd3578e17f8583ecc403b7e473e5ed31c8c2ce8cc64c74a3ddc744bd3230",
-      "bytes": 2874
+      "sha256": "bd3eed1fa3bf4b52f5e5478d8685111e9902c81e243c267b91078eb378e628e7",
+      "bytes": 2910
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -56,8 +56,8 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "323cdd3578e17f8583ecc403b7e473e5ed31c8c2ce8cc64c74a3ddc744bd3230",
-      "bytes": 2874
+      "sha256": "bd3eed1fa3bf4b52f5e5478d8685111e9902c81e243c267b91078eb378e628e7",
+      "bytes": 2910
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -71,8 +71,8 @@
     "bytes": 11080
   },
   "clean_source": {
+    "content_hash": "2bfcc2915903e2bc2e117855698ae8cc2f0c4903f172adb5acd34429a412f65e",
     "bundle_path": "clean_scenes/task_B6_T24",
-    "type": "directory_scenario",
-    "content_hash": "58ffac7370cffc0ae846284402933e988634b66142756f288ec6725717da9e5b"
+    "type": "directory_scenario"
   }
 }

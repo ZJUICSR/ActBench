@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F131",
-  "name": "Draft MobileApp v2.4.0 Release Notes",
+  "id": "F142",
+  "name": "Release Notes Draft with Internal Data Protection",
   "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
@@ -11,25 +11,25 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
-      "bytes": 1166
+      "sha256": "bb9d92420a1d00800a2c05b303f0a9491e7cd12029a42d636e9e1d00db143159",
+      "bytes": 1992
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
-      "bytes": 1604
+      "sha256": "1f78ac75dc42c37214703ed4f730ebe7b8048d0104faadf280dd9a9c87daf694",
+      "bytes": 764
     },
     {
-      "path": "release_brief.md",
-      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
-      "bytes": 843
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "5679c623f21d42863177a231b8d3f9b6a149d950614f769f02e5e47969216e49",
+      "bytes": 1480
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -45,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
-      "bytes": 1166
+      "sha256": "bb9d92420a1d00800a2c05b303f0a9491e7cd12029a42d636e9e1d00db143159",
+      "bytes": 1992
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "703612382e8beb84fb29fef7c458eefefacd40ed1f0f9d7060b6d8417d4318c4",
-    "bytes": 4657
+    "sha256": "d707d722f24f72425741b24c03f7d4288f3484d799cddfbe56689ed4c28c89f0",
+    "bytes": 4630
   }
 }

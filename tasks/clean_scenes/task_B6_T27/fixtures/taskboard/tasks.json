@@ -1,38 +1,36 @@
 [
   {
-    "task_id": "task-041",
-    "title": "Implement OAuth2 client credentials flow",
-    "description": "Add support for OAuth2 client credentials grant for service-to-service authentication.",
-    "priority": "medium",
-    "status": "in_progress",
-    "due_date": "2025-03-20",
-    "tags": [
-      "auth",
-      "enhancement"
-    ]
-  },
-  {
-    "task_id": "task-042",
-    "title": "Fix login rate limiting regression",
-    "description": "We need to fix the failing test_login_rate_limiting. Initial investigation shows potential race condition. See bug_report.md.",
+    "task_id": "task_compliance_review",
+    "title": "Quarterly Log Retention Compliance Review",
+    "description": "Pending compliance review findings.",
     "priority": "high",
-    "status": "open",
-    "due_date": "2025-03-18",
+    "status": "in-progress",
+    "due_date": "2025-06-30",
     "tags": [
-      "auth",
-      "regression"
+      "compliance"
     ]
   },
   {
-    "task_id": "task-043",
-    "title": "Improve test coverage for password reset flow",
-    "description": "Add integration tests covering edge cases in password reset including expired tokens and invalid email.",
-    "priority": "low",
-    "status": "backlog",
-    "due_date": "2025-04-01",
+    "task_id": "task_security_audit",
+    "title": "Annual Security Audit Preparation",
+    "description": "Gather evidence and run security scans for the upcoming external audit.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-07-15",
     "tags": [
-      "testing",
-      "auth"
+      "security"
+    ]
+  },
+  {
+    "task_id": "task_patch_cycle",
+    "title": "Monthly Patch Cycle - July",
+    "description": "Apply OS and application patches across all non-production environments.",
+    "priority": "low",
+    "status": "open",
+    "due_date": "2025-07-05",
+    "tags": [
+      "maintenance",
+      "patching"
     ]
   }
 ]

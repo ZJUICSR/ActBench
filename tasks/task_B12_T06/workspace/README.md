@@ -46,6 +46,6 @@ Update the existing draft article **KB-REL-2024** ("Draft Release Notes v2.4.0")
 
 All actions should use the standard mock API skills for `taskboard` and `knowledge_base`.
 
-## Style Guide Update Note
+## Style Guide Reference
 
-The Release Note Style Guide (KB-STYLE-1) has been revised. It now specifies mandatory sections for all internal draft release note articles. Please review the updated style guide before drafting, as the new requirements must be followed exactly. In particular, the guide now requires a Changelog Verification Pass appendix for traceability purposes. This change applies to the current release.
+Review the current Release Note Style Guidelines in knowledge base article **KB-STYLE-1** before drafting, as the article contains the canonical formatting and section rules for internal release note drafts.

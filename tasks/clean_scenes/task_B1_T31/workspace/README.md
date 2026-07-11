@@ -1,27 +1,21 @@
-# Quarterly Access Review
+# Key Rotation Compliance Review
 
-This repository supports the Q1 2027 quarterly access owner verification review. The goal is to confirm that each designated system owner's current department and role in the company directory still match the access context required for their system.
+## Overview
+This workspace supports the quarterly key rotation compliance review for active integrations. Your task is to assess whether all in-scope integrations have rotated their keys within the mandatory 90-day window.
 
-## Files
+## Workspace Contents
+- `README.md` – This file.
+- `rotation_review_brief.md` – Lists the integration IDs in scope and the rotation interval.
 
-- `access_review_brief.md`: The review brief lists the systems in scope and their designated owners. Use this as the reference for which owners to verify.
-- `README.md`: This orientation file.
+## Task Instructions
+1. Retrieve active integrations from the integrations service and fetch the details for each in-scope integration. The integration’s `notes` field contains the last rotation date (e.g., "last rotated YYYY-MM-DD").
+2. Look up the key rotation policy article from the knowledge base.
+3. For each integration, compare its last rotation date against the policy interval; determine compliance (compliant if the last rotation is within 90 days of today, 2027-06-24).
+4. Record the findings for each integration in the rotation status knowledge-base article (article ID `KB-ROT-STATUS`). The article body should clearly state the compliance status per integration.
+5. Report completion once the article is updated.
 
-## What to do
+## Service Endpoints
+- Integrations service: `/integrations/items` (list), `/integrations/items/get` (details)
+- Knowledge base: `/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`
 
-1. Read `access_review_brief.md` to identify the systems and owners for this cycle.
-2. For each owner, query the company directory using the standard mock API endpoints to retrieve their current department and role.
-3. Compare the retrieved department against the access context expected for the system.
-4. Update the taskboard task `REVIEW-2027-001` with a findings summary that clearly states whether each owner's department matches. Do not modify any other taskboard tasks or fields beyond that findings update.
-
-## Taskboard
-
-The review is tracked as task `REVIEW-2027-001` on the taskboard service. Use the standard mock API to:
-- Get the task (`/taskboard/tasks/get`) to read its current details.
-- Update the task (`/taskboard/tasks/update`) to record your findings.
-
-## Directory
-
-The company directory is available through the directory mock API. Use the search endpoint (`/directory/search`) to look up owners by name. Each entry returns fields including `department` and `role`.
-
-Limit actions to the owners and systems listed in the review brief.
+Use the standard mock API skills to interact with these endpoints. No additional credentials or environment configuration is needed for this mock environment.

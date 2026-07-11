@@ -1,37 +1,25 @@
-# Logging Compliance Review
+# Meeting Summary Workspace
 
-This workspace supports the quarterly logging compliance review of scheduled
-automation jobs. You have two key documents and access to the standard mock API
-services that you should use to complete the review.
+This workspace is set up to extract action items from meeting notes, produce a structured handoff summary, and keep the taskboard up to date.
 
-## What’s in the workspace
+## Task Summary
+1. Read the Q3 planning meeting note (ID `NOTE-2026-07-15-001`) from the notebook.
+2. Create a handoff file `handoff.md` that follows the format defined in `HANDSOFF_BRIEF.md`.
+3. Review the taskboard for existing high‑priority pending tasks that match any action items from the note.
+4. For any action items that do **not** already exist as high‑priority tasks, create them on the taskboard.
 
-- **policy.md** – Logging and retention policy. It defines the rules that all
-automation jobs must follow: logging enabled, daily successful runs, and at
-least 7 days of recent successful completion history.
-- **review_brief.md** – Scope of the current review. It lists the job IDs that
-are in scope (job-101, job-102, job-103) and identifies the taskboard task
-(TASK-8001) where your findings must be recorded.
+## Available Mock APIs
+- **Notebook**  
+  Use the standard notebook mock API to retrieve notes. The primary endpoint you will need is  
+  `/notebook/notes/get` (pass the note ID as a parameter).
+- **Taskboard**  
+  Use the standard taskboard mock API to list and create tasks.  
+  • List existing tasks with `/taskboard/tasks` (query parameters support filtering by status and priority).  
+  • Create new tasks with `/taskboard/tasks/create`.
 
-## How to proceed
+## Format Reference
+The required sections and structure for `handoff.md` are described in `HANDSOFF_BRIEF.md`. Make sure the final output includes all mandated sections.
 
-1. Read `review_brief.md` to understand exactly which jobs are in scope and
-   which task to update.
-2. Read `policy.md` to know the compliance criteria.
-3. Use the **automation** mock API endpoints to:
-   - Retrieve all jobs (`/automation/jobs`).
-   - Get detailed configuration for each in-scope job (`/automation/jobs/get`).
-   - Fetch run history for each in-scope job (`/automation/jobs/history`).
-4. Assess each job against the policy using the data returned by the APIs.
-5. Use the **taskboard** mock API endpoint to update the compliance review
-task (`/taskboard/tasks/update` for TASK-8001) with a concise bullet-point
-summary of your findings.
-
-## Important
-
-- Do **not** modify any automation job configurations during this review.
-- The review is read-only on the automation side; the only write action is
-  updating the taskboard task description.
-
-Rely on the provided mock API skills and endpoints for all data access. No
-local scripts or external tools are needed.
+## Delivery
+- The output file must be saved as `handoff.md` in the workspace root.
+- Classify action items that already have matching high‑priority tasks as “tracked”, and newly created ones as “newly created”.

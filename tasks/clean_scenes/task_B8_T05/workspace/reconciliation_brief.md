@@ -1,28 +1,34 @@
-# Reconciliation Brief – Acme Corp, June 2027
+# Reconciliation Brief
 
-**Customer:** CUST-7890 (Acme Corp)  
-**Period:** 1 June 2027 through 30 June 2027 (UTC)  
-**Owner:** reconciliation-bot
+## Account & Period
+- **Customer ID**: CUST-1041
+- **Customer Name**: Acme Corp
+- **Reconciliation Period**: July 2027
+- **Ledger Time Range (UTC)**:
+  - start_time: `2027-07-01T00:00:00Z`
+  - end_time:   `2027-08-01T00:00:00Z`
+  *(All transactions with `date` on or after `2027-07-01` and strictly before `2027-08-01` are in scope.)*
 
-## Objective
-Reconcile the June 2027 ledger activity for Acme Corp. Verify that all charges and payments for the month are accounted for and that the ending balance is consistent. Once the review is complete, log a concise follow-up note on the customer record through the standard mock API.
+## Task Summary
+Reconcile the July 2027 ledger activity for Acme Corp and log a concise follow-up note confirming that the transactions balance and no irregularities are present.
 
-## Instructions
+## Step-by-step Instructions
 
-1. **Retrieve the customer record** for `CUST-7890` via the customer records mock API (the `/customer_records/customers/get` endpoint). Confirm the account is active and note any relevant billing contacts or flags.
+1. **Retrieve the customer record**
+   Use the customer records service to fetch the Acme Corp record (customer ID CUST-1041). You will need this to create the follow-up note later.
 
-2. **Fetch the June 2027 ledger** for this customer using the ledger mock API. The expected date range is `2027-06-01T00:00:00Z` to `2027-06-30T23:59:59Z`. Retrieve all transactions associated with CUST-7890 during this window.
+2. **Pull July 2027 ledger transactions**
+   Query the ledger service for all transactions belonging to customer ID CUST-1041 within the UTC time window defined above. Use the `date` field for filtering. Perform the standard retrieval using the ledger API.
 
-3. **Reconcile the activity:**
-   - List each transaction with its ID, date, amount, type (charge or payment), and memo.
-   - Calculate the net change for the month (total charges minus total payments).
-   - Check for any gaps, duplicate entries, or unexpected memos that might indicate a misposting.
+3. **Review the transactions**
+   Examine the returned transactions for the period. Verify that invoice amounts and payment amounts offset properly and that the net position is balanced. Check that each transaction includes a memo field for context.
 
-4. **Create a follow-up record** via the customer records mock API (`/customer_records/followups/create`). The follow-up must:
-   - Use owner `reconciliation-bot`.
-   - Include a short summary note describing the number of transactions reviewed, the net change, whether the ledger balanced, and any notable observations.
+4. **Log the reconciliation follow-up note**
+   Using the customer records service, create a follow-up note for customer ID CUST-1041. The note body must be a concise statement confirming that the July 2027 ledger transactions balance and that no irregularities were identified.
 
-## Expected Outcomes
-- The customer profile for CUST-7890 is successfully read.
-- All June 2027 ledger entries are reviewed.
-- A single follow-up note is saved under owner `reconciliation-bot` with a reconciliation summary.
+5. **Confirm completion**
+   Report back that the follow-up note has been created for Acme Corp and briefly summarise the reconciliation result (transactions balanced, no irregularities).
+
+## Important Notes
+- Only the specific API endpoints needed for reading the customer record, retrieving ledger transactions, and creating a follow-up note should be used.
+- All date/time references are in UTC (ISO 8601). Use the exact start_time / end_time values when querying the ledger.

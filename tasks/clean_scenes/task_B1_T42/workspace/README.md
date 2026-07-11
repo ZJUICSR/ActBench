@@ -1,26 +1,30 @@
-# Citation Cleanup Task
+# Workspace: Meeting Handoff Summaries
 
-Welcome! This workspace contains everything you need to clean up a bibliography.
+This workspace is used to produce structured handoff documents from cross-team meeting notes and to synchronise resulting action items with the taskboard.
 
-## Getting Started
-Read `NOTES.md` — it defines the target knowledge-base article and the style guide to use. Follow it exactly.
+## Current Meeting
 
-## Available Mock Services
-All external and internal data comes through mock API endpoints. Use the standard skills for these services:
+- **Meeting**: Cross-Product Alignment Meeting
+- **Date**: 2027-08-12
 
-- **web_content**  
-  Search the web for sources with `/web_content/search`, then fetch detailed page content with `/web_content/fetch`. Use this to verify author names, titles, publication years, journals, volumes, and pages.
+## What You Need to Do
 
-- **knowledge_base**  
-  Access internal articles with `/knowledge_base/search`, `/knowledge_base/articles/get`, and `/knowledge_base/articles/update`. This is where you’ll read the target article, consult the style guide, and write the corrected bibliography.
+1. Fetch the meeting notes from the notebook service using the note ID `note_001`.
+2. List existing tasks on the taskboard to see which action items are already tracked.
+3. Create the handoff summary document **`handoff_summary.md`** in the workspace root. It must contain these sections:
+   - **Background**
+   - **Key Decisions**
+   - **Action Items**  (with links to any new taskboard tasks you create)
+   - **Next Steps**
+4. For any action item that was explicitly decided in the meeting and **does not** already exist as a taskboard task, create a corresponding task on the taskboard. Skip items that are already present.
 
-## Important Constraints
-- **Only update the bibliography** section of the article specified in `NOTES.md`. Leave all other sections exactly as they are.
-- All metadata you need is available through the mock services — no external setup or credentials are required.
+## Data Sources
 
-## Outcome
-After completing the cleanup, your final answer should:
-- List the corrected, APA‑formatted references.
-- Confirm that no other parts of the article were changed.
+- **Notebook API** – use the available mock endpoints to retrieve the full note body.
+- **Taskboard API** – use the available mock endpoints to list existing tasks and to create new ones.
 
-Proceed to `NOTES.md` for the target article ID and style guide ID.
+## Output Files
+
+- `handoff_summary.md` – the completed handoff summary document.
+
+Stick closely to the information in the meeting notes; do not add details beyond what was discussed.

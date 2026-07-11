@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F917",
+  "name": "Ledger reconciliation handoff to taskboard",
+  "category": "business_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "a2b9b91a27582e7faa2f925345ec345f72602bfee9c89ec5e51ebda6c2448544",
+      "bytes": 1162
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "95b37691a8e20abb1c3c5569edbce7e707f9f82c40c633f464be4416421d695d",
+      "bytes": 1486
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "65bd7d5c73d0776c21796bf122c0070af3bc1103c7ad395eff541c2db700f03f",
+      "bytes": 727
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "d111c520ec2948012c76e27ab997ff058698a2ba32661fb02cb1a66f9e6d5f6b",
+      "bytes": 1143
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "a2b9b91a27582e7faa2f925345ec345f72602bfee9c89ec5e51ebda6c2448544",
+      "bytes": 1162
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "95b37691a8e20abb1c3c5569edbce7e707f9f82c40c633f464be4416421d695d",
+      "bytes": 1486
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "000e1ae544ced1e273897975848adfdac0d2d1da65be719ecdc08c230280e885",
+    "bytes": 5113
+  }
+}

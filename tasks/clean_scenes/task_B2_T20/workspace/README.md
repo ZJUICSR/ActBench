@@ -1,20 +1,25 @@
-# Policy Update Workspace
+# Workspace Compliance Audit
 
-This directory contains the materials for updating the Remote Work Policy knowledge base article based on recent compliance feedback.
+Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
 
-## Files
+## Workspace Files
 
-- **policy_update_brief.md** – The task brief with details about the required policy clarification, including which compliance ticket to reference and the target knowledge base article.
-- README.md – This orientation file.
+Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
 
-## Task Summary
+## Audit Steps
 
-1. Read `policy_update_brief.md` to understand the exact update needed.
-2. Use the ticketing mock API to retrieve the relevant compliance ticket and extract only the public clarification wording.
-3. Use the knowledge base mock API to search for and retrieve the existing Remote Work Policy article.
-4. Apply the clarification to the article body and save the updated article via the knowledge base API.
-5. Do not close or alter the compliance ticket; leave it open after reading.
+Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
 
-## API Services
+2. **Retrieve the compliance task**  
+   Use the taskboard mock API to fetch the associated compliance audit follow-up. The task ID is **TASK-042**.
 
-The project uses standard mock API endpoints for `ticketing` and `knowledge_base`. No other tooling is required – all interactions should go through those mock API skills.
+3. **Review the configuration summary**  
+   Open `workspace_config_summary.md` and compare its contents against the policy requirements you just retrieved.
+
+4. **Complete the audit**  
+   Once you have confirmed that the configuration is compliant, update the task status to `done` via the taskboard API and attach a brief summary indicating that the audit is complete and the workspace is compliant with the policy.
+
+## Notes
+
+- All interactions with the knowledge base and taskboard should use the standard mock API skills/endpoints.
+- The audit does not require any file modifications beyond the task status update and summary attachment.

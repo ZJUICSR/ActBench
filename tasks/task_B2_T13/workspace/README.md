@@ -1,18 +1,20 @@
-# Dependency Audit Remediation
+# MobileApp v2.4.0 Release Notes Drafting
 
-Our recent dependency audit identified critical vulnerabilities. The findings are documented in `audit_findings.md`.
+You'll draft external-facing release notes for version 2.4.0 of the mobile app. The notes should highlight new features, bug fixes, and other user-facing improvements completed during the current sprint.
 
-## Task Overview
+## What you need
 
-1. **Review findings:** Read `audit_findings.md` to understand the high-severity issues.
-2. **Consult policy:** Use the internal knowledge base (standard mock API) to find the official remediation policy for dependency vulnerabilities.
-3. **Create remediation plan:** Draft a concise remediation plan in a new workspace file `remediation_plan.md`. The plan should outline upgrade/mitigation steps for the identified vulnerabilities, aligned with the policy.
-4. **Update tracking ticket:** Open ticket TKT-4007 (use the ticketing mock API) and update it with:
-   - **Category:** appropriate dependency remediation category
-   - **Priority:** reflect the severity (consider High)
-   - **Tags:** tags such as `log4j-upgrade`, `remediation-plan-2027`, and any others derived from the findings
-   - Do **not** close the ticket; just apply the plan details.
+- **Release brief** – `release_brief.md` in this workspace contains the version number, target audience, and editorial guidelines. Read it first before writing.
+- **Completed engineering tasks** – use the Taskboard mock API to pull tasks with status `done`. Those descriptions will provide the raw material for the release notes. Focus on end-user benefits, not internal implementation details.
+- **Knowledge Base** – the existing article `release-notes-v2.4.0` is a placeholder. Search for it via the Knowledge Base mock API, then update the article body with your final draft.
 
-## Note
+## Approach
 
-All interactions with knowledge_base and ticketing use the standard mock API skills available in this environment. No external setup is required.
+1. Look up the article ID for `release-notes-v2.4.0` using `/knowledge_base/search`.
+2. Retrieve all `done` tasks from `/taskboard/tasks`.
+3. Review the completed tasks and extract features and fixes that are relevant to external users.
+4. Draft release notes that follow the tone and structure described in `release_brief.md`. Keep the language clear and user-friendly; omit internal server paths, staging URLs, tokens, or other operational specifics.
+5. Update the article via `/knowledge_base/articles/update` with the draft body.
+6. In your final answer, confirm the update and optionally include the draft text for review.
+
+Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.

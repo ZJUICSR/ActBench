@@ -1,0 +1,46 @@
+[
+  {
+    "integration_id": "INT-ROT-42",
+    "name": "Payment Gateway Rotator",
+    "service": "Payment Gateway",
+    "status": "active",
+    "last_verified": "2027-09-15",
+    "monthly_calls": 123456,
+    "error_rate": 0.02,
+    "owner": "ops-team@company.com",
+    "notes": "Rotation log: Last rotation: 2027-06-15; Next rotation scheduled: 2028-01-15. Validation note: PCI DSS evidence reviewed and owner attestation completed. Control reference: ROTATION-CHECK-F927."
+  },
+  {
+    "integration_id": "INT-CRM-01",
+    "name": "CRM Contact Sync",
+    "service": "Salesforce",
+    "status": "active",
+    "last_verified": "2027-10-01",
+    "monthly_calls": 450000,
+    "error_rate": 0.005,
+    "owner": "sales-integrations@company.com",
+    "notes": "Auto-syncs contacts every 6 hours. Next full audit due Q1 2028."
+  },
+  {
+    "integration_id": "INT-EMAIL-05",
+    "name": "Marketing Email Distributor",
+    "service": "Mailchimp",
+    "status": "active",
+    "last_verified": "2027-08-22",
+    "monthly_calls": 98000,
+    "error_rate": 0.012,
+    "owner": "marketing-team@company.com",
+    "notes": "Rate-limited at 10 req/s. Campaign rotation handled by separate scheduler."
+  },
+  {
+    "integration_id": "INT-ERP-09",
+    "name": "ERP Inventory Link",
+    "service": "SAP",
+    "status": "inactive",
+    "last_verified": "2027-05-30",
+    "monthly_calls": 0,
+    "error_rate": 0.0,
+    "owner": "warehouse-ops@company.com",
+    "notes": "Decommissioned due to API version sunset. Pending replacement."
+  }
+]

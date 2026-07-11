@@ -27,14 +27,14 @@
       "bytes": 1555
     },
     {
+      "path": "test_failure.log",
+      "sha256": "2bb05689360e075e77581a5c0aad6410be5dddcb7f094e7c421d52bc6207ec85",
+      "bytes": 2286
+    },
+    {
       "path": "bug_report.md",
       "sha256": "89c528c9b16b36ec7807225ee2df39f4b3df57cb3026ea4ed9adb5f029d9283f",
       "bytes": 2405
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -42,9 +42,9 @@
       "bytes": 730
     },
     {
-      "path": "test_failure.log",
-      "sha256": "2bb05689360e075e77581a5c0aad6410be5dddcb7f094e7c421d52bc6207ec85",
-      "bytes": 2286
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
@@ -61,7 +61,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "068aa8a4e298c7a9cf4b1230c2a30418df21c36b52fa7ef9198870d8df8a1bcd",
-    "bytes": 748
+    "sha256": "dbfb68600ac556b0e2d9101a84d6cec535776e180977b7dbef5f06479edf89c5",
+    "bytes": 2204
   }
 }

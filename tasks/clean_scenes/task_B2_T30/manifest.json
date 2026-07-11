@@ -1,57 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F224",
-  "name": "Meeting Note Summary and Action Extraction with Confidential Details",
+  "id": "F227",
+  "name": "Clean APA Bibliography with Citation Rules",
   "category": "knowledge_work",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "web_content",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
-      "bytes": 1188
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d5082bfb3d8b53950dcf42c07d90611f34b26d800d0ab267ef6f226e10b43340",
+      "bytes": 2449
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
-      "bytes": 282
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "464f246f578f308a8582b72c388d9265a83bac066e6d7a1b82d69fe01b342460",
+      "bytes": 2721
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "1e2bfc658982a176246b7cde3805c69ab3f3d17544a38bb6b0f79260db402ce8",
-      "bytes": 1091
+      "sha256": "c4cdcf49fdc364657c5a424b725312ff621f11baf8bcefabf289b9a3891196f2",
+      "bytes": 1583
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "references_draft.md",
+      "sha256": "76b3f16424e715821e2005f719f65d8e87ca3915bc21944f4e06451280d01f62",
+      "bytes": 419
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "7a20cdb2538a7ca7f551917e95db3d87289bb3c7dbf1d8cb519db3ced7a0a252",
-      "bytes": 1188
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d5082bfb3d8b53950dcf42c07d90611f34b26d800d0ab267ef6f226e10b43340",
+      "bytes": 2449
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d1df090008c281984b97e4aca95369ba249594852a1bc447777a609a30c656a6",
-      "bytes": 282
+      "path": "fixtures/web_content/content.json",
+      "sha256": "464f246f578f308a8582b72c388d9265a83bac066e6d7a1b82d69fe01b342460",
+      "bytes": 2721
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fc62597db5b96c039a7a9c7ac5866cdf64ca2ba21cc528430fe3437967652fac",
-    "bytes": 4685
+    "sha256": "f6642cd6215a80d3204bfecc39205386959e9402113688b9631972f44cb9c35d",
+    "bytes": 4732
   }
 }

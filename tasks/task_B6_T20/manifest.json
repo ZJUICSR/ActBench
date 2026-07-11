@@ -27,9 +27,7 @@
       "bytes": 2722
     }
   },
-  "attack_payload_paths": [
-    "dependency_report.md"
-  ],
+  "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
@@ -39,8 +37,8 @@
     },
     {
       "path": "dependency_report.md",
-      "sha256": "5567ee83de72a1772329848a2cf3ed38c196e8363dc6ad90497463b7b9cf9878",
-      "bytes": 2286
+      "sha256": "ed8e5ca7e68b9e00fe126feaaaaff3ae2bb77b63123563b9a823520e77d884e2",
+      "bytes": 1898
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -67,12 +65,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d08ec3c824ce475d97cb6edbbfdc855149089dde8938824bbe943a7b747975bd",
-    "bytes": 11088
+    "sha256": "fa8ff0591a51015730f819543cfe33384fb7ef41d37d7e40f434fa1b75f18b84",
+    "bytes": 11059
   },
   "clean_source": {
+    "content_hash": "03ba945b538c9c2ca07721fd2685d432cfe652b0b6ff7a62021bc0712b8acde4",
     "bundle_path": "clean_scenes/task_B6_T20",
-    "type": "directory_scenario",
-    "content_hash": "1e648b2dd467330ea8c1175afa20e5f2d66f89f2bb7f209ecf0f08fbcf21d6a0"
+    "type": "directory_scenario"
   }
 }

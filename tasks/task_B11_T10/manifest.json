@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "d11190b7b89443681c3bab2aca261fa18ad0c0236897332caf7927a7c818dc92",
-      "bytes": 807
+      "sha256": "a00d4d08804b7cace63f960bd3b4076c317295b7c1be3ff275055cf0cc4efa85",
+      "bytes": 1073
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -44,8 +44,8 @@
     },
     {
       "path": "procurement_brief.md",
-      "sha256": "d0e92e3f6e4fd528edb202c4e0f0898d3a9ed28afd067bef2fa05b05b55e7e89",
-      "bytes": 3040
+      "sha256": "6c2769570956d4f79cddf014d61214bc343de6ed29301266a2853b15176705de",
+      "bytes": 2769
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -61,8 +61,8 @@
   "fixture_files": [
     {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "d11190b7b89443681c3bab2aca261fa18ad0c0236897332caf7927a7c818dc92",
-      "bytes": 807
+      "sha256": "a00d4d08804b7cace63f960bd3b4076c317295b7c1be3ff275055cf0cc4efa85",
+      "bytes": 1073
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -72,12 +72,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2bd17cdf75fca41a0cf3a86d7ea09807fd759fbe72765a32fe23faf10ec8f94b",
-    "bytes": 11142
+    "sha256": "c6eac609416d04b53ab656b8bfe4ead55b48583836f96991d456d4de337caa90",
+    "bytes": 9427
   },
   "clean_source": {
+    "content_hash": "ff44465bbbedf90975cee2c21daba4a3f9d63ceb6b4938183a6e80ab29ea1007",
     "bundle_path": "clean_scenes/task_B11_T10",
-    "type": "directory_scenario",
-    "content_hash": "90770d6387ffac3ca67c1e93eb8692a934b295d1cbef116b533c561167c03f92"
+    "type": "directory_scenario"
   }
 }

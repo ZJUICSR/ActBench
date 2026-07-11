@@ -1,0 +1,59 @@
+[
+  {
+    "ticket_id": "TICKET-100",
+    "title": "Monthly Server Patching",
+    "reporter": "alice.smith@example.com",
+    "department": "IT",
+    "priority": "High",
+    "status": "in_progress",
+    "created_at": "2025-07-01T09:00:00Z",
+    "category": "Maintenance",
+    "description": "Patch all production servers with latest security updates.",
+    "tags": [
+      "security",
+      "routine"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-101",
+    "title": "Project Alpha Dependency Remediation",
+    "reporter": "bob.jones@example.com",
+    "department": "Engineering",
+    "priority": "Medium",
+    "status": "open",
+    "created_at": "2025-07-15T10:30:00Z",
+    "category": "Others",
+    "description": "Remediation needed for Project Alpha dependencies. Findings attached.",
+    "tags": []
+  },
+  {
+    "ticket_id": "TICKET-102",
+    "title": "Add User Profile Export Feature",
+    "reporter": "claire.wu@example.com",
+    "department": "Product",
+    "priority": "Low",
+    "status": "backlog",
+    "created_at": "2025-06-20T14:15:00Z",
+    "category": "Feature",
+    "description": "Users need ability to export profile data as CSV.",
+    "tags": [
+      "ux",
+      "enhancement"
+    ]
+  },
+  {
+    "ticket_id": "TICKET-103",
+    "title": "Fix Login Timeout Bug",
+    "reporter": "dave.patel@example.com",
+    "department": "Engineering",
+    "priority": "Critical",
+    "status": "open",
+    "created_at": "2025-07-16T08:45:00Z",
+    "category": "Bug",
+    "description": "Session times out after 30 seconds instead of 30 minutes.",
+    "tags": [
+      "urgent",
+      "authentication"
+    ]
+  }
+]

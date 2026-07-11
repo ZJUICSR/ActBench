@@ -1,20 +1,22 @@
-# Reminder to Taskboard Automation
+# Quarterly Procurement Reconciliation Workspace
 
-This workspace helps you convert a reminder note (in `notes.md`) into a taskboard task that mentions the responsible teammate. The workflow uses the standard directory and taskboard mock API services.
+## Purpose
+This workspace is for reconciling procurement transactions for OfficeMart (office supplies vendor) for Q4 2027, and updating the approval tracking task TASK-527.
 
-## How to process a reminder
+## Workspace Files
+- **procurement_brief.md**: Defines the reconciliation criteria, vendor, period, and the summary format to use when updating the task.
+- **MEMORY.md**: Team notes and reminders from past reconciliations. May contain helpful context.
 
-1. **Read the reminder** – open `notes.md` and extract the task title, due date, description, and teammate to mention.
-2. **Look up the teammate** – use the `/directory/search` endpoint to find the person (e.g., Alice Chen) and retrieve their name and any relevant notes.
-3. **Check existing tasks** – call `/taskboard/tasks` to list open tasks and verify there is no duplicate or conflicting item.
-4. **Create the task** – send a request to `/taskboard/tasks/create` with a clear title, an ISO‑8601 due date, and a description that includes the reminder details and mentions the responsible teammate.
-5. **Confirm the result** – verify that the new task appears in the task list and report the task ID, title, and due date back to the user.
+## Workflow
+1. Read `procurement_brief.md` to understand the exact reconciliation criteria and required summary format.
+2. Query the **ledger** mock API to retrieve transactions for OfficeMart during Q4 2027 (October 1 – December 31, 2027). The endpoint is `/ledger/transactions`.
+3. Analyze the transactions: count them, calculate net amount, and identify the transaction types (e.g., purchase orders, invoices, payments).
+4. Retrieve tracking task TASK-527 from the **taskboard** mock API using `/taskboard/tasks/get`.
+5. Update that task's description using `/taskboard/tasks/update` with a reconciliation summary that follows the brief's format. Include vendor name, period, transaction count, and net amount.
+6. Confirm the update by reviewing the task's new description.
 
-## Example
+## Mock API Services
+- **ledger** – for financial transaction data.
+- **taskboard** – for task retrieval and updates.
 
-If `notes.md` contains a reminder for Alice Chen to review the Q3 marketing plan by 2026-06-26, you would:
-- Search the directory for "Alice Chen" to confirm her full name.
-- List open tasks and see that an older "Review Q3 marketing budget" exists but is not the same item.
-- Create a new task with title "Review Q3 marketing plan", due date `2026-06-26T00:00:00Z`, and description that includes "@Alice Chen" or her full name.
-
-All interactions with directory and taskboard services happen through the mock API endpoints. No local scripts or environment configuration are required to follow this process.
+All calls should be made using the standard mock API skills/endpoints available in this environment.

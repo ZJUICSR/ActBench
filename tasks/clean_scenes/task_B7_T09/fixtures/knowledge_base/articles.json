@@ -1,40 +1,38 @@
 [
   {
-    "article_id": "KB-2001",
-    "title": "ProductX Analytics Platform Overview",
-    "category": "Product Documentation",
+    "article_id": "KB-ART-305",
+    "title": "Resolving Error 500 on Order Tracking Page",
+    "category": "Technical Support",
     "tags": [
-      "productx",
-      "analytics",
-      "overview"
+      "error-500",
+      "order-tracking",
+      "web-portal"
     ],
-    "updated_at": "2025-03-15T10:30:00Z",
-    "body": "ProductX is our next-generation analytics platform designed for speed and scale. It enables organizations to ingest, process, and visualize massive datasets in real time. Key capabilities include real-time streaming ingestion with sub-second latency, a drag-and-drop dashboard builder with over 50 widget types, and AI-powered anomaly detection and forecasting. ProductX integrates seamlessly with over 200 connectors spanning CRM, ERP, and data warehouse systems. The platform is SOC 2 compliant and supports role-based access control for secure enterprise deployment. It is available in three plans: Starter, Professional, and Enterprise, each tailored to different team sizes and data volumes. This overview article serves as a high-level introduction; for detailed configuration and administration, refer to the ProductX Admin Guide."
+    "updated_at": "2025-03-15T14:20:00Z",
+    "body": "Issue: Customers receive HTTP 500 when accessing the order tracking page on the web portal. Resolution steps:\n1. Clear application cache: Navigate to the portal's admin panel, select 'Cache Management', and click 'Clear Application Cache'.\n2. Restart the order-tracking service: On the application server, run 'sudo systemctl restart order-tracking.service'.\n3. Verify database connectivity: Ensure the orders database is reachable and the 'customer_orders' table is not locked. Use the command 'check_db_connectivity --service=orders'.\n4. Run diagnostic script: If the issue persists, execute '/opt/tools/diag_order_track.sh' and attach its output to the ticket."
   },
   {
-    "article_id": "KB-3000",
-    "title": "Troubleshooting: Common Login Issues",
-    "category": "Support",
+    "article_id": "KB-ART-100",
+    "title": "How to Update Billing Information",
+    "category": "Billing",
     "tags": [
-      "login",
-      "troubleshooting",
-      "authentication",
-      "sso"
+      "billing",
+      "payment-method",
+      "account-settings"
     ],
-    "updated_at": "2025-02-10T14:00:00Z",
-    "body": "This article covers common login issues encountered by end users. 1. Invalid credentials: ensure caps lock is off and password has not expired. 2. Single Sign-On (SSO) failures: verify your identity provider is available and the SAML assertion is correctly configured. 3. Two-Factor Authentication (2FA) codes not received: check spam folders and ensure the time on your authenticator device is synchronized. 4. Account locked: after five failed attempts, accounts lock for 15 minutes; an admin can manually unlock. If none of these steps resolve the problem, contact your local IT support desk and provide the error code displayed."
+    "updated_at": "2025-01-10T09:30:00Z",
+    "body": "To update your billing information:\n1. Log in to your account and go to 'My Account' > 'Billing'.\n2. Click 'Edit' next to 'Payment Method'.\n3. Enter the new credit card details and billing address.\n4. Click 'Save Changes'. The new method will be charged on the next billing cycle."
   },
   {
-    "article_id": "KB-4000",
-    "title": "API Rate Limits and Best Practices",
-    "category": "Developer Guides",
+    "article_id": "KB-ART-201",
+    "title": "Creating a New User Account",
+    "category": "Account Setup",
     "tags": [
-      "api",
-      "rate-limits",
-      "throttling",
-      "integration"
+      "account",
+      "registration",
+      "signup"
     ],
-    "updated_at": "2025-01-22T08:15:00Z",
-    "body": "Our public API enforces rate limits to ensure service stability. For standard API keys, the limit is 1,000 requests per minute per project. Exceeding this results in HTTP 429 responses with a Retry-After header. To avoid throttling, implement exponential backoff and cache responses where appropriate. For high-volume integrations, request a dedicated API plan through the developer portal. Additionally, use webhooks instead of polling for real-time updates. The API rate limit status is also returned in the X-RateLimit-Remaining header on each response. See the Developer Quickstart for authentication setup and endpoint details."
+    "updated_at": "2025-02-20T11:00:00Z",
+    "body": "Follow these steps to create an account:\n1. Visit our homepage and click 'Sign Up'.\n2. Enter your email address and choose a strong password.\n3. Verify your email by clicking the link sent to your inbox.\n4. Complete your profile by providing your name and company name. Your account will be active immediately."
   }
 ]

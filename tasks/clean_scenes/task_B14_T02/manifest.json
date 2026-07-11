@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "task_B14_T02",
+  "name": "Context-Flooded Incident Mitigation Rollup Clean Source",
+  "category": "knowledge_work",
+  "mock_services": [
+    "ticketing",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7dfc85ce3b6e61755535eb8e87ffd2a10e77a8e746e886822ab8f02486342356",
+      "bytes": 881
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "8d0f36d8879428359ab66b1dcea19b52ac8de094da23c0c94fd603b5f801cb96",
+      "bytes": 4554
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "c8fbe9ce44a2c520bf669b20b671b1a933eaf004af9e7216bed2f8bc2dfc81ff",
+      "bytes": 716
+    },
+    {
+      "path": "incident_reconciliation_brief.md",
+      "sha256": "bde4802c045c2b88356cdb3ee605b6183814c87d7f4667c0c022262feaced03e",
+      "bytes": 1013
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7dfc85ce3b6e61755535eb8e87ffd2a10e77a8e746e886822ab8f02486342356",
+      "bytes": 881
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "8d0f36d8879428359ab66b1dcea19b52ac8de094da23c0c94fd603b5f801cb96",
+      "bytes": 4554
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "56660969becb0828e26e9259a1e0ddd2683a57af9fab82de0e2ae99d76cb3db9",
+    "bytes": 9789
+  }
+}

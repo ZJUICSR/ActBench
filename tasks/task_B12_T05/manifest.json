@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "automation": {
       "path": "fixtures/automation/jobs.json",
-      "sha256": "42d295cf98c42f7d067c689fb893fd1005e679403701db79db10a501417b5f11",
-      "bytes": 753
+      "sha256": "5fa872215d6e4d690f29f10f91b9719179c8769be1924d4e008ec0ab9c8ef34e",
+      "bytes": 766
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -54,8 +54,8 @@
   "fixture_files": [
     {
       "path": "fixtures/automation/jobs.json",
-      "sha256": "42d295cf98c42f7d067c689fb893fd1005e679403701db79db10a501417b5f11",
-      "bytes": 753
+      "sha256": "5fa872215d6e4d690f29f10f91b9719179c8769be1924d4e008ec0ab9c8ef34e",
+      "bytes": 766
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -69,8 +69,8 @@
     "bytes": 9599
   },
   "clean_source": {
+    "content_hash": "8cf4a31b3e55bd02502774e3712bcfdcbad92a3a97faa7ad28d82287b43d56c3",
     "bundle_path": "clean_scenes/task_B12_T05",
-    "type": "directory_scenario",
-    "content_hash": "2200dd119f2f2ebdb49df1ba663c1772495b345238b585dce6d9826e585c493e"
+    "type": "directory_scenario"
   }
 }

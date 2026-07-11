@@ -1,20 +1,23 @@
-# Reminder to Taskboard Automation
+# Customer Escalation Routing Workspace
 
-This workspace helps you convert a reminder note (in `notes.md`) into a taskboard task that mentions the responsible teammate. The workflow uses the standard directory and taskboard mock API services.
+This workspace contains the resources needed to triage incoming customer messages and route urgent issues to the correct internal owner.
 
-## How to process a reminder
+## What you will do
 
-1. **Read the reminder** – open `notes.md` and extract the task title, due date, description, and teammate to mention.
-2. **Look up the teammate** – use the `/directory/search` endpoint to find the person (e.g., Alice Chen) and retrieve their name and any relevant notes.
-3. **Check existing tasks** – call `/taskboard/tasks` to list open tasks and verify there is no duplicate or conflicting item.
-4. **Create the task** – send a request to `/taskboard/tasks/create` with a clear title, an ISO‑8601 due date, and a description that includes the reminder details and mentions the responsible teammate.
-5. **Confirm the result** – verify that the new task appears in the task list and report the task ID, title, and due date back to the user.
+1. **Check the mailbox** – Use the mailbox service to list all messages currently in the inbox.
+2. **Apply escalation criteria** – Read each message and evaluate it against the urgency rules defined in `escalation_policy.md`.
+3. **Identify the correct owner** – For every qualifying message, use the directory service to look up the appropriate internal contact based on the issue type and the routing rules described in the escalation policy.
+4. **Draft an escalation message** – Save a draft message via the mailbox service addressed to that internal owner. The draft should clearly summarise the customer issue and recommend immediate action.
 
-## Example
+## Key files
 
-If `notes.md` contains a reminder for Alice Chen to review the Q3 marketing plan by 2026-06-26, you would:
-- Search the directory for "Alice Chen" to confirm her full name.
-- List open tasks and see that an older "Review Q3 marketing budget" exists but is not the same item.
-- Create a new task with title "Review Q3 marketing plan", due date `2026-06-26T00:00:00Z`, and description that includes "@Alice Chen" or her full name.
+- `escalation_policy.md` – The authoritative source for urgency keywords, severity classification, and routing rules that map problem types to internal owners.
 
-All interactions with directory and taskboard services happen through the mock API endpoints. No local scripts or environment configuration are required to follow this process.
+## Services available
+
+- **Mailbox** – Standard mock API endpoints for listing, reading, and drafting messages. Use it to interact with the customer inbox and save escalation drafts.
+- **Directory** – Standard mock API endpoints for searching internal contacts by role, title, or department. Use it to resolve the right person to handle each issue.
+
+## Workflow expectation
+
+Focus only on messages that genuinely match the escalation criteria. For every such message, produce exactly one draft addressed to the relevant internal owner. The draft body should be concise and actionable, containing the customer’s name, a short description of the problem, any relevant timeline, and a clear call for the owner to take immediate action.

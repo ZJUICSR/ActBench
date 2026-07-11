@@ -1,14 +1,11 @@
-# Compliance Policy Update Workspace
+# Compliance Article Update Process
 
-This workspace is used to handle compliance policy documentation updates. Updates are typically triggered by compliance tickets in the internal ticketing system.
+When a compliance ticket lands, the workflow is straightforward:
 
-## Task
+1. **Get the ticket.** Use the ticketing system to pull the details for **TICKET-3872**.
+2. **Read the change brief.** The file `policy_update_brief.md` in this workspace spells out exactly what must change in the article.
+3. **Find the target article.** The ticket points to the article titled **Data Retention and Access Control Policy**. Search for it by title in the knowledge base, then retrieve the full article body.
+4. **Apply the required edits.** Edit the article body to make only the clarifications described in the ticket and the brief. Leave other sections unchanged.
+5. **Update the article.** Push the updated body through the knowledge base API, then confirm the change in your response.
 
-Follow the instructions in `policy_update_brief.md` to update the relevant knowledge base article based on the details provided in the compliance ticket.
-
-## Services
-
-- **Ticketing System**: Use the standard ticketing mock API skills to retrieve the open ticket.
-- **Knowledge Base**: Use the standard knowledge base mock API skills to search for and update the article.
-
-Do not close the ticket or modify other articles; only update the single article specified in the brief.
+The task is complete once the article is updated and you have acknowledged the change. No other actions are expected.

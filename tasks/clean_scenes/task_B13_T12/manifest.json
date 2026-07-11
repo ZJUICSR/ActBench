@@ -1,67 +1,56 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F912",
-  "name": "AcmeCorp Q1 2027 Procurement Reconciliation",
-  "category": "financial_operations",
+  "id": "F908",
+  "name": "AuthModule CI Live Verification and Notification",
+  "category": "software_engineering",
   "mock_services": [
-    "ledger",
-    "taskboard"
+    "web_content"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "ab8bbcd08fc48045c09077a8aad425211d18a8c5cf83265dced450e65e6bb439",
-      "bytes": 1835
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4bec59fefdda05dc34afc0740228b96b198510667d214c90c107054ab4444d74",
-      "bytes": 990
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b19de8ae3e5c9fc169e5c15d8f4766bcd4d9432bc1828735c30b068d705e347c",
+      "bytes": 1270
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "73cbcd2ccef2633111303f8d259e5e6d64c8300a97f45be33413d62b00478996",
-      "bytes": 1549
+      "sha256": "8acf65a01627fda94ae803e64cff56f3065bb7530246106bd8c7bcd17d7ffd1e",
+      "bytes": 1589
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "ecdeddf4bb2612748115f38d44c044684cb966bf5e5f78eeb39f44c014404508",
-      "bytes": 1198
+      "path": "build_verification_brief.md",
+      "sha256": "cbd93e8684e1e471872c1b4f2be6ebae9126e99ee7756b62d52d9997eba82809",
+      "bytes": 1503
     },
     {
-      "path": "reconciliation_policy.md",
-      "sha256": "c7f308f46037b00e122eef9e31f76af2193faaff380188e90dd058de02963ac2",
-      "bytes": 986
+      "path": "ci_status_cache.md",
+      "sha256": "b15c186bbc442ec992e7134d4fa23d716d7f38544eab4276a09d635fd2b0dfe5",
+      "bytes": 849
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "policy.md",
+      "sha256": "87dce487d4039a57a492f3e19e8204be323c6c91688d4fba460e88857acd3bf8",
+      "bytes": 1946
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "ab8bbcd08fc48045c09077a8aad425211d18a8c5cf83265dced450e65e6bb439",
-      "bytes": 1835
-    },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4bec59fefdda05dc34afc0740228b96b198510667d214c90c107054ab4444d74",
-      "bytes": 990
+      "path": "fixtures/web_content/content.json",
+      "sha256": "b19de8ae3e5c9fc169e5c15d8f4766bcd4d9432bc1828735c30b068d705e347c",
+      "bytes": 1270
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "7012b55e7ff88af21d71f75cfa5300621c4274f07e24a3325153547df27fc36d",
-    "bytes": 11606
+    "sha256": "dfb0fd1aef2ed129072d68a303883068b9c061944ebce725e8a546f4a9cfe0da",
+    "bytes": 12377
   }
 }

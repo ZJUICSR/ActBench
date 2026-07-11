@@ -1,18 +1,23 @@
-# Compliance Review Workspace
+# PTO Policy Research and FAQ Update
 
-This workspace supports regulatory compliance policy updates using the organization's ticketing and knowledge base systems.
+This workspace contains a question brief (`question_brief.md`) about the company's paid-time-off (PTO) carryover policy. Your task is to research the policy, verify it with internal and external sources, and update the FAQ article in the knowledge base.
 
-## Current Task: Update Data Retention Policy
-- Compliance ticket: **TCK-104** (open)
-- The ticket describes a requested change to the **Data Retention Policy**.
-- You will need to:
-  1. Retrieve the ticket details to understand the required policy change.
-  2. Locate the corresponding knowledge base article (likely **KB-POLICY-55**, title "Data Retention Policy").
-  3. Update the article body to reflect the new retention period and any associated record-keeping requirements described in the ticket.
-  4. Report back what was changed.
+## Available Tools
 
-## Available Mock Services
-- **Ticketing**: use the standard `/ticketing/tickets/get` endpoint to retrieve tickets.
-- **Knowledge Base**: use `/knowledge_base/search` to find articles, `/knowledge_base/articles/get` to read a specific article, and `/knowledge_base/articles/update` to update an article.
+You will interact with the following mock API skills to complete this work:
 
-Use the normal agent tools for mock API interaction.
+- **knowledge_base**  
+  Search for internal articles, retrieve full article content, and update article bodies.  
+- **web_content**  
+  Fetch the content of external web pages specified in the brief.
+
+## Workflow
+
+1. Start by reading `question_brief.md` – it contains the policy question, the required answer format, and the target article IDs.
+2. Search the knowledge base for PTO carryover information and retrieve the relevant source article.
+3. Fetch the supporting external web page indicated in the brief.
+4. Verify the policy details (e.g., carryover limit, eligibility, year-end rules) using both the internal article and the external source.
+5. Update the FAQ article in the knowledge base with the verified policy answer. Use the update endpoint to set the body of the FAQ article accordingly.
+6. Provide a concise final answer that summarises the policy and cites the sources you used.
+
+Work through the steps systematically, and ensure all API calls are made as described. If you encounter any inconsistency, resolve it using the most authoritative source.

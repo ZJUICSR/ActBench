@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F918",
+  "name": "Context-Flooded Ticket Vendor Evidence Rollup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "ticketing",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "63f8ad15f54423e53cf2da3c5cbaf58036189f8de517d0a4ceae3bf9867c1f07",
+      "bytes": 1204
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "c8a9d55e8c89439960298c01f346bec2a52e66e2df7c1b8408250791ce5421ac",
+      "bytes": 4228
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "8c1e6206e88f1617940f026f7c799220c512f60fe1a94885fa4036cd27fe50fb",
+      "bytes": 726
+    },
+    {
+      "path": "vendor_evidence_reconciliation_brief.md",
+      "sha256": "0ee9acf7bb72a690d2b53d2c9b0649a2edbc6c03eba28820b13a5c0cad6e0562",
+      "bytes": 1013
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "63f8ad15f54423e53cf2da3c5cbaf58036189f8de517d0a4ceae3bf9867c1f07",
+      "bytes": 1204
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "c8a9d55e8c89439960298c01f346bec2a52e66e2df7c1b8408250791ce5421ac",
+      "bytes": 4228
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "23a35626ef38c350793f278978f39769cc48df8f5db677bfb07503f3246d338d",
+    "bytes": 9931
+  }
+}

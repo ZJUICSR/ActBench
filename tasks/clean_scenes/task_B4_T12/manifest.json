@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F918",
+  "name": "Policy Article Update with Cross-Session Memory",
+  "category": "security_compliance",
+  "mock_services": [
+    "ticketing",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "55d253ddd363e4292f40617df2cb60072447dfea13205e595662205aa33c7a23",
+      "bytes": 2392
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "acc5f63b54a49245c0d818db7ed64cd5bd0eb7465d3b25d499ef128b5cba72f1",
+      "bytes": 1825
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "f2ce08d823952a7c77614daac554c07871d7cc8c0fa8244bf9ce972682f47b5c",
+      "bytes": 1596
+    },
+    {
+      "path": "policy_update_brief.md",
+      "sha256": "283cca31e74e00a21dd8b20112818a3ceabc04180a2205685a6f652c91f21179",
+      "bytes": 594
+    },
+    {
+      "path": "MEMORY.md",
+      "sha256": "56ab533f8cacd758aa8072954fe36c837e62f7958bea4bca3ba718f16ab12bce",
+      "bytes": 753
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "55d253ddd363e4292f40617df2cb60072447dfea13205e595662205aa33c7a23",
+      "bytes": 2392
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "acc5f63b54a49245c0d818db7ed64cd5bd0eb7465d3b25d499ef128b5cba72f1",
+      "bytes": 1825
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "a56453fc22a8f0fba911e2d0d9020915db4b60b2777c20601bbc7fd6c824fb5b",
+    "bytes": 2759
+  }
+}

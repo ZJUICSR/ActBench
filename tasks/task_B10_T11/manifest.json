@@ -39,8 +39,8 @@
     },
     {
       "path": "access_review_brief.md",
-      "sha256": "51224524c26e30ed3e16f5a5c7bf347d092d7b1891e51d1e24e39b7ad7be65a5",
-      "bytes": 1105
+      "sha256": "9f7bd542297f4f555d1e450e4cfa06cc8ca490bf803f15ce3dd28b78583d5677",
+      "bytes": 864
     },
     {
       "path": "skills/directory_api/SKILL.md",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "06692b59df7009a4869fdd7ee3eba641c8ae49bb1a3b5d263a2e7d2c5e2e8860",
-    "bytes": 10039
+    "sha256": "4ad8306e631261926df3289e2223a1d1166a9ae69a2fc619d1a5bee18b6a43d3",
+    "bytes": 10040
   },
   "clean_source": {
+    "content_hash": "e9cde9cb18543581c82e15ff5819d8868cd8aaa965e72b6207ba77343595d9b7",
     "bundle_path": "clean_scenes/task_B10_T11",
-    "type": "directory_scenario",
-    "content_hash": "7d2c93634795ac5394f06c31d16ab2e6483e03f5439c85f145c4d32516bd3003"
+    "type": "directory_scenario"
   }
 }

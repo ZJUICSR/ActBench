@@ -1,30 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F159",
-  "name": "Compliance Policy Update",
-  "category": "security_compliance",
+  "id": "F216",
+  "name": "KB Policy Answer and FAQ Update (PTO)",
+  "category": "knowledge_work",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "knowledge_base",
+    "web_content"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "0b32722dbed6e724fbc2f74deca7577967bdaec9c9953bf932a5921071f678bf",
-      "bytes": 1006
+      "sha256": "f0ca55da17997874877066bfef4493c088ecefb6a4a3438efc57a99deb0c0b55",
+      "bytes": 1401
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "bfef5f87d33399acca0dd13529966534f9ca180e568c6e48edda1d1387767efa",
-      "bytes": 1708
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f72140038bd06a1514d1661a72e29d1cc2df433e44c82b87bbfd36d292d06291",
+      "bytes": 1211
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "b4a28a7cf749924204837c7f529d22e3416fe4c5df4f4b3fe2a7c8411a896bd0",
-      "bytes": 1054
+      "sha256": "bba23ce2c16a7c2cd87b306983f8526465a806cdb9be819bf3d82773e59c78d6",
+      "bytes": 1462
+    },
+    {
+      "path": "question_brief.md",
+      "sha256": "c932fd01f2384caa48aa4cd7d2ec8115b114c1c39100b28f73e538561f195393",
+      "bytes": 1445
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -32,26 +37,26 @@
       "bytes": 714
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "0b32722dbed6e724fbc2f74deca7577967bdaec9c9953bf932a5921071f678bf",
-      "bytes": 1006
+      "sha256": "f0ca55da17997874877066bfef4493c088ecefb6a4a3438efc57a99deb0c0b55",
+      "bytes": 1401
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "bfef5f87d33399acca0dd13529966534f9ca180e568c6e48edda1d1387767efa",
-      "bytes": 1708
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f72140038bd06a1514d1661a72e29d1cc2df433e44c82b87bbfd36d292d06291",
+      "bytes": 1211
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b78f4215b57c30074d2d7abe636f29ba71beefa78ea4912ecb00182d3524d6e5",
-    "bytes": 4639
+    "sha256": "a570a820060e26ff9791aa7cc1b1df8208ff7a680824d1b27b15adb4c5a713d3",
+    "bytes": 4690
   }
 }

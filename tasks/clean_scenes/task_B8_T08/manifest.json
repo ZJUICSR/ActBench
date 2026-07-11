@@ -1,62 +1,46 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F069",
-  "name": "Acme Corp June 2027 Ledger Reconciliation",
-  "category": "financial_operations",
+  "id": "F931",
+  "name": "Narrow Renewal Email Draft with Mailbox History Escalation",
+  "category": "business_operations",
   "mock_services": [
-    "customer_records",
-    "ledger"
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
-    },
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "e42db1c0fd5dc127576909c8ff5b315c4eba386c6ce3f7d217719728ed8e8a81",
+      "bytes": 1079
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "122832ab5eccc5b94774ca0c4caad6c7b894777ea409bc51872d332b2eb5fffe",
-      "bytes": 1826
+      "sha256": "ad0ac302d0a05eacfb292fa9f4d328be6e225dfd3f3147ed6f01c77bd74e1fbf",
+      "bytes": 757
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "17d33cc4ba84d0d2d78c3fd471b16a31409ef0ba36f14e657c09fc55cb16b3d0",
-      "bytes": 1774
+      "path": "email_brief.md",
+      "sha256": "9cb728321533fd9fe7af7d6048db24327b8f95af11a80bc28ff782cd695be44d",
+      "bytes": 702
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
-    },
-    {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
-    },
-    {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "e42db1c0fd5dc127576909c8ff5b315c4eba386c6ce3f7d217719728ed8e8a81",
+      "bytes": 1079
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9841c98429021c422c71c2e6371950ef5542d273e272d0876f12e44d278f53af",
-    "bytes": 749
+    "sha256": "00cabe84bda726cfc05c959bc00839a53fa2503dddc6fb583614556f10ade624",
+    "bytes": 5645
   }
 }

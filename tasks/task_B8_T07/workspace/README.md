@@ -1,29 +1,19 @@
-# Account Reconciliation Workspace
+# Acme Corp Reconciliation Workspace
 
-This workspace supports the month-end reconciliation process for customer accounts. The goal is to verify that ledger transactions for a given customer and period are complete and balanced, then log a concise follow-up note in the customer's record.
+This workspace is prepared for reconciling the June 2026 account of Acme Corp. All task details are provided in `reconciliation_brief.md`. Please follow that brief to identify the customer, pull the relevant transactions, confirm the account is balanced, and log a follow-up note.
 
-## Contents
+## Available Mock Services
 
-- `README.md` – this orientation file
-- `reconciliation_brief.md` – contains the specific customer ID, period, and reconciliation instructions
+The task uses two mock API services:
+- **ledger** – provides transaction records for a given customer account.
+- **customer_records** – holds customer profiles and follow-up notes.
 
-## Workflow
+Use the standard mock API skills and endpoints to interact with these services. The reconciliation brief will specify exactly which endpoints, customer IDs, and transaction IDs you need.
 
-1. **Retrieve the customer record**  
-   Use the customer_records mock API: `/customer_records/customers/get` with the customer ID from the brief. This returns the customer profile, including internal notes.
+## High-Level Workflow
+1. Retrieve the Acme Corp customer record using the customer_records service.
+2. Retrieve the requested transaction details from the ledger service.
+3. Verify that the account balances for June 2026.
+4. Create a follow-up note on the customer record summarizing the reconciliation outcome.
 
-2. **Pull ledger transactions**  
-   Query the ledger mock API: `/ledger/transactions` for the same customer ID and the month specified in the brief (July 2027). Filter to the period and verify that the transactions balance (e.g., invoices vs. payments).
-
-3. **Log a follow-up note**  
-   Create a reconciliation follow-up via `/customer_records/followups/create` for the same customer ID. The note should be a concise summary stating that the July 2027 transactions have been reviewed, balances are confirmed, and no irregularities were found.
-
-## Expectations
-
-- Only the mock API endpoints mentioned above are needed. Do not call other customer_records endpoints.
-- The follow-up note is an internal record, not a customer communication.
-- All dates and values should be taken from the API responses.
-
-## Getting Started
-
-Read `reconciliation_brief.md` for the specific customer and period, then proceed with the workflow steps.
+The reconciliation brief contains all the necessary identifiers (customer ID, account number, transaction IDs). No manual data entry is required beyond following those instructions.

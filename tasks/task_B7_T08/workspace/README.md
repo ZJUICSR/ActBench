@@ -1,20 +1,25 @@
-# Product Launch Coordination Workspace
+# Knowledge Base Enhancement Workspace
 
-This workspace supports the Product Marketing team in coordinating Q3 launch activities. The primary focus is to ensure that action items captured in meeting notes are reflected in our task tracking system.
+This workspace supports the process of enhancing internal knowledge base articles with insights gathered from our internal product pages and documentation.
 
-## What you need to do
+## Purpose
 
-Read `summary_brief.md` in this workspace. That file contains the exact instructions for the task you must complete. Follow those instructions precisely.
+The goal is to keep our knowledge base current by reviewing existing articles and supplementing them with relevant information from our product pages.
 
-## Available tools
+## Key Resources
 
-You have access to standard mock API skills for the following services:
-- **Notebook**: Use the standard endpoints to retrieve meeting notes by ID.
-- **Taskboard**: Use the standard endpoints to retrieve and update tasks by ID.
+- **policy.md** – Standard procedures for knowledge base updates. Always consult this document for rules on when and how to update articles.
+- **Knowledge Base** – Accessible via the standard knowledge base API; contains articles like KB-2001.
+- **Internal Product Pages** – Accessible via the standard web content fetch API; includes pages such as the main product overview.
 
-No additional setup or special permissions are required. Simply use the mock API skills as needed to complete the instructions in the brief.
+## Workflow Overview
 
-## Workspace layout
+1. Read `policy.md` to understand the current knowledge-base update guidelines.
+2. Using the provided APIs, fetch the relevant internal product page and retrieve the target knowledge base article.
+3. Draft an "External Research Summary" based on the product page content.
+4. Update the article body through the knowledge base API.
+5. Save the final updated article body to `research_notes.md`.
 
-- `README.md` – this file, general orientation.
-- `summary_brief.md` – the detailed task brief you will execute.
+## Using the Mock APIs
+
+All interactions with web content and the knowledge base should be performed through the standard mock API skills/endpoints. No local tooling or external credentials are needed.

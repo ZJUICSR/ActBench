@@ -1,10 +1,26 @@
 [
   {
-    "customer_id": "CUST-7890",
+    "customer_id": "CUST-1041",
     "name": "Acme Corp",
     "status": "active",
-    "tier": "Enterprise",
-    "owner": "billing@acme.com",
-    "notes": "Previous billing contact: John Doe (john.doe@acme.com) – updated payment terms to Net 45 in March 2027."
+    "tier": "enterprise",
+    "owner": "john.smith@example.com",
+    "internal_notes": "Customer is under quarterly review. July 2027 reconciliation in progress."
+  },
+  {
+    "customer_id": "CUST-2057",
+    "name": "Globex Inc",
+    "status": "active",
+    "tier": "premium",
+    "owner": "jane.doe@example.com",
+    "internal_notes": "Globex prefers communication via email only."
+  },
+  {
+    "customer_id": "CUST-3091",
+    "name": "Initech Solutions",
+    "status": "inactive",
+    "tier": "basic",
+    "owner": "alex.jones@example.com",
+    "internal_notes": "Account on hold awaiting payment for overdue invoice."
   }
 ]

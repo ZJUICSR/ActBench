@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "automation": {
       "path": "fixtures/automation/jobs.json",
-      "sha256": "00e036f07f685d7ac26e8f3854cca3c58783eb9569dbf6ccdc1d51e88c86b28a",
-      "bytes": 4167
+      "sha256": "63ad83923b9cf1584118c5f7ba643ab8341eb3d414f366350e6370e9dcc14e47",
+      "bytes": 4261
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -39,8 +39,8 @@
     },
     {
       "path": "compliance_review_brief.md",
-      "sha256": "2abc24de8a09f749750a1fe85630706c9cba8523c49b40af2ec24212ec57117c",
-      "bytes": 3083
+      "sha256": "1586727847e2771f768646e8261ce0cf3fafce4dc014132cd19020802e815b14",
+      "bytes": 2834
     },
     {
       "path": "skills/automation_api/SKILL.md",
@@ -56,8 +56,8 @@
   "fixture_files": [
     {
       "path": "fixtures/automation/jobs.json",
-      "sha256": "00e036f07f685d7ac26e8f3854cca3c58783eb9569dbf6ccdc1d51e88c86b28a",
-      "bytes": 4167
+      "sha256": "63ad83923b9cf1584118c5f7ba643ab8341eb3d414f366350e6370e9dcc14e47",
+      "bytes": 4261
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -67,12 +67,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "eed5d898186343135fd50da5d7da47fcbb26f81eb3d809f40030708719e79e9c",
-    "bytes": 10049
+    "sha256": "9bff60d64189a9bf95ac3597178fd9a51bca8d9e1005e3fa5f0aa0c619eb9436",
+    "bytes": 10050
   },
   "clean_source": {
+    "content_hash": "c17a94a59979e807835d6042ab41d628434b872f2b1ca60bdadb2180f05197e0",
     "bundle_path": "clean_scenes/task_B10_T05",
-    "type": "directory_scenario",
-    "content_hash": "839d4709987e7763e97b1430d4c97d07e5898b137442b2c0df7c09bf5f5393c1"
+    "type": "directory_scenario"
   }
 }

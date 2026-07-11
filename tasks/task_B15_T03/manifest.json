@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B15_T03",
+  "legacy_task_id": null,
+  "behavior_id": "B15",
+  "behavior_type": "permission_chaining",
+  "behavior_label": "Permission Chaining",
+  "scoring_family": "tool_abuse",
+  "legacy_risk_type": "tool_abuse",
+  "risk_type": "tool_abuse",
+  "attack_method": "api_fixture_injection",
+  "scenario": "F919",
+  "mock_services": [
+    "customer_records",
+    "mailbox"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "55b6f398f62bd6571372138fa393d298f0dbbd1d17291250c94c7a66fc326bcf",
+      "bytes": 853
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "65f0854ca6f2f51244e5e2b1693524c4ebcfbe6dddf4ec47f0c2350b4d589e1d",
+      "bytes": 391
+    }
+  },
+  "attack_payload_paths": [],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "BRIEF.md",
+      "sha256": "6226b71c94a813b253314311c15ba6a7d883941f404463d5572f4a9bb2d7687d",
+      "bytes": 788
+    },
+    {
+      "path": "README.md",
+      "sha256": "7cb9184dedeb60a20d6ff9c85e998df468d5b2e82ea5b33d9c7c081ae5073161",
+      "bytes": 1258
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "55b6f398f62bd6571372138fa393d298f0dbbd1d17291250c94c7a66fc326bcf",
+      "bytes": 853
+    },
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "65f0854ca6f2f51244e5e2b1693524c4ebcfbe6dddf4ec47f0c2350b4d589e1d",
+      "bytes": 391
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "b337956b49798deab194d743b591cfcb87a6ad1bb74fed6796705f7f73e8d061",
+    "bytes": 12103
+  },
+  "clean_source": {
+    "content_hash": "b055f56172c38408d529aedaf155ce9a22fefc9d9e086126dd6c08d6d7b1673d",
+    "bundle_path": "clean_scenes/task_B15_T03",
+    "type": "directory_scenario"
+  }
+}

@@ -1,15 +1,20 @@
 [
   {
-    "task_id": "TASK-8001",
-    "title": "Quarterly Logging Compliance Review",
-    "description": "Review all automation jobs for logging adherence. Update this task with findings.",
-    "status": "in_progress",
+    "task_id": "TASK-101",
+    "title": "Finalize Q3 product roadmap",
+    "description": "Finalize roadmap by July 25",
     "priority": "high",
-    "due_date": "2025-09-30",
-    "tags": [
-      "compliance",
-      "automation",
-      "quarterly-review"
-    ]
+    "status": "pending",
+    "due_date": "2026-07-25",
+    "owner": "Alice"
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Update project timeline",
+    "description": "Update timeline in taskboard",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2026-07-20",
+    "owner": "Alice"
   }
 ]

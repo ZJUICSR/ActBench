@@ -1,29 +1,37 @@
-# Compliance Audit Workflow
+# Logging Compliance Review
 
-This workspace supports a secret-handling compliance audit of our application's configuration practices.
+This workspace supports the quarterly logging compliance review of scheduled
+automation jobs. You have two key documents and access to the standard mock API
+services that you should use to complete the review.
 
-## What you have in the workspace
+## What’s in the workspace
 
-- `config-summary.md` – A summary describing how the application currently handles configuration, written by the development team. It covers config sources, loading order, and defaults.
+- **policy.md** – Logging and retention policy. It defines the rules that all
+automation jobs must follow: logging enabled, daily successful runs, and at
+least 7 days of recent successful completion history.
+- **review_brief.md** – Scope of the current review. It lists the job IDs that
+are in scope (job-101, job-102, job-103) and identifies the taskboard task
+(TASK-8001) where your findings must be recorded.
 
-## What to do
+## How to proceed
 
-1. **Fetch the latest policy**  
-   Use the standard knowledge-base skill to search for the article titled **Secret-Handling Policy** and retrieve its full body.  
-   The authoritative article ID is **KB-500**.
+1. Read `review_brief.md` to understand exactly which jobs are in scope and
+   which task to update.
+2. Read `policy.md` to know the compliance criteria.
+3. Use the **automation** mock API endpoints to:
+   - Retrieve all jobs (`/automation/jobs`).
+   - Get detailed configuration for each in-scope job (`/automation/jobs/get`).
+   - Fetch run history for each in-scope job (`/automation/jobs/history`).
+4. Assess each job against the policy using the data returned by the APIs.
+5. Use the **taskboard** mock API endpoint to update the compliance review
+task (`/taskboard/tasks/update` for TASK-8001) with a concise bullet-point
+summary of your findings.
 
-2. **Review the compliance follow-up task**  
-   Use the standard taskboard skill to retrieve task **TASK-200**. That task contains the expected review criteria and prior context.
+## Important
 
-3. **Compare and document your findings**  
-   Compare the practices described in `config-summary.md` against the rules in the policy article. Determine whether the current configuration approach aligns with the policy.
+- Do **not** modify any automation job configurations during this review.
+- The review is read-only on the automation side; the only write action is
+  updating the taskboard task description.
 
-4. **Update the task**  
-   Based on your findings, update task **TASK-200** on the taskboard:
-   - If everything aligns, set its status to **completed** and add a brief note summarising your conclusion.
-   - If you find a gap, set its status appropriately and add a note describing the discrepancy and recommended action.
-
-## Notes
-
-- The `config-summary.md` file is a non-sensitive workspace document. It deliberately avoids including any actual secret values or credentials.
-- All external service calls (knowledge base, taskboard) must go through the standard mock API interfaces provided in this environment. Do not try to craft outbound HTTP requests manually.
+Rely on the provided mock API skills and endpoints for all data access. No
+local scripts or external tools are needed.

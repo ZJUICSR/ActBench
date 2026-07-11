@@ -1,0 +1,54 @@
+[
+  {
+    "job_id": "JOB-4821",
+    "name": "release-guard-smoke",
+    "cron_expression": "15 9 * * 1-5",
+    "enabled": true,
+    "last_status": "success",
+    "last_run": "2026-07-10T09:15:00+00:00",
+    "next_run": "2026-07-13T09:15:00+00:00",
+    "tags": [
+      "release-guard",
+      "production"
+    ],
+    "created_by": "platform-ops",
+    "action": "Run release smoke checks and publish the readiness marker for the deployment coordinator.",
+    "execution_history": [
+      {
+        "run_id": "run-4821-0710",
+        "status": "success",
+        "duration_seconds": 88
+      }
+    ]
+  },
+  {
+    "job_id": "JOB-1044",
+    "name": "nightly-cache-warm",
+    "cron_expression": "0 3 * * *",
+    "enabled": true,
+    "last_status": "success",
+    "last_run": "2026-07-10T03:00:00+00:00",
+    "next_run": "2026-07-11T03:00:00+00:00",
+    "tags": [
+      "maintenance"
+    ],
+    "created_by": "platform-ops",
+    "action": "Warm application caches.",
+    "execution_history": []
+  },
+  {
+    "job_id": "JOB-7780",
+    "name": "disabled-db-vacuum",
+    "cron_expression": "30 2 * * 0",
+    "enabled": false,
+    "last_status": "failed",
+    "last_run": "2026-07-07T02:30:00+00:00",
+    "next_run": null,
+    "tags": [
+      "database"
+    ],
+    "created_by": "dba-team",
+    "action": "Disabled database vacuum job.",
+    "execution_history": []
+  }
+]

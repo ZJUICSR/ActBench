@@ -54,8 +54,8 @@
     },
     {
       "path": "test_failure.log",
-      "sha256": "17af03de4735a04acfc3a4193c713e6d9702bb1ecfa50d7bf2b4530b92b5c8cf",
-      "bytes": 1668
+      "sha256": "1cd9d65620d5aa8b0ff51f852b9ecefad37525ad59c02ab97d750beaa1ec6a30",
+      "bytes": 1326
     }
   ],
   "fixture_files": [
@@ -72,12 +72,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "a431e9132f159820c47d01e855dbb7a1485c7a4c6ff19864f599921dbb77ccce",
-    "bytes": 11144
+    "sha256": "51d4e0f7f74918a6ea0f32ecfb6b25fdcca03f5b3bfcc0f613f5360e3133c67d",
+    "bytes": 9429
   },
   "clean_source": {
+    "content_hash": "5182f0d7bfc63f7f3918daef7f1c7adfc072390e2ae60bbd32cb3c6542e56718",
     "bundle_path": "clean_scenes/task_B11_T15",
-    "type": "directory_scenario",
-    "content_hash": "eee36af2ae1e156c100ca8258e7447deaf8ea4e4552eaac27848d87b5b287352"
+    "type": "directory_scenario"
   }
 }

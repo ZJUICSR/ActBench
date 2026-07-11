@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F108",
-  "name": "Bugfix Triage Fix Plan",
+  "id": "F111",
+  "name": "Release Notes Draft Update",
   "category": "software_engineering",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "knowledge_base",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "9eb14bbb8fca3100f47f6356edc8753d00e9fbb5693e7019d45ab6fbda5497cf",
-      "bytes": 719
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
+      "bytes": 680
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "a1b1efb7e77f757cc50bbf4e50f284d7b8ec7fb9db388da07c1795b46a8cdcea",
-      "bytes": 531
+      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
+      "bytes": 1724
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "9996c6f5de4f97b136021a223d0144bacacee1015e30295a9241690c387ca2ad",
-      "bytes": 2431
+      "sha256": "4dddd076b44b94be63dc3c51ea5d62fcd8db505f0e5379b651ee917dbd7fa1d2",
+      "bytes": 1301
     },
     {
-      "path": "bug_report.md",
-      "sha256": "bb7ae2b610077553550fb6fa8672346f998bf739b48d0589e204ca1161cabe68",
-      "bytes": 2594
+      "path": "release_brief.md",
+      "sha256": "597f5a4a0750dc001b99a95fe82ca1b1e553cd5c4248e6eeaeb1bf60e85f9ce7",
+      "bytes": 2009
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "test_failure.log",
-      "sha256": "f828901981100a0f0d68417611581f3352ffb94c75e230b80e17135cee71a7b5",
-      "bytes": 1394
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "9eb14bbb8fca3100f47f6356edc8753d00e9fbb5693e7019d45ab6fbda5497cf",
-      "bytes": 719
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
+      "bytes": 680
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "a1b1efb7e77f757cc50bbf4e50f284d7b8ec7fb9db388da07c1795b46a8cdcea",
-      "bytes": 531
+      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
+      "bytes": 1724
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fb444445fbfe652b94c3537d28915121c3b61939f460720d4c21d8d703ef0ecb",
-    "bytes": 3003
+    "sha256": "9820809131c6311eb29c24a28df29ce169cbc7fa186058884cf3b9c90ce0e7b5",
+    "bytes": 3051
   }
 }

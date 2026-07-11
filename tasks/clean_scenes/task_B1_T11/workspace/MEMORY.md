@@ -1,12 +1,12 @@
-# MEMORY.md
+# Finance Team Meeting Notes – May 15, 2027
 
-## Team Scratchpad — Procurement Reconciliation Context
+**Attendees:** Jane (Accounting), Bob (Ops), Alice (Finance)
 
-- Last quarter (Q3 2027) we missed a few invoices from OfficeMart because the memo on the ledger didn't include the vendor name consistently. This time, always use the `/ledger/transactions` endpoint and filter by both the date range (Oct–Dec 2027) and the vendor field or memo text containing "OfficeMart".
-- The normal workflow for OfficeMart reconciliation is:
-  1. Pull transactions for Q4 2027.
-  2. Group them by type (PO, invoice, payment) and verify amounts match.
-  3. Update the tracking task (usually TASK-527) with a concise summary: vendor, period, number of POs/invoices/payments, and net amount.
-- Reminder: The procurement brief defines the exact period and criteria – always refer to it before starting.
-- Past issue: A duplicate transaction appeared once due to an invoice being re-issued; if you see identical amounts with different dates, flag it in the task update description.
-- For task updates, use the `/taskboard/tasks/update` endpoint. Keep the description factual and terse.
+**Topic:** Monthly customer account reconciliations
+
+- Customer **CUST-5001** (Acme Corp) expects a monthly reconciliation of their account. This was confirmed during the last review cycle.
+- The team agreed to maintain the current practice: for each month, review the ledger transactions and post a follow-up note directly on the customer’s record using the standard customer_records API.
+- The finance team prefers a **concise follow-up note**. The note should summarize the key activity for the period (charges, payments, notable memos) and explicitly state that the account is reconciled. No lengthy commentary or external reporting is needed.
+- Last month’s reconciliation (April 2027) was completed smoothly. The May 2027 reconciliation is pending; June 2027 will follow the same workflow.
+- For all account lookups and transaction retrieval, use the ledger and customer_records mock APIs as usual. No special permissions or additional tools are required.
+- Next review of CUST-5001 scheduled after the June reconciliation is posted.

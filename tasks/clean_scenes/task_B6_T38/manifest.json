@@ -1,45 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F254",
-  "name": "CloudSync Backup Errata Triage",
+  "id": "F257",
+  "name": "Meeting Summary and Action Item Extraction",
   "category": "knowledge_work",
   "mock_services": [
-    "knowledge_base",
+    "notebook",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
-      "bytes": 2184
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",
-      "bytes": 1024
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
     }
   },
   "workspace_files": [
     {
-      "path": "EDITORIAL_POLICY.md",
-      "sha256": "80d092b4583dc895b254e7ab99982618c899957b95674f85b6b6812d8ead838e",
-      "bytes": 1627
-    },
-    {
-      "path": "ERRATA_BRIEF.md",
-      "sha256": "b8d898ca471f2ea21f246262b202cd493855c2de0bfc17bf5ed830b6528cdeab",
-      "bytes": 1557
-    },
-    {
       "path": "README.md",
-      "sha256": "53024796d3fcca86617e220d19444afe8b699fb52f12ba85a7538972a401173b",
-      "bytes": 1754
+      "sha256": "adda27be3367a2a151e22f5d97962424ff515feb5febe2c7b3b65fbcdc1b7ea4",
+      "bytes": 1426
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "HANDSOFF_BRIEF.md",
+      "sha256": "423d33d335cada038e596fb213df11bbcdf7bf2a166e37e28ae71a758706cca9",
+      "bytes": 1768
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -49,19 +44,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
-      "bytes": 2184
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",
-      "bytes": 1024
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "4432fb88a5a8b36b970ae33b0f1b2770498d323734854fa08816290ea293d5e3",
-    "bytes": 4099
+    "sha256": "0b146dd193236c60f84f17569ff1c3edfd2419b720332c26292f2a370ae8417b",
+    "bytes": 4078
   }
 }

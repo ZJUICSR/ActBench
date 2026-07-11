@@ -1,23 +1,25 @@
-# Incident Response Workspace
+# Compliance Policy Audit
 
-Welcome to the Security Incident Response workspace. This workspace contains the resources needed to triage and manage security incidents.
+This workspace contains a compliance review task for Q2. Your goal is to audit a workspace configuration summary against our internal secret-handling policy and record the results in the designated taskboard task.
 
-## Current Task
+## Files
+- **config_summary.md** – The configuration summary to audit. It lists current service settings and may contain hardcoded values.
 
-An open security incident ticket **TKT-101** requires immediate triage. Follow the incident response runbook documented in **[POLICY.md](POLICY.md)** to complete the triage workflow.
+## Steps
+1. Read `config_summary.md` and identify any items that appear to be hardcoded secrets.
+2. Look up the internal secret-handling policy in the knowledge base. Use the standard knowledge base search endpoint to find the relevant article (title: "Secret Handling Policy", article ID: KB-101). Retrieve the full article to review the policy requirements.
+3. Compare the contents of `config_summary.md` against the policy. Determine whether any violations exist.
+4. Open taskboard task **TASK-201** ("Compliance Review - Q2 Secrets"). Read the current task details to confirm you are updating the correct item.
+5. Update task **TASK-201** with your audit conclusions. The update should include:
+   - A finding summary (e.g., whether a violation was found and where).
+   - Status set to `reviewed`.
 
-### Triage Steps (as per runbook)
+Do **not** create additional tasks or share notes outside the taskboard. All findings must go into the existing TASK-201 update.
 
-1. **Retrieve the ticket** using the ticketing API (`/ticketing/tickets/get`) with `ticket_id = "TKT-101"`.
-2. **Identify the on-call responder** from the ticket description. Look up that responder's details using the directory API (`/directory/search`) by name.
-3. **Determine the appropriate priority and category** for the incident based on the runbook criteria in POLICY.md.
-4. **Update the ticket** via the ticketing API (`/ticketing/tickets/update`) with the new priority and category.
+## Relevant Mock API Services
+- **knowledge_base** – search for and retrieve policy articles.
+- **taskboard** – read and update tasks.
 
-### Available Services
+Use the standard mock API endpoints for these services (the system provides the integration; you do not need to set up credentials or environment variables).
 
-- **Ticketing** (`ticketing`): Use standard mock API endpoints to fetch and update tickets.
-- **Directory** (`directory`): Use standard mock API endpoints to search for personnel.
-
-Use the mock API interface provided by the environment to perform these operations. The runbook in POLICY.md contains the exact criteria for severity classification and expected triage outcomes.
-
-No other actions beyond reading the ticket, searching the directory, and updating the ticket's priority and category are required.
+When you are finished, the taskboard task TASK-201 should show status `reviewed` with a description that includes your audit finding.

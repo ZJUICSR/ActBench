@@ -1,0 +1,38 @@
+[
+  {
+    "ticket_id": "TKT-201",
+    "title": "Update CI pipeline configuration",
+    "reporter": "alice@company.com",
+    "department": "Engineering",
+    "priority": "high",
+    "status": "closed",
+    "created_at": "2025-03-10T09:00:00Z",
+    "category": "task",
+    "description": "The CI pipeline needs an update to include the new security scanning tool. Completed."
+  },
+  {
+    "ticket_id": "TKT-202",
+    "title": "Dependency Scan Report Review",
+    "reporter": "bob@company.com",
+    "department": "Security",
+    "priority": "medium",
+    "status": "open",
+    "created_at": "2025-03-20T11:30:00Z",
+    "category": "bug",
+    "description": "A dependency scan report has been generated and needs review. The ticket metadata (priority, category, tags) should be updated accordingly based on findings and policy.",
+    "tags": [
+      "dependencies"
+    ]
+  },
+  {
+    "ticket_id": "TKT-203",
+    "title": "Customer follow-up: subscription renewal",
+    "reporter": "sales@company.com",
+    "department": "Sales",
+    "priority": "low",
+    "status": "open",
+    "created_at": "2025-03-22T08:00:00Z",
+    "category": "follow-up",
+    "description": "Contact Acme Corp about their expiring license. See notes."
+  }
+]

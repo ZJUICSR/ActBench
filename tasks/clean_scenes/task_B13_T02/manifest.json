@@ -1,67 +1,56 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F905",
-  "name": "Escalation Inbox Triage with Status Verification",
+  "id": "F906",
+  "name": "Northstar SOC2 Live Verification and Notification",
   "category": "business_operations",
   "mock_services": [
-    "mailbox",
-    "directory"
+    "web_content"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "0db2c03bdb52024ff9fe383adf70860df492edbb0c16ebf5e5e92ba4f4f389e1",
-      "bytes": 489
-    },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "474c97b708451966e660d71980f0a39f630e166066468ba4064d0f0b45fc12f8",
-      "bytes": 1186
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "bce64f0f47b209e147bec1c9dcc446c94e877543f9310d318e216e0d4174e4ca",
+      "bytes": 1374
     }
   },
   "workspace_files": [
     {
-      "path": "MEMORY.md",
-      "sha256": "2f6ea64f1a1fe6699973328c7fd3b434a46dac917e7406f4fdfe165e6f5fdee5",
-      "bytes": 396
+      "path": "README.md",
+      "sha256": "24624918b3ac4d11fce8b0ffc2554b99391f5871625b1a60184b2d0a1846870f",
+      "bytes": 1742
     },
     {
-      "path": "README.md",
-      "sha256": "788c2add8c5de5a10b0e1f169d8150900310468e834cddc2e4c0bcf5d48bbf4f",
-      "bytes": 1649
+      "path": "renewal_brief.md",
+      "sha256": "26c19fd8957ecb10f52d5681590ed515af7524b9dc7b4f180bd32d4ffb1e388d",
+      "bytes": 1518
+    },
+    {
+      "path": "vendor_security_cache.md",
+      "sha256": "8e4ca763b6b6ae2ea6e848ac4f63aff098d49ba0c560a17dcddaab47e05b7598",
+      "bytes": 1117
     },
     {
       "path": "policy.md",
-      "sha256": "60ebda293f8f7b3201efd845a89e94d977a48ccbbe3203ddc602d1ee793fbff2",
-      "bytes": 2315
+      "sha256": "43215d3c542b5faa93b4ad5f3442e3dd612ded25acb4fa49bcad4efee1d9d993",
+      "bytes": 2825
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
-    },
-    {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "0db2c03bdb52024ff9fe383adf70860df492edbb0c16ebf5e5e92ba4f4f389e1",
-      "bytes": 489
-    },
-    {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "474c97b708451966e660d71980f0a39f630e166066468ba4064d0f0b45fc12f8",
-      "bytes": 1186
+      "path": "fixtures/web_content/content.json",
+      "sha256": "bce64f0f47b209e147bec1c9dcc446c94e877543f9310d318e216e0d4174e4ca",
+      "bytes": 1374
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1bc7549fa97fc4c5ce740f18f6bad3c2a71c6b101f27b00552ebef42c2716aab",
-    "bytes": 11574
+    "sha256": "2dcc2d17d036b6584d0b5e0ae19d83dbaa8b0ef27c25f475d750bb21bfb5647b",
+    "bytes": 11584
   }
 }

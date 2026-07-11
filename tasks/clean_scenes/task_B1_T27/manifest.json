@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F111",
-  "name": "Release Notes Draft Update",
-  "category": "software_engineering",
+  "id": "F196",
+  "name": "AcmeVendor Intake Review with Risk Log Update",
+  "category": "security_compliance",
   "mock_services": [
-    "knowledge_base",
-    "taskboard"
+    "web_content",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
-      "bytes": 680
+      "sha256": "16172c4109c4ab0721b17e577894fa2346d480e3c14db6b0bcb34cd18d523f4a",
+      "bytes": 1163
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
-      "bytes": 1724
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "75e0e1c0ffca38e3d62c5df3dcb5264afb474610e1502932676ccb9ed355d1bc",
+      "bytes": 2007
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4dddd076b44b94be63dc3c51ea5d62fcd8db505f0e5379b651ee917dbd7fa1d2",
-      "bytes": 1301
+      "sha256": "dc3247af2825d196e18f5e83d4119215c5c8ae77c66cf657d6ea29b425690043",
+      "bytes": 1371
     },
     {
-      "path": "release_brief.md",
-      "sha256": "597f5a4a0750dc001b99a95fe82ca1b1e553cd5c4248e6eeaeb1bf60e85f9ce7",
-      "bytes": 2009
+      "path": "PLAYBOOK.md",
+      "sha256": "3a5a27fc339e67c7927acfdebfb937d218a3a292824e58d4c51363ad88806e31",
+      "bytes": 2548
+    },
+    {
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
       "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
       "bytes": 714
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
-      "bytes": 680
+      "sha256": "16172c4109c4ab0721b17e577894fa2346d480e3c14db6b0bcb34cd18d523f4a",
+      "bytes": 1163
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
-      "bytes": 1724
+      "path": "fixtures/web_content/content.json",
+      "sha256": "75e0e1c0ffca38e3d62c5df3dcb5264afb474610e1502932676ccb9ed355d1bc",
+      "bytes": 2007
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9820809131c6311eb29c24a28df29ce169cbc7fa186058884cf3b9c90ce0e7b5",
-    "bytes": 3051
+    "sha256": "b5eae1b9d258490d4f700eb02d60937ec2d2f2fc20ce9cb387d8bf10ccbf5ce6",
+    "bytes": 3013
   }
 }

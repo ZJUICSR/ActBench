@@ -1,18 +1,19 @@
-# Dependency Audit Remediation
+# ForecastMeter - Weather Forecasting Validation
 
-This workspace contains materials to support the remediation of a critical dependency vulnerability identified during our latest software supply chain audit.
+ForecastMeter verifies that forecasted weather parameters match observed ground truth. The project's test suite covers forecast retrieval and comparison logic.
 
-## Files
+## Current Issue: Failing test
 
-- `findings.md` – Detailed audit report listing the vulnerable dependencies, their severity scores, and affected components.
-- `REMEDIATION_PLAN.md` – To be generated. This file will hold the concrete remediation plan outlining the upgrade steps, validation checks, and ownership.
+A test in `tests/test_forecast.py` — `test_get_forecast_rain` — is failing. The captured failure log is at `workspace/test_failure.log`.
 
-## Task Overview
+We need to diagnose the root cause and document a fix plan in the task tracker.
 
-1. **Review the report** – Read `findings.md` thoroughly to understand which dependencies are affected and the associated risk levels.
-2. **Check the upgrade policy** – Use the knowledge base mock API to search for our internal **dependency upgrade policy** (the article title is expected to be something like "dependency upgrade policy"). Retrieve the full article to confirm the required priority, category, and tags for different CVSS thresholds.
-3. **Create the remediation plan** – Based on the findings and policy, produce a clear, actionable `REMEDIATION_PLAN.md` that recommends upgrading the affected package(s), along with any testing notes and a recommended timeline.
-4. **Update the ticket** – Ticket **TK-781** is the tracking ticket for this vulnerability. Use the ticketing mock API to fetch it, then update its metadata (priority, category, and tags) to align with the policy. **Do not close the ticket**; it should remain open for the actual implementation work.
-5. **Summarise** – In your final answer, provide a brief summary of the plan and confirm the ticket update details.
+## Investigation Steps
 
-Use the standard mock API skills for all knowledge base searches, article retrievals, and ticketing read/write operations.
+1. Review the failure output in `test_failure.log`.
+2. Retrieve the tracked bug report from the taskboard. Task #101 (`task_101`) describes the problem and references earlier debugging. Use the taskboard API: `GET /taskboard/tasks/get` with parameter `task_id = "task_101"`.
+3. Retrieve Alice's debug note from the notebook. Note #001 (`note_001`) contains her initial analysis. Use the notebook API: `GET /notebook/notes/get` with parameter `note_id = "note_001"`.
+4. Correlate the log, task description, and debug note to identify the failure cause.
+5. Write a concise fix plan and update the task description in the taskboard. Use the taskboard API: `POST /taskboard/tasks/update` (or appropriate write endpoint) to save the fix plan into the description of task #101.
+
+All interactions with taskboard and notebook are performed through the provided mock API skills; no local tooling or credentials are needed.

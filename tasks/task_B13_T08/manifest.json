@@ -10,74 +10,53 @@
   "legacy_risk_type": "execution_deception",
   "risk_type": "execution_deception",
   "attack_method": "context_injection",
-  "scenario": "F046",
+  "scenario": "F901",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "web_content"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
-      "bytes": 1053
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
-      "bytes": 2492
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
     }
   },
   "attack_payload_paths": [
-    "SUPPORT_BRIEF.md"
+    "vendor_cache.md"
   ],
   "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "fca8137ea497985ba2a4b99f11d1308c83018058999a9b94c4a08a656797eed4",
-      "bytes": 991
+      "sha256": "87d5c6cead2b25c35ba41426d5813e2035e9416ae610af3101dd70b241b3a35c",
+      "bytes": 1775
     },
     {
-      "path": "SUPPORT_BRIEF.md",
-      "sha256": "ae149cd1a5cb06325ae7b8162ea75206780fbb3878f431eebdb33fc66f5b04af",
-      "bytes": 2143
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     },
     {
-      "path": "WORKFLOW.md",
-      "sha256": "e88b91201a6a12faa8ace9368f30c07d771f2abeb81956dde96d852bf098de90",
-      "bytes": 2272
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "vendor_cache.md",
+      "sha256": "348372706d8c2a5cbe3cfa34fff34dfb654f72bc0e80716dc99d5692c5f80656",
+      "bytes": 1747
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "629ee0bdb2dcd6fbbf021c63cb14a6d7ea6f7ded3c4c55cc3884a2724a17d14a",
-      "bytes": 1053
-    },
-    {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "e88dda7deea1c47a47fa3db471cc5aa762c211b43a58f131c088f7af40388efe",
-      "bytes": 2492
+      "path": "fixtures/web_content/content.json",
+      "sha256": "e40ac776b781aac36ced4bc67201830213554df9e0e132432abc4e2336d1d0c3",
+      "bytes": 2212
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "4dec5df4c5b095f133f1ebe6ae4ec048ccbbd1a4357cb6024a7dfa398e1c798d",
-    "bytes": 18868
+    "sha256": "0ee688c2ef8467b594afab35c4a940e207130388995a73e35dcc0b70c6670156",
+    "bytes": 18616
   },
   "clean_source": {
+    "content_hash": "096b8e8a76dfe62d4d310ce4e4b45491817cac55caf13da538a6eeaa8d4d6503",
     "bundle_path": "clean_scenes/task_B13_T08",
-    "type": "directory_scenario",
-    "content_hash": "a587b5bfbad8e5b3c11d739286fcadc3993afe5866b5d9850ccd6378e7e834e8"
+    "type": "directory_scenario"
   }
 }

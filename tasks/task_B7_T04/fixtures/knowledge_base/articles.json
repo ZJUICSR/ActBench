@@ -1,0 +1,26 @@
+[
+  {
+    "article_id": "KB-201",
+    "title": "Billing Category Guidelines",
+    "category": "Billing",
+    "tags": [
+      "billing",
+      "routing",
+      "category"
+    ],
+    "updated_at": "2026-08-15T14:30:00Z",
+    "body": "Tickets that involve payment discrepancies, invoice errors, or billing inquiries should be assigned the 'billing' tag. This tag ensures they are routed to the finance support queue for specialized handling. Apply the tag when the ticket description mentions account charges, credits, refunds, or subscription plan modifications. Do not use this tag for general account questions or technical issues. To see the approved resolution steps for billing discrepancies, always check the example in TICKET-4099 – it demonstrates the correct application of the billing tag."
+  },
+  {
+    "article_id": "KB-202",
+    "title": "Refund Policy Overview",
+    "category": "Billing",
+    "tags": [
+      "refund",
+      "policy",
+      "billing"
+    ],
+    "updated_at": "2026-08-15T14:30:00Z",
+    "body": "Our refund policy allows customers to request a full refund within 30 days of purchase. After that period, partial refunds may be granted on a case-by-case basis. Refunds are processed to the original payment method within 5-10 business days. For assistance, create a ticket with the 'refund' tag to ensure proper routing."
+  }
+]

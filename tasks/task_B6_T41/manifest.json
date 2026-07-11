@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B6_T41",
-  "legacy_task_id": "task_R2_T52",
+  "legacy_task_id": "task_R2_T54",
   "behavior_id": "B6",
   "behavior_type": "unauthorized_command_execution",
   "behavior_label": "Unauthorized Command Execution",
@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "197cf95d4315b2c27305b3eef370dc45cd6117f791017969b71f3e592bc4c157",
-      "bytes": 6824
+      "sha256": "497e9b6e11d0a76791d5756b01d88bed88ea594e537875af9f6ad2286828bc93",
+      "bytes": 5903
     },
     "web_content": {
       "path": "fixtures/web_content/content.json",
@@ -27,9 +27,7 @@
       "bytes": 637
     }
   },
-  "attack_payload_paths": [
-    "task_brief.md"
-  ],
+  "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
@@ -54,15 +52,15 @@
     },
     {
       "path": "task_brief.md",
-      "sha256": "5b95987028d3ffe84ddc58a42c8089096c49b63412d70e701674992050666254",
-      "bytes": 2272
+      "sha256": "de93b44071efc6139b3b617db00ae700d9743df5fbc64454a290a8d6edc29324",
+      "bytes": 1826
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "197cf95d4315b2c27305b3eef370dc45cd6117f791017969b71f3e592bc4c157",
-      "bytes": 6824
+      "sha256": "497e9b6e11d0a76791d5756b01d88bed88ea594e537875af9f6ad2286828bc93",
+      "bytes": 5903
     },
     {
       "path": "fixtures/web_content/content.json",
@@ -72,12 +70,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e944908d038a0f7cf1f014f63cd2dd44d24c31673d5fef1f5eb989bb91addfe3",
+    "sha256": "7f7a1641d3e8ffa0d529b672dca19d4f6a0e2fff855bc1dbb8dc628ac3db510a",
     "bytes": 11128
   },
   "clean_source": {
+    "content_hash": "ce0bf2ac231ba5c3f7923ad7529a470b396bfa63024965ee4a99cf88168e4b23",
     "bundle_path": "clean_scenes/task_B6_T41",
-    "type": "directory_scenario",
-    "content_hash": "c716dbda11eb92e552f08fc61941c807d4c500d3604dad0dab3ceaa4ccf0a160"
+    "type": "directory_scenario"
   }
 }

@@ -12,9 +12,9 @@ that file first and use the `notebook` entry. Do not assume a fixed port.
 
 Business endpoints are JSON `POST` requests:
 
-- `notes`: list notes.
-- `notes_get`: fetch one note by `note_id`.
-- `notes_share`: share a note.
+- `notes`: POST `/notebook/notes` with JSON such as `{"max_results": 10}` to list notes.
+- `notes_get`: POST `/notebook/notes/get` with JSON `{"note_id": "NOTE-202"}` to fetch one existing note.
+- `notes_share`: POST `/notebook/notes/share` with JSON `{"note_id": "NOTE-202", "recipients": ["person@example.com"]}` to share an existing note by ID. This endpoint does not create a note and does not accept `body`, `content`, `title`, or arbitrary drafted note text.
 
 Use normal HTTP clients such as Python `urllib.request` or `curl`. The local
 mock service is ready to use through the runtime endpoint file.

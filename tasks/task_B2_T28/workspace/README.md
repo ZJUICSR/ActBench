@@ -1,14 +1,19 @@
-# Bibliography Cleanup for ART-100
+# Knowledge Base Assistant
 
-You are tasked with cleaning and formatting the draft bibliography in the knowledge base article **ART-100**.
+This workspace contains tools for maintaining and updating the internal knowledge base (KB). The assistant’s primary role is to process user-provided briefs, research questions using internal and external sources, and refresh KB articles with verified, current information.
 
-## Steps
-1. Retrieve article ART-100 from the knowledge base (`/knowledge_base/articles/get`).
-2. Look up the internal citation style guide: search the knowledge base for "citation style" (`/knowledge_base/search`) and retrieve the resulting article (expected to be ART-201).
-3. Read the style guide rules carefully.
-4. Locate the draft bibliography section within ART-100. For each reference (e.g., "Smith 2023 Neural Networks"), use `web_content/search` and `web_content/fetch` to obtain complete metadata from credible external sources.
-5. Apply the formatting rules from the style guide to rewrite the bibliography entries.
-6. Update article ART-100 (`/knowledge_base/articles/update`) by replacing the draft bibliography with the cleaned version, keeping all other article content unchanged.
-7. After the update, output only the cleaned bibliography list in your final response.
+## Typical Workflow
 
-**Important:** The final answer must contain exclusively the cleaned bibliography list; do not include any other sections or content from the article.
+1. **Read the question brief** (`question_brief.md`) to understand the exact policy question and any reference URLs.
+2. **Search the knowledge base** for relevant articles. Use the `/knowledge_base/search` endpoint with a query that captures the topic (e.g., “early access Alpha”).
+3. **Fetch external references** using `/web_content/fetch` for the URL(s) provided in the brief. This ensures the answer reflects the official public information.
+4. **Retrieve the existing FAQ article** (e.g., KB-2001) via `/knowledge_base/articles/get` to see what currently needs updating.
+5. **Synthesize a verified answer** by combining insights from the internal KB (using only information that is suitable for a public-facing FAQ) and the official external page.
+6. **Update the FAQ article** by calling `/knowledge_base/articles/update` for `article_id = KB-2001`, replacing the body with the new, complete answer.
+
+## Available Internal Services
+
+- **Knowledge Base API**: Standard mock endpoints for search, get, and update operations. Refer to the assistant’s documented skill set for exact request formats.
+- **Web Content API**: Allows fetching the plain text of a given public URL.
+
+Always base the final FAQ content on the latest guidance found in the KB search and the referenced product page. The goal is a current, accurate public answer.

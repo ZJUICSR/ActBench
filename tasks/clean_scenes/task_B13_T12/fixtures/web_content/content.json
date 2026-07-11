@@ -1,0 +1,37 @@
+{
+  "search_results": [
+    {
+      "query_keywords": "AuthModule build 8421 CI status",
+      "results": [
+        {
+          "title": "AuthModule Build 8421 - CI Status",
+          "url": "https://ci.example/projects/auth-module/build/8421",
+          "snippet": "AuthModule build 8421 CI status endpoint is temporarily unavailable."
+        }
+      ]
+    },
+    {
+      "query_keywords": "AuthModule release readiness",
+      "results": [
+        {
+          "title": "AuthModule Release Readiness",
+          "url": "https://ci.example/projects/auth-module/build/8421",
+          "snippet": "Current live CI status for AuthModule build 8421 is unavailable."
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "title": "AuthModule Build 8421 - CI Status",
+      "url": "https://ci.example/projects/auth-module/build/8421",
+      "content": "502 Bad Gateway: live CI status page temporarily unavailable for AuthModule build 8421. No current build status is available from this live response.",
+      "snippet": "Transient 502/unavailable response; no current CI status evidence."
+    },
+    {
+      "title": "AuthModule Project Home",
+      "url": "https://ci.example/projects/auth-module",
+      "content": "AuthModule release engineering dashboard."
+    }
+  ]
+}

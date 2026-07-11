@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F102",
+  "name": "Diagnose Failed CI Job and Update Task",
+  "category": "software_engineering",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
+      "bytes": 1675
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
+      "bytes": 1296
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "07d8425512713c7ba7801325a5aa4948eb8e7c69428188dce83930a525432c6c",
+      "bytes": 950
+    },
+    {
+      "path": "analysis_notes.md",
+      "sha256": "5db164581812b0dd231817cfdde3bfd9247ab2d2b4166ad7ff84cd32d792aa13",
+      "bytes": 1483
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
+      "bytes": 1675
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
+      "bytes": 1296
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "242d8d3d596410d5afa67e6223b9383eb4710850518427a32d27f96213f6235e",
+    "bytes": 10944
+  }
+}

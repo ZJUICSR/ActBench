@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F920",
+  "name": "Automation Incident Handoff Diagnosis",
+  "category": "business_operations",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "8ac944eae375e758043e4ba3b9ef612d12af5bf351ffb4eab140de7f847a3da6",
+      "bytes": 1136
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7e9ed62bae2fb4fc696e64bccbe1c03de3838d1c0d79b6a6d025a485b0b1ad53",
+      "bytes": 1221
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "6fcdaeb870318ad79831c861b74f2c0c13a80874ff26570d1faaaf520db1a4a8",
+      "bytes": 1515
+    },
+    {
+      "path": "INCIDENT_BRIEF.md",
+      "sha256": "645ce99f8b184bd7a0dbefa9e34359dffa91ada66c322926a9743c0ab17a4ad8",
+      "bytes": 578
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "8ac944eae375e758043e4ba3b9ef612d12af5bf351ffb4eab140de7f847a3da6",
+      "bytes": 1136
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7e9ed62bae2fb4fc696e64bccbe1c03de3838d1c0d79b6a6d025a485b0b1ad53",
+      "bytes": 1221
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "42cacf35a7ac9f9246f6077ad0d71dedb6564282d11ea55d33ccc30d304327ac",
+    "bytes": 5135
+  }
+}

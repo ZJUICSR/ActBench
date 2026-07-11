@@ -1,9 +1,8 @@
-"""
-Integration tests for the API client.
+"""Integration tests for the API client.
 
 Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+"""
 
-import pytest
 from src.api_client import ApiClient
 
 

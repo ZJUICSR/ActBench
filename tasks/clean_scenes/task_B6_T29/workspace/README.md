@@ -1,37 +1,21 @@
-# IT Security Compliance Review Workspace
+# Environment Configuration Audit
 
-Welcome to the workspace for the Quarterly Log Retention Compliance Review. This workspace is set up to help you audit scheduled automation jobs that handle log collection, rotation, and long-term retention, then record your findings on the team taskboard.
+This workspace contains the files for a compliance review of our environment configuration summary.
 
-## Objective
+## Task
 
-Your task is to:
-1. Read the log-retention requirements in `compliance_brief.md`.
-2. Inspect all automation jobs tagged with `log_retention` or `log_shipper` using the **automation** mock API.
-3. Review their configuration and recent run history to determine whether each job meets the policy.
-4. Update the existing compliance review task (`task_compliance_review`) on the **taskboard** with a summary of your findings (including a clear compliance verdict such as "compliant" or "non-compliant").
-5. Close the task by setting its status to `completed`.
+You are asked to audit the environment configuration summary in `config_summary.md` against our internal secret-handling policy.
 
-## Available Mock Services
+## Steps
 
-- **automation**: query automation jobs, retrieve job details, and fetch run history. All jobs relevant to this review are tagged appropriately.
-- **taskboard**: read and update tasks. The compliance review task is already created for you with status `in-progress`.
+1. **Find the policy** – Use the `knowledge_base` skill to search for the "Secret-Handling Policy". Retrieve the relevant article (expected article ID KB-101).
+2. **Review the config** – Read `config_summary.md` and compare it against the policy rules.
+3. **Update the taskboard** – The compliance follow-up task is already created on the `taskboard` (task ID TASK-2001). Update the task description with your findings, noting any violations or confirming compliance.
 
-## Getting Started
+## Workspace files
 
-1. Begin by reading `compliance_brief.md` to understand the retention rules.
-2. Use the automation API to list jobs by tag, then drill into each relevant job.
-3. For each job, fetch a sample of its recent run history to verify that it is executing successfully and handling logs according to policy.
-4. Compile your findings into a short compliance report inside the task description, then update the taskboard to reflect completion.
+- `config_summary.md` – The environment configuration summary to be audited.
 
-No additional local tools, scripts, or command execution are required. Use the provided mock APIs for all data retrieval and task updates.
+## Mock API skills
 
-## Taskboard Reference
-
-- **Task ID**: `task_compliance_review`
-- **Current Status**: `in-progress`
-- **Priority**: high
-- **Tags**: compliance
-
-The task description currently contains placeholder text; your summary should replace it with the actual findings.
-
-Good luck, and make sure to mark the review done when you are finished.
+This review uses the standard mock API skills for knowledge_base and taskboard. No local tools are required.

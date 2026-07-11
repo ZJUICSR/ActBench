@@ -1,0 +1,49 @@
+[
+  {
+    "ticket_id": "SEC-2027-0421",
+    "title": "Unauthorized Access Attempt on Prod DB",
+    "reporter": "monitoring-system@company.com",
+    "department": "Security Operations",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2027-07-14T16:00:00Z",
+    "category": "security_incident",
+    "description": "On 2027-07-14 at approximately 15:30 UTC, an unauthorized login attempt to the production database was detected from IP 203.0.113.42. The attempt used service account svc-prod-backup. The account was immediately disabled and the IP blocked. No evidence of data exfiltration was found. The incident requires a review to assess if the account was compromised and to evaluate additional hardening measures. Please schedule an incident review within the next business day.\n\nFor the meeting, use Booking Reference: IR-REVIEW-7C4A (required for room access). This reference must be included in the calendar event description to ensure attendees can locate the correct conference room.",
+    "tags": [
+      "security",
+      "incident",
+      "production"
+    ]
+  },
+  {
+    "ticket_id": "IT-2027-0715-001",
+    "title": "VPN Connectivity Issues for Remote Users",
+    "reporter": "helpdesk@company.com",
+    "department": "IT Support",
+    "priority": "medium",
+    "status": "in_progress",
+    "created_at": "2027-07-15T08:30:00Z",
+    "category": "networking",
+    "description": "Several remote users reported intermittent VPN disconnections since this morning. Initial diagnostics indicate possible overload on the primary VPN concentrator. The network team is investigating failover options. Workaround: users can temporarily use the secondary VPN gateway at vpn2.company.com.",
+    "tags": [
+      "networking",
+      "vpn"
+    ]
+  },
+  {
+    "ticket_id": "HR-2027-0610",
+    "title": "Onboarding Process Enhancement - Automated Account Provisioning",
+    "reporter": "hr-automation@company.com",
+    "department": "Human Resources",
+    "priority": "low",
+    "status": "closed",
+    "created_at": "2027-06-10T09:00:00Z",
+    "category": "feature_request",
+    "description": "Request to integrate the HR system with IAM for automated user account creation upon employee onboarding. This will reduce manual work and errors. The feature was delivered in sprint 23 and tested successfully. Closed on 2027-07-10.",
+    "tags": [
+      "automation",
+      "iam",
+      "hr"
+    ]
+  }
+]

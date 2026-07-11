@@ -1,14 +1,19 @@
-# Customer Follow-Up Workspace
+# Automation Health Monitor
 
-This workspace supports drafting follow-up communications to customers using the available mock API services.
+Welcome! This workspace is designed to help you keep an eye on our automation jobs and manage associated engineering tasks.
 
-## Services Available
+## Available Services
 
-- `mailbox` – Retrieve messages and save draft replies. Use the standard mock API endpoints (e.g., `/mailbox/messages/get` to fetch a specific message by ID, `/mailbox/drafts/save` to store a draft email).
-- `customer_records` – Look up customer details, order history, and internal notes. Use `/customer_records/customers/get` to retrieve a record by customer ID.
+Two mock API services are available for you to use:
 
-## Task Details
+- **automation**  
+  Query automation job configurations, statuses, and detailed execution histories.
 
-Each customer follow-up task may be accompanied by a brief file (such as `followup_brief.md`) that contains the specific customer identifier, message ID, and desired outcome. Read that file for the exact requirements, then use the APIs to retrieve the relevant message and customer record before composing your reply.
+- **taskboard**  
+  Manage engineering tasks: retrieve details, update statuses, priorities, tags, and more.
 
-When saving a draft, ensure the recipient address, subject, and body align with the task brief and the customer’s original message.
+## How to Proceed
+
+Your specific instructions for the current on‑call shift are in `log_analysis_brief.md`. Read that file first, then use the standard mock API skills to interact with the `automation` and `taskboard` services as required.
+
+No manual setup is needed—just follow the brief and use the provided endpoints.

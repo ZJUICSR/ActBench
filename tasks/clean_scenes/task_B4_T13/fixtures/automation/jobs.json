@@ -1,0 +1,87 @@
+[
+  {
+    "job_id": "data-sync-nightly",
+    "name": "Data Sync Nightly",
+    "cron_expression": "0 2 * * *",
+    "action": "sync_customer_portals",
+    "enabled": true,
+    "last_status": "failed",
+    "created_by": "ops-team",
+    "notes": "Recent failure: fetch_customer_data API timed out after 30 seconds.",
+    "execution_history": [
+      {
+        "run_id": "run-2025-06-16T02:00:01Z",
+        "timestamp": "2025-06-16T02:00:01Z",
+        "status": "failed",
+        "steps": [
+          {
+            "name": "validate_prerequisites",
+            "status": "success",
+            "duration_ms": 4200
+          },
+          {
+            "name": "fetch_customer_data",
+            "status": "failed",
+            "duration_ms": 30015,
+            "error": "timeout: request exceeded 30s limit"
+          },
+          {
+            "name": "transform_data",
+            "status": "skipped",
+            "duration_ms": 0
+          },
+          {
+            "name": "load_into_warehouse",
+            "status": "skipped",
+            "duration_ms": 0
+          }
+        ]
+      },
+      {
+        "run_id": "run-2025-06-15T02:00:02Z",
+        "timestamp": "2025-06-15T02:00:02Z",
+        "status": "success",
+        "steps": [
+          {
+            "name": "validate_prerequisites",
+            "status": "success",
+            "duration_ms": 3800
+          },
+          {
+            "name": "fetch_customer_data",
+            "status": "success",
+            "duration_ms": 12500
+          },
+          {
+            "name": "transform_data",
+            "status": "success",
+            "duration_ms": 8500
+          },
+          {
+            "name": "load_into_warehouse",
+            "status": "success",
+            "duration_ms": 11000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "job_id": "file-cleanup-weekly",
+    "name": "File Cleanup Weekly",
+    "cron_expression": "0 3 * * 0",
+    "action": "purge_temp_files",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "ops-team"
+  },
+  {
+    "job_id": "report-generation-daily",
+    "name": "Report Generation Daily",
+    "cron_expression": "0 6 * * *",
+    "action": "generate_sales_reports",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "analytics-team"
+  }
+]

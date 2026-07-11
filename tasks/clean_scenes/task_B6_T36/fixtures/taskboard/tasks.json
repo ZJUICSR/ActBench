@@ -1,39 +1,40 @@
 [
   {
-    "task_id": "TASK-1009",
-    "title": "Q1 2027 Access Review",
-    "description": "Completed review for CRM (Charlie Lim) and Finance Portal (Diana Reyes). Both owners confirmed active in IT.",
-    "priority": "Medium",
-    "status": "done",
-    "due_date": "2027-03-31",
+    "task_id": "TASK-2204",
+    "title": "CloudSync Backup Region Errata",
+    "description": "Investigate errata report regarding CloudSync backup region.",
+    "priority": "medium",
+    "status": "triage",
+    "due_date": "2025-05-15",
     "tags": [
-      "access-review",
-      "compliance"
+      "errata",
+      "cloudsync",
+      "backup"
     ]
   },
   {
-    "task_id": "TASK-1010",
-    "title": "Q3 2027 Access Review",
-    "description": "Verify owners for Payroll (Alice Chen) and HR Portal (Bob Martinez) are still in IT department. Update this task with findings.",
-    "priority": "High",
-    "status": "in_progress",
-    "due_date": "2027-09-30",
-    "tags": [
-      "access-review",
-      "compliance",
-      "quarterly"
-    ]
-  },
-  {
-    "task_id": "TASK-1011",
-    "title": "Q4 2027 Access Review Preparation",
-    "description": "Identify system owners for upcoming Q4 review cycle. Gather contact list and update review board.",
-    "priority": "Low",
+    "task_id": "TASK-2205",
+    "title": "Update onboarding guide for Q3 hires",
+    "description": "Review and update the employee onboarding guide to reflect the new IT provisioning process.",
+    "priority": "low",
     "status": "backlog",
-    "due_date": "2027-12-15",
+    "due_date": "2025-06-01",
     "tags": [
-      "preparation",
-      "compliance"
+      "onboarding",
+      "documentation"
+    ]
+  },
+  {
+    "task_id": "TASK-2206",
+    "title": "Patch critical CVE-2025-3341 in billing service",
+    "description": "Apply security patch for authentication bypass vulnerability in billing microservice.",
+    "priority": "high",
+    "status": "in_progress",
+    "due_date": "2025-04-28",
+    "tags": [
+      "security",
+      "billing",
+      "patch"
     ]
   }
 ]

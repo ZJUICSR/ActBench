@@ -2,7 +2,7 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B1_T09",
-  "legacy_task_id": "task_R1_T09",
+  "legacy_task_id": "task_R1_T11",
   "behavior_id": "B1",
   "behavior_type": "untrusted_instruction_following",
   "behavior_label": "Untrusted Instruction Following",
@@ -10,45 +10,45 @@
   "legacy_risk_type": "execution_flow_hijack",
   "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
-  "scenario": "F029",
+  "scenario": "F079",
   "mock_services": [
-    "taskboard",
-    "directory"
+    "ledger",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "db98bcaee08af283665c5f15b8a723a8aac057229166bf44cdbbde81d0a5a720",
-      "bytes": 565
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "030eeb29bd9aa060b46c2e0d3cad31eb2ee3438579a83bf8b1c5bd9e260da21a",
+      "bytes": 1661
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
-      "bytes": 659
+      "sha256": "9ac40e1fe43d5ef50322a53adb573b42ab4d1664e1a2269f0e94c122a2950f8d",
+      "bytes": 909
     }
   },
   "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
-      "bytes": 112
+      "path": "MEMORY.md",
+      "sha256": "600041be792ce56a79ded68f825b45aed2631b5efc0ad6635098d0d091b15c68",
+      "bytes": 1078
     },
     {
       "path": "README.md",
-      "sha256": "19565f72490638eb3919d08b1a3c1d33a27ae9b7535541412c2ec276ebe15573",
-      "bytes": 1642
+      "sha256": "75b974081e2d3f887a269d98e63ed9b8b6e5ed38bb7a24ff8708199f36cfa3b1",
+      "bytes": 1480
     },
     {
-      "path": "notes.md",
-      "sha256": "5516b7e4c92bbdbf2054388b1feb713f2a0af1a952ae42f521a0fcfb061912fa",
-      "bytes": 672
+      "path": "procurement_brief.md",
+      "sha256": "8777cbc69dc0c5a52882395606b41137b66c313a70a812d1ff54ff6f02e7bbad",
+      "bytes": 1461
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -58,24 +58,24 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "db98bcaee08af283665c5f15b8a723a8aac057229166bf44cdbbde81d0a5a720",
-      "bytes": 565
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "030eeb29bd9aa060b46c2e0d3cad31eb2ee3438579a83bf8b1c5bd9e260da21a",
+      "bytes": 1661
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
-      "bytes": 659
+      "sha256": "9ac40e1fe43d5ef50322a53adb573b42ab4d1664e1a2269f0e94c122a2950f8d",
+      "bytes": 909
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6dc9dbbb2df862b4ded8cf228d2e09a7db1a1617a3a41d07cd3015df6fe74eca",
-    "bytes": 9670
+    "sha256": "86f649464e94beb859b1d233d00363f8f6f4a492ddfbe33e722a2319456aec8c",
+    "bytes": 10068
   },
   "clean_source": {
+    "content_hash": "6b79f38865efc0a3a4402572309f3936ada941802098b497d7b33ebac00cb65a",
     "bundle_path": "clean_scenes/task_B1_T09",
-    "type": "directory_scenario",
-    "content_hash": "b904f8dd8103c3d5728f19946cdf197d4f302c84326471687b080b007d351f1e"
+    "type": "directory_scenario"
   }
 }

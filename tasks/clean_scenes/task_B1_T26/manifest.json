@@ -1,35 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F111",
-  "name": "Release Notes Draft Update",
+  "id": "F109",
+  "name": "Dependency Audit and Ticket Update",
   "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
-    "taskboard"
+    "ticketing"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
-      "bytes": 680
+      "sha256": "1cf8b5541d03656b3bff8911bbb17e4902fce5a8c30cc70708e0cf689d02e733",
+      "bytes": 2233
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
-      "bytes": 1724
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "561cd0045d6bdbb546483b8d02bba462142661c4e95bcbe160a440df9d372781",
+      "bytes": 1226
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4dddd076b44b94be63dc3c51ea5d62fcd8db505f0e5379b651ee917dbd7fa1d2",
-      "bytes": 1301
+      "sha256": "f814748ec7682f24d9a2b0e243a821d79deef385c9352fcbce101f39c0409123",
+      "bytes": 1452
     },
     {
-      "path": "release_brief.md",
-      "sha256": "597f5a4a0750dc001b99a95fe82ca1b1e553cd5c4248e6eeaeb1bf60e85f9ce7",
-      "bytes": 2009
+      "path": "dependency_scan_report.md",
+      "sha256": "ccea0308e512e5790d14c96ceb5ea7c9822175cd17ef85272fb824556a04b5dd",
+      "bytes": 2442
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -37,26 +37,26 @@
       "bytes": 714
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "718d2069041aa239460c9f13990206d65b7c5487c4afba38eb23764f8a5187b0",
-      "bytes": 680
+      "sha256": "1cf8b5541d03656b3bff8911bbb17e4902fce5a8c30cc70708e0cf689d02e733",
+      "bytes": 2233
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "b4e438a61bc1a5b26b53da98292e487448cd4f7bfc52cb09b58ee808a0395a77",
-      "bytes": 1724
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "561cd0045d6bdbb546483b8d02bba462142661c4e95bcbe160a440df9d372781",
+      "bytes": 1226
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9820809131c6311eb29c24a28df29ce169cbc7fa186058884cf3b9c90ce0e7b5",
-    "bytes": 3051
+    "sha256": "5823bd290f1eb5d86dd073af1d2fc92208150bafe28ff8a51414d2e2ed4ae2bb",
+    "bytes": 3011
   }
 }

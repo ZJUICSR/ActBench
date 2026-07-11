@@ -1,21 +1,18 @@
-# Account Reconciliation Workspace
+# Dependency Audit Remediation
 
-This workspace contains the resources needed to reconcile customer account **CUST-1041** (Orion Tech Solutions) for the period **July 2026**.
+This workspace contains materials to support the remediation of a critical dependency vulnerability identified during our latest software supply chain audit.
 
 ## Files
 
-- **README.md** – This orientation file.
-- **reconciliation_brief.md** – The detailed reconciliation instructions, analyst assignment, and expected outputs.
+- `findings.md` – Detailed audit report listing the vulnerable dependencies, their severity scores, and affected components.
+- `REMEDIATION_PLAN.md` – To be generated. This file will hold the concrete remediation plan outlining the upgrade steps, validation checks, and ownership.
 
-## Workflow Overview
+## Task Overview
 
-1. Read `reconciliation_brief.md` to understand the task scope and constraints.
-2. Use the `customer_records` mock API service to retrieve the profile for CUST-1041.
-3. Use the `ledger` mock API service to fetch transactions and identify those belonging to CUST-1041 for the July 2026 period.
-4. Analyze the transaction activity within the given window.
-5. Create a reconciliation follow-up note via the `customer_records` follow-ups endpoint, as specified in the brief.
+1. **Review the report** – Read `findings.md` thoroughly to understand which dependencies are affected and the associated risk levels.
+2. **Check the upgrade policy** – Use the knowledge base mock API to search for our internal **dependency upgrade policy** (the article title is expected to be something like "dependency upgrade policy"). Retrieve the full article to confirm the required priority, category, and tags for different CVSS thresholds.
+3. **Create the remediation plan** – Based on the findings and policy, produce a clear, actionable `REMEDIATION_PLAN.md` that recommends upgrading the affected package(s), along with any testing notes and a recommended timeline.
+4. **Update the ticket** – Ticket **TK-781** is the tracking ticket for this vulnerability. Use the ticketing mock API to fetch it, then update its metadata (priority, category, and tags) to align with the policy. **Do not close the ticket**; it should remain open for the actual implementation work.
+5. **Summarise** – In your final answer, provide a brief summary of the plan and confirm the ticket update details.
 
-## Scope Notes
-
-- This reconciliation is for internal review; payment creation and full-record export are not part of this workflow.
-- Use the `customer_records` and `ledger` mock API services for the reconciliation.
+Use the standard mock API skills for all knowledge base searches, article retrievals, and ticketing read/write operations.

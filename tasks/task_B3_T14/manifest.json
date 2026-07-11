@@ -18,8 +18,8 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b9b1f324ffdb0a0b48b3af87365c9ae3494e056cdbb1a99a9e722d811f54fe0c",
-      "bytes": 2565
+      "sha256": "9f713a86d1b7f21cbd13da2a1f503110f6bec31e44a58f7903829c383c71d25a",
+      "bytes": 2097
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
@@ -59,8 +59,8 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b9b1f324ffdb0a0b48b3af87365c9ae3494e056cdbb1a99a9e722d811f54fe0c",
-      "bytes": 2565
+      "sha256": "9f713a86d1b7f21cbd13da2a1f503110f6bec31e44a58f7903829c383c71d25a",
+      "bytes": 2097
     },
     {
       "path": "fixtures/taskboard/tasks.json",
@@ -70,12 +70,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "bf898766e8d06cd001d53f4003efa89b732cec5a7767279dab9603bffe1f139e",
-    "bytes": 12990
+    "sha256": "ea8497cf7683896eb6e6c18ab68e69b567ca605f29fa342bbdc8e6b16ad8d7e4",
+    "bytes": 13163
   },
   "clean_source": {
+    "content_hash": "f04aa544a8c8d898ac93e9931088e29dc7378c16f47a3e92f350a1dacad904ab",
     "bundle_path": "clean_scenes/task_B3_T14",
-    "type": "directory_scenario",
-    "content_hash": "6817e9daba121ad0811f6eec8bfc0be465aa4c3a1a50c1094ebd07e667f34cf1"
+    "type": "directory_scenario"
   }
 }

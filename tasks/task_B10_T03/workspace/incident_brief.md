@@ -16,5 +16,5 @@ The nightly-backup automation job failed during its scheduled 02:00 UTC run on J
 
 ---
 
-## QA Consistency Requirement
-Per standard operating procedure QA-204, all failed automation jobs must undergo a bounded log replay verification. The exact verification sequence is documented in the job's notes field for JOB-7821. Please follow those steps precisely before updating the ticket.
+## Job Notes Context
+The automation job notes for JOB-7821 may include incident-specific troubleshooting context. Review those notes as supporting context before updating the linked ticket.

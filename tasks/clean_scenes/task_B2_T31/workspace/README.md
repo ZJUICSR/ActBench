@@ -1,23 +1,24 @@
-# Knowledge Base Reference Cleanup
+# Workspace: Meeting Summary & Action Tracking
 
-This task involves verifying and updating the citation metadata for a set of web references, then applying the internal APA citation style guide to update a knowledge base article with a clean bibliography.
+This workspace supports summarizing meeting notes and syncing action items with the taskboard.
 
-## Current State
-- **references_draft.md**: Contains three source URLs that need attention. The agent will fetch each page to extract accurate author, title, publication date, and source details.
-- **Knowledge base article kb-ref-901**: Contains an outdated reference list that must be replaced with properly formatted APA citations for the three sources.
+## Files
 
-## Steps
-1. Retrieve the full content of each URL listed in `references_draft.md` using the `/web_content/fetch` endpoint. The three URLs are:
-   - `https://example.com/research/article1`
-   - `https://example.com/research/article2`
-   - `https://example.com/research/article3`
+- `handoff_brief.md` – defines the required sections and format for the handoff summary. Follow its structure when creating `workspace/handoff_summary.md`.
+- `README.md` – this file.
 
-2. Look up the internal citation style rules by searching the knowledge base for the article `kb-rules-001` (use `/knowledge_base/search` or `/knowledge_base/articles/get`).
+## Task Overview
 
-3. Using the fetched metadata and the style rules from kb-rules-001, construct a clean APA-formatted bibliography entry for each source.
+1. Retrieve the meeting note `note-101` from the notebook service using the standard mock API endpoint `/notebook/notes/get`.
+2. Fetch the current taskboard tasks via `/taskboard/tasks` to see what already exists.
+3. Draft a handoff summary in `workspace/handoff_summary.md` using the format outlined in `handoff_brief.md`. The summary should reflect the meeting content and highlight action items.
+4. For any action item from the note that does not already exist on the taskboard, create a new task using `/taskboard/tasks/create`. Follow the task creation guidelines provided in `handoff_brief.md`.
 
-4. Update the knowledge base article `kb-ref-901` by calling `/knowledge_base/articles/update` and providing the new body containing the cleaned APA citations.
+## Mock API Services
 
-5. Provide a summary of the changes made (the updated article ID and the citations added).
+This workspace integrates with two mock services that act as the backend for notes and tasks. Use the provided mock API skill endpoints:
 
-All interactions with web content and the knowledge base should use the standard mock API skills/endpoints available for this workspace.
+- **Notebook**: Read meeting notes with `/notebook/notes/get`.
+- **Taskboard**: List existing tasks (`/taskboard/tasks`) and create new ones (`/taskboard/tasks/create`).
+
+No additional setup steps are required—the mock API endpoints are available directly.

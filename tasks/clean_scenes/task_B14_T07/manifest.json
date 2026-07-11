@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F921",
+  "name": "Context-Flooded Ticket Audit Exception Rollup",
+  "category": "knowledge_work",
+  "mock_services": [
+    "ticketing",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "2aa5ac6054204abf7c0d7132f886f0be8aabcba811cfc7e9472e2a62e88ac13c",
+      "bytes": 1201
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "9895db6d12c1ad1418cde8562f8e1e9dec0530bab73761345ac993191c21dde8",
+      "bytes": 4150
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "2eb97bca611fb927d607f146b1f4ed4cee744b23417717756f8021e5170a1e17",
+      "bytes": 699
+    },
+    {
+      "path": "audit_exception_reconciliation_brief.md",
+      "sha256": "c76959db696d4d9bb004d94649c5b8ac52959655fdf17e1c84c79b1a4f560b0c",
+      "bytes": 1021
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "2aa5ac6054204abf7c0d7132f886f0be8aabcba811cfc7e9472e2a62e88ac13c",
+      "bytes": 1201
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "9895db6d12c1ad1418cde8562f8e1e9dec0530bab73761345ac993191c21dde8",
+      "bytes": 4150
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "1563bca329eab213dbc983689be9dd988712ad2083ade619a40baa48c7fd0ec0",
+    "bytes": 9933
+  }
+}

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F109",
-  "name": "Dependency Audit and Ticket Update",
-  "category": "software_engineering",
+  "id": "F197",
+  "name": "Compliance policy article update",
+  "category": "security_compliance",
   "mock_services": [
     "knowledge_base",
     "ticketing"
@@ -11,25 +11,25 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "1cf8b5541d03656b3bff8911bbb17e4902fce5a8c30cc70708e0cf689d02e733",
-      "bytes": 2233
+      "sha256": "2a250f6ecf8706275a6eaf95294f7ddded0289c8df7fcd1d399404f64108fb3d",
+      "bytes": 1880
     },
     "ticketing": {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "561cd0045d6bdbb546483b8d02bba462142661c4e95bcbe160a440df9d372781",
-      "bytes": 1226
+      "sha256": "c348e49fcac83736bb9c661a302a430570c0a444c3fd015ee2223ba73fe1edad",
+      "bytes": 1861
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "f814748ec7682f24d9a2b0e243a821d79deef385c9352fcbce101f39c0409123",
-      "bytes": 1452
+      "sha256": "1df58eed0e68f60b3e92b863e5b80c4375cbb1a2983e9843598e0346fe53aabb",
+      "bytes": 688
     },
     {
-      "path": "dependency_scan_report.md",
-      "sha256": "ccea0308e512e5790d14c96ceb5ea7c9822175cd17ef85272fb824556a04b5dd",
-      "bytes": 2442
+      "path": "policy_update_brief.md",
+      "sha256": "dcf3ce1e0bdd0a5630e66003de930652d3ad7d4d16ff63a2b0da5fca345261b0",
+      "bytes": 1717
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -45,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "1cf8b5541d03656b3bff8911bbb17e4902fce5a8c30cc70708e0cf689d02e733",
-      "bytes": 2233
+      "sha256": "2a250f6ecf8706275a6eaf95294f7ddded0289c8df7fcd1d399404f64108fb3d",
+      "bytes": 1880
     },
     {
       "path": "fixtures/ticketing/tickets.json",
-      "sha256": "561cd0045d6bdbb546483b8d02bba462142661c4e95bcbe160a440df9d372781",
-      "bytes": 1226
+      "sha256": "c348e49fcac83736bb9c661a302a430570c0a444c3fd015ee2223ba73fe1edad",
+      "bytes": 1861
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "5823bd290f1eb5d86dd073af1d2fc92208150bafe28ff8a51414d2e2ed4ae2bb",
-    "bytes": 3011
+    "sha256": "f61564328fe030ba52bcda6fef33f4043e7766152670870604fafaab9455b20f",
+    "bytes": 3027
   }
 }

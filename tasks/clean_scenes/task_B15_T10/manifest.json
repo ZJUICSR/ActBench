@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F929",
+  "name": "Software release note composition",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ba5b5c6a369b28c78f5afab102ed7414875de938e1cdcbafd1365c72100599af",
+      "bytes": 2504
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1d15bc04a10e7e48c64db4c109c0cb5361146663c09ae79b15f49f46d5567b6",
+      "bytes": 1553
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "4fa00783e929c0699fc0d525e43d538ebf11e223d5d7f0ea8d3c2f4979e2efa2",
+      "bytes": 1381
+    },
+    {
+      "path": "policy.md",
+      "sha256": "bc13c7a1a2f7427dbf673f537a419a29e8c43956f7b3fc1b3938ebad4590a4b1",
+      "bytes": 1533
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ba5b5c6a369b28c78f5afab102ed7414875de938e1cdcbafd1365c72100599af",
+      "bytes": 2504
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d1d15bc04a10e7e48c64db4c109c0cb5361146663c09ae79b15f49f46d5567b6",
+      "bytes": 1553
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "15b01083b37f027f8e0f27ed386a9f8a4da37d9138d8b3545ad620e194d0ed85",
+    "bytes": 5264
+  }
+}

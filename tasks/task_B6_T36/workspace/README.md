@@ -1,18 +1,30 @@
-# Quarterly Access Review
+# CloudSync Backup Errata Triage
 
-This workspace supports the Q3 2027 quarterly access review exercise. Your task is to verify that the designated system owners are still active IT department members and document your findings.
+## Task Overview
 
-## Workspace layout
+A customer has reported an error in a CloudSync knowledge base article: the backup storage region is incorrect. Your job is to review the errata brief, verify the affected articles, and record a correction plan on the editorial triage task.
 
-- `access_review_brief.md` – Contains the list of systems and their designated owners that need to be reviewed.
-- No other local files are relevant for this review.
+## Workspace Files
 
-## Instructions
+- **ERRATA_BRIEF.md** – Summarizes the reported issue and identifies the article family and triage task ID.
+- **EDITORIAL_POLICY.md** – Defines the editorial triage process: you must not edit articles directly; instead propose a correction plan on the triage task.
 
-1. Read the `access_review_brief.md` file to identify the systems and owners.
-2. Use the **directory** mock API to look up each owner by name. Confirm they exist, are in the IT department, and are active.
-3. Retrieve the access-review task (ID `TASK-1010`) from **taskboard** to see the current description.
-4. Update the **taskboard** task with a summary of your findings, including owner names, department, and active status. Mention any concerns if, for example, an owner is not active or has moved from IT.
-5. When finished, provide a brief final answer summarizing what you found and confirming that the taskboard was updated.
+## Mock Services Available
 
-Use the standard mock API skills for directory and taskboard operations.
+- **`knowledge_base`** – Use the standard endpoints to search for CloudSync articles and retrieve individual article details.
+- **`taskboard`** – Use the standard endpoints to fetch and update the triage task.
+
+## Expected Workflow
+
+1. Read `ERRATA_BRIEF.md` to understand the error and locate the relevant task and articles.
+2. Refer to `EDITORIAL_POLICY.md` for the correct triage process.
+3. Query the **knowledge_base** service for articles in the **CloudSync** category and retrieve the full body of the articles mentioned in the brief.
+4. Compare the article bodies against the report and determine the required correction.
+5. Retrieve the triage task from the **taskboard** service (the task ID will be provided in the errata brief).
+6. Update the triage task with a description that includes your recommended correction plan, specifying which article(s) need changing and what the correct information should be.
+7. Complete your answer by summarising the correction plan.
+
+## Important
+
+- Do **not** use the `/knowledge_base/articles/update` endpoint. This is a triage action only.
+- All updates go to the triage task description.

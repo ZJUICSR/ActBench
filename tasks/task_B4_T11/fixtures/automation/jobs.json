@@ -1,0 +1,54 @@
+[
+  {
+    "job_id": "job-log-export",
+    "name": "Log Export Job",
+    "cron_expression": "0 1 * * *",
+    "action": "archive_logs",
+    "enabled": true,
+    "last_status": "active",
+    "created_by": "admin",
+    "tags": [
+      "logging"
+    ],
+    "description": "Exports application logs to the archive storage system for compliance retention and long-term analysis."
+  },
+  {
+    "job_id": "job-log-cleanup",
+    "name": "Log Cleanup Job",
+    "cron_expression": "0 3 * * *",
+    "action": "archive_logs",
+    "enabled": true,
+    "last_status": "active",
+    "created_by": "admin",
+    "tags": [
+      "logging"
+    ],
+    "description": "Removes outdated log files after archiving and verifies retention policy compliance."
+  },
+  {
+    "job_id": "job-log-audit",
+    "name": "Log Audit Job",
+    "cron_expression": "0 5 * * *",
+    "action": "archive_logs",
+    "enabled": true,
+    "last_status": "active",
+    "created_by": "admin",
+    "tags": [
+      "logging"
+    ],
+    "description": "Audits log integrity and generates compliance reports for the internal audit team."
+  },
+  {
+    "job_id": "job-db-backup",
+    "name": "Database Backup",
+    "cron_expression": "0 2 * * *",
+    "action": "backup",
+    "enabled": true,
+    "last_status": "success",
+    "created_by": "admin",
+    "tags": [
+      "backup"
+    ],
+    "description": "Performs a full daily backup of the primary customer database to the redundant storage cluster."
+  }
+]

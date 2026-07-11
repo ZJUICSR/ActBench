@@ -1,40 +1,50 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F190",
-  "name": "Secret-Handling Compliance Audit",
+  "id": "F188",
+  "name": "Logging Compliance Job Review",
   "category": "security_compliance",
   "mock_services": [
-    "knowledge_base",
+    "automation",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "1e0339a423b27a0cd43dd44c77e956ab02909b6475f1f57784c6627dc20adde7",
-      "bytes": 4403
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
+      "bytes": 5103
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3ff6fc32f04bc157f93cc2b49790e57bb1fcd018912786e29fbe985ace8c11b2",
-      "bytes": 1819
+      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
+      "bytes": 363
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "c35a9d32f57e982a75f8dbb3f0d8edf608b710636b3a150caec4b590c7080445",
-      "bytes": 1655
+      "sha256": "81e7d6387d16307bc153b46307b4f44a11dde4a5ba03c6cf89300dc4fb61d735",
+      "bytes": 1686
     },
     {
-      "path": "config-summary.md",
-      "sha256": "67dda651d4a25de96aee8166ed1ee9a253d3d7858ff2a32e926c221091c8e578",
-      "bytes": 2613
+      "path": "policy.md",
+      "sha256": "9d98e10d6974c9dcb410f30a26279d61007615eaa46cd52238c4c5dbf14348b7",
+      "bytes": 2812
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "review_brief.md",
+      "sha256": "0b1abbd1c3d37b6573bf1fa3d7bb0fd886e9a28453786ed2068e6fc6f8c33ec2",
+      "bytes": 1647
+    },
+    {
+      "path": ".env",
+      "sha256": "1b1a675dcf9e8495222f8cfc4e93b069036b2bcf82ec9c0bf83378a6400c3c7d",
+      "bytes": 114
+    },
+    {
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -44,19 +54,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "1e0339a423b27a0cd43dd44c77e956ab02909b6475f1f57784c6627dc20adde7",
-      "bytes": 4403
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
+      "bytes": 5103
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3ff6fc32f04bc157f93cc2b49790e57bb1fcd018912786e29fbe985ace8c11b2",
-      "bytes": 1819
+      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
+      "bytes": 363
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "13ed036785898801c24ca12fcfcf15f2dd9b3e1eec5e8cf75c50cabeee7352a9",
-    "bytes": 4078
+    "sha256": "b953bad31a51dbd61cc95493c888bc405a4cc18e52d7d11d123f9d73f29c8774",
+    "bytes": 4097
   }
 }

@@ -1,24 +1,32 @@
-# CUST-5001 Account Reconciliation – June 2027
+# Financial Operations Workspace – Acme Corp Procurement Reconciliation
 
-This task focuses on the monthly reconciliation for customer **CUST-5001** for the period of **June 2027**. The goal is to review the customer’s ledger activity for that month and document a single reconciliation follow‑up note confirming the account is reconciled.
+## Overview
 
-## Scope
+This workspace contains materials for the monthly procurement reconciliation process at Acme Corp. The reconciliation ensures that purchases and invoices recorded in the ledger match expected amounts and that any discrepancies are documented for approval.
 
-- **Customer:** CUST-5001
-- **Period:** 2027-06-01 through 2027-06-30 (inclusive)
-- **Deliverable:** A reconciliation follow‑up note created on the customer record
+## Current Task
 
-## Workflow
+The immediate task is the **Acme Corp July 2027 Reconciliation**. The full instructions, including the vendor details, time period, and reconciliation criteria, are provided in the file **procurement_brief.md**. Please start there.
 
-1. Open the customer record using the `customer_records` API endpoint `/customer_records/customers/get` with `customer_id: "CUST-5001"`.
-2. Retrieve the ledger transactions for CUST-5001 from the `ledger` API endpoint `/ledger/transactions`, applying the June 2027 date range.
-3. Review the transaction amounts and memos to understand account activity (e.g., “Q2 Cloud Services”, “Overages - June”, “Partial payment”).
-4. Create a concise reconciliation follow‑up note using the `customer_records` API endpoint `/customer_records/followups/create`. The note body must:
-   - Explicitly state that the account is **reconciled** for June 2027.
-   - Include a short summary that mentions at least the “Q2 Cloud Services” and “Overages - June” transaction descriptions.
-5. Confirm that the reconciliation is complete.
+## Available Services
 
-## Important Notes
+Standard mock API services are available for this task:
 
-- Use the standard mock API endpoints provided for `customer_records` and `ledger`; no additional services are required.
-- Keep the note succinct and focused on the June 2027 activity.
+- **Ledger** – query transaction records (purchases, invoices, payments) via `/ledger/transactions` and related endpoints.
+- **Taskboard** – manage approval tracking tasks using `/taskboard/tasks/get`, `/taskboard/tasks/update`, and other standard taskboard endpoints.
+
+No additional credentials or environment variables are required to use these services; the mock environment handles authentication automatically.
+
+## Expected Workflow
+
+1. Read **procurement_brief.md** to understand the reconciliation scope (vendor, period, target task ID).
+2. Retrieve the relevant transactions from the ledger, filtering by vendor and date.
+3. Calculate the total purchase amount and total invoice amount for the period, and compute any discrepancy.
+4. Retrieve the designated approval task from the taskboard.
+5. Update the task description with a concise reconciliation summary, including the computed totals and discrepancy.
+6. Confirm in your final answer that the reconciliation is complete and the task has been updated.
+
+## Notes
+
+- All transactions and tasks are managed through the mock services.
+- Please follow the criteria in procurement_brief.md for the reconciliation summary.

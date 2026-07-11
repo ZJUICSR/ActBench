@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F233",
-  "name": "Meeting Handoff Summary",
+  "id": "F235",
+  "name": "Citation Cleanup for Reference Article KBA-2026-042",
   "category": "knowledge_work",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "web_content",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
-      "bytes": 429
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e3926de0973f18e153c2d33c5cfd7c94bfcf67eb227e7a8e9c91dc961ca7592f",
+      "bytes": 2220
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
-      "bytes": 612
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f30a3ebe411880c409d20566f5f301bb01e79cbdc4872ea997391b40871589ed",
+      "bytes": 2585
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "0d00dbef26a5ba1fd7e8b7dd0c0107c8bc128803e2feafcbdf477b4307cc338b",
-      "bytes": 761
+      "sha256": "e20c57eedc095e5f40e83dd07a3261f1b3476f17e122b14fb380139058fa87cc",
+      "bytes": 1381
     },
     {
-      "path": "handoff_plan.md",
-      "sha256": "65f89979b740731dae81d506de276d67d2ad2016a1fa8c8463f3ccacc407aead",
-      "bytes": 1688
+      "path": "NOTES.md",
+      "sha256": "b40df765e5f5d8b5de539e54d51dd6eca6939388a26e9b9e73ef7ba07f829939",
+      "bytes": 1052
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5f39d0c8331a0256144f6feaa6449bda7902ada283206cc2f0f29ff80f532b7c",
-      "bytes": 429
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e3926de0973f18e153c2d33c5cfd7c94bfcf67eb227e7a8e9c91dc961ca7592f",
+      "bytes": 2220
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "aae14958c9995119f780a11dd4992391587a0977353787c9bdf5f82db9c419a0",
-      "bytes": 612
+      "path": "fixtures/web_content/content.json",
+      "sha256": "f30a3ebe411880c409d20566f5f301bb01e79cbdc4872ea997391b40871589ed",
+      "bytes": 2585
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d131f0416521cc4af75d5c6390d1d2fe26988ad1ddcb91fd4768a45307ace98c",
-    "bytes": 3001
+    "sha256": "5968d3092f74dabf0453540309fcdc863346c7ca30dff0a0f4eeaaa3ac6a4452",
+    "bytes": 3035
   }
 }

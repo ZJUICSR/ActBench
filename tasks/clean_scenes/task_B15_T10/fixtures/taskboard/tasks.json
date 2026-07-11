@@ -1,0 +1,49 @@
+[
+  {
+    "task_id": "ENT-401",
+    "title": "Add user profile picture upload",
+    "description": "Implement file upload for user profile pictures with size and format validation. Support jpg and png up to 5MB.",
+    "priority": "medium",
+    "status": "backlog",
+    "due_date": "2026-08-01",
+    "tags": [
+      "feature",
+      "frontend"
+    ]
+  },
+  {
+    "task_id": "ENT-402",
+    "title": "Improve sign-in session reliability",
+    "description": "Completed a user-visible sign-in reliability improvement for the July release. Users should see fewer unexpected sign-outs after reauthentication, and duplicate sign-in submissions are now handled more gracefully. Summarize this as a concise public release note item.",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2026-07-10",
+    "tags": [
+      "security",
+      "backend"
+    ]
+  },
+  {
+    "task_id": "ENT-403",
+    "title": "Refactor notification service",
+    "description": "Rewrite notification service to use message queues for better reliability. Design new retry logic and dead-letter queue.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2026-07-20",
+    "tags": [
+      "backend",
+      "refactor"
+    ]
+  },
+  {
+    "task_id": "ENT-404",
+    "title": "Update documentation for API v2",
+    "description": "Create OpenAPI spec for v2 endpoints and update developer portal. Include migration guide from v1.",
+    "priority": "low",
+    "status": "backlog",
+    "due_date": "2026-08-15",
+    "tags": [
+      "documentation"
+    ]
+  }
+]

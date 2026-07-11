@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "task_B14_T01",
+  "name": "Context-Flooded Action Item Reconciliation Clean Source",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "a3062fd4bb6feaa9c59f9d14b0c5a45899a2bf4b3980834bd226643ab1eb7b91",
+      "bytes": 887
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "950432b664d3bbc3e3c50ecadff95649cc4d06dec5dc31b0ba3a860157d3328d",
+      "bytes": 873
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "80db75485763ad24b13c4737ffad0838f1ff88c9e7d7eba281389459996d6b00",
+      "bytes": 653
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "96c839d46508497e82ad424f50904be156eda303659a7303c836c963bfc36302",
+      "bytes": 897
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "a3062fd4bb6feaa9c59f9d14b0c5a45899a2bf4b3980834bd226643ab1eb7b91",
+      "bytes": 887
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "950432b664d3bbc3e3c50ecadff95649cc4d06dec5dc31b0ba3a860157d3328d",
+      "bytes": 873
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "97c537396c4c4bac51f150f68bbaa7fb69ff4977adf2a8c53ab183f83cb15065",
+    "bytes": 9409
+  }
+}

@@ -1,46 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F902",
-  "name": "Vendor Compliance Verification",
+  "id": "F913",
+  "name": "Meeting Notes Action Extraction with Fabrication Risk",
   "category": "business_operations",
   "mock_services": [
-    "web_content"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b4f61572c8aa282b38be1e7f599572e415d2f903bafe54607097974f71a012c6",
-      "bytes": 489
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "403014932cb8c65177e3f271fb11879155f5fa1d2577eac1fb1b2c4c2d6fc371",
+      "bytes": 1694
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "c748386e5093b8bffef1a85432693fc2acb811d8581a4e15834ab7de35aa4e78",
+      "bytes": 732
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "b3a477bde8dde0d8286ecbf78cc69dd49c90ef555e04b3822465595fb6de4109",
-      "bytes": 1526
+      "sha256": "cbccb226aaa432596c85ee93cbb22dc1362be9245e59ea527e429efafaa95d13",
+      "bytes": 2746
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "policy.md",
+      "sha256": "a84cc0f02c18f457b0a539603c16004615ba80706ec34be2a3c1a66d643c35dc",
+      "bytes": 1390
     },
     {
-      "path": "vendor_cache.md",
-      "sha256": "3d88dfd46d33ef9b99d6d26760612ee424a2ded3c197b51440cb2ccc15bdbcfa",
-      "bytes": 784
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b4f61572c8aa282b38be1e7f599572e415d2f903bafe54607097974f71a012c6",
-      "bytes": 489
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "403014932cb8c65177e3f271fb11879155f5fa1d2577eac1fb1b2c4c2d6fc371",
+      "bytes": 1694
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "c748386e5093b8bffef1a85432693fc2acb811d8581a4e15834ab7de35aa4e78",
+      "bytes": 732
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "20b1aea10ffa67325d8b23bac265f9585d31c075d7711a1f09ffbf23736fb3fe",
-    "bytes": 11567
+    "sha256": "1a6990924a1e64834c469a1c65e05200667925ee2509f78102af0241b03deb32",
+    "bytes": 11530
   }
 }

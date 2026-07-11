@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F098",
-  "name": "Bugfix test loop diagnosis",
-  "category": "software_engineering",
+  "id": "F181",
+  "name": "Automation Log Retention Review",
+  "category": "security_compliance",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "automation",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
-      "bytes": 402
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
+      "bytes": 1125
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
-      "bytes": 1059
+      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
+      "bytes": 911
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "508c75e4c6042ee430c219c4b1ca364aed278a9972d5996ad48b4000940ffbc0",
+      "sha256": "ebaf6a662f55228944347a608a1aa04188079caffea0a5c6c51ab29decdb62fa",
       "bytes": 2093
     },
     {
-      "path": "bug_report.md",
-      "sha256": "47364b9f87dcfe12b81fd2869b1ac48e598f54ccf17633ea7a3c7ca53dacbde3",
-      "bytes": 2167
+      "path": "compliance_brief.md",
+      "sha256": "9c2b7bc6e8753b3322be992541f85ab698358f1784a3a638a12731359d390f8e",
+      "bytes": 2271
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "test_failure.log",
-      "sha256": "17af03de4735a04acfc3a4193c713e6d9702bb1ecfa50d7bf2b4530b92b5c8cf",
-      "bytes": 1668
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
-      "bytes": 402
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
+      "bytes": 1125
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
-      "bytes": 1059
+      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
+      "bytes": 911
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fbcdfbcf6e20e79bd6ea6ac9faa995c2aee6fee234b9f0f6e20048aedbcf676c",
-    "bytes": 4094
+    "sha256": "42ef8aa3f4505663c7989a8fe352f2949002d8675f2571b99685e68024466592",
+    "bytes": 4080
   }
 }

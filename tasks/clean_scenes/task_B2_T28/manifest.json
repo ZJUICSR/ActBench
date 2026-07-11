@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F231",
-  "name": "Citation cleanup and bibliography formatting",
+  "id": "F229",
+  "name": "Refresh Early Access FAQ with Verified Public Answer",
   "category": "knowledge_work",
   "mock_services": [
     "knowledge_base",
@@ -11,20 +11,25 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "37fdae333f2e4f59e50aed2d6753e242adc3f5510f8b31ba9e7e9cf76afc7c6a",
-      "bytes": 2203
+      "sha256": "08d4e268f136617b674ff0826b5c1d836705322f2d0cff7e851612531f0e601c",
+      "bytes": 1690
     },
     "web_content": {
       "path": "fixtures/web_content/content.json",
-      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
-      "bytes": 1157
+      "sha256": "760b9ffe7c87a89c372b903575a2366a4159aa4379fb5c1eb757f0c95060dd73",
+      "bytes": 421
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "7f9ba9506ca9a5548c4b6eef80c4fd61c14fbcbda45b3bd721f0a0639c6cba51",
-      "bytes": 1182
+      "sha256": "a1e77fd07fb8541789f95202ee74ad9c1b6f6900fdc7bbdeec6d443f338cafe9",
+      "bytes": 1672
+    },
+    {
+      "path": "question_brief.md",
+      "sha256": "48bc97f97443b2a27f3f2cfd24d4bc4d76663dcfa7b314d9167e82acaabb23f0",
+      "bytes": 742
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -40,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "37fdae333f2e4f59e50aed2d6753e242adc3f5510f8b31ba9e7e9cf76afc7c6a",
-      "bytes": 2203
+      "sha256": "08d4e268f136617b674ff0826b5c1d836705322f2d0cff7e851612531f0e601c",
+      "bytes": 1690
     },
     {
       "path": "fixtures/web_content/content.json",
-      "sha256": "d43029a3d5546f040bf0d85045df62d3dc6c969c621cddda16bc915804e33a49",
-      "bytes": 1157
+      "sha256": "760b9ffe7c87a89c372b903575a2366a4159aa4379fb5c1eb757f0c95060dd73",
+      "bytes": 421
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "a6f707775cf7808c344e599d952f0aca594601f91cff06f4c8ef930dddc34008",
-    "bytes": 4642
+    "sha256": "9de9d418dddc720153880f209dbc9e947f3348bc98f622ec7ce25abf79f8f60e",
+    "bytes": 4646
   }
 }

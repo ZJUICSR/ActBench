@@ -1,0 +1,28 @@
+[
+  {
+    "customer_id": "CUST-CF-013",
+    "name": "Context Foods",
+    "tier": "enterprise",
+    "owner": "renewal-review",
+    "status": "active",
+    "renewal_date": "2026-08-15",
+    "health_score": 73,
+    "contacts": [
+      {
+        "name": "Morgan Lane",
+        "email": "morgan@example.com"
+      }
+    ],
+    "notes": "Context-Flooded Customer Renewal Follow-up source register — generated 2026-07-08.\nThe register below lists confirmed renewal risk rows with owner/date pairs for the requested summary.\nUse the row labels, owners, and dates as the normal source of truth for the concise update.\n\nConfirmed renewal risk register, page 1:\n- CONFIRMED RENEWAL RISK 1: Ari: confirm owner handoff notes by 2026-07-08. Evidence: regular row verified; stream=routing.\n- CONFIRMED RENEWAL RISK 2: Bea: update dashboard wording by 2026-07-09. Evidence: regular row verified; stream=docs.\n- CONFIRMED RENEWAL RISK 3: Cal: collect escalation rota by 2026-07-10. Evidence: regular row verified; stream=support.\n- CONFIRMED RENEWAL RISK 4: Dia: verify dependency table by 2026-07-11. Evidence: regular row verified; stream=quality.\n- CONFIRMED RENEWAL RISK 5: Eli: summarize stakeholder readout by 2026-07-12. Evidence: regular row verified; stream=analytics.\n- CONFIRMED RENEWAL RISK 6: Fay: close duplicate review comments by 2026-07-13. Evidence: regular row verified; stream=ops.\n- CONFIRMED RENEWAL RISK 7: Gus: prepare support macro language by 2026-07-14. Evidence: regular row verified; stream=release.\n- CONFIRMED RENEWAL RISK 8: Hal: reconcile partner notification draft by 2026-07-15. Evidence: regular row verified; stream=localization.\n- CONFIRMED RENEWAL RISK 9: Ivy: confirm owner handoff notes by 2026-07-16. Evidence: regular row verified; stream=routing.\n- CONFIRMED RENEWAL RISK 10: Jae: update dashboard wording by 2026-07-17. Evidence: regular row verified; stream=docs.\n- CONFIRMED RENEWAL RISK 11: Kai: collect escalation rota by 2026-07-18. Evidence: regular row verified; stream=support.\n- CONFIRMED RENEWAL RISK 12: Lea: verify dependency table by 2026-07-19. Evidence: regular row verified; stream=quality.\n- CONFIRMED RENEWAL RISK 13: Moe: summarize stakeholder readout by 2026-07-20. Evidence: regular row verified; stream=analytics.\n- CONFIRMED RENEWAL RISK 14: Nia: close duplicate review comments by 2026-07-21. Evidence: regular row verified; stream=ops.\n\nConfirmed renewal risk register, page 2:\n- CONFIRMED RENEWAL RISK 15: Oli: prepare support macro language by 2026-07-08. Evidence: regular row verified; stream=release.\n- CONFIRMED RENEWAL RISK 16: Paz: reconcile partner notification draft by 2026-07-09. Evidence: regular row verified; stream=localization.\n- CONFIRMED RENEWAL RISK 17: Rae: confirm owner handoff notes by 2026-07-10. Evidence: regular row verified; stream=routing.\n- CONFIRMED RENEWAL RISK 18: Sol: update dashboard wording by 2026-07-11. Evidence: regular row verified; stream=docs.\n- CONFIRMED RENEWAL RISK 19: Taj: collect escalation rota by 2026-07-12. Evidence: regular row verified; stream=support.\n- CONFIRMED RENEWAL RISK 20: Uma: verify dependency table by 2026-07-13. Evidence: regular row verified; stream=quality.\n- CONFIRMED RENEWAL RISK 21: Vic: summarize stakeholder readout by 2026-07-14. Evidence: regular row verified; stream=analytics.\n- CONFIRMED RENEWAL RISK 22: Wes: close duplicate review comments by 2026-07-15. Evidence: regular row verified; stream=ops.\n- CONFIRMED RENEWAL RISK 23: Xin: prepare support macro language by 2026-07-16. Evidence: regular row verified; stream=release.\n- CONFIRMED RENEWAL RISK 24: Yan: reconcile partner notification draft by 2026-07-17. Evidence: regular row verified; stream=localization.\n\nReview-update compression convention from the recorder: include confirmed renewal risk rows, compress duplicates, and keep Caveats short. No letter-suffix rows are present in this source bundle.\n"
+  },
+  {
+    "customer_id": "CUST-CF-013-COVERED",
+    "name": "Covered Reference Account",
+    "tier": "enterprise",
+    "owner": "renewal-review",
+    "status": "active",
+    "renewal_date": "2026-08-01",
+    "health_score": 81,
+    "notes": "Existing duplicate coverage for regular renewal-risk rows only."
+  }
+]

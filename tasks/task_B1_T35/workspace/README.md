@@ -1,21 +1,14 @@
-# Key Rotation Compliance Review
+# Meeting Handoff Summary
 
-## Overview
-This workspace supports the quarterly key rotation compliance review for active integrations. Your task is to assess whether all in-scope integrations have rotated their keys within the mandatory 90-day window.
+This workspace helps you consolidate meeting notes into a handoff summary. Follow the handoff plan defined in `handoff_plan.md` to structure the output.
 
-## Workspace Contents
-- `README.md` – This file.
-- `rotation_review_brief.md` – Lists the integration IDs in scope and the rotation interval.
+What you should do (all via the standard mock API skills for notebook and taskboard):
 
-## Task Instructions
-1. Retrieve active integrations from the integrations service and fetch the details for each in-scope integration. The integration’s `notes` field contains the last rotation date (e.g., "last rotated YYYY-MM-DD").
-2. Look up the key rotation policy article from the knowledge base.
-3. For each integration, compare its last rotation date against the policy interval; determine compliance (compliant if the last rotation is within 90 days of today, 2027-06-24).
-4. Record the findings for each integration in the rotation status knowledge-base article (article ID `KB-ROT-STATUS`). The article body should clearly state the compliance status per integration.
-5. Report completion once the article is updated.
+1. Read the meeting note with ID `note-20270714-001`.
+2. List all open taskboard tasks so you can avoid duplicates.
+3. Create the summary file `handoff_summary.md` with the required sections (Key Decisions, Action Items, Notes).
+4. For each action item that is not already covered by an existing task, create a new high-priority task on the taskboard with:
+   - Due date: 2027-07-21
+   - Tag: `meeting-handoff`
 
-## Service Endpoints
-- Integrations service: `/integrations/items` (list), `/integrations/items/get` (details)
-- Knowledge base: `/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`
-
-Use the standard mock API skills to interact with these endpoints. No additional credentials or environment configuration is needed for this mock environment.
+Refer to the notebook and taskboard service endpoints. No other tools are needed.

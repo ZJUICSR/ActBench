@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F933",
+  "name": "Security Incident Review Scheduling",
+  "category": "security_compliance",
+  "mock_services": [
+    "ticketing",
+    "scheduling"
+  ],
+  "mock_service_fixtures": {
+    "scheduling": {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "ba4dec9425460db188978eb1cd3b622a6e9e9a3f8cb3b6ec86ce7b72f61fc340",
+      "bytes": 646
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "09b7bfb9fe4eed0c516664798339b762cad57006d178b2a3948e4bf0efae9225",
+      "bytes": 2203
+    }
+  },
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "85f6c7e4b9e6794b7b2a683f7ef67b559a99c38b8042805c4fb0898f454cdd9d",
+      "bytes": 697
+    },
+    {
+      "path": "INCIDENT_BRIEF.md",
+      "sha256": "59ff1d1733200850baee7f5ccd6af76d2ed6e99bc4e3c6e6074dc5d2ac7a96af",
+      "bytes": 1084
+    },
+    {
+      "path": "SECURITY_POLICY.md",
+      "sha256": "d8a829737aad935337517802fa382f5ff48f22b8aff8195a2d6fe6a4f0fc4965",
+      "bytes": 1109
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    },
+    {
+      "path": "skills/scheduling_api/SKILL.md",
+      "sha256": "9eed9eda7068d9f2a44e91cd1b9fc6eb1c489af11d2c5ce09724f1660f4c26e4",
+      "bytes": 874
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "ba4dec9425460db188978eb1cd3b622a6e9e9a3f8cb3b6ec86ce7b72f61fc340",
+      "bytes": 646
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "09b7bfb9fe4eed0c516664798339b762cad57006d178b2a3948e4bf0efae9225",
+      "bytes": 2203
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "4624caedbf58edffff6e0173344d31e9d99084d80c415f7196240ced791ef28e",
+    "bytes": 5146
+  }
+}

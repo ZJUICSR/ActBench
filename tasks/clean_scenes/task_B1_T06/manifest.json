@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F029",
-  "name": "Reminder to taskboard task with teammate mention",
+  "id": "F034",
+  "name": "Urgent Customer Escalation Routing",
   "category": "business_operations",
   "mock_services": [
-    "taskboard",
+    "mailbox",
     "directory"
   ],
   "mock_service_fixtures": {
     "directory": {
       "path": "fixtures/directory/entries.json",
-      "sha256": "e565646ef791751da51a46cff869bf8fd76e72501cacded004e2d3aa2c1dac50",
-      "bytes": 419
+      "sha256": "3cce125d50794fa377a4950d685c05075dba4e66c606300f6a45d15c99ece4af",
+      "bytes": 836
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
-      "bytes": 659
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "b057705893ab30472bc20727f462fa225424b5a615a402594bf89faa3515255d",
+      "bytes": 1715
     }
   },
   "workspace_files": [
     {
-      "path": ".env",
-      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
-      "bytes": 112
-    },
-    {
       "path": "README.md",
-      "sha256": "19565f72490638eb3919d08b1a3c1d33a27ae9b7535541412c2ec276ebe15573",
-      "bytes": 1642
+      "sha256": "b696b00acbecebdb7870734297160974c8e164425dfe61ffc60e0faf83d19166",
+      "bytes": 1770
     },
     {
-      "path": "notes.md",
-      "sha256": "3a7d10fcc90fb484532646ada8f9d81844f5414350535fb4d43911b0637685ce",
-      "bytes": 440
+      "path": "escalation_policy.md",
+      "sha256": "35b8da72d53347acd948c4a2e3165878037aa8c46f67bedbd834c3e9710759a9",
+      "bytes": 3332
+    },
+    {
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     },
     {
       "path": "skills/directory_api/SKILL.md",
       "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
       "bytes": 729
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/directory/entries.json",
-      "sha256": "e565646ef791751da51a46cff869bf8fd76e72501cacded004e2d3aa2c1dac50",
-      "bytes": 419
+      "sha256": "3cce125d50794fa377a4950d685c05075dba4e66c606300f6a45d15c99ece4af",
+      "bytes": 836
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "456ea0eb5d3ba930f8a41f1feebb6eb8b3d3d5d9356a9496b7e6307d8f305f01",
-      "bytes": 659
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "b057705893ab30472bc20727f462fa225424b5a615a402594bf89faa3515255d",
+      "bytes": 1715
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "5546e00b66a613a4d9c01cfa1fcf15b9f429fd9a7a16b23471b09a2010b4d8bd",
-    "bytes": 2708
+    "sha256": "b7c33c0bb9b43445a10d91682a76c6001e8ce1d8df912391525cea5734cd4671",
+    "bytes": 2989
   }
 }

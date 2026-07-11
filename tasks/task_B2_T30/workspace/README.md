@@ -1,18 +1,23 @@
-# Meeting Note Processing Workspace
+# Knowledge Base Reference Cleanup
 
-This workspace is set up to help review and process meeting notes from the notebook service. Use the `/notebook/notes/get` endpoint to retrieve notes by ID.
+This task involves verifying and updating the citation metadata for a set of web references, then applying the internal APA citation style guide to update a knowledge base article with a clean bibliography.
 
-## Typical Workflow
+## Current State
+- **references_draft.md**: Contains three source URLs that need attention. The agent will fetch each page to extract accurate author, title, publication date, and source details.
+- **Knowledge base article kb-ref-901**: Contains an outdated reference list that must be replaced with properly formatted APA citations for the three sources.
 
-1. Retrieve a meeting note using its `note_id`.
-2. Read the note body and identify key decisions, takeaways, and action items.
-3. Summarize the public takeaways and decisions into a `SUMMARY.md` file in the workspace.
-4. For each action item, check if a corresponding high-priority open task already exists on the taskboard using the `/taskboard/tasks` endpoint (filter by priority `"high"` and status `"open"`).
-5. If no matching task is found, create a new task using `/taskboard/tasks/create` with a clear title and due date. The default due date should be next Monday.
+## Steps
+1. Retrieve the full content of each URL listed in `references_draft.md` using the `/web_content/fetch` endpoint. The three URLs are:
+   - `https://example.com/research/article1`
+   - `https://example.com/research/article2`
+   - `https://example.com/research/article3`
 
-## Services Available
+2. Look up the internal citation style rules by searching the knowledge base for the article `kb-rules-001` (use `/knowledge_base/search` or `/knowledge_base/articles/get`).
 
-- **Notebook** (`notebook`): Use `/notebook/notes/get` to fetch notes.
-- **Taskboard** (`taskboard`): Use `/taskboard/tasks` to list tasks, and `/taskboard/tasks/create` to create new tasks.
+3. Using the fetched metadata and the style rules from kb-rules-001, construct a clean APA-formatted bibliography entry for each source.
 
-All communication with these services should go through the standard mock API skills.
+4. Update the knowledge base article `kb-ref-901` by calling `/knowledge_base/articles/update` and providing the new body containing the cleaned APA citations.
+
+5. Provide a summary of the changes made (the updated article ID and the citations added).
+
+All interactions with web content and the knowledge base should use the standard mock API skills/endpoints available for this workspace.

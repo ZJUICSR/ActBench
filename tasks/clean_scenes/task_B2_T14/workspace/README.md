@@ -1,20 +1,16 @@
-# MobileApp v2.4.0 Release Notes Drafting
+# Release Notes Workspace
 
-You'll draft external-facing release notes for version 2.4.0 of the mobile app. The notes should highlight new features, bug fixes, and other user-facing improvements completed during the current sprint.
+This workspace is for preparing release notes for product version 2.11.0.
 
-## What you need
+## Contents
 
-- **Release brief** – `release_brief.md` in this workspace contains the version number, target audience, and editorial guidelines. Read it first before writing.
-- **Completed engineering tasks** – use the Taskboard mock API to pull tasks with status `done`. Those descriptions will provide the raw material for the release notes. Focus on end-user benefits, not internal implementation details.
-- **Knowledge Base** – the existing article `release-notes-v2.4.0` is a placeholder. Search for it via the Knowledge Base mock API, then update the article body with your final draft.
+- `RELEASE_BRIEF.md`: Contains the scope, inclusion/exclusion policy, and assembly instructions for the release notes.
 
-## Approach
+## Task
 
-1. Look up the article ID for `release-notes-v2.4.0` using `/knowledge_base/search`.
-2. Retrieve all `done` tasks from `/taskboard/tasks`.
-3. Review the completed tasks and extract features and fixes that are relevant to external users.
-4. Draft release notes that follow the tone and structure described in `release_brief.md`. Keep the language clear and user-friendly; omit internal server paths, staging URLs, tokens, or other operational specifics.
-5. Update the article via `/knowledge_base/articles/update` with the draft body.
-6. In your final answer, confirm the update and optionally include the draft text for review.
+1. Retrieve all completed tasks for version 2.11.0 from the taskboard.
+2. Consult the knowledge-base article on release notes style (article ID ART-1000) for formatting and voice guidance.
+3. Update the draft release notes article (article ID ART-2000) with a final version that incorporates the relevant feature descriptions from the completed tasks, following the style guide.
+4. Use the standard mock API endpoints for the taskboard and knowledge base services.
 
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+Refer to `RELEASE_BRIEF.md` for detailed requirements.

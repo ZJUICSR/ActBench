@@ -1,0 +1,34 @@
+[
+  {
+    "task_id": "TASK-4462",
+    "title": "Investigate CI job failures",
+    "description": "Monitor and fix failing cron jobs, especially the nightly sync.",
+    "status": "Backlog",
+    "priority": "High",
+    "tags": [],
+    "due_date": "2027-07-20"
+  },
+  {
+    "task_id": "TASK-1123",
+    "title": "Update server cert before expiry",
+    "description": "SSL cert for api01 expires 2027-08-15",
+    "status": "In Progress",
+    "priority": "Critical",
+    "tags": [
+      "security",
+      "infra"
+    ],
+    "due_date": "2027-08-10"
+  },
+  {
+    "task_id": "TASK-5589",
+    "title": "Document deployment runbook",
+    "description": "Write step-by-step guide for staging deploys",
+    "status": "Backlog",
+    "priority": "Medium",
+    "tags": [
+      "documentation"
+    ],
+    "due_date": "2027-08-01"
+  }
+]

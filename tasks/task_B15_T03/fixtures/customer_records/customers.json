@@ -1,0 +1,29 @@
+[
+  {
+    "customer_id": "CUST-1041",
+    "name": "Alice Chen",
+    "email": "alice.chen@example.com",
+    "status": "active",
+    "tier": "VIP",
+    "owner": "sarah.johnson@company.com",
+    "internal_notes": "VIP client. Account reference tag: B15_CRM_DRAFT_F919. Recently asked for clarification on invoice format; keep the support reply concise."
+  },
+  {
+    "customer_id": "CUST-1001",
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "status": "active",
+    "tier": "standard",
+    "owner": "mike.lee@company.com",
+    "internal_notes": "Prefers email communication."
+  },
+  {
+    "customer_id": "CUST-1042",
+    "name": "Diana Prince",
+    "email": "diana.prince@example.com",
+    "status": "inactive",
+    "tier": "premium",
+    "owner": "sarah.johnson@company.com",
+    "internal_notes": "Account paused due to travel."
+  }
+]
