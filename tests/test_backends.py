@@ -97,6 +97,24 @@ def _configure_opencode_test_env(
     monkeypatch.delenv("ACTBENCH_MCP_AUTOSTART", raising=False)
 
 
+def _configure_claudecode_test_env(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    mcp_enabled: bool = False,
+) -> None:
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_BIN", "claude")
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP", "1" if mcp_enabled else "0")
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_MODEL", raising=False)
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_TIMEOUT_SECONDS", raising=False)
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_HOME_ROOT", raising=False)
+    monkeypatch.delenv("ACTBENCH_CLAUDECODE_PERMISSION_MODE", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_ADMIN_TOKEN", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_URL", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_HOST", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_PORT", raising=False)
+    monkeypatch.delenv("ACTBENCH_MCP_AUTOSTART", raising=False)
+
+
 def _configure_qwenpaw_test_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ACTBENCH_QWENPAW_BASE_URL", "http://qwenpaw.test")
     monkeypatch.delenv("ACTBENCH_QWENPAW_API_KEY", raising=False)
@@ -168,14 +186,32 @@ def test_cli_accepts_opencode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
     assert args.model == "opencode/test"
 
 
+def test_cli_accepts_claudecode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "claudecode", "--model", "claude/test"])
+
+    args = _parse_args()
+
+    assert args.backend == "claudecode"
+    assert args.model == "claude/test"
+
+
 def test_registry_resolves_backends_without_eager_optional_imports() -> None:
-    assert available_backend_names() == ("openclaw", "qwenpaw", "openagent", "hermes", "opencode", "fake")
+    assert available_backend_names() == (
+        "openclaw",
+        "qwenpaw",
+        "openagent",
+        "hermes",
+        "opencode",
+        "claudecode",
+        "fake",
+    )
     assert get_backend("openclaw").name == "openclaw"
     assert get_backend("fake").name == "fake"
     assert get_backend("qwenpaw").name == "qwenpaw"
     assert get_backend("openagent").name == "openagent"
     assert get_backend("hermes").name == "hermes"
     assert get_backend("opencode").name == "opencode"
+    assert get_backend("claudecode").name == "claudecode"
     with pytest.raises(ValueError, match="unknown backend"):
         get_backend("missing")
 
@@ -968,6 +1004,442 @@ def test_opencode_backend_returns_backend_compatible_result(
     assert "Session 2:" in calls[0]["prompt"]
     assert calls[0]["workspace"] == Path(result["workspace"])
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_claudecode_backend_missing_binary_is_controlled(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: None)
+    backend = ClaudeCodeBackend()
+    context = _context(tmp_path, backend="claudecode")
+
+    with pytest.raises(BackendInitializationError, match="ACTBENCH_CLAUDECODE_BIN"):
+        backend.initialize_run(context)
+
+
+def test_claudecode_transcript_helpers_normalize_stream_json() -> None:
+    from benchmark.backends.claudecode import (
+        _extract_claudecode_transcript,
+        _has_usable_transcript,
+        _usage_from_claudecode_stream,
+    )
+
+    stdout = "\n".join(
+        [
+            "not-json",
+            json.dumps(
+                {
+                    "type": "assistant",
+                    "message": {
+                        "role": "assistant",
+                        "content": [
+                            {"type": "thinking", "thinking": "private"},
+                            {"type": "text", "text": "I will inspect it."},
+                            {
+                                "type": "tool_use",
+                                "id": "tool_1",
+                                "name": "mcp__actbench__actbench_read_file",
+                                "input": {
+                                    "path": "README.md",
+                                    "context_id": "ctx-secret",
+                                    "headers": {"Authorization": "Bearer should-not-leak"},
+                                },
+                            },
+                        ],
+                        "usage": {"input_tokens": 2, "output_tokens": 1},
+                    },
+                }
+            ),
+            json.dumps(
+                {
+                    "type": "user",
+                    "message": {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": "tool_1",
+                                "content": [{"type": "text", "text": "hello"}],
+                            }
+                        ],
+                    },
+                }
+            ),
+            json.dumps(
+                {
+                    "type": "result",
+                    "num_turns": 2,
+                    "total_cost_usd": 0.25,
+                    "usage": {
+                        "input_tokens": 10,
+                        "output_tokens": 5,
+                        "cache_read_input_tokens": 2,
+                        "cache_creation_input_tokens": 3,
+                    },
+                }
+            ),
+        ]
+    )
+
+    transcript, source, metadata, usage = _extract_claudecode_transcript(
+        effective_prompt="Read the file.",
+        stdout=stdout,
+        redactions=["ctx-secret"],
+    )
+
+    assert source == "claudecode_stream_json"
+    assert metadata["event_counts"] == {"assistant": 1, "user": 1, "result": 1}
+    assert metadata["non_json_lines"] == 1
+    assert _has_usable_transcript(transcript) is True
+    tool_call_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolCall"
+    ]
+    tool_result_blocks = [
+        item
+        for entry in transcript
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolResult"
+    ]
+    assert tool_call_blocks == [
+        {
+            "type": "toolCall",
+            "name": "mcp__actbench__actbench_read_file",
+            "arguments": {
+                "path": "README.md",
+                "headers": {"Authorization": "[redacted]"},
+            },
+            "id": "tool_1",
+        }
+    ]
+    assert tool_result_blocks == [
+        {
+            "type": "toolResult",
+            "text": "hello",
+            "tool_call_id": "tool_1",
+            "name": "mcp__actbench__actbench_read_file",
+            "isError": False,
+        }
+    ]
+    assert "private" not in json.dumps(transcript)
+    assert "ctx-secret" not in json.dumps(transcript)
+    assert "should-not-leak" not in json.dumps(transcript)
+    assert usage == _usage_from_claudecode_stream(stdout)
+    assert usage["input_tokens"] == 10
+    assert usage["output_tokens"] == 5
+    assert usage["cache_read_tokens"] == 2
+    assert usage["cache_write_tokens"] == 3
+    assert usage["total_tokens"] == 15
+    assert usage["cost_usd"] == 0.25
+    assert usage["request_count"] == 2
+
+
+def test_claudecode_mcp_disabled_ignores_stale_mcp_env(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_MCP_PORT", "not-a-port")
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+
+    backend.initialize_run(_context(tmp_path, backend="claudecode"))
+
+    assert backend._config is not None
+    assert backend._config.mcp_enabled is False
+    assert "Read" in backend._config.allowed_tools
+    assert backend._config.builtin_tools is None
+    assert (backend._config.claudecode_home / "actbench-claudecode.json").exists()
+
+
+def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_env(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend, ClaudeCodeConfig
+
+    monkeypatch.setenv("ACTBENCH_MCP_ADMIN_TOKEN", "secret-token")
+    captured: dict[str, object] = {}
+
+    def fake_subprocess_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        captured.update(kwargs)
+        return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(claudecode_module.subprocess, "run", fake_subprocess_run)
+    config = ClaudeCodeConfig(
+        executable="/usr/bin/claude",
+        model="claude-opus-4-8",
+        timeout_seconds=None,
+        claudecode_home=tmp_path / "claudecode_home",
+        permission_mode="dontAsk",
+        allowed_tools=("mcp__actbench__actbench_read_file",),
+        builtin_tools="",
+        mcp_enabled=True,
+        mcp_autostart=False,
+        mcp_host="127.0.0.1",
+        mcp_port=8765,
+        mcp_public_url="http://mcp.test/mcp",
+        mcp_admin_token="secret-token",
+    )
+    mcp_config_path = tmp_path / "mcp.json"
+
+    ClaudeCodeBackend()._run_claudecode_subprocess(
+        config=config,
+        prompt="Prompt text",
+        workspace=tmp_path,
+        session_id="00000000-0000-4000-8000-000000000003",
+        mcp_config_path=mcp_config_path,
+        timeout_seconds=12.0,
+    )
+
+    cmd = captured["cmd"]
+    assert isinstance(cmd, list)
+    assert cmd[:3] == ["/usr/bin/claude", "--bare", "-p"]
+    assert "--output-format" in cmd and cmd[cmd.index("--output-format") + 1] == "stream-json"
+    assert "--verbose" in cmd
+    assert "--permission-mode" in cmd and cmd[cmd.index("--permission-mode") + 1] == "dontAsk"
+    assert "--session-id" in cmd
+    assert cmd[cmd.index("--session-id") + 1] == "00000000-0000-4000-8000-000000000003"
+    assert "--tools" in cmd and cmd[cmd.index("--tools") + 1] == ""
+    assert "--allowedTools" in cmd
+    assert cmd[cmd.index("--allowedTools") + 1] == "mcp__actbench__actbench_read_file"
+    assert "--mcp-config" in cmd and cmd[cmd.index("--mcp-config") + 1] == str(mcp_config_path)
+    assert "--strict-mcp-config" in cmd
+    env = captured["env"]
+    assert isinstance(env, dict)
+    assert env["HOME"] == str(config.home_dir)
+    assert env["CLAUDE_CONFIG_DIR"] == str(config.config_dir)
+    assert "ACTBENCH_MCP_ADMIN_TOKEN" not in env
+
+
+def test_claudecode_backend_returns_backend_compatible_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    monkeypatch.setattr(
+        claudecode_module.uuid,
+        "uuid4",
+        lambda: "00000000-0000-4000-8000-000000000001",
+    )
+    backend = ClaudeCodeBackend()
+    calls: list[dict] = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        return subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout="\n".join(
+                [
+                    json.dumps(
+                        {
+                            "type": "assistant",
+                            "message": {
+                                "role": "assistant",
+                                "content": [{"type": "text", "text": "done"}],
+                                "usage": {"input_tokens": 10, "output_tokens": 5},
+                            },
+                        }
+                    ),
+                    json.dumps(
+                        {
+                            "type": "result",
+                            "num_turns": 1,
+                            "total_cost_usd": 0.125,
+                            "usage": {"input_tokens": 10, "output_tokens": 5},
+                        }
+                    ),
+                ]
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_claudecode_subprocess", fake_run)
+    context = _context(tmp_path, backend="claudecode")
+    task = _task(frontmatter={"sessions": ["first", {"prompt": "second"}]})
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=task, context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert result["backend"] == "claudecode"
+    assert result["backend_metadata"]["transcript_source"] == "claudecode_stream_json"
+    assert result["backend_metadata"]["claudecode_session_id"] == "00000000-0000-4000-8000-000000000001"
+    assert result["backend_metadata"]["permission_mode"] == "dontAsk"
+    assert result["backend_metadata"]["mcp_enabled"] is False
+    assert result["usage"]["input_tokens"] == 10
+    assert result["usage"]["output_tokens"] == 5
+    assert result["usage"]["total_tokens"] == 15
+    assert result["usage"]["cost_usd"] == 0.125
+    assert "Session 1:" in calls[0]["prompt"]
+    assert "Session 2:" in calls[0]["prompt"]
+    assert calls[0]["workspace"] == Path(result["workspace"])
+    assert calls[0]["mcp_config_path"] is None
+    assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_claudecode_success_without_usable_transcript_becomes_error(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+    monkeypatch.setattr(
+        backend,
+        "_run_claudecode_subprocess",
+        lambda **kwargs: subprocess.CompletedProcess(
+            args=["claude"], returncode=0, stdout="", stderr=""
+        ),
+    )
+    context = _context(tmp_path, backend="claudecode")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "error"
+    assert result["exit_code"] == -1
+    assert "produced no transcript" in result["stderr"]
+
+
+def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=True)
+    monkeypatch.setenv("ACTBENCH_MCP_AUTOSTART", "0")
+    monkeypatch.setenv("ACTBENCH_MCP_ADMIN_TOKEN", "secret-token")
+    monkeypatch.setenv("ACTBENCH_MCP_URL", "http://host.docker.internal:8765/mcp")
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    monkeypatch.setattr(claudecode_module.secrets, "token_urlsafe", lambda _: "ctx-123")
+    monkeypatch.setattr(
+        claudecode_module.uuid,
+        "uuid4",
+        lambda: "00000000-0000-4000-8000-000000000002",
+    )
+    monkeypatch.setattr(claudecode_module, "check_gateway_health", lambda **kwargs: None)
+    registered: list[dict] = []
+    unregistered: list[dict] = []
+    monkeypatch.setattr(
+        claudecode_module,
+        "register_gateway_context",
+        lambda **kwargs: registered.append(kwargs) or {"status": "ok"},
+    )
+    monkeypatch.setattr(
+        claudecode_module,
+        "unregister_gateway_context",
+        lambda **kwargs: unregistered.append(kwargs) or {"status": "ok", "removed": True},
+    )
+
+    def fake_get_traces(**kwargs):
+        return {
+            "status": "ok",
+            "context_id": "ctx-123",
+            "traces": [
+                {
+                    "sequence": 3,
+                    "name": "actbench_read_file",
+                    "arguments": {
+                        "path": "README.md",
+                        "context_id": "ctx-123",
+                        "headers": {"Authorization": "Bearer should-not-leak"},
+                    },
+                    "result": {
+                        "content": [
+                            {"type": "text", "text": '{"path":"README.md","content":"hello"}'}
+                        ]
+                    },
+                    "isError": False,
+                }
+            ],
+        }
+
+    monkeypatch.setattr(claudecode_module, "get_gateway_context_traces", fake_get_traces)
+    backend = ClaudeCodeBackend()
+    prompts: list[str] = []
+    mcp_config_paths: list[Path] = []
+
+    def fake_run(**kwargs):
+        prompts.append(kwargs["prompt"])
+        mcp_config_paths.append(kwargs["mcp_config_path"])
+        return subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "type": "assistant",
+                    "message": {
+                        "role": "assistant",
+                        "content": [{"type": "text", "text": "done"}],
+                    },
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_claudecode_subprocess", fake_run)
+    context = _context(tmp_path, backend="claudecode")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert registered[0]["context_id"] == "ctx-123"
+    assert registered[0]["workspace"] == Path(result["workspace"])
+    assert "ctx-123" in prompts[0]
+    assert "http://host.docker.internal:8765/mcp" in prompts[0]
+    assert mcp_config_paths and mcp_config_paths[0].is_file()
+    mcp_config = json.loads(mcp_config_paths[0].read_text(encoding="utf-8"))
+    assert mcp_config == {
+        "mcpServers": {
+            "actbench": {"type": "http", "url": "http://host.docker.internal:8765/mcp"}
+        }
+    }
+    assert unregistered == [
+        {
+            "mcp_url": "http://127.0.0.1:8765/mcp",
+            "context_id": "ctx-123",
+            "admin_token": "secret-token",
+        }
+    ]
+    assert result["backend_metadata"]["mcp_enabled"] is True
+    assert result["backend_metadata"]["mcp_public_url"] == "http://host.docker.internal:8765/mcp"
+    assert result["backend_metadata"]["transcript_extraction"]["mcp_trace_messages_appended"] == 2
+    tool_call_blocks = [
+        item
+        for entry in result["transcript"]
+        for item in entry.get("message", {}).get("content", [])
+        if isinstance(item, dict) and item.get("type") == "toolCall"
+    ]
+    assert any(block["name"] == "actbench_read_file" for block in tool_call_blocks)
+    result_text = json.dumps(result, sort_keys=True)
+    assert "secret-token" not in result_text
+    assert "ctx-123" not in result_text
+    assert "should-not-leak" not in result_text
+
 
 
 def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
