@@ -134,6 +134,7 @@ def _configure_qwenpaw_test_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("ACTBENCH_QWENPAW_AGENT_PREFIX", raising=False)
     monkeypatch.delenv("ACTBENCH_QWENPAW_DELETE_AGENT", raising=False)
     monkeypatch.delenv("ACTBENCH_QWENPAW_HEADLESS_TOOL_GUARD", raising=False)
+    monkeypatch.setenv("ACTBENCH_QWENPAW_USAGE_DELTA", "0")
 
 
 def _write_minimal_task(tasks_dir: Path) -> None:
@@ -237,7 +238,9 @@ def test_registry_resolves_backends_without_eager_optional_imports() -> None:
     )
     assert get_backend("openclaw").name == "openclaw"
     assert get_backend("fake").name == "fake"
-    assert get_backend("qwenpaw").name == "qwenpaw"
+    qwenpaw_backend = get_backend("qwenpaw")
+    assert qwenpaw_backend.name == "qwenpaw"
+    assert qwenpaw_backend.supports_parallel_runs is True
     assert get_backend("openagent").name == "openagent"
     assert get_backend("hermes").name == "hermes"
     assert get_backend("opencode").name == "opencode"
@@ -544,10 +547,18 @@ def test_openclaw_artifact_keys_are_attempt_unique(
     import lib_agent
 
     monkeypatch.setattr(lib_agent, "cleanup_agent_sessions", lambda agent_id: None)
-    monkeypatch.setattr(lib_agent, "prepare_task_workspace", lambda *args, **kwargs: tmp_path / "workspace")
+    monkeypatch.setattr(
+        lib_agent, "prepare_task_workspace", lambda *args, **kwargs: tmp_path / "workspace"
+    )
     monkeypatch.setattr(lib_agent, "_build_clean_cwd", lambda *args, **kwargs: tmp_path)
     monkeypatch.setattr(lib_agent, "_load_transcript", lambda *args, **kwargs: [])
-    monkeypatch.setattr(lib_agent.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess(args=[], returncode=0, stdout="done", stderr=""))
+    monkeypatch.setattr(
+        lib_agent.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args=[], returncode=0, stdout="done", stderr=""
+        ),
+    )
     monkeypatch.setattr(lib_agent.uuid, "uuid4", lambda: SimpleNamespace(hex="fixeduuid"))
 
     first = lib_agent.execute_openclaw_task(
@@ -617,6 +628,7 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     create_calls: list[dict] = []
     process_calls: list[dict] = []
+    history_calls: list[dict] = []
     delete_calls: list[str] = []
 
     def fake_create(**kwargs):
@@ -637,6 +649,7 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
         }
 
     def fake_history(**kwargs):
+        history_calls.append(kwargs)
         return [
             {"role": "user", "content": "first"},
             {
@@ -672,6 +685,8 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
     assert result["backend_metadata"]["transcript_source"] == "qwenpaw_service_chat_history"
     assert result["backend_metadata"]["base_url"] == "http://qwenpaw.test"
     assert result["backend_metadata"]["service_agent_id"] == "actbench-test-agent"
+    assert result["backend_metadata"]["usage_source"] == "qwenpaw_event"
+    assert result["backend_metadata"]["usage_delta_contamination_risk"] is False
     assert result["usage"]["input_tokens"] == 10
     assert result["usage"]["output_tokens"] == 5
     assert result["usage"]["total_tokens"] == 15
@@ -681,12 +696,346 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
     assert [call["prompt"] for call in process_calls] == ["first", "second"]
     assert len({call["session_id"] for call in process_calls}) == 1
     assert all(call["agent_id"] == "actbench-test-agent" for call in process_calls)
+    chat_scope = process_calls[0]["chat_scope"]
+    assert all(call["chat_scope"] == chat_scope for call in process_calls)
+    assert history_calls[0]["chat_scope"] == chat_scope
+    assert result["backend_metadata"]["qwenpaw_user_id"] == chat_scope.user_id
+    assert result["backend_metadata"]["qwenpaw_channel"] == chat_scope.channel
+    assert chat_scope.user_id != "actbench"
+    assert chat_scope.channel != "console"
     workspace = Path(result["workspace"])
     assert create_calls[0]["workspace"] == workspace
     assert (workspace / "README.md").read_text(encoding="utf-8") == "hello"
     assert (workspace / ".bootstrap_completed").exists()
     assert not (workspace / "BOOTSTRAP.md").exists()
     assert delete_calls == ["actbench-test-agent"]
+
+
+def test_qwenpaw_process_and_history_use_attempt_scoped_chat_scope(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawBackend, QwenPawChatScope, QwenPawConfig
+
+    backend = QwenPawBackend()
+    config = QwenPawConfig(
+        base_url="http://qwenpaw.test",
+        api_key="token",
+        timeout_seconds=None,
+        agent_prefix="actbench",
+        delete_agent=True,
+        headless_tool_guard=None,
+        usage_delta_enabled=True,
+    )
+    chat_scope = QwenPawChatScope(
+        user_id="actbench-run-001-1-task-fake-scope",
+        channel="console-run-001-1-scope",
+    )
+    process_payloads: list[dict] = []
+    requested_urls: list[str] = []
+
+    def fake_post_sse_json(url, **kwargs):
+        process_payloads.append(kwargs["payload"])
+        return {"output": [{"content": [{"type": "text", "text": "answer"}]}]}
+
+    def fake_request_json(url, **kwargs):
+        requested_urls.append(url)
+        if url.endswith("/chats/quoted-chat"):
+            return {"messages": [{"role": "assistant", "content": "answer"}]}
+        return [{"id": "quoted-chat", "session_id": "session-1"}]
+
+    monkeypatch.setattr(qwenpaw_module, "_post_sse_json", fake_post_sse_json)
+    monkeypatch.setattr(qwenpaw_module, "_request_json", fake_request_json)
+
+    backend._post_agent_process(
+        config=config,
+        agent_id="agent-1",
+        task=_task(),
+        session_id="session-1",
+        chat_scope=chat_scope,
+        prompt="hello",
+        timeout_seconds=1.0,
+    )
+    messages = backend._fetch_chat_history_messages(
+        config=config,
+        agent_id="agent-1",
+        session_id="session-1",
+        chat_scope=chat_scope,
+        timeout_seconds=1.0,
+    )
+
+    assert process_payloads[0]["user_id"] == chat_scope.user_id
+    assert process_payloads[0]["channel"] == chat_scope.channel
+    assert process_payloads[0]["request_context"]["user_id"] == chat_scope.user_id
+    assert process_payloads[0]["request_context"]["channel"] == chat_scope.channel
+    assert messages == [{"role": "assistant", "content": "answer"}]
+    assert requested_urls[0].startswith("http://qwenpaw.test/api/agents/agent-1/chats")
+    assert f"user_id={chat_scope.user_id}" in requested_urls[0]
+    assert f"channel={chat_scope.channel}" in requested_urls[0]
+
+
+def test_qwenpaw_backend_uses_token_usage_delta_when_event_usage_missing(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawBackend
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    monkeypatch.setenv("ACTBENCH_QWENPAW_USAGE_DELTA", "1")
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+    monkeypatch.setattr(
+        backend,
+        "_post_agent_process",
+        lambda **kwargs: {"output": [{"content": [{"type": "text", "text": "answer"}]}]},
+    )
+    monkeypatch.setattr(
+        backend,
+        "_fetch_chat_history_messages",
+        lambda **kwargs: [{"role": "assistant", "content": "answer"}],
+    )
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+    snapshots = [
+        [
+            {
+                "date": "2026-07-12",
+                "provider_id": "test",
+                "model": "model",
+                "prompt_tokens": 100,
+                "completion_tokens": 50,
+                "call_count": 10,
+            }
+        ],
+        [
+            {
+                "date": "2026-07-12",
+                "provider_id": "test",
+                "model": "model",
+                "prompt_tokens": 125,
+                "completion_tokens": 60,
+                "call_count": 11,
+            }
+        ],
+    ]
+
+    def fake_request_json(url, **kwargs):
+        assert url.startswith("http://qwenpaw.test/api/token-usage/details")
+        return snapshots.pop(0)
+
+    monkeypatch.setattr(qwenpaw_module, "_request_json", fake_request_json)
+    context = _context(tmp_path, backend="qwenpaw")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert result["usage"]["input_tokens"] == 25
+    assert result["usage"]["output_tokens"] == 10
+    assert result["usage"]["total_tokens"] == 35
+    assert result["usage"]["request_count"] == 1
+    assert result["backend_metadata"]["usage_source"] == "qwenpaw_token_usage_delta"
+    assert result["backend_metadata"]["usage_delta_contamination_risk"] is True
+    assert snapshots == []
+
+
+def test_qwenpaw_backend_succeeds_when_token_usage_delta_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawBackend, QwenPawRequestError
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    monkeypatch.setenv("ACTBENCH_QWENPAW_USAGE_DELTA", "1")
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+    monkeypatch.setattr(
+        backend,
+        "_post_agent_process",
+        lambda **kwargs: {"output": [{"content": [{"type": "text", "text": "answer"}]}]},
+    )
+    monkeypatch.setattr(
+        backend,
+        "_fetch_chat_history_messages",
+        lambda **kwargs: [{"role": "assistant", "content": "answer"}],
+    )
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+    monkeypatch.setattr(
+        qwenpaw_module,
+        "_request_json",
+        lambda *args, **kwargs: (_ for _ in ()).throw(QwenPawRequestError("usage down")),
+    )
+    context = _context(tmp_path, backend="qwenpaw")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert result["usage"]["total_tokens"] == 0
+    assert result["usage"]["request_count"] == 1
+    assert result["backend_metadata"]["usage_source"] == "unavailable"
+
+
+def test_qwenpaw_backend_disables_token_usage_delta_under_parallel_workers(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawBackend
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    monkeypatch.setenv("ACTBENCH_QWENPAW_USAGE_DELTA", "1")
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+    monkeypatch.setattr(
+        backend,
+        "_post_agent_process",
+        lambda **kwargs: {"output": [{"content": [{"type": "text", "text": "answer"}]}]},
+    )
+    monkeypatch.setattr(
+        backend,
+        "_fetch_chat_history_messages",
+        lambda **kwargs: [{"role": "assistant", "content": "answer"}],
+    )
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+
+    usage_snapshot_calls: list[str] = []
+
+    def fake_request_json(url, **kwargs):
+        usage_snapshot_calls.append(url)
+        raise AssertionError("aggregate usage snapshot should be disabled under parallel workers")
+
+    monkeypatch.setattr(qwenpaw_module, "_request_json", fake_request_json)
+    context = _context(
+        tmp_path,
+        backend="qwenpaw",
+        metadata={
+            "run_workers": 2,
+            "run_worker_id": 1,
+            "run_worker_label": "w1",
+            "run_index": 1,
+        },
+    )
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert usage_snapshot_calls == []
+    assert result["usage"]["total_tokens"] == 0
+    assert result["usage"]["request_count"] == 1
+    assert result["backend_metadata"]["usage_source"] == "unavailable"
+    assert result["backend_metadata"]["usage_delta_contamination_risk"] is False
+    assert result["backend_metadata"]["usage_delta_disabled_reason"] == "parallel_run_workers"
+
+
+def test_qwenpaw_backend_keeps_event_usage_under_parallel_workers(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawBackend
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    monkeypatch.setenv("ACTBENCH_QWENPAW_USAGE_DELTA", "1")
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+    monkeypatch.setattr(
+        backend,
+        "_post_agent_process",
+        lambda **kwargs: {
+            "output": [{"content": [{"type": "text", "text": "answer"}]}],
+            "usage": {
+                "prompt_tokens": 11,
+                "completion_tokens": 7,
+                "total_tokens": 18,
+                "call_count": 1,
+            },
+        },
+    )
+    monkeypatch.setattr(
+        backend,
+        "_fetch_chat_history_messages",
+        lambda **kwargs: [{"role": "assistant", "content": "answer"}],
+    )
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+
+    usage_snapshot_calls: list[str] = []
+
+    def fake_request_json(url, **kwargs):
+        usage_snapshot_calls.append(url)
+        raise AssertionError("aggregate usage snapshot should be disabled under parallel workers")
+
+    monkeypatch.setattr(qwenpaw_module, "_request_json", fake_request_json)
+    context = _context(
+        tmp_path,
+        backend="qwenpaw",
+        metadata={
+            "run_workers": 2,
+            "run_worker_id": 2,
+            "run_worker_label": "w2",
+            "run_index": 2,
+        },
+    )
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-2")
+
+    assert result["status"] == "success"
+    assert usage_snapshot_calls == []
+    assert result["usage"]["input_tokens"] == 11
+    assert result["usage"]["output_tokens"] == 7
+    assert result["usage"]["total_tokens"] == 18
+    assert result["usage"]["request_count"] == 1
+    assert result["backend_metadata"]["usage_source"] == "qwenpaw_event"
+    assert result["backend_metadata"]["usage_delta_disabled_reason"] == "parallel_run_workers"
+
+
+def test_qwenpaw_usage_parsing_accepts_nested_and_aggregate_shapes() -> None:
+    from benchmark.backends.qwenpaw import (
+        _event_usage,
+        _normalize_qwenpaw_usage,
+        _qwenpaw_usage_rows,
+        _sum_usage_rows,
+    )
+
+    assert _event_usage({"metadata": {"usage": {"prompt_tokens": 1}}}) == {"prompt_tokens": 1}
+    assert _event_usage({"output": [{"usage": {"completion_tokens": 2}}]}) == {
+        "completion_tokens": 2
+    }
+    normalized = _normalize_qwenpaw_usage(
+        {"inputTokens": "3", "outputTokens": "4", "totalTokens": "7", "callCount": "2"},
+        request_count=1,
+    )
+    assert normalized["input_tokens"] == 3
+    assert normalized["output_tokens"] == 4
+    assert normalized["total_tokens"] == 7
+    assert normalized["request_count"] == 2
+
+    rows = _qwenpaw_usage_rows(
+        {
+            "by_model": {
+                "test:model": {
+                    "provider_id": "test",
+                    "model": "model",
+                    "prompt_tokens": 10,
+                    "completion_tokens": 5,
+                    "call_count": 1,
+                }
+            }
+        }
+    )
+    summed = _sum_usage_rows(rows)
+    assert summed["input_tokens"] == 10
+    assert summed["output_tokens"] == 5
+    assert summed["total_tokens"] == 15
+    assert summed["request_count"] == 1
 
 
 def test_qwenpaw_backend_create_agent_payload_uses_workspace_and_model(
@@ -725,6 +1074,7 @@ def test_qwenpaw_backend_create_agent_payload_uses_workspace_and_model(
         agent_prefix="actbench.test",
         delete_agent=True,
         headless_tool_guard=None,
+        usage_delta_enabled=True,
     )
     context = _context(tmp_path, backend="qwenpaw")
 
@@ -1964,7 +2314,12 @@ def test_claudecode_backend_uses_attempt_scoped_home(
     assert len(set(config_dirs)) == 2
     assert homes == [
         tmp_path / "claudecode_homes" / "run_001" / "task_fake" / "run_001-1" / "claudecode_home",
-        tmp_path / "claudecode_homes" / "run_001" / "task_fake_two" / "run_001-1" / "claudecode_home",
+        tmp_path
+        / "claudecode_homes"
+        / "run_001"
+        / "task_fake_two"
+        / "run_001-1"
+        / "claudecode_home",
     ]
     assert [
         first["backend_metadata"]["claudecode_home"],
@@ -3518,7 +3873,7 @@ def test_run_benchmark_rejects_nonpositive_run_workers(
     assert exc_info.value.code == 2
 
 
-@pytest.mark.parametrize("backend_name", ["openagent", "qwenpaw"])
+@pytest.mark.parametrize("backend_name", ["openagent"])
 def test_run_benchmark_rejects_remote_backend_parallel_runs(
     tmp_path: Path,
     backend_name: str,

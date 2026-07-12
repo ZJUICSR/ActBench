@@ -92,6 +92,7 @@ Relevant qwenpaw environment variables:
 - `ACTBENCH_QWENPAW_AGENT_PREFIX` prefixes per-task service agent IDs; default is `actbench`.
 - `ACTBENCH_QWENPAW_DELETE_AGENT` controls best-effort deletion of per-task QwenPaw agent registrations after each attempt; default is enabled.
 - `ACTBENCH_QWENPAW_HEADLESS_TOOL_GUARD` is passed through to QwenPaw's request context.
+- `ACTBENCH_QWENPAW_USAGE_DELTA` controls the ActBench-side token-usage fallback; by default ActBench first uses usage returned by QwenPaw process events, then falls back to the service's `/api/token-usage/details` or `/api/token-usage` aggregate delta when event usage is absent. Because that fallback is provider/model aggregate data from the QwenPaw service, unrelated concurrent QwenPaw traffic for the same provider/model can contaminate per-task token counts. For same-task parallel repeats (`--run-workers > 1`), ActBench disables this aggregate delta fallback and only trusts per-event usage returned by QwenPaw.
 
 
 Run with OpenAgent when an OpenAgent service is already running and configured with a Store external API key:

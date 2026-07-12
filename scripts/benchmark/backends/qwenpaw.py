@@ -53,6 +53,7 @@ DEFAULT_QWENPAW_AGENT_PREFIX = "actbench"
 QWENPAW_HEALTH_TIMEOUT_SECONDS = 15.0
 QWENPAW_USER_ID = "actbench"
 QWENPAW_CHANNEL = "console"
+_TOKEN_USAGE_ENDPOINTS = ("/api/token-usage/details", "/api/token-usage")
 _AGENT_ID_MAX_LENGTH = 64
 
 
@@ -64,6 +65,13 @@ class QwenPawConfig:
     agent_prefix: str
     delete_agent: bool
     headless_tool_guard: str | None
+    usage_delta_enabled: bool
+
+
+@dataclass(frozen=True)
+class QwenPawChatScope:
+    user_id: str
+    channel: str
 
 
 class QwenPawRequestError(RuntimeError):
@@ -79,7 +87,7 @@ class QwenPawBackend:
 
     name = "qwenpaw"
     uses_gateway_lock = False
-    supports_parallel_runs = False
+    supports_parallel_runs = True
 
     def __init__(self) -> None:
         self._config: QwenPawConfig | None = None
@@ -113,6 +121,11 @@ class QwenPawBackend:
         logger.info("🤖 qwenpaw backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
         session_id = f"{safe_path_component(attempt_run_id)}_{safe_path_component(task.task_id)}_{int(start_time * 1000)}"
+        chat_scope = _qwenpaw_chat_scope(
+            context=context,
+            task=task,
+            attempt_run_id=attempt_run_id,
+        )
         workspace = backend_task_workspace(
             context=context, attempt_run_id=attempt_run_id, task=task
         )
@@ -125,6 +138,15 @@ class QwenPawBackend:
         transcript: List[Dict[str, Any]] = []
         transcript_source = "qwenpaw_service_no_transcript"
         usage = zero_usage(request_count=0)
+        usage_source = "unavailable"
+        usage_delta_contamination_risk = False
+        usage_delta_disabled_reason: str | None = None
+        run_workers = max(_safe_int(context.metadata.get("run_workers", 1)), 1)
+        usage_delta_allowed = config.usage_delta_enabled
+        if run_workers > 1:
+            usage_delta_allowed = False
+            if config.usage_delta_enabled:
+                usage_delta_disabled_reason = "parallel_run_workers"
         status = "success"
         timed_out = False
         service_agent_id: str | None = None
@@ -179,6 +201,8 @@ class QwenPawBackend:
 
             timeout_budget = task.timeout_seconds * context.timeout_multiplier
             process_outputs: List[str] = []
+            model_slot = _parse_model_slot(context.model)
+            usage_before: Dict[str, Any] | None = None
 
             remaining = timeout_budget - (time.time() - start_time)
             if remaining <= 0:
@@ -213,6 +237,23 @@ class QwenPawBackend:
                     exit_code = -1
                     stderr = f"qwenpaw service agent creation failed: {exc}"
 
+            if status == "success" and service_agent_id and usage_delta_allowed:
+                remaining = timeout_budget - (time.time() - start_time)
+                if remaining > 0:
+                    try:
+                        usage_before = _fetch_token_usage_snapshot(
+                            config=config,
+                            provider_id=model_slot["provider_id"],
+                            model=model_slot["model"],
+                            timeout_seconds=_usage_snapshot_timeout(
+                                config=config, remaining=remaining
+                            ),
+                        )
+                    except QwenPawRequestError as exc:
+                        logger.debug("qwenpaw token usage pre-snapshot unavailable: %s", exc)
+                    except Exception as exc:  # noqa: BLE001 - usage is best-effort
+                        logger.debug("qwenpaw token usage pre-snapshot failed: %s", exc)
+
             if status == "success" and service_agent_id:
                 for prompt in prompts:
                     remaining = timeout_budget - (time.time() - start_time)
@@ -230,6 +271,7 @@ class QwenPawBackend:
                             agent_id=service_agent_id,
                             task=task,
                             session_id=session_id,
+                            chat_scope=chat_scope,
                             prompt=prompt,
                             timeout_seconds=_request_timeout(config=config, remaining=remaining),
                         )
@@ -239,6 +281,8 @@ class QwenPawBackend:
                         raw_usage = _event_usage(event)
                         if raw_usage is not None:
                             usage = _normalize_qwenpaw_usage(raw_usage, request_count=request_count)
+                            if _usage_has_tokens_or_cost(usage):
+                                usage_source = "qwenpaw_event"
                     except QwenPawTimeoutError as exc:
                         timed_out = True
                         status = "timeout"
@@ -276,6 +320,7 @@ class QwenPawBackend:
                             config=config,
                             agent_id=service_agent_id,
                             session_id=session_id,
+                            chat_scope=chat_scope,
                             timeout_seconds=_request_timeout(config=config, remaining=remaining),
                         )
                         transcript = _raw_messages_to_transcript(raw_messages)
@@ -299,6 +344,32 @@ class QwenPawBackend:
                 status = "error"
                 exit_code = -1
                 stderr = _append_stderr(stderr, "qwenpaw service produced no transcript")
+
+            if usage_delta_allowed and not _usage_has_tokens_or_cost(usage):
+                remaining = timeout_budget - (time.time() - start_time)
+                if remaining > 0:
+                    try:
+                        usage_after = _fetch_token_usage_snapshot(
+                            config=config,
+                            provider_id=model_slot["provider_id"],
+                            model=model_slot["model"],
+                            timeout_seconds=_usage_snapshot_timeout(
+                                config=config, remaining=remaining
+                            ),
+                        )
+                        delta_usage = _usage_delta(
+                            usage_before,
+                            usage_after,
+                            request_count=request_count,
+                        )
+                        if delta_usage is not None:
+                            usage = delta_usage
+                            usage_source = "qwenpaw_token_usage_delta"
+                            usage_delta_contamination_risk = True
+                    except QwenPawRequestError as exc:
+                        logger.debug("qwenpaw token usage post-snapshot unavailable: %s", exc)
+                    except Exception as exc:  # noqa: BLE001 - usage is best-effort
+                        logger.debug("qwenpaw token usage post-snapshot failed: %s", exc)
 
             if api_group:
                 api_audit = api_group.collect_audit()
@@ -327,6 +398,11 @@ class QwenPawBackend:
                 base_url=config.base_url,
                 service_agent_id=service_agent_id,
                 delete_agent=config.delete_agent,
+                usage_source=usage_source,
+                usage_delta_contamination_risk=usage_delta_contamination_risk,
+                usage_delta_disabled_reason=usage_delta_disabled_reason,
+                qwenpaw_user_id=chat_scope.user_id,
+                qwenpaw_channel=chat_scope.channel,
             )
         finally:
             if created_service_agent_id and config.delete_agent:
@@ -365,6 +441,7 @@ class QwenPawBackend:
             agent_prefix=agent_prefix,
             delete_agent=_env_flag("ACTBENCH_QWENPAW_DELETE_AGENT", default=True),
             headless_tool_guard=os.environ.get("ACTBENCH_QWENPAW_HEADLESS_TOOL_GUARD"),
+            usage_delta_enabled=_env_flag("ACTBENCH_QWENPAW_USAGE_DELTA", default=True),
         )
 
     def _check_health(self, config: QwenPawConfig) -> None:
@@ -436,6 +513,7 @@ class QwenPawBackend:
         agent_id: str,
         task: Task,
         session_id: str,
+        chat_scope: QwenPawChatScope,
         prompt: str,
         timeout_seconds: float,
     ) -> Dict[str, Any]:
@@ -443,15 +521,15 @@ class QwenPawBackend:
             "source": "actbench",
             "task_id": task.task_id,
             "session_id": session_id,
-            "user_id": QWENPAW_USER_ID,
-            "channel": QWENPAW_CHANNEL,
+            "user_id": chat_scope.user_id,
+            "channel": chat_scope.channel,
         }
         if config.headless_tool_guard is not None:
             request_context["_headless_tool_guard"] = config.headless_tool_guard
         payload = {
             "session_id": session_id,
-            "user_id": QWENPAW_USER_ID,
-            "channel": QWENPAW_CHANNEL,
+            "user_id": chat_scope.user_id,
+            "channel": chat_scope.channel,
             "input": [
                 {
                     "role": "user",
@@ -474,6 +552,7 @@ class QwenPawBackend:
         config: QwenPawConfig,
         agent_id: str,
         session_id: str,
+        chat_scope: QwenPawChatScope,
         timeout_seconds: float | None = None,
     ) -> List[Any]:
         request_timeout = (
@@ -481,16 +560,18 @@ class QwenPawBackend:
         )
         errors: List[str] = []
         scoped_agent_id = urllib.parse.quote(agent_id, safe="")
+        scoped_user_id = urllib.parse.quote(chat_scope.user_id, safe="")
+        scoped_channel = urllib.parse.quote(chat_scope.channel, safe="")
         routes = [
             (
                 f"/api/agents/{scoped_agent_id}/chats"
-                f"?user_id={urllib.parse.quote(QWENPAW_USER_ID)}"
-                f"&channel={urllib.parse.quote(QWENPAW_CHANNEL)}",
+                f"?user_id={scoped_user_id}"
+                f"&channel={scoped_channel}",
                 f"/api/agents/{scoped_agent_id}/chats/{{chat_id}}",
             ),
             (
-                f"/api/chats?user_id={urllib.parse.quote(QWENPAW_USER_ID)}"
-                f"&channel={urllib.parse.quote(QWENPAW_CHANNEL)}",
+                f"/api/chats?user_id={scoped_user_id}"
+                f"&channel={scoped_channel}",
                 "/api/chats/{chat_id}",
             ),
         ]
@@ -944,18 +1025,82 @@ def _normalize_qwenpaw_usage(raw_usage: Any, *, request_count: int) -> Dict[str,
     usage = zero_usage(request_count=request_count)
     if not isinstance(raw_usage, dict):
         return usage
-    input_tokens = raw_usage.get("input_tokens", raw_usage.get("prompt_tokens", 0)) or 0
-    output_tokens = raw_usage.get("output_tokens", raw_usage.get("completion_tokens", 0)) or 0
-    total_tokens = raw_usage.get("total_tokens")
+    input_tokens = _first_present(
+        raw_usage,
+        "input_tokens",
+        "prompt_tokens",
+        "inputTokens",
+        "promptTokens",
+        "total_prompt_tokens",
+        "input",
+        "prompt",
+        default=0,
+    )
+    output_tokens = _first_present(
+        raw_usage,
+        "output_tokens",
+        "completion_tokens",
+        "outputTokens",
+        "completionTokens",
+        "total_completion_tokens",
+        "output",
+        "completion",
+        default=0,
+    )
+    total_tokens = _first_present(
+        raw_usage,
+        "total_tokens",
+        "totalTokens",
+        "total",
+        default=None,
+    )
     if total_tokens is None:
         total_tokens = _safe_int(input_tokens) + _safe_int(output_tokens)
+    cost = _first_present(
+        raw_usage,
+        "cost_usd",
+        "estimated_cost_usd",
+        "total_cost_usd",
+        "totalCostUsd",
+        "total_cost",
+        "totalCost",
+        "cost",
+        default=0.0,
+    )
+    if isinstance(cost, dict):
+        cost = _first_present(cost, "total", "usd", "cost_usd", default=0.0)
     usage["input_tokens"] = _safe_int(input_tokens)
     usage["output_tokens"] = _safe_int(output_tokens)
-    usage["cache_read_tokens"] = _safe_int(raw_usage.get("cache_read_tokens", 0))
-    usage["cache_write_tokens"] = _safe_int(raw_usage.get("cache_write_tokens", 0))
+    usage["cache_read_tokens"] = _safe_int(
+        _first_present(
+            raw_usage, "cache_read_tokens", "cacheReadTokens", "cacheRead", "cache_read", default=0
+        )
+    )
+    usage["cache_write_tokens"] = _safe_int(
+        _first_present(
+            raw_usage,
+            "cache_write_tokens",
+            "cacheWriteTokens",
+            "cacheWrite",
+            "cache_write",
+            default=0,
+        )
+    )
     usage["total_tokens"] = _safe_int(total_tokens)
-    usage["cost_usd"] = _safe_float(raw_usage.get("cost_usd", raw_usage.get("cost", 0.0)))
-    usage["request_count"] = _safe_int(raw_usage.get("request_count", request_count))
+    usage["cost_usd"] = _safe_float(cost)
+    usage["request_count"] = _safe_int(
+        _first_present(
+            raw_usage,
+            "request_count",
+            "requestCount",
+            "call_count",
+            "callCount",
+            "total_calls",
+            "calls",
+            "requests",
+            default=request_count,
+        )
+    )
     return usage
 
 
@@ -987,6 +1132,49 @@ def _env_flag(name: str, *, default: bool) -> bool:
     if raw is None or not raw.strip():
         return default
     return raw.strip().lower() not in {"0", "false", "no", "off"}
+
+
+def _qwenpaw_chat_scope(
+    *,
+    context: BackendRunContext,
+    task: Task,
+    attempt_run_id: str,
+) -> QwenPawChatScope:
+    raw_parts = [
+        context.backend,
+        context.run_id,
+        context.agent_id,
+        attempt_run_id,
+        task.task_id,
+        str(context.metadata.get("run_worker_label", "")),
+    ]
+    digest = hashlib.sha1("|".join(raw_parts).encode("utf-8")).hexdigest()[:10]
+    attempt_slug = _agent_id_slug(attempt_run_id)
+    task_slug = _agent_id_slug(task.task_id)
+    return QwenPawChatScope(
+        user_id=_bounded_qwenpaw_scope_value(
+            f"{QWENPAW_USER_ID}-{attempt_slug}-{task_slug}", digest=digest
+        ),
+        channel=_bounded_qwenpaw_scope_value(
+            f"{QWENPAW_CHANNEL}-{attempt_slug}",
+            digest=digest,
+            fallback=QWENPAW_CHANNEL,
+        ),
+    )
+
+
+def _bounded_qwenpaw_scope_value(
+    value: str,
+    *,
+    digest: str,
+    fallback: str = QWENPAW_USER_ID,
+    max_length: int = 96,
+) -> str:
+    slug = _agent_id_slug(value)
+    suffix = f"-{digest}"
+    max_base = max(max_length - len(suffix), 1)
+    base = slug[:max_base].strip("-_") or fallback
+    return f"{base}{suffix}"[:max_length].strip("-_")
 
 
 def _service_agent_id(
@@ -1023,6 +1211,194 @@ def _parse_model_slot(model_id: str) -> Dict[str, str]:
         provider_id = ""
         model = str(model_id)
     return {"provider_id": provider_id, "model": model}
+
+
+def _usage_snapshot_timeout(*, config: QwenPawConfig, remaining: float) -> float:
+    cap = config.timeout_seconds or QWENPAW_HEALTH_TIMEOUT_SECONDS
+    return max(min(cap, remaining), 0.001)
+
+
+def _fetch_token_usage_snapshot(
+    *,
+    config: QwenPawConfig,
+    provider_id: str,
+    model: str,
+    timeout_seconds: float,
+) -> Dict[str, Any] | None:
+    query = urllib.parse.urlencode(
+        {key: value for key, value in {"provider": provider_id, "model": model}.items() if value}
+    )
+    errors: List[str] = []
+    for endpoint in _TOKEN_USAGE_ENDPOINTS:
+        path = f"{endpoint}?{query}" if query else endpoint
+        try:
+            payload = _request_json(
+                _join_url(config.base_url, path),
+                method="GET",
+                api_key=config.api_key,
+                timeout_seconds=timeout_seconds,
+            )
+        except QwenPawRequestError as exc:
+            errors.append(str(exc))
+            continue
+        rows = [
+            row
+            for row in _qwenpaw_usage_rows(payload)
+            if _usage_row_matches_model(row, provider_id=provider_id, model=model)
+        ]
+        if rows:
+            return _sum_usage_rows(rows)
+    if errors:
+        raise QwenPawRequestError("unable to fetch qwenpaw token usage: " + "; ".join(errors))
+    return None
+
+
+def _qwenpaw_usage_rows(payload: Any) -> List[Dict[str, Any]]:
+    if isinstance(payload, list):
+        rows: List[Dict[str, Any]] = []
+        for item in payload:
+            rows.extend(_qwenpaw_usage_rows(item))
+        return rows
+    if not isinstance(payload, dict):
+        return []
+
+    by_model = payload.get("by_model")
+    if isinstance(by_model, dict):
+        rows = []
+        for key, value in by_model.items():
+            if isinstance(value, dict):
+                row = dict(value)
+                row.setdefault("model_key", key)
+                rows.append(row)
+        return rows
+
+    for key in ("data", "details", "items", "rows", "records", "usage"):
+        nested = payload.get(key)
+        if isinstance(nested, (dict, list)):
+            rows = _qwenpaw_usage_rows(nested)
+            if rows:
+                return rows
+
+    if _looks_like_usage(payload):
+        return [payload]
+    return []
+
+
+def _usage_row_matches_model(row: Dict[str, Any], *, provider_id: str, model: str) -> bool:
+    row_model = _coerce_text(
+        _first_present(row, "model", "model_id", "model_name", "modelName", default="")
+    )
+    row_provider = _coerce_text(
+        _first_present(row, "provider", "provider_id", "provider_name", "providerId", default="")
+    )
+    if row_model and model and row_model != model:
+        return False
+    if row_provider and provider_id and row_provider != provider_id:
+        return False
+    return True
+
+
+def _sum_usage_rows(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+    total = zero_usage(request_count=0)
+    for row in rows:
+        total = _add_usage(total, _normalize_qwenpaw_usage(row, request_count=0))
+    return total
+
+
+def _usage_delta(
+    before: Dict[str, Any] | None,
+    after: Dict[str, Any] | None,
+    *,
+    request_count: int,
+) -> Dict[str, Any] | None:
+    if before is None or after is None:
+        return None
+    before_usage = _normalize_qwenpaw_usage(before, request_count=0)
+    after_usage = _normalize_qwenpaw_usage(after, request_count=0)
+    delta = zero_usage(request_count=0)
+    for key in (
+        "input_tokens",
+        "output_tokens",
+        "cache_read_tokens",
+        "cache_write_tokens",
+        "total_tokens",
+    ):
+        delta[key] = max(_safe_int(after_usage.get(key)) - _safe_int(before_usage.get(key)), 0)
+    delta["cost_usd"] = max(
+        _safe_float(after_usage.get("cost_usd")) - _safe_float(before_usage.get("cost_usd")),
+        0.0,
+    )
+    request_delta = max(
+        _safe_int(after_usage.get("request_count")) - _safe_int(before_usage.get("request_count")),
+        0,
+    )
+    delta["request_count"] = request_delta or request_count
+    if delta["total_tokens"] == 0:
+        delta["total_tokens"] = delta["input_tokens"] + delta["output_tokens"]
+    return delta if _usage_has_tokens_or_cost(delta) else None
+
+
+def _add_usage(total: Dict[str, Any], increment: Dict[str, Any]) -> Dict[str, Any]:
+    merged = dict(total)
+    for key in (
+        "input_tokens",
+        "output_tokens",
+        "cache_read_tokens",
+        "cache_write_tokens",
+        "total_tokens",
+        "request_count",
+    ):
+        merged[key] = _safe_int(merged.get(key)) + _safe_int(increment.get(key))
+    merged["cost_usd"] = _safe_float(merged.get("cost_usd")) + _safe_float(
+        increment.get("cost_usd")
+    )
+    return merged
+
+
+def _usage_has_tokens_or_cost(usage: Dict[str, Any]) -> bool:
+    return (
+        any(
+            _safe_int(usage.get(key)) > 0
+            for key in (
+                "input_tokens",
+                "output_tokens",
+                "cache_read_tokens",
+                "cache_write_tokens",
+                "total_tokens",
+            )
+        )
+        or _safe_float(usage.get("cost_usd")) > 0.0
+    )
+
+
+def _first_present(mapping: Dict[str, Any], *keys: str, default: Any = None) -> Any:
+    for key in keys:
+        if key in mapping and mapping[key] is not None:
+            return mapping[key]
+    return default
+
+
+def _looks_like_usage(value: Dict[str, Any]) -> bool:
+    usage_keys = {
+        "input_tokens",
+        "output_tokens",
+        "prompt_tokens",
+        "completion_tokens",
+        "inputTokens",
+        "outputTokens",
+        "promptTokens",
+        "completionTokens",
+        "total_tokens",
+        "totalTokens",
+        "total_prompt_tokens",
+        "total_completion_tokens",
+        "request_count",
+        "requestCount",
+        "call_count",
+        "callCount",
+        "total_calls",
+    }
+    return any(key in value for key in usage_keys)
 
 
 def _suppress_workspace_bootstrap(workspace: Path) -> None:
@@ -1097,13 +1473,36 @@ def _extract_output_text(event: Dict[str, Any]) -> str:
 
 
 def _event_usage(event: Dict[str, Any]) -> Dict[str, Any] | None:
-    usage = event.get("usage")
-    if isinstance(usage, dict):
+    return _usage_from_candidate(event)
+
+
+def _usage_from_candidate(candidate: Any, *, depth: int = 0) -> Dict[str, Any] | None:
+    if depth > 4:
+        return None
+    if isinstance(candidate, list):
+        for item in reversed(candidate):
+            usage = _usage_from_candidate(item, depth=depth + 1)
+            if usage is not None:
+                return usage
+        return None
+    if not isinstance(candidate, dict):
+        return None
+
+    direct_usage = candidate.get("usage")
+    if isinstance(direct_usage, dict):
+        return direct_usage
+
+    for key in ("metadata", "meta", "_meta", "field_meta", "data", "response", "result", "message"):
+        usage = _usage_from_candidate(candidate.get(key), depth=depth + 1)
+        if usage is not None:
+            return usage
+
+    output = candidate.get("output")
+    usage = _usage_from_candidate(output, depth=depth + 1)
+    if usage is not None:
         return usage
-    metadata = event.get("metadata") or event.get("meta")
-    if isinstance(metadata, dict) and isinstance(metadata.get("usage"), dict):
-        return metadata["usage"]
-    return None
+
+    return candidate if _looks_like_usage(candidate) else None
 
 
 def _process_outputs_transcript_fallback(
