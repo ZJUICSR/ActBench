@@ -20,7 +20,7 @@ from lib_mock_secrets import materialize_workspace_file
 from lib_tasks import Task
 from lib_training_artifacts import get_current_recorder, safe_artifact_name
 
-from benchmark.backends.base import BackendRunContext
+from benchmark.backends.base import BackendRunContext, backend_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +46,28 @@ def backend_task_workspace(
         / safe_path_component(task.task_id)
         / "workspace"
     )
+
+
+def backend_attempt_home(
+    *,
+    home_root: str,
+    context: BackendRunContext,
+    attempt_run_id: str,
+    task: Task,
+    workspace: Path,
+    leaf_name: str,
+) -> Path:
+    """Return the backend home path for one isolated task attempt."""
+
+    if home_root:
+        return (
+            Path(home_root).expanduser()
+            / safe_path_component(context.run_id)
+            / safe_path_component(task.task_id)
+            / safe_path_component(attempt_run_id)
+            / leaf_name
+        )
+    return workspace.parent / leaf_name
 
 
 def session_prompts(task: Task) -> List[str]:
@@ -183,6 +205,7 @@ def begin_task_artifacts(
                 "run_id": attempt_run_id,
                 "session_id": session_id,
                 "backend": context.backend,
+                "backend_metadata": backend_metadata(context),
             },
         )
         recorder.snapshot_directory(workspace, Path("runs") / artifact_key / "workspace_before")
@@ -264,11 +287,7 @@ def execution_error_result(
         "api_endpoints": api_endpoints or {},
         "training_artifact_key": training_artifact_key,
         "backend": context.backend,
-        "backend_metadata": {
-            "name": context.backend,
-            "model": context.model,
-            "agent_id": context.agent_id,
-        },
+        "backend_metadata": backend_metadata(context),
     }
 
 

@@ -34,6 +34,7 @@ class AgentBackend(Protocol):
 
     name: str
     uses_gateway_lock: bool
+    supports_parallel_runs: bool
 
     def slugify_model(self, model_id: str) -> str:
         """Return the model slug used in result/artifact paths."""

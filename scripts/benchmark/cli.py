@@ -70,6 +70,14 @@ def _parse_args() -> argparse.Namespace:
         help="Number of runs per task for averaging",
     )
     parser.add_argument(
+        "--run-workers",
+        "--parallel-runs",
+        dest="run_workers",
+        type=int,
+        default=1,
+        help="Number of same-task repeat runs to execute concurrently (default: 1)",
+    )
+    parser.add_argument(
         "--judge-model",
         "--reward-judge",
         "--judge",

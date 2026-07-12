@@ -79,6 +79,7 @@ class QwenPawBackend:
 
     name = "qwenpaw"
     uses_gateway_lock = False
+    supports_parallel_runs = False
 
     def __init__(self) -> None:
         self._config: QwenPawConfig | None = None
@@ -111,8 +112,10 @@ class QwenPawBackend:
             self._check_health(config)
         logger.info("🤖 qwenpaw backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        session_id = f"{task.task_id}_{int(start_time * 1000)}"
-        workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
+        session_id = f"{safe_path_component(attempt_run_id)}_{safe_path_component(task.task_id)}_{int(start_time * 1000)}"
+        workspace = backend_task_workspace(
+            context=context, attempt_run_id=attempt_run_id, task=task
+        )
         api_group = None
         api_endpoints: Dict[str, Any] = {}
         api_audit: Dict[str, Any] = {}
@@ -247,7 +250,9 @@ class QwenPawBackend:
                         exit_code = -1
                         stderr = _append_stderr(stderr, f"qwenpaw service request failed: {exc}")
                         break
-                    except Exception as exc:  # noqa: BLE001 - surface service failures as task errors
+                    except (
+                        Exception
+                    ) as exc:  # noqa: BLE001 - surface service failures as task errors
                         status = "error"
                         exit_code = -1
                         stderr = _append_stderr(stderr, f"qwenpaw service execution failed: {exc}")
@@ -471,7 +476,9 @@ class QwenPawBackend:
         session_id: str,
         timeout_seconds: float | None = None,
     ) -> List[Any]:
-        request_timeout = timeout_seconds or config.timeout_seconds or QWENPAW_HEALTH_TIMEOUT_SECONDS
+        request_timeout = (
+            timeout_seconds or config.timeout_seconds or QWENPAW_HEALTH_TIMEOUT_SECONDS
+        )
         errors: List[str] = []
         scoped_agent_id = urllib.parse.quote(agent_id, safe="")
         routes = [
@@ -498,9 +505,7 @@ class QwenPawBackend:
                 chat_id = _matching_chat_id(chats, session_id=session_id)
                 if not chat_id:
                     continue
-                detail_path = detail_template.format(
-                    chat_id=urllib.parse.quote(chat_id, safe="")
-                )
+                detail_path = detail_template.format(chat_id=urllib.parse.quote(chat_id, safe=""))
                 history = _request_json(
                     _join_url(config.base_url, detail_path),
                     method="GET",

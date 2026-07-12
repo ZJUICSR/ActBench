@@ -8,9 +8,10 @@ import math
 import os
 import secrets
 import shutil
+import signal
 import subprocess
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 
@@ -36,6 +37,7 @@ from benchmark.backends.base import (
     default_slugify_model,
 )
 from benchmark.backends.common import (
+    backend_attempt_home,
     backend_task_workspace,
     begin_task_artifacts,
     elapsed_since,
@@ -102,6 +104,7 @@ class OpenCodeBackend:
 
     name = "opencode"
     uses_gateway_lock = False
+    supports_parallel_runs = True
 
     def __init__(self) -> None:
         self._config: OpenCodeConfig | None = None
@@ -116,7 +119,6 @@ class OpenCodeBackend:
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
         config = self._load_config(context)
-        self._prepare_opencode_home(config)
         if config.mcp_enabled:
             self._initialize_mcp_gateway(config)
         self._config = config
@@ -135,8 +137,10 @@ class OpenCodeBackend:
         config = self._config or self._load_config(context)
         logger.info("🤖 opencode backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        artifact_session_id = f"{task.task_id}_{int(start_time * 1000)}"
-        workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
+        artifact_session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
+        workspace = backend_task_workspace(
+            context=context, attempt_run_id=attempt_run_id, task=task
+        )
         api_group = None
         api_endpoints: Dict[str, Any] = {}
         api_audit: Dict[str, Any] = {}
@@ -152,6 +156,14 @@ class OpenCodeBackend:
         usage = zero_usage(request_count=0)
         run_session_id: str | None = None
 
+        config = self._attempt_opencode_config(
+            config,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+        )
+
         try:
             materialize_task_workspace(workspace=workspace, skill_dir=context.skill_dir, task=task)
         except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
@@ -161,6 +173,21 @@ class OpenCodeBackend:
                     task=task,
                     workspace=workspace,
                     stderr=f"opencode workspace setup failed: {exc}",
+                    execution_time=elapsed_since(start_time),
+                ),
+                context=context,
+                config=config,
+            )
+
+        try:
+            self._prepare_opencode_home(config)
+        except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
+            return _augment_opencode_result(
+                execution_error_result(
+                    context=context,
+                    task=task,
+                    workspace=workspace,
+                    stderr=f"opencode config setup failed: {exc}",
                     execution_time=elapsed_since(start_time),
                 ),
                 context=context,
@@ -277,7 +304,9 @@ class OpenCodeBackend:
                     timed_out = True
                     status = "timeout"
                     exit_code = -1
-                    stdout = _coerce_text(getattr(exc, "stdout", None) or getattr(exc, "output", ""))
+                    stdout = _coerce_text(
+                        getattr(exc, "stdout", None) or getattr(exc, "output", "")
+                    )
                     stderr = _coerce_text(getattr(exc, "stderr", ""))
                     run_session_id = _extract_session_id_from_run_stdout(stdout)
                     message = f"opencode execution timed out after {request_timeout:.1f}s"
@@ -308,14 +337,18 @@ class OpenCodeBackend:
                         context_id=mcp_context_id,
                         admin_token=config.mcp_admin_token,
                     )
-                    trace_transcript = _mcp_gateway_traces_to_transcript(trace_response.get("traces"))
+                    trace_transcript = _mcp_gateway_traces_to_transcript(
+                        trace_response.get("traces")
+                    )
                     if trace_transcript and not _has_actbench_tool_result(transcript):
                         transcript.extend(trace_transcript)
                         if transcript_extraction is None:
                             transcript_extraction = {}
                         transcript_extraction["mcp_trace_messages_appended"] = len(trace_transcript)
                     elif trace_transcript and transcript_extraction is not None:
-                        transcript_extraction["mcp_trace_messages_available"] = len(trace_transcript)
+                        transcript_extraction["mcp_trace_messages_available"] = len(
+                            trace_transcript
+                        )
                 except Exception as exc:  # noqa: BLE001 - tracing must not fail the task
                     logger.warning("   Failed to retrieve ActBench MCP traces: %s", exc)
 
@@ -398,12 +431,16 @@ class OpenCodeBackend:
         mcp_enabled = _env_flag("ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP", default=True)
         if mcp_enabled:
             mcp_autostart = _env_flag("ACTBENCH_MCP_AUTOSTART", default=True)
-            mcp_host = os.environ.get("ACTBENCH_MCP_HOST", DEFAULT_MCP_HOST).strip() or DEFAULT_MCP_HOST
+            mcp_host = (
+                os.environ.get("ACTBENCH_MCP_HOST", DEFAULT_MCP_HOST).strip() or DEFAULT_MCP_HOST
+            )
             mcp_port = _env_int("ACTBENCH_MCP_PORT", default=DEFAULT_MCP_PORT)
             default_mcp_url = f"http://{mcp_host}:{mcp_port}/mcp"
             mcp_public_url = os.environ.get("ACTBENCH_MCP_URL", default_mcp_url).strip()
             if not mcp_public_url:
-                raise BackendInitializationError("ACTBENCH_MCP_URL must not be blank when MCP is enabled")
+                raise BackendInitializationError(
+                    "ACTBENCH_MCP_URL must not be blank when MCP is enabled"
+                )
             mcp_admin_token = os.environ.get("ACTBENCH_MCP_ADMIN_TOKEN", "").strip() or None
             if mcp_autostart and mcp_admin_token is None:
                 mcp_admin_token = secrets.token_urlsafe(32)
@@ -428,6 +465,26 @@ class OpenCodeBackend:
             mcp_public_url=mcp_public_url,
             mcp_admin_token=mcp_admin_token,
         )
+
+    def _attempt_opencode_config(
+        self,
+        config: OpenCodeConfig,
+        *,
+        context: BackendRunContext,
+        attempt_run_id: str,
+        task: Task,
+        workspace: Path,
+    ) -> OpenCodeConfig:
+        home_root = os.environ.get("ACTBENCH_OPENCODE_HOME_ROOT", "").strip()
+        opencode_home = backend_attempt_home(
+            home_root=home_root,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+            leaf_name="opencode_home",
+        )
+        return replace(config, opencode_home=opencode_home)
 
     def _prepare_opencode_home(self, config: OpenCodeConfig) -> None:
         try:
@@ -512,14 +569,11 @@ class OpenCodeBackend:
         if config.auto_approve:
             cmd.append("--auto")
         cmd.extend(["--", prompt])
-        return subprocess.run(
+        return _run_subprocess_with_process_group(
             cmd,
-            cwd=str(workspace),
+            cwd=workspace,
             env=_opencode_env(config),
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
+            timeout_seconds=timeout_seconds,
         )
 
     def _run_opencode_export(
@@ -531,14 +585,11 @@ class OpenCodeBackend:
         timeout_seconds: float,
     ) -> subprocess.CompletedProcess[str]:
         cmd = [config.executable, "export", session_id]
-        return subprocess.run(
+        return _run_subprocess_with_process_group(
             cmd,
-            cwd=str(workspace),
+            cwd=workspace,
             env=_opencode_env(config),
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
+            timeout_seconds=timeout_seconds,
         )
 
     def _extract_opencode_transcript(
@@ -557,7 +608,9 @@ class OpenCodeBackend:
             "session_id": session_id,
         }
 
-        def fallback(reason: str) -> Tuple[List[Dict[str, Any]], str, Dict[str, Any], Dict[str, Any]]:
+        def fallback(
+            reason: str,
+        ) -> Tuple[List[Dict[str, Any]], str, Dict[str, Any], Dict[str, Any]]:
             fallback_metadata = dict(metadata)
             fallback_metadata["fallback_reason"] = reason
             transcript, source = _opencode_stdout_transcript_fallback(effective_prompt, stdout)
@@ -596,6 +649,60 @@ class OpenCodeBackend:
             return fallback("unusable")
         usage = _usage_from_opencode_export(export_payload)
         return transcript, "opencode_export", metadata, usage
+
+
+def _run_subprocess_with_process_group(
+    cmd: List[str],
+    *,
+    cwd: Path,
+    env: Dict[str, str],
+    timeout_seconds: float,
+) -> subprocess.CompletedProcess[str]:
+    process = subprocess.Popen(
+        cmd,
+        cwd=str(cwd),
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout_seconds)
+    except subprocess.TimeoutExpired as exc:
+        stdout = _coerce_text(getattr(exc, "stdout", None) or getattr(exc, "output", ""))
+        stderr = _coerce_text(getattr(exc, "stderr", ""))
+        _terminate_process_group(process, signal.SIGTERM)
+        try:
+            terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
+        except subprocess.TimeoutExpired:
+            _terminate_process_group(process, signal.SIGKILL)
+            terminated_stdout, terminated_stderr = process.communicate()
+        stdout = _coerce_text(terminated_stdout) or stdout
+        stderr = _coerce_text(terminated_stderr) or stderr
+        raise subprocess.TimeoutExpired(
+            cmd=cmd,
+            timeout=timeout_seconds,
+            output=stdout,
+            stderr=stderr,
+        ) from exc
+    return subprocess.CompletedProcess(
+        args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr
+    )
+
+
+def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals) -> None:
+    if process.poll() is not None:
+        return
+    try:
+        os.killpg(process.pid, sig)
+    except ProcessLookupError:
+        return
+    except OSError:
+        if sig == signal.SIGTERM:
+            process.terminate()
+        else:
+            process.kill()
 
 
 def _opencode_env(config: OpenCodeConfig) -> Dict[str, str]:
@@ -669,6 +776,8 @@ def _augment_opencode_result(
         executable=config.executable,
         agent=config.agent,
         auto_approve=config.auto_approve,
+        opencode_home=str(config.opencode_home),
+        opencode_db=str(config.db_path),
         opencode_session_id=session_id,
         mcp_enabled=config.mcp_enabled,
         mcp_public_url=config.mcp_public_url if config.mcp_enabled else None,
@@ -851,7 +960,9 @@ def _normalize_opencode_assistant_parts(
 
     entries: List[Dict[str, Any]] = []
     if assistant_blocks:
-        entries.append({"type": "message", "message": {"role": "assistant", "content": assistant_blocks}})
+        entries.append(
+            {"type": "message", "message": {"role": "assistant", "content": assistant_blocks}}
+        )
     entries.extend(followup_entries)
     return entries
 
@@ -906,7 +1017,10 @@ def _normalize_opencode_tool_part(
         "name": name,
         "isError": status == "error",
     }
-    return call_block, {"type": "message", "message": {"role": "toolResult", "content": [result_block]}}
+    return call_block, {
+        "type": "message",
+        "message": {"role": "toolResult", "content": [result_block]},
+    }
 
 
 def _normalize_opencode_shell_message(message: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -963,7 +1077,9 @@ def _opencode_tool_state_result_text(state: Dict[str, Any]) -> str:
     return ""
 
 
-def _opencode_stdout_transcript_fallback(prompt: str, stdout: str) -> Tuple[List[Dict[str, Any]], str]:
+def _opencode_stdout_transcript_fallback(
+    prompt: str, stdout: str
+) -> Tuple[List[Dict[str, Any]], str]:
     transcript = _normalize_opencode_run_stdout_to_transcript(prompt, stdout)
     if _has_usable_transcript(transcript):
         return transcript, "run_stdout_json"
@@ -1041,7 +1157,9 @@ def _usage_from_opencode_export(export_payload: Dict[str, Any]) -> Dict[str, Any
             cost_source = info.get("cost", 0.0)
         else:
             role = message.get("type")
-            tokens_source = message.get("tokens") if isinstance(message.get("tokens"), dict) else None
+            tokens_source = (
+                message.get("tokens") if isinstance(message.get("tokens"), dict) else None
+            )
             cost_source = message.get("cost", 0.0)
         if role != "assistant":
             continue
@@ -1081,7 +1199,9 @@ def _step_finish_tokens(parts: Any) -> Dict[str, Any]:
         combined["cache"]["read"] += _safe_int(cache.get("read", 0))
         combined["cache"]["write"] += _safe_int(cache.get("write", 0))
         if raw_tokens.get("total") is not None:
-            combined["total"] = _safe_int(combined.get("total", 0)) + _safe_int(raw_tokens.get("total"))
+            combined["total"] = _safe_int(combined.get("total", 0)) + _safe_int(
+                raw_tokens.get("total")
+            )
     return combined if found else {}
 
 
@@ -1364,7 +1484,9 @@ def _content_to_text(content: Any) -> str:
                 parts.append(item)
             elif isinstance(item, dict):
                 text = item.get("text") or item.get("content")
-                parts.append(str(text) if text is not None else json.dumps(item, ensure_ascii=False))
+                parts.append(
+                    str(text) if text is not None else json.dumps(item, ensure_ascii=False)
+                )
             else:
                 parts.append(str(item))
         return "\n".join(part for part in parts if part)
@@ -1395,7 +1517,9 @@ def _has_usable_transcript(transcript: List[Dict[str, Any]]) -> bool:
     return False
 
 
-def _redact_transcript(transcript: List[Dict[str, Any]], redactions: Iterable[str | None]) -> List[Dict[str, Any]]:
+def _redact_transcript(
+    transcript: List[Dict[str, Any]], redactions: Iterable[str | None]
+) -> List[Dict[str, Any]]:
     return _redact_value(transcript, redactions)
 
 

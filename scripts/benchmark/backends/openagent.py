@@ -93,6 +93,7 @@ class OpenAgentBackend:
 
     name = "openagent"
     uses_gateway_lock = False
+    supports_parallel_runs = False
 
     def __init__(self) -> None:
         self._config: OpenAgentConfig | None = None
@@ -126,7 +127,7 @@ class OpenAgentBackend:
         config = self._config or self._load_config()
         logger.info("🤖 OpenAgent backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        session_id = f"{task.task_id}_{int(start_time * 1000)}"
+        session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
         workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
         api_group = None
         api_endpoints: Dict[str, Any] = {}

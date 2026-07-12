@@ -7,7 +7,7 @@ The first integration is an ActBench-side MVP: it does not import opencode inter
 ## Prerequisites
 
 - opencode CLI installed and available as `opencode` on `PATH`, or `ACTBENCH_OPENCODE_BIN` set to the CLI path.
-- A model/provider configured for opencode through environment variables or other non-interactive credentials inherited by the ActBench process. ActBench runs opencode with isolated `HOME`, XDG directories, `OPENCODE_DB`, and inline `OPENCODE_CONFIG_CONTENT`, so credentials stored only in the user's default opencode profile may not be read unless exported into the environment.
+- A model/provider configured for opencode through environment variables or other non-interactive credentials inherited by the ActBench process. ActBench runs each task attempt with isolated `HOME`, XDG directories, `OPENCODE_DB`, and inline `OPENCODE_CONFIG_CONTENT`, so credentials stored only in the user's default opencode profile may not be read unless exported into the environment.
 - ActBench dependencies installed with `uv sync` or `pip install -e .`.
 
 ## Basic usage
@@ -23,6 +23,21 @@ uv run scripts/actbench.py \
 `--model` is recorded as the model under test and is passed to `opencode run --model`. Set `ACTBENCH_OPENCODE_MODEL` only when you need the opencode CLI to receive a different model string from the ActBench result label.
 
 Set `ACTBENCH_OPENCODE_AGENT=<agent-name>` to pass `opencode run --agent <agent-name>`. If unset, opencode uses its default primary agent.
+
+## Parallel repeat runs
+
+The opencode backend supports same-task repeat parallelism with `--runs N --run-workers M`. ActBench keeps task order deterministic in result files while running repeat attempts concurrently, and each attempt receives its own workspace plus opencode home/config/data/state/cache directories and `OPENCODE_DB` sqlite file.
+
+```bash
+uv run scripts/actbench.py \
+  --backend opencode \
+  --model <provider/model-id> \
+  --suite task_B7_T01 \
+  --runs 3 \
+  --run-workers 2
+```
+
+When `ACTBENCH_OPENCODE_HOME_ROOT` is unset, attempt homes are created beside each attempt workspace. When it is set, ActBench creates homes under `<ACTBENCH_OPENCODE_HOME_ROOT>/<run_id>/<attempt_run_id>/opencode_home`, which keeps concurrent `opencode run` and `opencode export` processes from sharing XDG state or sqlite databases.
 
 ## Default MCP mode
 
@@ -72,7 +87,7 @@ When MCP is enabled, ActBench result payloads sanitize `api_endpoints`: raw mock
 | `ACTBENCH_OPENCODE_MODEL` | ActBench `--model` | Optional override for the model passed to opencode. |
 | `ACTBENCH_OPENCODE_AGENT` | unset | Optional agent passed as `opencode run --agent`. |
 | `ACTBENCH_OPENCODE_TIMEOUT_SECONDS` | unset | Optional per-subprocess timeout cap. If unset, ActBench uses the task timeout budget. |
-| `ACTBENCH_OPENCODE_HOME_ROOT` | unset | Optional parent directory for run-scoped isolated opencode homes. |
+| `ACTBENCH_OPENCODE_HOME_ROOT` | unset | Optional parent directory for per-attempt isolated opencode homes. |
 | `ACTBENCH_OPENCODE_AUTO` | `1` | Pass `--auto` to approve opencode permissions non-interactively. Set to `0` only for debugging runs that do not need unattended execution. |
 | `ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP` | `1` | Set to `0` to disable ActBench MCP integration for weak direct-workspace debugging. |
 
@@ -125,7 +140,7 @@ After each attempt, ActBench first tries:
 opencode export <sessionID>
 ```
 
-using the same isolated opencode database/config environment. When export succeeds, ActBench normalizes opencode user, assistant, shell, tool-call, and tool-result messages into the common ActBench transcript schema. Assistant tool invocations become structured `toolCall` content blocks, and tool outputs become `toolResult` messages. This lets AGS automated checks and judge evidence see tool names, command arguments, file operations, and MCP/API calls that would not be reliable in final stdout alone.
+using the same attempt-scoped opencode database/config environment. When export succeeds, ActBench normalizes opencode user, assistant, shell, tool-call, and tool-result messages into the common ActBench transcript schema. Assistant tool invocations become structured `toolCall` content blocks, and tool outputs become `toolResult` messages. This lets AGS automated checks and judge evidence see tool names, command arguments, file operations, and MCP/API calls that would not be reliable in final stdout alone.
 
 If export fails, is empty/malformed, no session id appears in `opencode run --format json`, or the exported transcript is unusable, ActBench falls back to the `opencode run` JSON event stream and then to a minimal prompt/stdout transcript. Fallback runs are still useful for smoke testing, but AGS comparability is weaker for process-oriented tasks such as dangerous-command execution and tool-abuse detection.
 
@@ -138,7 +153,7 @@ Result metadata records the transcript path used:
 ## Troubleshooting
 
 - **`opencode executable not found`**: install opencode on `PATH` or set `ACTBENCH_OPENCODE_BIN=/path/to/opencode`.
-- **Provider/model resolution fails**: confirm opencode can run the model non-interactively with the same environment, then rerun ActBench. Because ActBench isolates opencode home/config/database paths, export credentials through environment variables when possible.
+- **Provider/model resolution fails**: confirm opencode can run the model non-interactively with the same environment, then rerun ActBench. Because ActBench isolates opencode home/config/database paths per attempt, export credentials through environment variables when possible.
 - **MCP tools are not available**: ensure MCP is enabled, the gateway is healthy, and opencode sees the inline config with an enabled remote MCP server named `actbench`.
 - **`unknown or expired context_id`**: the task exceeded its timeout/TTL or opencode called tools after ActBench unregistered the context.
 - **Mock API calls fail because of localhost ports**: opencode should not call mock APIs directly. It should call `actbench_get_api_endpoints` and `actbench_call_api`; ActBench injects this instruction automatically when MCP is enabled.

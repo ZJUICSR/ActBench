@@ -7,7 +7,7 @@ The first integration is intentionally ActBench-side only: it does not import He
 ## Prerequisites
 
 - Hermes CLI installed and available as `hermes` on `PATH`, or `ACTBENCH_HERMES_BIN` set to the CLI path.
-- A Hermes-supported model/provider configured through environment variables. ActBench runs Hermes with an isolated `HERMES_HOME`, so credentials stored only in the user's default `~/.hermes` profile are not read unless exported into the ActBench process environment.
+- A Hermes-supported model/provider configured through environment variables. ActBench runs each task attempt with an isolated `HERMES_HOME`, so credentials stored only in the user's default `~/.hermes` profile are not read unless exported into the ActBench process environment.
 - ActBench dependencies installed with `uv sync` or `pip install -e .`.
 
 ## Basic usage
@@ -23,6 +23,10 @@ uv run scripts/actbench.py \
 
 `--model` is recorded as the model under test and is passed to `hermes -z --model`. If `ACTBENCH_HERMES_PROVIDER` is set, ActBench also passes `--provider` to Hermes. If it is unset, Hermes resolves the provider using its normal model/provider logic.
 
+## Parallel repeats
+
+Hermes supports same-task repeat lanes with `--runs N --run-workers M`. Each repeat attempt gets its own workspace, mock API service group, MCP context, usage file, and attempt-scoped `HERMES_HOME`/state database. This keeps `hermes -z` execution and `hermes sessions export` transcript extraction independent across concurrent repeats.
+
 ## Default MCP mode
 
 By default, the Hermes backend exposes task workspace and mock APIs through the ActBench MCP gateway. For each task attempt, ActBench:
@@ -30,7 +34,7 @@ By default, the Hermes backend exposes task workspace and mock APIs through the 
 1. Materializes an isolated workspace.
 2. Starts any declared mock API services.
 3. Registers a high-entropy task `context_id` with the ActBench MCP gateway.
-4. Writes an isolated Hermes config under the run-scoped `HERMES_HOME` with:
+4. Writes an isolated Hermes config under the attempt-scoped `HERMES_HOME` with:
 
    ```yaml
    mcp_servers:
@@ -64,7 +68,7 @@ When MCP is enabled, ActBench result payloads sanitize `api_endpoints`: raw mock
 | `ACTBENCH_HERMES_MODEL` | ActBench `--model` | Optional override for the model passed to Hermes. |
 | `ACTBENCH_HERMES_TOOLSETS` | `actbench` when MCP is enabled; unset otherwise | Explicit Hermes `--toolsets` value. The default `actbench` refers to the MCP server configured in the isolated Hermes profile. |
 | `ACTBENCH_HERMES_TIMEOUT_SECONDS` | unset | Optional per-subprocess timeout cap. If unset, ActBench uses the task timeout budget. |
-| `ACTBENCH_HERMES_HOME_ROOT` | unset | Optional parent directory for run-scoped Hermes homes. |
+| `ACTBENCH_HERMES_HOME_ROOT` | unset | Optional parent directory for per-attempt Hermes homes. ActBench creates `<root>/<run_id>/<attempt_run_id>/hermes_home`. |
 | `ACTBENCH_HERMES_ENABLE_ACTBENCH_MCP` | `1` | Set to `0` to disable ActBench MCP integration for weak direct-workspace debugging. |
 
 ### Shared MCP gateway variables
@@ -108,7 +112,7 @@ In this mode ActBench still runs Hermes from the task workspace, but it does not
 
 ## Outputs and transcript extraction
 
-The backend uses `hermes -z` for task execution and reads token/cost accounting from Hermes `--usage-file` when available. After each attempt, ActBench first tries to extract the persisted Hermes session from the isolated run-scoped `HERMES_HOME` with `hermes sessions export --format jsonl`.
+The backend uses `hermes -z` for task execution and reads token/cost accounting from Hermes `--usage-file` when available. After each attempt, ActBench first tries to extract the persisted Hermes session from that attempt's isolated `HERMES_HOME` with `hermes sessions export --format jsonl`.
 
 When export succeeds, ActBench normalizes Hermes messages, tool calls, and tool results into the common ActBench transcript schema. Assistant tool invocations become structured `toolCall` content blocks, and tool outputs become `toolResult` messages. This lets AGS automated checks and judge evidence see tool names, command arguments, file operations, and MCP/API calls that would not appear in one-shot stdout.
 

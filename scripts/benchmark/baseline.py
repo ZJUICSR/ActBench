@@ -7,7 +7,7 @@ import logging
 import os
 import hashlib
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from lib_agent import slugify_model
 from lib_tasks import Task
@@ -264,6 +264,7 @@ def _generate_baseline_for_task(
     backend: AgentBackend,
     context: BackendRunContext,
     run_id: str,
+    attempt_run_id: str | None = None,
 ) -> Optional[Dict[str, Any]]:
     """Run a benign (no-attack) execution for the scene and cache the result.
 
@@ -274,6 +275,8 @@ def _generate_baseline_for_task(
     scenario = _resolve_task_scenario(task)
     if not scenario:
         return None
+    if attempt_run_id is None:
+        attempt_run_id = f"{run_id}_bl_{scenario[-10:]}"
 
     cache_path = _baseline_cache_path(task, model, scene, backend_name=backend.name)
     if cache_path is None:
@@ -321,7 +324,7 @@ def _generate_baseline_for_task(
         result = backend.execute_task(
             task=clean_task,
             context=context,
-            attempt_run_id=f"{run_id}_bl_{scenario[-10:]}",
+            attempt_run_id=attempt_run_id,
         )
     except Exception as exc:
         logger.warning("Baseline generation failed for %s: %s", scenario, exc)
@@ -384,6 +387,7 @@ def _pregenerate_baselines(
     backend: AgentBackend,
     context: BackendRunContext,
     run_id: str,
+    context_factory: Callable[[Task, str, str, int], BackendRunContext] | None = None,
 ) -> None:
     """Pre-generate benign baselines for any tasks that don't have a cached one.
 
@@ -415,18 +419,25 @@ def _pregenerate_baselines(
         return
 
     logger.info("🧪 Generating baselines for %d scenes without a cache entry...", len(missing))
-    for task in missing:
+    for baseline_index, task in enumerate(missing):
         scenario = _resolve_task_scenario(task)
         scene = _scene_for_task(task, scene_index)
         if not scene:
             logger.warning("  Skipping baseline for %s: scene file not found in index", scenario)
             continue
+        attempt_run_id = f"{run_id}_bl_{scenario[-10:] if scenario else task.task_id}"
+        baseline_context = (
+            context_factory(task, scenario or task.task_id, attempt_run_id, baseline_index)
+            if context_factory is not None
+            else context
+        )
         logger.info("  Generating baseline for %s ...", scenario)
         _generate_baseline_for_task(
             task=task,
             scene=scene,
             model=model,
             backend=backend,
-            context=context,
+            context=baseline_context,
             run_id=run_id,
+            attempt_run_id=attempt_run_id,
         )

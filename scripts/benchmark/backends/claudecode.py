@@ -14,7 +14,7 @@ import signal
 import subprocess
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 
@@ -41,6 +41,7 @@ from benchmark.backends.base import (
     default_slugify_model,
 )
 from benchmark.backends.common import (
+    backend_attempt_home,
     backend_task_workspace,
     begin_task_artifacts,
     elapsed_since,
@@ -135,6 +136,7 @@ class ClaudeCodeBackend:
 
     name = "claudecode"
     uses_gateway_lock = False
+    supports_parallel_runs = True
 
     def __init__(self) -> None:
         self._config: ClaudeCodeConfig | None = None
@@ -149,7 +151,6 @@ class ClaudeCodeBackend:
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
         config = self._load_config(context)
-        self._prepare_claudecode_home(config)
         if config.mcp_enabled:
             self._initialize_mcp_gateway(config)
         self._config = config
@@ -168,8 +169,10 @@ class ClaudeCodeBackend:
         config = self._config or self._load_config(context)
         logger.info("🤖 Claude Code backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        artifact_session_id = f"{task.task_id}_{int(start_time * 1000)}"
-        workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
+        artifact_session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
+        workspace = backend_task_workspace(
+            context=context, attempt_run_id=attempt_run_id, task=task
+        )
         api_group = None
         api_endpoints: Dict[str, Any] = {}
         api_audit: Dict[str, Any] = {}
@@ -186,6 +189,14 @@ class ClaudeCodeBackend:
         claudecode_session_id = str(uuid.uuid4())
         mcp_config_path: Path | None = None
 
+        config = self._attempt_claudecode_config(
+            config,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+        )
+
         try:
             materialize_task_workspace(workspace=workspace, skill_dir=context.skill_dir, task=task)
         except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
@@ -199,6 +210,22 @@ class ClaudeCodeBackend:
                 ),
                 context=context,
                 config=config,
+            )
+
+        try:
+            self._prepare_claudecode_home(config)
+        except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
+            return _augment_claudecode_result(
+                execution_error_result(
+                    context=context,
+                    task=task,
+                    workspace=workspace,
+                    stderr=f"claudecode config setup failed: {exc}",
+                    execution_time=elapsed_since(start_time),
+                ),
+                context=context,
+                config=config,
+                session_id=claudecode_session_id,
             )
 
         artifact_key, recorder = begin_task_artifacts(
@@ -319,7 +346,9 @@ class ClaudeCodeBackend:
                     timed_out = True
                     status = "timeout"
                     exit_code = -1
-                    stdout = _coerce_text(getattr(exc, "stdout", None) or getattr(exc, "output", ""))
+                    stdout = _coerce_text(
+                        getattr(exc, "stdout", None) or getattr(exc, "output", "")
+                    )
                     stderr = _coerce_text(getattr(exc, "stderr", ""))
                     message = f"claudecode execution timed out after {request_timeout:.1f}s"
                     stderr = (stderr + "\n" if stderr else "") + message
@@ -350,13 +379,17 @@ class ClaudeCodeBackend:
                         context_id=mcp_context_id,
                         admin_token=config.mcp_admin_token,
                     )
-                    trace_transcript = _mcp_gateway_traces_to_transcript(trace_response.get("traces"))
+                    trace_transcript = _mcp_gateway_traces_to_transcript(
+                        trace_response.get("traces")
+                    )
                     missing_trace_transcript = _missing_mcp_trace_transcript(
                         transcript=transcript,
                         trace_transcript=trace_transcript,
                     )
                     if trace_transcript:
-                        transcript_extraction["mcp_trace_messages_available"] = len(trace_transcript)
+                        transcript_extraction["mcp_trace_messages_available"] = len(
+                            trace_transcript
+                        )
                     if missing_trace_transcript:
                         transcript.extend(missing_trace_transcript)
                         transcript_extraction["mcp_trace_messages_appended"] = len(
@@ -455,12 +488,16 @@ class ClaudeCodeBackend:
         mcp_enabled = _env_flag("ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP", default=True)
         if mcp_enabled:
             mcp_autostart = _env_flag("ACTBENCH_MCP_AUTOSTART", default=True)
-            mcp_host = os.environ.get("ACTBENCH_MCP_HOST", DEFAULT_MCP_HOST).strip() or DEFAULT_MCP_HOST
+            mcp_host = (
+                os.environ.get("ACTBENCH_MCP_HOST", DEFAULT_MCP_HOST).strip() or DEFAULT_MCP_HOST
+            )
             mcp_port = _env_int("ACTBENCH_MCP_PORT", default=DEFAULT_MCP_PORT)
             default_mcp_url = f"http://{mcp_host}:{mcp_port}/mcp"
             mcp_public_url = os.environ.get("ACTBENCH_MCP_URL", default_mcp_url).strip()
             if not mcp_public_url:
-                raise BackendInitializationError("ACTBENCH_MCP_URL must not be blank when MCP is enabled")
+                raise BackendInitializationError(
+                    "ACTBENCH_MCP_URL must not be blank when MCP is enabled"
+                )
             mcp_admin_token = os.environ.get("ACTBENCH_MCP_ADMIN_TOKEN", "").strip() or None
             if mcp_autostart and mcp_admin_token is None:
                 mcp_admin_token = secrets.token_urlsafe(32)
@@ -489,6 +526,26 @@ class ClaudeCodeBackend:
             mcp_public_url=mcp_public_url,
             mcp_admin_token=mcp_admin_token,
         )
+
+    def _attempt_claudecode_config(
+        self,
+        config: ClaudeCodeConfig,
+        *,
+        context: BackendRunContext,
+        attempt_run_id: str,
+        task: Task,
+        workspace: Path,
+    ) -> ClaudeCodeConfig:
+        home_root = os.environ.get("ACTBENCH_CLAUDECODE_HOME_ROOT", "").strip()
+        claudecode_home = backend_attempt_home(
+            home_root=home_root,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+            leaf_name="claudecode_home",
+        )
+        return replace(config, claudecode_home=claudecode_home)
 
     def _prepare_claudecode_home(self, config: ClaudeCodeConfig) -> None:
         try:
@@ -654,7 +711,9 @@ def _run_subprocess_with_process_group(
             output=stdout,
             stderr=stderr,
         ) from exc
-    return subprocess.CompletedProcess(args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr)
+    return subprocess.CompletedProcess(
+        args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr
+    )
 
 
 def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals) -> None:
@@ -728,7 +787,9 @@ def _augment_claudecode_result(
     )
 
 
-def _result_api_endpoints(config: ClaudeCodeConfig, api_endpoints: Dict[str, Any]) -> Dict[str, Any]:
+def _result_api_endpoints(
+    config: ClaudeCodeConfig, api_endpoints: Dict[str, Any]
+) -> Dict[str, Any]:
     if not config.mcp_enabled:
         return api_endpoints
     return sanitize_api_endpoints(api_endpoints)
@@ -919,7 +980,9 @@ def _normalize_claudecode_stream_to_transcript(
                         "type": "message",
                         "message": {
                             "role": "assistant",
-                            "content": [{"type": "text", "text": f"claudecode error: {error_text}"}],
+                            "content": [
+                                {"type": "text", "text": f"claudecode error: {error_text}"}
+                            ],
                         },
                     }
                 )
@@ -960,7 +1023,10 @@ def _normalize_claudecode_assistant_message(
             )
             if result_block is not None:
                 followup_entries.append(
-                    {"type": "message", "message": {"role": "toolResult", "content": [result_block]}}
+                    {
+                        "type": "message",
+                        "message": {"role": "toolResult", "content": [result_block]},
+                    }
                 )
         elif block_type in {"thinking", "redacted_thinking", "reasoning"}:
             # Do not persist raw reasoning/thinking. ActBench scoring only needs evidence of
@@ -968,7 +1034,9 @@ def _normalize_claudecode_assistant_message(
             continue
     entries: List[Dict[str, Any]] = []
     if assistant_blocks:
-        entries.append({"type": "message", "message": {"role": "assistant", "content": assistant_blocks}})
+        entries.append(
+            {"type": "message", "message": {"role": "assistant", "content": assistant_blocks}}
+        )
     entries.extend(followup_entries)
     return entries, tool_names_by_id
 
@@ -1011,7 +1079,9 @@ def _normalize_claudecode_user_message(
     if user_content:
         entries.append({"type": "message", "message": {"role": "user", "content": user_content}})
     for result_block in tool_results:
-        entries.append({"type": "message", "message": {"role": "toolResult", "content": [result_block]}})
+        entries.append(
+            {"type": "message", "message": {"role": "toolResult", "content": [result_block]}}
+        )
     return entries
 
 
@@ -1252,7 +1322,9 @@ def _missing_mcp_trace_transcript(
     return missing
 
 
-def _actbench_tool_result_counts(transcript: List[Dict[str, Any]]) -> Dict[Tuple[str, str, bool], int]:
+def _actbench_tool_result_counts(
+    transcript: List[Dict[str, Any]],
+) -> Dict[Tuple[str, str, bool], int]:
     counts: Dict[Tuple[str, str, bool], int] = {}
     for entry in transcript:
         signature = _actbench_tool_result_signature(entry)
@@ -1425,7 +1497,9 @@ def _content_to_text(content: Any) -> str:
                 parts.append(item)
             elif isinstance(item, dict):
                 text = item.get("text") or item.get("content")
-                parts.append(str(text) if text is not None else json.dumps(item, ensure_ascii=False))
+                parts.append(
+                    str(text) if text is not None else json.dumps(item, ensure_ascii=False)
+                )
             else:
                 parts.append(str(item))
         return "\n".join(part for part in parts if part)
@@ -1456,7 +1530,9 @@ def _has_usable_transcript(transcript: List[Dict[str, Any]]) -> bool:
     return False
 
 
-def _redact_transcript(transcript: List[Dict[str, Any]], redactions: Iterable[str | None]) -> List[Dict[str, Any]]:
+def _redact_transcript(
+    transcript: List[Dict[str, Any]], redactions: Iterable[str | None]
+) -> List[Dict[str, Any]]:
     return _redact_value(transcript, redactions)
 
 

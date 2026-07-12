@@ -10,7 +10,7 @@ import secrets
 import shutil
 import subprocess
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -35,6 +35,7 @@ from benchmark.backends.base import (
     default_slugify_model,
 )
 from benchmark.backends.common import (
+    backend_attempt_home,
     backend_task_workspace,
     begin_task_artifacts,
     elapsed_since,
@@ -78,6 +79,7 @@ class HermesBackend:
 
     name = "hermes"
     uses_gateway_lock = False
+    supports_parallel_runs = True
 
     def __init__(self) -> None:
         self._config: HermesConfig | None = None
@@ -92,7 +94,6 @@ class HermesBackend:
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
         config = self._load_config(context)
-        self._write_hermes_config(config)
         if config.mcp_enabled:
             self._initialize_mcp_gateway(config)
         self._config = config
@@ -111,7 +112,7 @@ class HermesBackend:
         config = self._config or self._load_config(context)
         logger.info("🤖 Hermes backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        session_id = f"{task.task_id}_{int(start_time * 1000)}"
+        session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
         workspace = backend_task_workspace(
             context=context, attempt_run_id=attempt_run_id, task=task
         )
@@ -139,6 +140,28 @@ class HermesBackend:
                     task=task,
                     workspace=workspace,
                     stderr=f"hermes workspace setup failed: {exc}",
+                    execution_time=elapsed_since(start_time),
+                ),
+                context=context,
+                config=config,
+            )
+
+        config = self._attempt_hermes_config(
+            config,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+        )
+        try:
+            self._write_hermes_config(config)
+        except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
+            return _augment_hermes_result(
+                execution_error_result(
+                    context=context,
+                    task=task,
+                    workspace=workspace,
+                    stderr=f"hermes config setup failed: {exc}",
                     execution_time=elapsed_since(start_time),
                 ),
                 context=context,
@@ -390,6 +413,26 @@ class HermesBackend:
             mcp_admin_token=mcp_admin_token,
         )
 
+    def _attempt_hermes_config(
+        self,
+        config: HermesConfig,
+        *,
+        context: BackendRunContext,
+        attempt_run_id: str,
+        task: Task,
+        workspace: Path,
+    ) -> HermesConfig:
+        home_root = os.environ.get("ACTBENCH_HERMES_HOME_ROOT", "").strip()
+        hermes_home = backend_attempt_home(
+            home_root=home_root,
+            context=context,
+            attempt_run_id=attempt_run_id,
+            task=task,
+            workspace=workspace,
+            leaf_name="hermes_home",
+        )
+        return replace(config, hermes_home=hermes_home)
+
     def _write_hermes_config(self, config: HermesConfig) -> None:
         try:
             config.hermes_home.mkdir(parents=True, exist_ok=True)
@@ -496,8 +539,8 @@ def _run_hermes_sessions_export(
 ) -> subprocess.CompletedProcess[str]:
     # Export the isolated Hermes home and select the matching task session ourselves.
     # Hermes' CLI filters are user-facing conveniences and have changed behavior across
-    # versions; the run-scoped HERMES_HOME keeps this bounded while local selection keeps
-    # extraction stable.
+    # versions; the attempt-scoped HERMES_HOME keeps this bounded while local selection
+    # keeps extraction stable.
     cmd = [
         config.executable,
         "sessions",
@@ -538,6 +581,7 @@ def _augment_hermes_result(
         executable=config.executable,
         provider=config.provider,
         toolsets=config.toolsets,
+        hermes_home=str(config.hermes_home),
         mcp_enabled=config.mcp_enabled,
         mcp_public_url=config.mcp_public_url if config.mcp_enabled else None,
     )

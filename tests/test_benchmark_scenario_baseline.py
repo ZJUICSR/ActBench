@@ -210,6 +210,62 @@ def test_pregenerate_baselines_dedupes_by_cache_identity(monkeypatch, tmp_path: 
     assert calls == ["task_B6_T01", "task_B6_T02"]
 
 
+def test_pregenerate_baselines_uses_context_factory_metadata(monkeypatch, tmp_path: Path) -> None:
+    task = _task()
+    scene = {"id": "S001", "user_prompt": "Do it.", "workspace_files": []}
+    generated: list[dict] = []
+
+    monkeypatch.setattr(baseline_module, "_scene_for_task", lambda task, scene_index: scene)
+    monkeypatch.setattr(baseline_module, "_load_baseline_for_task", lambda *args, **kwargs: None)
+
+    def fake_generate_baseline_for_task(**kwargs):
+        generated.append(
+            {
+                "attempt_run_id": kwargs["attempt_run_id"],
+                "metadata": kwargs["context"].metadata,
+            }
+        )
+        return None
+
+    def context_factory(task, scenario, attempt_run_id, index):
+        return SimpleNamespace(
+            metadata={
+                "attempt_run_id": attempt_run_id,
+                "run_worker_id": index + 1,
+                "baseline": True,
+                "baseline_scenario": scenario,
+            }
+        )
+
+    monkeypatch.setattr(
+        baseline_module,
+        "_generate_baseline_for_task",
+        fake_generate_baseline_for_task,
+    )
+
+    _pregenerate_baselines(
+        tasks=[task],
+        scene_index={"S001": scene},
+        model="test/model",
+        backend=SimpleNamespace(name="openclaw"),
+        context=SimpleNamespace(metadata={}),
+        run_id="run",
+        context_factory=context_factory,
+    )
+
+    assert generated == [
+        {
+            "attempt_run_id": "run_bl_S001",
+            "metadata": {
+                "attempt_run_id": "run_bl_S001",
+                "run_worker_id": 1,
+                "baseline": True,
+                "baseline_scenario": "S001",
+            },
+        }
+    ]
+
+
 def test_baseline_written_content_hashes_relative_written_files(tmp_path: Path) -> None:
     workspace = tmp_path / "workspace"
     (workspace / "reports").mkdir(parents=True)

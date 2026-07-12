@@ -9,6 +9,7 @@ import logging
 import os
 import subprocess
 import time
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib import error, request
@@ -716,8 +717,11 @@ def execute_openclaw_task(
     start_time = time.time()
     workspace = prepare_task_workspace(skill_dir, run_id, task, agent_id)
     clean_cwd = _build_clean_cwd(run_id, task.task_id)
-    session_id = f"{task.task_id}_{int(time.time() * 1000)}"
-    artifact_key = safe_artifact_name(f"{task.task_id}_{session_id}")
+    unique_suffix = uuid.uuid4().hex
+    session_id = safe_artifact_name(
+        f"{unique_suffix}_{run_id}_{agent_id}_{task.task_id}"
+    )
+    artifact_key = safe_artifact_name(f"{session_id}_{task.task_id}")
     recorder = get_current_recorder()
     if recorder:
         recorder.write_json(

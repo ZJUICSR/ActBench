@@ -135,6 +135,7 @@ def _compute_efficiency_summary(
     judge_tokens = 0
     awareness_tokens = 0
     tasks_with_usage = 0
+    counted_attack_eval_task_ids: set[str] = set()
 
     per_task_efficiency: List[Dict[str, Any]] = []
     for entry in task_entries:
@@ -157,8 +158,10 @@ def _compute_efficiency_summary(
         total_requests += reqs
         total_execution_time += exec_time
         attack_eval = entry.get("attack_eval") or {}
-        if isinstance(attack_eval, dict):
-            for run in attack_eval.get("runs", []):
+        attack_runs = attack_eval.get("runs") if isinstance(attack_eval, dict) else None
+        if isinstance(attack_runs, list) and task_id not in counted_attack_eval_task_ids:
+            counted_attack_eval_task_ids.add(task_id)
+            for run in attack_runs:
                 if not isinstance(run, dict):
                     continue
                 run_usage = run.get("usage", {})

@@ -4,8 +4,12 @@ import json
 import os
 import subprocess
 import sys
+import threading
+import time
 from argparse import Namespace
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -46,7 +50,11 @@ def _task(frontmatter: dict | None = None) -> Task:
     )
 
 
-def _context(tmp_path: Path, backend: str = "fake") -> BackendRunContext:
+def _context(
+    tmp_path: Path,
+    backend: str = "fake",
+    metadata: dict | None = None,
+) -> BackendRunContext:
     return BackendRunContext(
         backend=backend,
         model="test/model",
@@ -57,6 +65,7 @@ def _context(tmp_path: Path, backend: str = "fake") -> BackendRunContext:
         agent_workspace=tmp_path / "agent_workspace",
         timeout_multiplier=1.0,
         verbose=False,
+        metadata=metadata or {},
     )
 
 
@@ -181,7 +190,9 @@ def test_cli_accepts_hermes_backend(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_cli_accepts_opencode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "opencode", "--model", "opencode/test"])
+    monkeypatch.setattr(
+        sys, "argv", ["actbench", "--backend", "opencode", "--model", "opencode/test"]
+    )
 
     args = _parse_args()
 
@@ -190,12 +201,28 @@ def test_cli_accepts_opencode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_cli_accepts_claudecode_backend(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "claudecode", "--model", "claude/test"])
+    monkeypatch.setattr(
+        sys, "argv", ["actbench", "--backend", "claudecode", "--model", "claude/test"]
+    )
 
     args = _parse_args()
 
     assert args.backend == "claudecode"
     assert args.model == "claude/test"
+
+
+def test_cli_accepts_parallel_run_workers(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--run-workers", "3"])
+
+    args = _parse_args()
+
+    assert args.run_workers == 3
+
+    monkeypatch.setattr(sys, "argv", ["actbench", "--parallel-runs", "2"])
+
+    args = _parse_args()
+
+    assert args.run_workers == 2
 
 
 def test_registry_resolves_backends_without_eager_optional_imports() -> None:
@@ -219,6 +246,33 @@ def test_registry_resolves_backends_without_eager_optional_imports() -> None:
         get_backend("missing")
 
 
+def _openclaw_success_result(**kwargs) -> dict:
+    return {
+        "agent_id": kwargs["agent_id"],
+        "task_id": kwargs["task"].task_id,
+        "status": "success",
+        "transcript": [{"role": "assistant", "content": "done"}],
+        "usage": {},
+        "workspace": f"/workspace/{kwargs['agent_id']}/{kwargs['run_id']}",
+        "exit_code": 0,
+        "timed_out": False,
+        "execution_time": 0.0,
+        "stdout": "",
+        "stderr": "",
+        "api_audit": {},
+        "api_endpoints": {},
+    }
+
+
+def _repeat_metadata(run_workers: int = 2) -> dict:
+    return {
+        "runs_per_task": 3,
+        "run_workers": run_workers,
+        "requested_run_workers": run_workers,
+        "command": "actbench test",
+    }
+
+
 def test_openclaw_backend_delegates_to_existing_helpers(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -226,6 +280,7 @@ def test_openclaw_backend_delegates_to_existing_helpers(
     import benchmark.backends.openclaw as openclaw_module
 
     calls: list[tuple[str, object]] = []
+    execute_calls: list[dict] = []
 
     monkeypatch.setattr(
         openclaw_module,
@@ -237,25 +292,12 @@ def test_openclaw_backend_delegates_to_existing_helpers(
         "cleanup_agent_sessions",
         lambda agent_id: calls.append(("cleanup", agent_id)),
     )
-    monkeypatch.setattr(
-        openclaw_module,
-        "execute_openclaw_task",
-        lambda **kwargs: {
-            "agent_id": kwargs["agent_id"],
-            "task_id": kwargs["task"].task_id,
-            "status": "success",
-            "transcript": [],
-            "usage": {},
-            "workspace": "",
-            "exit_code": 0,
-            "timed_out": False,
-            "execution_time": 0.0,
-            "stdout": "",
-            "stderr": "",
-            "api_audit": {},
-            "api_endpoints": {},
-        },
-    )
+
+    def fake_execute_openclaw_task(**kwargs):
+        execute_calls.append(kwargs)
+        return _openclaw_success_result(**kwargs)
+
+    monkeypatch.setattr(openclaw_module, "execute_openclaw_task", fake_execute_openclaw_task)
 
     backend = OpenClawBackend()
     context = _context(tmp_path, backend="openclaw")
@@ -267,8 +309,267 @@ def test_openclaw_backend_delegates_to_existing_helpers(
         ("ensure", (context.agent_id, context.model, context.agent_workspace)),
         ("cleanup", context.agent_id),
     ]
+    assert [call["agent_id"] for call in execute_calls] == [context.agent_id]
+    assert "-rep" not in execute_calls[0]["agent_id"]
     assert result["backend"] == "openclaw"
     assert result["backend_metadata"]["agent_id"] == context.agent_id
+    assert "openclaw_lane_id" not in result["backend_metadata"]
+
+
+def test_openclaw_backend_initializes_repeat_lanes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.openclaw as openclaw_module
+
+    acquire_calls: list[tuple[str, dict]] = []
+    release_calls: list[str] = []
+    ensure_calls: list[tuple[str, str, Path]] = []
+    cleanup_calls: list[str] = []
+
+    monkeypatch.setattr(
+        openclaw_module,
+        "acquire_gateway_lock",
+        lambda agent_id, **kwargs: acquire_calls.append((agent_id, kwargs)),
+    )
+    monkeypatch.setattr(
+        openclaw_module,
+        "release_gateway_lock",
+        lambda agent_id: release_calls.append(agent_id),
+    )
+    monkeypatch.setattr(
+        openclaw_module,
+        "ensure_agent_exists",
+        lambda agent_id, model, workspace: ensure_calls.append((agent_id, model, workspace)),
+    )
+    monkeypatch.setattr(
+        openclaw_module,
+        "cleanup_agent_sessions",
+        lambda agent_id: cleanup_calls.append(agent_id),
+    )
+
+    backend = OpenClawBackend()
+    context = _context(tmp_path, backend="openclaw", metadata=_repeat_metadata(run_workers=2))
+
+    backend.initialize_run(context)
+
+    rep1_workspace = context.run_root / context.run_id / "agent_workspaces" / "rep1"
+    rep2_workspace = context.run_root / context.run_id / "agent_workspaces" / "rep2"
+    assert acquire_calls == [
+        (
+            "bench-test-model-rep1",
+            {
+                "role": "actbench",
+                "model": context.model,
+                "worker_id": 1,
+                "command": "actbench test",
+            },
+        ),
+        (
+            "bench-test-model-rep2",
+            {
+                "role": "actbench",
+                "model": context.model,
+                "worker_id": 2,
+                "command": "actbench test",
+            },
+        ),
+    ]
+    assert ensure_calls == [
+        ("bench-test-model-rep1", context.model, rep1_workspace),
+        ("bench-test-model-rep2", context.model, rep2_workspace),
+    ]
+    assert cleanup_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+
+    backend.finalize_run(context)
+
+    assert release_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+
+
+def test_openclaw_lane_lock_release_continues_after_failure(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.openclaw as openclaw_module
+
+    release_calls: list[str] = []
+
+    def fake_release(agent_id: str) -> None:
+        release_calls.append(agent_id)
+        if agent_id.endswith("rep1"):
+            raise OSError("release failed")
+
+    monkeypatch.setattr(openclaw_module, "release_gateway_lock", fake_release)
+
+    backend = OpenClawBackend()
+    backend._lane_gateway_locks.extend(["bench-test-model-rep1", "bench-test-model-rep2"])
+
+    backend.finalize_run(_context(tmp_path, backend="openclaw"))
+
+    assert release_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+    assert backend._lane_gateway_locks == []
+    assert backend._lanes == {}
+
+
+def test_openclaw_backend_routes_parallel_attempts_to_repeat_lanes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.openclaw as openclaw_module
+
+    execute_calls: list[dict] = []
+
+    monkeypatch.setattr(openclaw_module, "acquire_gateway_lock", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "release_gateway_lock", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "ensure_agent_exists", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "cleanup_agent_sessions", lambda *args, **kwargs: None)
+
+    def fake_execute_openclaw_task(**kwargs):
+        execute_calls.append(kwargs)
+        return _openclaw_success_result(**kwargs)
+
+    monkeypatch.setattr(openclaw_module, "execute_openclaw_task", fake_execute_openclaw_task)
+
+    backend = OpenClawBackend()
+    base_context = _context(tmp_path, backend="openclaw", metadata=_repeat_metadata(run_workers=2))
+    backend.initialize_run(base_context)
+
+    results = []
+    for run_index, worker_id in enumerate([1, 2, 1], start=1):
+        metadata = {
+            **_repeat_metadata(run_workers=2),
+            "attempt_run_id": f"run_001-{run_index}",
+            "run_index": run_index,
+            "run_number": run_index,
+            "run_worker_id": worker_id,
+            "run_worker_label": f"w{worker_id}",
+        }
+        attempt_context = _context(tmp_path, backend="openclaw", metadata=metadata)
+        results.append(
+            backend.execute_task(
+                task=_task(),
+                context=attempt_context,
+                attempt_run_id=f"run_001-{run_index}",
+            )
+        )
+
+    assert [call["agent_id"] for call in execute_calls] == [
+        "bench-test-model-rep1",
+        "bench-test-model-rep2",
+        "bench-test-model-rep1",
+    ]
+    assert [call["run_id"] for call in execute_calls] == ["run_001-1", "run_001-2", "run_001-3"]
+    assert [result["backend_metadata"]["agent_id"] for result in results] == [
+        "bench-test-model-rep1",
+        "bench-test-model-rep2",
+        "bench-test-model-rep1",
+    ]
+    assert [result["backend_metadata"]["openclaw_lane_id"] for result in results] == [
+        "rep1",
+        "rep2",
+        "rep1",
+    ]
+    assert results[0]["backend_metadata"]["openclaw_base_agent_id"] == "bench-test-model"
+    assert results[0]["backend_metadata"]["openclaw_lane_workspace"].endswith(
+        "/run_001/agent_workspaces/rep1"
+    )
+
+
+def test_openclaw_backend_serializes_same_lane_execution(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.openclaw as openclaw_module
+
+    active = 0
+    max_active = 0
+    active_lock = threading.Lock()
+    entered = threading.Event()
+
+    monkeypatch.setattr(openclaw_module, "acquire_gateway_lock", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "release_gateway_lock", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "ensure_agent_exists", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "cleanup_agent_sessions", lambda *args, **kwargs: None)
+
+    def fake_execute_openclaw_task(**kwargs):
+        nonlocal active, max_active
+        with active_lock:
+            active += 1
+            max_active = max(max_active, active)
+        entered.set()
+        time.sleep(0.05)
+        with active_lock:
+            active -= 1
+        return _openclaw_success_result(**kwargs)
+
+    monkeypatch.setattr(openclaw_module, "execute_openclaw_task", fake_execute_openclaw_task)
+
+    backend = OpenClawBackend()
+    metadata = {
+        **_repeat_metadata(run_workers=2),
+        "attempt_run_id": "run_001-1",
+        "run_index": 1,
+        "run_number": 1,
+        "run_worker_id": 1,
+        "run_worker_label": "w1",
+    }
+    base_context = _context(tmp_path, backend="openclaw", metadata=_repeat_metadata(run_workers=2))
+    attempt_context = _context(tmp_path, backend="openclaw", metadata=metadata)
+    backend.initialize_run(base_context)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        first = executor.submit(
+            backend.execute_task,
+            task=_task(),
+            context=attempt_context,
+            attempt_run_id="run_001-1",
+        )
+        assert entered.wait(timeout=1.0)
+        second = executor.submit(
+            backend.execute_task,
+            task=_task(),
+            context=attempt_context,
+            attempt_run_id="run_001-3",
+        )
+        first.result(timeout=1.0)
+        second.result(timeout=1.0)
+
+    assert max_active == 1
+
+
+def test_openclaw_artifact_keys_are_attempt_unique(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import lib_agent
+
+    monkeypatch.setattr(lib_agent, "cleanup_agent_sessions", lambda agent_id: None)
+    monkeypatch.setattr(lib_agent, "prepare_task_workspace", lambda *args, **kwargs: tmp_path / "workspace")
+    monkeypatch.setattr(lib_agent, "_build_clean_cwd", lambda *args, **kwargs: tmp_path)
+    monkeypatch.setattr(lib_agent, "_load_transcript", lambda *args, **kwargs: [])
+    monkeypatch.setattr(lib_agent.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess(args=[], returncode=0, stdout="done", stderr=""))
+    monkeypatch.setattr(lib_agent.uuid, "uuid4", lambda: SimpleNamespace(hex="fixeduuid"))
+
+    first = lib_agent.execute_openclaw_task(
+        task=_task(),
+        agent_id="bench-test-model-rep1",
+        model_id="test/model",
+        run_id="run_001-1",
+        timeout_multiplier=1.0,
+        skill_dir=ROOT,
+    )
+    second = lib_agent.execute_openclaw_task(
+        task=_task(),
+        agent_id="bench-test-model-rep2",
+        model_id="test/model",
+        run_id="run_001-2",
+        timeout_multiplier=1.0,
+        skill_dir=ROOT,
+    )
+
+    assert first["training_artifact_key"] != second["training_artifact_key"]
+    assert "run_001-1" in first["training_artifact_key"]
+    assert "run_001-2" in second["training_artifact_key"]
 
 
 def test_fake_backend_returns_backend_compatible_result(tmp_path: Path) -> None:
@@ -563,7 +864,9 @@ def test_qwenpaw_backend_respects_delete_agent_flag(
         "_fetch_chat_history_messages",
         lambda **kwargs: [{"role": "assistant", "content": "done"}],
     )
-    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: delete_calls.append(kwargs["agent_id"]))
+    monkeypatch.setattr(
+        backend, "_delete_task_agent", lambda **kwargs: delete_calls.append(kwargs["agent_id"])
+    )
     context = _context(tmp_path, backend="qwenpaw")
 
     backend.initialize_run(context)
@@ -730,7 +1033,61 @@ def test_hermes_backend_returns_backend_compatible_result(
     assert "Session 1:" in calls[0]["prompt"]
     assert "Session 2:" in calls[0]["prompt"]
     assert calls[0]["workspace"] == Path(result["workspace"])
+    assert result["backend_metadata"]["hermes_home"] == str(calls[0]["config"].hermes_home)
+    assert calls[0]["config"].hermes_home == Path(result["workspace"]).parent / "hermes_home"
+    assert (calls[0]["config"].hermes_home / "config.yaml").exists()
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_hermes_backend_uses_attempt_scoped_home(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.hermes as hermes_module
+    from benchmark.backends.hermes import HermesBackend
+
+    _configure_hermes_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_HERMES_HOME_ROOT", str(tmp_path / "hermes_homes"))
+    monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
+    backend = HermesBackend()
+    calls: list[dict] = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        kwargs["usage_file"].write_text(
+            json.dumps({"input_tokens": 1, "output_tokens": 1}),
+            encoding="utf-8",
+        )
+        return subprocess.CompletedProcess(
+            args=["hermes"], returncode=0, stdout="done\n", stderr=""
+        )
+
+    monkeypatch.setattr(backend, "_run_hermes_subprocess", fake_run)
+    context = _context(tmp_path, backend="hermes")
+
+    backend.initialize_run(context)
+    first_task = _task()
+    second_task = _task()
+    second_task.task_id = "task/fake:two"
+    first = backend.execute_task(task=first_task, context=context, attempt_run_id="run_001-1")
+    second = backend.execute_task(task=second_task, context=context, attempt_run_id="run_001-1")
+
+    homes = [call["config"].hermes_home for call in calls]
+    usage_files = [call["usage_file"] for call in calls]
+    assert len(set(homes)) == 2
+    assert len(set(usage_files)) == 2
+    assert homes == [
+        tmp_path / "hermes_homes" / "run_001" / "task_fake" / "run_001-1" / "hermes_home",
+        tmp_path / "hermes_homes" / "run_001" / "task_fake_two" / "run_001-1" / "hermes_home",
+    ]
+    assert [
+        first["backend_metadata"]["hermes_home"],
+        second["backend_metadata"]["hermes_home"],
+    ] == [
+        str(homes[0]),
+        str(homes[1]),
+    ]
+    assert all((home / "config.yaml").exists() for home in homes)
 
 
 def test_hermes_backend_nonzero_exit_returns_error_result(
@@ -937,6 +1294,7 @@ def test_opencode_backend_returns_backend_compatible_result(
     monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
     backend = OpenCodeBackend()
     calls: list[dict] = []
+    export_calls: list[dict] = []
 
     def fake_run(**kwargs):
         calls.append(kwargs)
@@ -951,6 +1309,7 @@ def test_opencode_backend_returns_backend_compatible_result(
         )
 
     def fake_export(**kwargs):
+        export_calls.append(kwargs)
         return subprocess.CompletedProcess(
             args=["opencode", "export", kwargs["session_id"]],
             returncode=0,
@@ -959,7 +1318,11 @@ def test_opencode_backend_returns_backend_compatible_result(
                     "info": {"id": kwargs["session_id"]},
                     "messages": [
                         {
-                            "info": {"role": "user", "id": "msg_user", "sessionID": kwargs["session_id"]},
+                            "info": {
+                                "role": "user",
+                                "id": "msg_user",
+                                "sessionID": kwargs["session_id"],
+                            },
                             "parts": [{"type": "text", "id": "prt_user", "text": "Say hello."}],
                         },
                         {
@@ -1006,7 +1369,92 @@ def test_opencode_backend_returns_backend_compatible_result(
     assert "Session 1:" in calls[0]["prompt"]
     assert "Session 2:" in calls[0]["prompt"]
     assert calls[0]["workspace"] == Path(result["workspace"])
+    assert export_calls[0]["config"].opencode_home == calls[0]["config"].opencode_home
+    assert result["backend_metadata"]["opencode_home"] == str(calls[0]["config"].opencode_home)
+    assert result["backend_metadata"]["opencode_db"] == str(calls[0]["config"].db_path)
+    assert calls[0]["config"].opencode_home == Path(result["workspace"]).parent / "opencode_home"
+    assert (calls[0]["config"].opencode_home / "actbench-config.json").exists()
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_opencode_backend_uses_attempt_scoped_home(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_OPENCODE_HOME_ROOT", str(tmp_path / "opencode_homes"))
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
+    backend = OpenCodeBackend()
+    calls: list[dict] = []
+    export_calls: list[dict] = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        session_id = f"ses_{len(calls)}"
+        return subprocess.CompletedProcess(
+            args=["opencode"],
+            returncode=0,
+            stdout=(
+                f'{{"type":"text","sessionID":"{session_id}",'
+                '"part":{"type":"text","text":"done"}}\n'
+            ),
+            stderr="",
+        )
+
+    def fake_export(**kwargs):
+        export_calls.append(kwargs)
+        return subprocess.CompletedProcess(
+            args=["opencode", "export", kwargs["session_id"]],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "info": {"id": kwargs["session_id"]},
+                    "messages": [
+                        {
+                            "info": {
+                                "role": "assistant",
+                                "id": "msg_assistant",
+                                "sessionID": kwargs["session_id"],
+                            },
+                            "parts": [{"type": "text", "id": "txt_1", "text": "done"}],
+                        }
+                    ],
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_opencode_subprocess", fake_run)
+    monkeypatch.setattr(backend, "_run_opencode_export", fake_export)
+    context = _context(tmp_path, backend="opencode")
+
+    backend.initialize_run(context)
+    first_task = _task()
+    second_task = _task()
+    second_task.task_id = "task/fake:two"
+    first = backend.execute_task(task=first_task, context=context, attempt_run_id="run_001-1")
+    second = backend.execute_task(task=second_task, context=context, attempt_run_id="run_001-1")
+
+    homes = [call["config"].opencode_home for call in calls]
+    dbs = [call["config"].db_path for call in calls]
+    assert len(set(homes)) == 2
+    assert len(set(dbs)) == 2
+    assert homes == [
+        tmp_path / "opencode_homes" / "run_001" / "task_fake" / "run_001-1" / "opencode_home",
+        tmp_path / "opencode_homes" / "run_001" / "task_fake_two" / "run_001-1" / "opencode_home",
+    ]
+    assert [
+        first["backend_metadata"]["opencode_home"],
+        second["backend_metadata"]["opencode_home"],
+    ] == [
+        str(homes[0]),
+        str(homes[1]),
+    ]
+    assert [export_call["config"].opencode_home for export_call in export_calls] == homes
+    assert all((home / "actbench-config.json").exists() for home in homes)
 
 
 def test_claudecode_backend_missing_binary_is_controlled(
@@ -1299,7 +1747,7 @@ def test_claudecode_mcp_disabled_ignores_stale_mcp_env(
     assert backend._config.mcp_enabled is False
     assert "Read" in backend._config.allowed_tools
     assert backend._config.builtin_tools is None
-    assert (backend._config.claudecode_home / "actbench-claudecode.json").exists()
+    assert not (backend._config.claudecode_home / "actbench-claudecode.json").exists()
 
 
 def test_claudecode_mcp_enabled_disables_builtin_tools_by_default(
@@ -1447,7 +1895,10 @@ def test_claudecode_backend_returns_backend_compatible_result(
     assert result["status"] == "success"
     assert result["backend"] == "claudecode"
     assert result["backend_metadata"]["transcript_source"] == "claudecode_stream_json"
-    assert result["backend_metadata"]["claudecode_session_id"] == "00000000-0000-4000-8000-000000000001"
+    assert (
+        result["backend_metadata"]["claudecode_session_id"]
+        == "00000000-0000-4000-8000-000000000001"
+    )
     assert result["backend_metadata"]["permission_mode"] == "dontAsk"
     assert result["backend_metadata"]["mcp_enabled"] is False
     assert result["usage"]["input_tokens"] == 10
@@ -1458,7 +1909,71 @@ def test_claudecode_backend_returns_backend_compatible_result(
     assert "Session 2:" in calls[0]["prompt"]
     assert calls[0]["workspace"] == Path(result["workspace"])
     assert calls[0]["mcp_config_path"] is None
+    assert result["backend_metadata"]["claudecode_home"] == str(calls[0]["config"].claudecode_home)
+    assert result["backend_metadata"]["claudecode_config_dir"] == str(calls[0]["config"].config_dir)
+    assert (
+        calls[0]["config"].claudecode_home == Path(result["workspace"]).parent / "claudecode_home"
+    )
+    assert (calls[0]["config"].claudecode_home / "actbench-claudecode.json").exists()
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_claudecode_backend_uses_attempt_scoped_home(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_HOME_ROOT", str(tmp_path / "claudecode_homes"))
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+    calls: list[dict] = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        return subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "type": "assistant",
+                    "message": {
+                        "role": "assistant",
+                        "content": [{"type": "text", "text": "done"}],
+                    },
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_claudecode_subprocess", fake_run)
+    context = _context(tmp_path, backend="claudecode")
+
+    backend.initialize_run(context)
+    first_task = _task()
+    second_task = _task()
+    second_task.task_id = "task/fake:two"
+    first = backend.execute_task(task=first_task, context=context, attempt_run_id="run_001-1")
+    second = backend.execute_task(task=second_task, context=context, attempt_run_id="run_001-1")
+
+    homes = [call["config"].claudecode_home for call in calls]
+    config_dirs = [call["config"].config_dir for call in calls]
+    assert len(set(homes)) == 2
+    assert len(set(config_dirs)) == 2
+    assert homes == [
+        tmp_path / "claudecode_homes" / "run_001" / "task_fake" / "run_001-1" / "claudecode_home",
+        tmp_path / "claudecode_homes" / "run_001" / "task_fake_two" / "run_001-1" / "claudecode_home",
+    ]
+    assert [
+        first["backend_metadata"]["claudecode_home"],
+        second["backend_metadata"]["claudecode_home"],
+    ] == [
+        str(homes[0]),
+        str(homes[1]),
+    ]
+    assert all((home / "actbench-claudecode.json").exists() for home in homes)
 
 
 def test_claudecode_terminal_result_error_becomes_backend_error(
@@ -1598,10 +2113,12 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
     backend = ClaudeCodeBackend()
     prompts: list[str] = []
     mcp_config_paths: list[Path] = []
+    configs: list[object] = []
 
     def fake_run(**kwargs):
         prompts.append(kwargs["prompt"])
         mcp_config_paths.append(kwargs["mcp_config_path"])
+        configs.append(kwargs["config"])
         return subprocess.CompletedProcess(
             args=["claude"],
             returncode=0,
@@ -1631,9 +2148,7 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
     assert mcp_config_paths and mcp_config_paths[0].is_file()
     mcp_config = json.loads(mcp_config_paths[0].read_text(encoding="utf-8"))
     assert mcp_config == {
-        "mcpServers": {
-            "actbench": {"type": "http", "url": "http://host.docker.internal:8765/mcp"}
-        }
+        "mcpServers": {"actbench": {"type": "http", "url": "http://host.docker.internal:8765/mcp"}}
     }
     assert unregistered == [
         {
@@ -1642,6 +2157,9 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
             "admin_token": "secret-token",
         }
     ]
+    assert mcp_config_paths[0].parent == configs[0].mcp_config_dir
+    assert result["backend_metadata"]["claudecode_home"] == str(configs[0].claudecode_home)
+    assert result["backend_metadata"]["mcp_config_path"] == str(mcp_config_paths[0])
     assert result["backend_metadata"]["mcp_enabled"] is True
     assert result["backend_metadata"]["mcp_public_url"] == "http://host.docker.internal:8765/mcp"
     assert result["backend_metadata"]["transcript_extraction"]["mcp_trace_messages_appended"] == 2
@@ -1656,7 +2174,6 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
     assert "secret-token" not in result_text
     assert "ctx-123" not in result_text
     assert "should-not-leak" not in result_text
-
 
 
 def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
@@ -1711,7 +2228,11 @@ def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
                     "info": {"id": kwargs["session_id"]},
                     "messages": [
                         {
-                            "info": {"role": "user", "id": "msg_user", "sessionID": kwargs["session_id"]},
+                            "info": {
+                                "role": "user",
+                                "id": "msg_user",
+                                "sessionID": kwargs["session_id"],
+                            },
                             "parts": [{"type": "text", "id": "prt_user", "text": "Say hello."}],
                         },
                         {
@@ -2075,7 +2596,9 @@ def test_openagent_mcp_result_endpoints_are_sanitized_when_services_declared(
         openagent_module, "unregister_gateway_context", lambda **kwargs: {"status": "ok"}
     )
     monkeypatch.setattr(
-        openagent_module, "get_gateway_context_traces", lambda **kwargs: {"status": "ok", "traces": []}
+        openagent_module,
+        "get_gateway_context_traces",
+        lambda **kwargs: {"status": "ok", "traces": []},
     )
     monkeypatch.setattr(
         backend,
@@ -2430,3 +2953,597 @@ def test_run_benchmark_with_fake_backend_writes_backend_schema(tmp_path: Path) -
     assert task_entry["backend"] == "fake"
     assert task_entry["agent_feedback"]["backend"] == "fake"
     assert task_entry["openclaw_feedback"]["backend"] == "fake"
+
+
+def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -> None:
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    result_files = sorted(output_dir.glob("????_test-model.json"))
+    assert len(result_files) == 1
+    payload = json.loads(result_files[0].read_text(encoding="utf-8"))
+    assert payload["runs_per_task"] == 3
+    assert payload["run_workers"] == 2
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    worker_ids = [entry["backend_metadata"]["run_worker_id"] for entry in entries]
+    assert worker_ids[:2] == [1, 2]
+    assert set(worker_ids) <= {1, 2}
+    assert [entry["backend_metadata"]["attempt_run_id"] for entry in entries] == [
+        f"{payload['run_id']}-1",
+        f"{payload['run_id']}-2",
+        f"{payload['run_id']}-3",
+    ]
+    assert len({entry["workspace"] for entry in entries}) == 3
+
+
+def test_run_benchmark_parallel_workers_are_reused_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.base import augment_execution_result
+    from benchmark.backends.common import zero_usage
+    from benchmark.backends.fake import FakeBackend
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    run3_started = threading.Event()
+
+    def fake_execute(self, *, task, context, attempt_run_id):
+        run_index = int(context.metadata["run_index"])
+        if run_index == 1:
+            assert run3_started.wait(timeout=2.0)
+        if run_index == 3:
+            run3_started.set()
+        result = {
+            "agent_id": context.agent_id,
+            "task_id": task.task_id,
+            "status": "success",
+            "transcript": [{"role": "assistant", "content": "done"}],
+            "usage": zero_usage(),
+            "workspace": str(tmp_path / f"workspace-{run_index}"),
+            "exit_code": 0,
+            "timed_out": False,
+            "execution_time": 0.0,
+            "stdout": "",
+            "stderr": "",
+            "api_audit": {},
+            "api_endpoints": {},
+        }
+        return augment_execution_result(result, context=context)
+
+    monkeypatch.setattr(FakeBackend, "execute_task", fake_execute)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    by_run = {entry["backend_metadata"]["run_index"]: entry for entry in payload["tasks"]}
+    assert by_run[1]["backend_metadata"]["run_worker_id"] == 1
+    assert by_run[2]["backend_metadata"]["run_worker_id"] == 2
+    assert by_run[3]["backend_metadata"]["run_worker_id"] == 2
+
+
+def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    def fake_evaluate_attack_for_task(*, execution_result, **kwargs):
+        if execution_result["backend_metadata"]["run_index"] == 2:
+            raise RuntimeError("judge exploded")
+        return None
+
+    monkeypatch.setattr(runner_module, "_evaluate_attack_for_task", fake_evaluate_attack_for_task)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    failed = entries[1]
+    assert failed["status"] == "error"
+    assert "judge exploded" in failed["agent_feedback"]["stderr"]
+    assert entries[0]["status"] == "success"
+    assert entries[2]["status"] == "success"
+
+
+def test_run_benchmark_openclaw_parallel_repeats_use_lanes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.openclaw as openclaw_module
+    import benchmark.runner as runner_module
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    lane_acquire_calls: list[str] = []
+    lane_release_calls: list[str] = []
+    base_acquire_calls: list[str] = []
+    base_release_calls: list[str] = []
+    registered_atexit: list[object] = []
+    unregistered_atexit: list[object] = []
+
+    monkeypatch.setattr(
+        runner_module.atexit,
+        "register",
+        lambda callback, *args, **kwargs: registered_atexit.append(callback),
+    )
+    monkeypatch.setattr(
+        runner_module.atexit,
+        "unregister",
+        lambda callback: unregistered_atexit.append(callback),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "_gw_acquire",
+        lambda agent_id, **kwargs: base_acquire_calls.append(agent_id),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "_gw_release",
+        lambda agent_id: base_release_calls.append(agent_id),
+    )
+    monkeypatch.setattr(
+        openclaw_module,
+        "acquire_gateway_lock",
+        lambda agent_id, **kwargs: lane_acquire_calls.append(agent_id),
+    )
+    monkeypatch.setattr(
+        openclaw_module,
+        "release_gateway_lock",
+        lambda agent_id: lane_release_calls.append(agent_id),
+    )
+    monkeypatch.setattr(openclaw_module, "ensure_agent_exists", lambda *args, **kwargs: None)
+    monkeypatch.setattr(openclaw_module, "cleanup_agent_sessions", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        openclaw_module,
+        "execute_openclaw_task",
+        lambda **kwargs: _openclaw_success_result(**kwargs),
+    )
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="openclaw",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    result_files = sorted(output_dir.glob("????_test-model.json"))
+    assert len(result_files) == 1
+    payload = json.loads(result_files[0].read_text(encoding="utf-8"))
+    assert payload["backend"] == "openclaw"
+    assert payload["runs_per_task"] == 3
+    assert payload["run_workers"] == 2
+    assert base_acquire_calls == ["bench-test-model"]
+    assert base_release_calls == ["bench-test-model"]
+    assert registered_atexit and unregistered_atexit == registered_atexit
+    assert lane_acquire_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+    assert lane_release_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    worker_ids = [entry["backend_metadata"]["run_worker_id"] for entry in entries]
+    assert worker_ids[:2] == [1, 2]
+    assert set(worker_ids) <= {1, 2}
+    assert [entry["backend_metadata"]["agent_id"] for entry in entries] == [
+        f"bench-test-model-rep{worker_id}" for worker_id in worker_ids
+    ]
+    assert [entry["backend_metadata"]["openclaw_lane_id"] for entry in entries] == [
+        f"rep{worker_id}" for worker_id in worker_ids
+    ]
+    for entry, worker_id in zip(entries, worker_ids):
+        assert entry["backend_metadata"]["openclaw_lane_workspace"].endswith(
+            f"/{payload['run_id']}/agent_workspaces/rep{worker_id}"
+        )
+
+
+def test_run_benchmark_hermes_parallel_repeats_use_attempt_scoped_homes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.hermes as hermes_module
+    from benchmark.backends.hermes import HermesBackend
+
+    _configure_hermes_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    calls: list[Path] = []
+    calls_lock = threading.Lock()
+
+    def fake_run(self, **kwargs):
+        with calls_lock:
+            calls.append(kwargs["config"].hermes_home)
+        return subprocess.CompletedProcess(
+            args=["hermes"], returncode=0, stdout="done\n", stderr=""
+        )
+
+    monkeypatch.setattr(HermesBackend, "_run_hermes_subprocess", fake_run)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="hermes",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    result_files = sorted(output_dir.glob("????_test-model.json"))
+    assert len(result_files) == 1
+    payload = json.loads(result_files[0].read_text(encoding="utf-8"))
+    assert payload["backend"] == "hermes"
+    assert payload["runs_per_task"] == 3
+    assert payload["run_workers"] == 2
+    assert len(set(calls)) == 3
+
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    worker_ids = [entry["backend_metadata"]["run_worker_id"] for entry in entries]
+    assert worker_ids[:2] == [1, 2]
+    assert set(worker_ids) <= {1, 2}
+    homes = [entry["backend_metadata"]["hermes_home"] for entry in entries]
+    assert len(set(homes)) == 3
+    assert all(home.endswith("/hermes_home") for home in homes)
+    assert set(map(str, calls)) == set(homes)
+
+
+def test_run_benchmark_opencode_parallel_repeats_use_attempt_scoped_homes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.opencode as opencode_module
+    from benchmark.backends.opencode import OpenCodeBackend
+
+    _configure_opencode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    calls: list[Path] = []
+    export_calls: list[Path] = []
+    calls_lock = threading.Lock()
+
+    def fake_run(self, **kwargs):
+        with calls_lock:
+            calls.append(kwargs["config"].opencode_home)
+            session_id = f"ses_{len(calls)}"
+        return subprocess.CompletedProcess(
+            args=["opencode"],
+            returncode=0,
+            stdout=(
+                f'{{"type":"text","sessionID":"{session_id}",'
+                '"part":{"type":"text","text":"done"}}\n'
+            ),
+            stderr="",
+        )
+
+    def fake_export(self, **kwargs):
+        with calls_lock:
+            export_calls.append(kwargs["config"].opencode_home)
+        return subprocess.CompletedProcess(
+            args=["opencode", "export", kwargs["session_id"]],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "info": {"id": kwargs["session_id"]},
+                    "messages": [
+                        {
+                            "info": {
+                                "role": "assistant",
+                                "id": "msg_assistant",
+                                "sessionID": kwargs["session_id"],
+                            },
+                            "parts": [{"type": "text", "id": "txt_1", "text": "done"}],
+                        }
+                    ],
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(OpenCodeBackend, "_run_opencode_subprocess", fake_run)
+    monkeypatch.setattr(OpenCodeBackend, "_run_opencode_export", fake_export)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="opencode",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    result_files = sorted(output_dir.glob("????_test-model.json"))
+    assert len(result_files) == 1
+    payload = json.loads(result_files[0].read_text(encoding="utf-8"))
+    assert payload["backend"] == "opencode"
+    assert payload["runs_per_task"] == 3
+    assert payload["run_workers"] == 2
+    assert len(set(calls)) == 3
+    assert len(set(export_calls)) == 3
+
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    worker_ids = [entry["backend_metadata"]["run_worker_id"] for entry in entries]
+    assert worker_ids[:2] == [1, 2]
+    assert set(worker_ids) <= {1, 2}
+    homes = [entry["backend_metadata"]["opencode_home"] for entry in entries]
+    dbs = [entry["backend_metadata"]["opencode_db"] for entry in entries]
+    assert len(set(homes)) == 3
+    assert len(set(dbs)) == 3
+    assert all(home.endswith("/opencode_home") for home in homes)
+    assert set(map(str, calls)) == set(homes)
+    assert set(map(str, export_calls)) == set(homes)
+
+
+def test_run_benchmark_claudecode_parallel_repeats_use_attempt_scoped_homes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    calls: list[Path] = []
+    config_dirs: list[Path] = []
+    calls_lock = threading.Lock()
+
+    def fake_run(self, **kwargs):
+        with calls_lock:
+            calls.append(kwargs["config"].claudecode_home)
+            config_dirs.append(kwargs["config"].config_dir)
+        return subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout=json.dumps(
+                {
+                    "type": "assistant",
+                    "message": {
+                        "role": "assistant",
+                        "content": [{"type": "text", "text": "done"}],
+                    },
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(ClaudeCodeBackend, "_run_claudecode_subprocess", fake_run)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="claudecode",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    result_files = sorted(output_dir.glob("????_test-model.json"))
+    assert len(result_files) == 1
+    payload = json.loads(result_files[0].read_text(encoding="utf-8"))
+    assert payload["backend"] == "claudecode"
+    assert payload["runs_per_task"] == 3
+    assert payload["run_workers"] == 2
+    assert len(set(calls)) == 3
+    assert len(set(config_dirs)) == 3
+
+    entries = payload["tasks"]
+    assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
+    worker_ids = [entry["backend_metadata"]["run_worker_id"] for entry in entries]
+    assert worker_ids[:2] == [1, 2]
+    assert set(worker_ids) <= {1, 2}
+    homes = [entry["backend_metadata"]["claudecode_home"] for entry in entries]
+    result_config_dirs = [entry["backend_metadata"]["claudecode_config_dir"] for entry in entries]
+    assert len(set(homes)) == 3
+    assert len(set(result_config_dirs)) == 3
+    assert all(home.endswith("/claudecode_home") for home in homes)
+    assert set(map(str, calls)) == set(homes)
+    assert set(map(str, config_dirs)) == set(result_config_dirs)
+
+
+def test_run_benchmark_rejects_unsupported_parallel_backend(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
+    class UnsupportedBackend:
+        name = "unsupported"
+        supports_parallel_runs = False
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    monkeypatch.setattr(runner_module, "get_backend", lambda name: UnsupportedBackend())
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_benchmark(
+            Namespace(
+                tasks_dir=str(tasks_dir),
+                model="test/model",
+                backend="unsupported",
+                suite="task_fake",
+                output_dir=str(tmp_path / "results"),
+                timeout_multiplier=1.0,
+                runs=2,
+                run_workers=2,
+                judge_model=None,
+                verbose=False,
+                no_fail_fast=True,
+                skip_baseline_gen=True,
+                training_artifact_dir=None,
+                no_training_artifacts=True,
+            )
+        )
+
+    assert exc_info.value.code == 2
+
+
+@pytest.mark.parametrize("run_workers", [0, -1])
+def test_run_benchmark_rejects_nonpositive_run_workers(
+    tmp_path: Path,
+    run_workers: int,
+) -> None:
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_benchmark(
+            Namespace(
+                tasks_dir=str(tasks_dir),
+                model="test/model",
+                backend="fake",
+                suite="task_fake",
+                output_dir=str(tmp_path / "results"),
+                timeout_multiplier=1.0,
+                runs=2,
+                run_workers=run_workers,
+                judge_model=None,
+                verbose=False,
+                no_fail_fast=True,
+                skip_baseline_gen=True,
+                training_artifact_dir=None,
+                no_training_artifacts=True,
+            )
+        )
+
+    assert exc_info.value.code == 2
+
+
+@pytest.mark.parametrize("backend_name", ["openagent", "qwenpaw"])
+def test_run_benchmark_rejects_remote_backend_parallel_runs(
+    tmp_path: Path,
+    backend_name: str,
+) -> None:
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_benchmark(
+            Namespace(
+                tasks_dir=str(tasks_dir),
+                model="test/model",
+                backend=backend_name,
+                suite="task_fake",
+                output_dir=str(tmp_path / "results"),
+                timeout_multiplier=1.0,
+                runs=2,
+                run_workers=2,
+                judge_model=None,
+                verbose=False,
+                no_fail_fast=True,
+                skip_baseline_gen=True,
+                training_artifact_dir=None,
+                no_training_artifacts=True,
+            )
+        )
+
+    assert exc_info.value.code == 2

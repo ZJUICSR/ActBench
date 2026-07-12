@@ -34,6 +34,7 @@ class FakeBackend:
 
     name = "fake"
     uses_gateway_lock = False
+    supports_parallel_runs = True
 
     def slugify_model(self, model_id: str) -> str:
         return default_slugify_model(model_id)
@@ -56,7 +57,7 @@ class FakeBackend:
     ) -> Dict[str, Any]:
         logger.info("🤖 Fake backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
-        session_id = f"{task.task_id}_{int(start_time * 1000)}"
+        session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
         workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
         api_group = None
         api_endpoints: Dict[str, Any] = {}

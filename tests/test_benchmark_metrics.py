@@ -12,7 +12,11 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from benchmark.evaluation import _extract_malicious_skill_names  # noqa: E402
-from benchmark.metrics import build_attack_summary, _log_attack_eval_summary  # noqa: E402
+from benchmark.metrics import (  # noqa: E402
+    _compute_efficiency_summary,
+    _log_attack_eval_summary,
+    build_attack_summary,
+)
 from benchmark.task_loading import _select_task_ids, select_task_files_for_suite  # noqa: E402
 from lib_reward import ATTACK_SUCCESS_THRESHOLD  # noqa: E402
 from lib_tasks import Task  # noqa: E402
@@ -44,6 +48,49 @@ def _run(score: float, *, py: float = 0.0, llm: float = 0.0, error: bool = False
     if error:
         run["evaluation_error"] = True
     return run
+
+
+def test_compute_efficiency_summary_counts_aggregate_attack_eval_once_per_task() -> None:
+    attack_eval = {
+        "runs": [
+            {
+                "usage": {
+                    "attack_judge": {"total_tokens": 10},
+                    "awareness_stage_judge": {"total_tokens": 3},
+                },
+                "timing": {"total_reward_seconds": 1.5},
+            },
+            {
+                "usage": {
+                    "attack_judge": {"total_tokens": 20},
+                    "awareness_stage_judge": {"total_tokens": 4},
+                },
+                "timing": {"total_reward_seconds": 2.5},
+            },
+        ]
+    }
+    task_entries = [
+        {
+            "task_id": "task_repeat",
+            "usage": {"input_tokens": 1, "output_tokens": 2, "total_tokens": 3},
+            "execution_time": 1.0,
+            "attack_eval": attack_eval,
+        },
+        {
+            "task_id": "task_repeat",
+            "usage": {"input_tokens": 4, "output_tokens": 5, "total_tokens": 9},
+            "execution_time": 2.0,
+            "attack_eval": attack_eval,
+        },
+    ]
+
+    summary = _compute_efficiency_summary(task_entries, {"task_repeat": {"mean": 1.0}})
+
+    assert summary["total_tokens"] == 12
+    assert summary["judge_tokens"] == 30
+    assert summary["awareness_stage_judge_tokens"] == 7
+    assert summary["total_reward_time_seconds"] == 4.0
+    assert summary["total_time_seconds"] == 7.0
 
 
 def test_build_attack_summary_marks_reproduced_and_defended() -> None:
