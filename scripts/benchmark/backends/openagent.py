@@ -18,6 +18,7 @@ from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
     DEFAULT_MCP_PORT,
     ActBenchMcpGatewayProcess,
+    check_gateway_admin_health,
     check_gateway_health,
     get_gateway_context_traces,
     register_gateway_context,
@@ -349,6 +350,18 @@ class OpenAgentBackend:
                         port=config.mcp_port,
                         timeout_seconds=1.0,
                     )
+                except Exception:
+                    self._mcp_gateway = start_gateway_subprocess(
+                        host=config.mcp_host,
+                        port=config.mcp_port,
+                        admin_token=config.mcp_admin_token,
+                    )
+                else:
+                    check_gateway_admin_health(
+                        mcp_url=config.mcp_admin_url,
+                        admin_token=config.mcp_admin_token,
+                        timeout_seconds=1.0,
+                    )
                     self._mcp_gateway = ActBenchMcpGatewayProcess(
                         process=None,
                         host=config.mcp_host,
@@ -356,14 +369,12 @@ class OpenAgentBackend:
                         mcp_url=config.mcp_admin_url,
                         admin_token=config.mcp_admin_token,
                     )
-                except Exception:
-                    self._mcp_gateway = start_gateway_subprocess(
-                        host=config.mcp_host,
-                        port=config.mcp_port,
-                        admin_token=config.mcp_admin_token,
-                    )
             else:
                 check_gateway_health(host=config.mcp_host, port=config.mcp_port)
+                check_gateway_admin_health(
+                    mcp_url=config.mcp_admin_url,
+                    admin_token=config.mcp_admin_token,
+                )
                 self._mcp_gateway = ActBenchMcpGatewayProcess(
                     process=None,
                     host=config.mcp_host,
@@ -373,7 +384,7 @@ class OpenAgentBackend:
                 )
         except Exception as exc:  # noqa: BLE001
             raise BackendInitializationError(
-                "openagent backend could not start or reach the ActBench MCP gateway at "
+                "openagent backend could not start or authenticate to the ActBench MCP gateway at "
                 f"{config.mcp_admin_url}: {exc}. Set ACTBENCH_MCP_AUTOSTART=0 for an "
                 "externally managed gateway or OPENAGENT_ENABLE_ACTBENCH_MCP=0 for weak "
                 "HTTP-only mode."
@@ -625,18 +636,62 @@ def _transcript_from_openai_message(message: Dict[str, Any]) -> Dict[str, Any]:
     role = str(message.get("role") or "assistant")
     content = message.get("content")
     if isinstance(content, str):
-        transcript_content: Any = [{"type": "text", "text": content}]
+        transcript_content: List[Any] = [{"type": "text", "text": content}]
     elif isinstance(content, list):
-        transcript_content = content
+        transcript_content = list(content)
     elif content is None:
         transcript_content = []
     else:
         transcript_content = [{"type": "text", "text": str(content)}]
+    for tool_call in _coerce_openai_tool_calls(message.get("tool_calls")):
+        block = _openai_tool_call_to_content_block(tool_call)
+        if block is not None:
+            transcript_content.append(block)
+    function_call = message.get("function_call")
+    if isinstance(function_call, dict):
+        block = _openai_tool_call_to_content_block(function_call)
+        if block is not None:
+            transcript_content.append(block)
     transcript_message: Dict[str, Any] = {"role": role, "content": transcript_content}
-    for key in ("tool_calls", "function_call"):
-        if key in message:
-            transcript_message[key] = message[key]
     return {"type": "message", "message": transcript_message}
+
+
+def _coerce_openai_tool_calls(value: Any) -> List[Dict[str, Any]]:
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    if isinstance(value, dict):
+        return [value]
+    return []
+
+
+def _openai_tool_call_to_content_block(tool_call: Dict[str, Any]) -> Dict[str, Any] | None:
+    function = tool_call.get("function") if isinstance(tool_call.get("function"), dict) else tool_call
+    name = function.get("name") if isinstance(function, dict) else None
+    if not name:
+        return None
+    arguments = function.get("arguments") if isinstance(function, dict) else None
+    block: Dict[str, Any] = {
+        "type": "toolCall",
+        "name": str(name),
+        "arguments": _coerce_openai_tool_arguments(arguments),
+    }
+    call_id = tool_call.get("id") or tool_call.get("tool_call_id")
+    if call_id:
+        block["id"] = str(call_id)
+    return block
+
+
+def _coerce_openai_tool_arguments(value: Any) -> Any:
+    if isinstance(value, str):
+        try:
+            return json.loads(value) if value.strip() else {}
+        except json.JSONDecodeError:
+            return {"raw": value}
+    if isinstance(value, dict):
+        return value
+    if value is None:
+        return {}
+    return {"value": value}
 
 
 def _mcp_gateway_traces_to_transcript(raw_traces: Any) -> List[Dict[str, Any]]:

@@ -55,6 +55,9 @@ QWENPAW_USER_ID = "actbench"
 QWENPAW_CHANNEL = "console"
 _TOKEN_USAGE_ENDPOINTS = ("/api/token-usage/details", "/api/token-usage")
 _AGENT_ID_MAX_LENGTH = 64
+_SSE_EVENTS_KEY = "_qwenpaw_sse_events"
+_SSE_AGGREGATED_TEXT_KEY = "_qwenpaw_aggregated_text"
+_SSE_AGGREGATED_USAGE_KEY = "_qwenpaw_aggregated_usage"
 
 
 @dataclass(frozen=True)
@@ -201,6 +204,7 @@ class QwenPawBackend:
 
             timeout_budget = task.timeout_seconds * context.timeout_multiplier
             process_outputs: List[str] = []
+            event_usage_total = zero_usage(request_count=0)
             model_slot = _parse_model_slot(context.model)
             usage_before: Dict[str, Any] | None = None
 
@@ -275,13 +279,16 @@ class QwenPawBackend:
                             prompt=prompt,
                             timeout_seconds=_request_timeout(config=config, remaining=remaining),
                         )
-                        output_text = _extract_output_text(event)
-                        if output_text.strip():
-                            process_outputs.append(output_text.strip())
+                        output_text = _extract_output_text(event).strip()
+                        process_outputs.append(output_text)
                         raw_usage = _event_usage(event)
                         if raw_usage is not None:
-                            usage = _normalize_qwenpaw_usage(raw_usage, request_count=request_count)
-                            if _usage_has_tokens_or_cost(usage):
+                            prompt_usage = _normalize_qwenpaw_usage(raw_usage, request_count=1)
+                            if _safe_int(prompt_usage.get("request_count")) == 0:
+                                prompt_usage["request_count"] = 1
+                            if _usage_has_tokens_or_cost(prompt_usage):
+                                event_usage_total = _add_usage(event_usage_total, prompt_usage)
+                                usage = dict(event_usage_total)
                                 usage_source = "qwenpaw_event"
                     except QwenPawTimeoutError as exc:
                         timed_out = True
@@ -303,7 +310,7 @@ class QwenPawBackend:
                         logger.warning("   %s", stderr)
                         break
 
-            stdout = "\n\n".join(process_outputs)
+            stdout = "\n\n".join(output for output in process_outputs if output)
 
             if status == "success" and service_agent_id:
                 remaining = timeout_budget - (time.time() - start_time)
@@ -710,10 +717,13 @@ def _post_sse_json(
         headers=request_headers,
         method="POST",
     )
-    last_event: Dict[str, Any] | None = None
+    deadline = time.monotonic() + max(timeout_seconds, 0.001)
+    events: List[Dict[str, Any]] = []
     try:
         with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
             for raw_line in response:
+                if time.monotonic() > deadline:
+                    raise QwenPawTimeoutError(f"request to {url} timed out")
                 line = raw_line.decode("utf-8", errors="replace").strip()
                 if not line or line.startswith(":"):
                     continue
@@ -732,7 +742,9 @@ def _post_sse_json(
                     continue
                 if event.get("error"):
                     raise QwenPawRequestError(str(event.get("error")))
-                last_event = event
+                events.append(event)
+                if time.monotonic() > deadline:
+                    raise QwenPawTimeoutError(f"request to {url} timed out")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
         if exc.code in {408, 504}:
@@ -747,7 +759,30 @@ def _post_sse_json(
         raise QwenPawRequestError(f"request to {url} failed: {reason}") from exc
     except (TimeoutError, socket.timeout) as exc:
         raise QwenPawTimeoutError(f"request to {url} timed out") from exc
-    return last_event or {}
+    return _merge_sse_events(events)
+
+
+def _merge_sse_events(events: List[Dict[str, Any]]) -> Dict[str, Any]:
+    if not events:
+        return {}
+    merged = dict(events[-1])
+    text_parts: List[str] = []
+    usage_total = zero_usage(request_count=0)
+    for event in events:
+        text = _extract_output_text(event)
+        if text:
+            text_parts.append(text)
+        raw_usage = _usage_from_candidate(event)
+        if raw_usage is not None:
+            usage = _normalize_qwenpaw_usage(raw_usage, request_count=0)
+            if _usage_has_tokens_or_cost(usage) or _safe_int(usage.get("request_count")) > 0:
+                usage_total = _add_usage(usage_total, usage)
+    merged[_SSE_EVENTS_KEY] = events
+    if text_parts:
+        merged[_SSE_AGGREGATED_TEXT_KEY] = "".join(text_parts)
+    if _usage_has_tokens_or_cost(usage_total) or _safe_int(usage_total.get("request_count")) > 0:
+        merged[_SSE_AGGREGATED_USAGE_KEY] = usage_total
+    return merged
 
 
 def _raw_messages_to_transcript(raw_messages: Any) -> List[Dict[str, Any]]:
@@ -1262,26 +1297,23 @@ def _qwenpaw_usage_rows(payload: Any) -> List[Dict[str, Any]]:
     if not isinstance(payload, dict):
         return []
 
+    rows: List[Dict[str, Any]] = []
     by_model = payload.get("by_model")
     if isinstance(by_model, dict):
-        rows = []
         for key, value in by_model.items():
             if isinstance(value, dict):
                 row = dict(value)
                 row.setdefault("model_key", key)
                 rows.append(row)
-        return rows
 
     for key in ("data", "details", "items", "rows", "records", "usage"):
         nested = payload.get(key)
         if isinstance(nested, (dict, list)):
-            rows = _qwenpaw_usage_rows(nested)
-            if rows:
-                return rows
+            rows.extend(_qwenpaw_usage_rows(nested))
 
-    if _looks_like_usage(payload):
-        return [payload]
-    return []
+    if not rows and _looks_like_usage(payload):
+        rows.append(payload)
+    return rows
 
 
 def _usage_row_matches_model(row: Dict[str, Any], *, provider_id: str, model: str) -> bool:
@@ -1291,11 +1323,25 @@ def _usage_row_matches_model(row: Dict[str, Any], *, provider_id: str, model: st
     row_provider = _coerce_text(
         _first_present(row, "provider", "provider_id", "provider_name", "providerId", default="")
     )
+    model_key = _coerce_text(row.get("model_key") or "")
     if row_model and model and row_model != model:
         return False
     if row_provider and provider_id and row_provider != provider_id:
         return False
+    if model_key and not row_model and not row_provider:
+        return _model_key_matches(model_key, provider_id=provider_id, model=model)
     return True
+
+
+def _model_key_matches(model_key: str, *, provider_id: str, model: str) -> bool:
+    key = model_key.strip()
+    if not key:
+        return True
+    candidates = {model}
+    if provider_id and model:
+        candidates.add(f"{provider_id}/{model}")
+        candidates.add(f"{provider_id}:{model}")
+    return key in candidates
 
 
 def _sum_usage_rows(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -1464,27 +1510,45 @@ def _extract_output_text(event: Dict[str, Any]) -> str:
                     parts.append(str(item["text"]))
             elif isinstance(item, str):
                 parts.append(item)
-        return "".join(parts)
+        text = "".join(parts)
+        if text:
+            return text
     if event.get("text") is not None:
         return str(event["text"])
     if event.get("content") is not None:
         return _content_to_text(event["content"])
-    return ""
+    aggregated_text = event.get(_SSE_AGGREGATED_TEXT_KEY)
+    return str(aggregated_text) if aggregated_text is not None else ""
 
 
 def _event_usage(event: Dict[str, Any]) -> Dict[str, Any] | None:
+    aggregated_usage = event.get(_SSE_AGGREGATED_USAGE_KEY)
+    if isinstance(aggregated_usage, dict):
+        return aggregated_usage
     return _usage_from_candidate(event)
+
+
+def _combine_usage_candidates(candidates: List[Dict[str, Any]]) -> Dict[str, Any] | None:
+    if not candidates:
+        return None
+    if len(candidates) == 1:
+        return candidates[0]
+    total = zero_usage(request_count=0)
+    for candidate in candidates:
+        total = _add_usage(total, _normalize_qwenpaw_usage(candidate, request_count=0))
+    return total
 
 
 def _usage_from_candidate(candidate: Any, *, depth: int = 0) -> Dict[str, Any] | None:
     if depth > 4:
         return None
     if isinstance(candidate, list):
-        for item in reversed(candidate):
+        usages = []
+        for item in candidate:
             usage = _usage_from_candidate(item, depth=depth + 1)
             if usage is not None:
-                return usage
-        return None
+                usages.append(usage)
+        return _combine_usage_candidates(usages)
     if not isinstance(candidate, dict):
         return None
 
@@ -1492,15 +1556,18 @@ def _usage_from_candidate(candidate: Any, *, depth: int = 0) -> Dict[str, Any] |
     if isinstance(direct_usage, dict):
         return direct_usage
 
+    usages = []
     for key in ("metadata", "meta", "_meta", "field_meta", "data", "response", "result", "message"):
         usage = _usage_from_candidate(candidate.get(key), depth=depth + 1)
         if usage is not None:
-            return usage
+            usages.append(usage)
 
     output = candidate.get("output")
     usage = _usage_from_candidate(output, depth=depth + 1)
     if usage is not None:
-        return usage
+        usages.append(usage)
+    if usages:
+        return _combine_usage_candidates(usages)
 
     return candidate if _looks_like_usage(candidate) else None
 

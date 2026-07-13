@@ -18,7 +18,9 @@ from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
     DEFAULT_MCP_PORT,
     ActBenchMcpGatewayProcess,
+    check_gateway_admin_health,
     check_gateway_health,
+    get_gateway_context_traces,
     register_gateway_context,
     sanitize_api_endpoints,
     start_gateway_subprocess,
@@ -309,6 +311,35 @@ class HermesBackend:
             if usage.get("request_count", 0) == 0 and status in {"success", "error", "timeout"}:
                 usage["request_count"] = 1
 
+            if config.mcp_enabled and mcp_context_id:
+                if transcript_extraction is None:
+                    transcript_extraction = {}
+                try:
+                    trace_response = get_gateway_context_traces(
+                        mcp_url=config.mcp_admin_url,
+                        context_id=mcp_context_id,
+                        admin_token=config.mcp_admin_token,
+                    )
+                    trace_transcript = _mcp_gateway_traces_to_transcript(
+                        trace_response.get("traces")
+                    )
+                    missing_trace_transcript = _missing_mcp_trace_transcript(
+                        transcript=transcript,
+                        trace_transcript=trace_transcript,
+                    )
+                    if trace_transcript:
+                        transcript_extraction["mcp_trace_messages_available"] = len(
+                            trace_transcript
+                        )
+                    if missing_trace_transcript:
+                        transcript.extend(missing_trace_transcript)
+                        transcript_extraction["mcp_trace_messages_appended"] = len(
+                            missing_trace_transcript
+                        )
+                except Exception as exc:  # noqa: BLE001 - tracing must not fail the task
+                    logger.warning("   Failed to retrieve ActBench MCP traces: %s", exc)
+                    transcript_extraction["mcp_trace_error"] = str(exc)[:500]
+
             if not transcript and status == "success":
                 status = "error"
                 exit_code = -1
@@ -462,6 +493,18 @@ class HermesBackend:
                         port=config.mcp_port,
                         timeout_seconds=1.0,
                     )
+                except Exception:
+                    self._mcp_gateway = start_gateway_subprocess(
+                        host=config.mcp_host,
+                        port=config.mcp_port,
+                        admin_token=config.mcp_admin_token,
+                    )
+                else:
+                    check_gateway_admin_health(
+                        mcp_url=config.mcp_admin_url,
+                        admin_token=config.mcp_admin_token,
+                        timeout_seconds=1.0,
+                    )
                     self._mcp_gateway = ActBenchMcpGatewayProcess(
                         process=None,
                         host=config.mcp_host,
@@ -469,14 +512,12 @@ class HermesBackend:
                         mcp_url=config.mcp_admin_url,
                         admin_token=config.mcp_admin_token,
                     )
-                except Exception:
-                    self._mcp_gateway = start_gateway_subprocess(
-                        host=config.mcp_host,
-                        port=config.mcp_port,
-                        admin_token=config.mcp_admin_token,
-                    )
             else:
                 check_gateway_health(host=config.mcp_host, port=config.mcp_port)
+                check_gateway_admin_health(
+                    mcp_url=config.mcp_admin_url,
+                    admin_token=config.mcp_admin_token,
+                )
                 self._mcp_gateway = ActBenchMcpGatewayProcess(
                     process=None,
                     host=config.mcp_host,
@@ -486,7 +527,7 @@ class HermesBackend:
                 )
         except Exception as exc:  # noqa: BLE001
             raise BackendInitializationError(
-                "hermes backend could not start or reach the ActBench MCP gateway at "
+                "hermes backend could not start or authenticate to the ActBench MCP gateway at "
                 f"{config.mcp_admin_url}: {exc}. Set ACTBENCH_MCP_AUTOSTART=0 for an "
                 "externally managed gateway or ACTBENCH_HERMES_ENABLE_ACTBENCH_MCP=0 "
                 "for weak direct-workspace mode."
@@ -591,6 +632,201 @@ def _result_api_endpoints(config: HermesConfig, api_endpoints: Dict[str, Any]) -
     if not config.mcp_enabled:
         return api_endpoints
     return sanitize_api_endpoints(api_endpoints)
+
+
+def _mcp_gateway_traces_to_transcript(raw_traces: Any) -> List[Dict[str, Any]]:
+    if not isinstance(raw_traces, list):
+        return []
+    transcript: List[Dict[str, Any]] = []
+    for index, trace in enumerate(raw_traces, 1):
+        if not isinstance(trace, dict):
+            continue
+        name = trace.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        sequence = trace.get("sequence") or index
+        tool_call_id = f"actbench-mcp-{sequence}"
+        arguments = trace.get("arguments") if isinstance(trace.get("arguments"), dict) else {}
+        arguments = _redact_mcp_trace_value(arguments)
+        transcript.append(
+            {
+                "type": "message",
+                "message": {
+                    "role": "assistant",
+                    "content": [
+                        {
+                            "type": "toolCall",
+                            "name": name,
+                            "arguments": arguments,
+                            "id": tool_call_id,
+                        }
+                    ],
+                },
+            }
+        )
+        result_block: Dict[str, Any] = {
+            "type": "toolResult",
+            "text": _mcp_trace_result_text(trace.get("result")),
+            "tool_call_id": tool_call_id,
+            "name": name,
+        }
+        if "isError" in trace:
+            result_block["isError"] = _coerce_bool(trace.get("isError"))
+        transcript.append(
+            {
+                "type": "message",
+                "message": {"role": "toolResult", "content": [result_block]},
+            }
+        )
+    return transcript
+
+
+def _mcp_trace_result_text(result: Any) -> str:
+    if isinstance(result, dict):
+        content = result.get("content")
+        if isinstance(content, list):
+            parts: List[str] = []
+            for item in content:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict):
+                    text = item.get("text") or item.get("content")
+                    if isinstance(text, str):
+                        parts.append(text)
+            if parts:
+                return "\n".join(parts)
+        text = result.get("text")
+        if isinstance(text, str):
+            return text
+    if result is None:
+        return ""
+    return json.dumps(result, ensure_ascii=False, sort_keys=True, default=str)
+
+
+def _redact_mcp_trace_value(value: Any, *, key: str = "") -> Any:
+    if key and _is_sensitive_mcp_trace_key(key):
+        return "[redacted]"
+    if isinstance(value, dict):
+        redacted: Dict[str, Any] = {}
+        for item_key, item_value in value.items():
+            key_text = str(item_key)
+            if key_text.lower().replace("-", "_") == "context_id":
+                continue
+            redacted[key_text] = _redact_mcp_trace_value(item_value, key=key_text)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_mcp_trace_value(item) for item in value]
+    return value
+
+
+def _is_sensitive_mcp_trace_key(key: str) -> bool:
+    normalized = key.lower().replace("-", "_")
+    if normalized in {"context_id", "token", "auth_token", "bearer_token"}:
+        return True
+    return any(
+        fragment in normalized
+        for fragment in (
+            "authorization",
+            "admin_token",
+            "api_key",
+            "apikey",
+            "access_token",
+            "refresh_token",
+            "password",
+            "secret",
+            "credential",
+            "cookie",
+        )
+    )
+
+
+def _missing_mcp_trace_transcript(
+    *,
+    transcript: List[Dict[str, Any]],
+    trace_transcript: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not trace_transcript:
+        return []
+    existing_counts = _actbench_tool_result_counts(transcript)
+    missing: List[Dict[str, Any]] = []
+    pending_call: Dict[str, Any] | None = None
+    for entry in trace_transcript:
+        result_signature = _actbench_tool_result_signature(entry)
+        if result_signature is None:
+            if _entry_has_actbench_tool_call(entry):
+                pending_call = entry
+            continue
+        count = existing_counts.get(result_signature, 0)
+        if count > 0:
+            existing_counts[result_signature] = count - 1
+            pending_call = None
+            continue
+        if pending_call is not None:
+            missing.append(pending_call)
+        missing.append(entry)
+        pending_call = None
+    return missing
+
+
+def _actbench_tool_result_counts(
+    transcript: List[Dict[str, Any]],
+) -> Dict[Tuple[str, str, bool], int]:
+    counts: Dict[Tuple[str, str, bool], int] = {}
+    for entry in transcript:
+        signature = _actbench_tool_result_signature(entry)
+        if signature is None:
+            continue
+        counts[signature] = counts.get(signature, 0) + 1
+    return counts
+
+
+def _actbench_tool_result_signature(entry: Dict[str, Any]) -> Tuple[str, str, bool] | None:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return None
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    for block in content:
+        if not isinstance(block, dict) or block.get("type") != "toolResult":
+            continue
+        name = str(block.get("name") or "")
+        text = str(block.get("text") or "")
+        if not _is_actbench_tool_name(name) or not text.strip():
+            continue
+        return (_canonical_actbench_tool_name(name), text, _coerce_bool(block.get("isError")))
+    return None
+
+
+def _entry_has_actbench_tool_call(entry: Dict[str, Any]) -> bool:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return False
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    return any(
+        isinstance(block, dict)
+        and block.get("type") == "toolCall"
+        and _is_actbench_tool_name(str(block.get("name") or ""))
+        for block in content
+    )
+
+
+def _is_actbench_tool_name(name: str) -> bool:
+    return name.startswith("actbench_") or "__actbench__actbench_" in name
+
+
+def _canonical_actbench_tool_name(name: str) -> str:
+    if "__actbench__" in name:
+        return name.rsplit("__actbench__", 1)[-1]
+    if name.startswith("actbench_actbench_"):
+        return name[len("actbench_") :]
+    return name
+
+
+def _coerce_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "on"}
+    return bool(value)
 
 
 def _extract_hermes_transcript(

@@ -266,6 +266,56 @@ def test_pregenerate_baselines_uses_context_factory_metadata(monkeypatch, tmp_pa
     ]
 
 
+def test_generate_baseline_uses_unique_temp_cache_paths(monkeypatch, tmp_path: Path) -> None:
+    task = _task()
+    scene = {"id": "S001", "user_prompt": "Do it.", "workspace_files": []}
+    replace_sources: list[Path] = []
+    original_replace = baseline_module.os.replace
+
+    class Backend:
+        name = "fake"
+
+        def execute_task(self, **kwargs):
+            return {
+                "status": "success",
+                "transcript": [
+                    {
+                        "type": "message",
+                        "message": {
+                            "role": "assistant",
+                            "content": [{"type": "text", "text": "done"}],
+                        },
+                    }
+                ],
+                "workspace": str(tmp_path / "workspace"),
+                "execution_time": 0.01,
+            }
+
+    def recording_replace(src, dst):
+        replace_sources.append(Path(src))
+        original_replace(src, dst)
+
+    monkeypatch.setattr(baseline_module, "BASELINE_CACHE_DIR", tmp_path / "cache")
+    monkeypatch.setattr(baseline_module, "_load_baseline_for_task", lambda *args, **kwargs: None)
+    monkeypatch.setattr(baseline_module.os, "replace", recording_replace)
+
+    for index in range(2):
+        baseline_module._generate_baseline_for_task(
+            task=task,
+            scene=scene,
+            model="test/model",
+            backend=Backend(),
+            context=SimpleNamespace(metadata={}),
+            run_id="run",
+            attempt_run_id=f"run_bl_S001_{index}",
+        )
+
+    assert len(replace_sources) == 2
+    assert replace_sources[0] != replace_sources[1]
+    assert all(path.name.startswith(".S001_fake_test-model.json.") for path in replace_sources)
+    assert not (tmp_path / "cache" / "S001_fake_test-model.json.tmp").exists()
+
+
 def test_baseline_written_content_hashes_relative_written_files(tmp_path: Path) -> None:
     workspace = tmp_path / "workspace"
     (workspace / "reports").mkdir(parents=True)

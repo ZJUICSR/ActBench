@@ -19,6 +19,7 @@ from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
     DEFAULT_MCP_PORT,
     ActBenchMcpGatewayProcess,
+    check_gateway_admin_health,
     check_gateway_health,
     get_gateway_context_traces,
     register_gateway_context,
@@ -340,14 +341,22 @@ class OpenCodeBackend:
                     trace_transcript = _mcp_gateway_traces_to_transcript(
                         trace_response.get("traces")
                     )
-                    if trace_transcript and not _has_actbench_tool_result(transcript):
-                        transcript.extend(trace_transcript)
+                    missing_trace_transcript = _missing_mcp_trace_transcript(
+                        transcript=transcript,
+                        trace_transcript=trace_transcript,
+                    )
+                    if trace_transcript:
                         if transcript_extraction is None:
                             transcript_extraction = {}
-                        transcript_extraction["mcp_trace_messages_appended"] = len(trace_transcript)
-                    elif trace_transcript and transcript_extraction is not None:
                         transcript_extraction["mcp_trace_messages_available"] = len(
                             trace_transcript
+                        )
+                    if missing_trace_transcript:
+                        transcript.extend(missing_trace_transcript)
+                        if transcript_extraction is None:
+                            transcript_extraction = {}
+                        transcript_extraction["mcp_trace_messages_appended"] = len(
+                            missing_trace_transcript
                         )
                 except Exception as exc:  # noqa: BLE001 - tracing must not fail the task
                     logger.warning("   Failed to retrieve ActBench MCP traces: %s", exc)
@@ -515,6 +524,18 @@ class OpenCodeBackend:
                         port=config.mcp_port,
                         timeout_seconds=1.0,
                     )
+                except Exception:
+                    self._mcp_gateway = start_gateway_subprocess(
+                        host=config.mcp_host,
+                        port=config.mcp_port,
+                        admin_token=config.mcp_admin_token,
+                    )
+                else:
+                    check_gateway_admin_health(
+                        mcp_url=config.mcp_admin_url,
+                        admin_token=config.mcp_admin_token,
+                        timeout_seconds=1.0,
+                    )
                     self._mcp_gateway = ActBenchMcpGatewayProcess(
                         process=None,
                         host=config.mcp_host,
@@ -522,14 +543,12 @@ class OpenCodeBackend:
                         mcp_url=config.mcp_admin_url,
                         admin_token=config.mcp_admin_token,
                     )
-                except Exception:
-                    self._mcp_gateway = start_gateway_subprocess(
-                        host=config.mcp_host,
-                        port=config.mcp_port,
-                        admin_token=config.mcp_admin_token,
-                    )
             else:
                 check_gateway_health(host=config.mcp_host, port=config.mcp_port)
+                check_gateway_admin_health(
+                    mcp_url=config.mcp_admin_url,
+                    admin_token=config.mcp_admin_token,
+                )
                 self._mcp_gateway = ActBenchMcpGatewayProcess(
                     process=None,
                     host=config.mcp_host,
@@ -539,7 +558,7 @@ class OpenCodeBackend:
                 )
         except Exception as exc:  # noqa: BLE001
             raise BackendInitializationError(
-                "opencode backend could not start or reach the ActBench MCP gateway at "
+                "opencode backend could not start or authenticate to the ActBench MCP gateway at "
                 f"{config.mcp_admin_url}: {exc}. Set ACTBENCH_MCP_AUTOSTART=0 for an "
                 "externally managed gateway or ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP=0 "
                 "for weak direct-workspace mode."
@@ -677,7 +696,10 @@ def _run_subprocess_with_process_group(
             terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
         except subprocess.TimeoutExpired:
             _terminate_process_group(process, signal.SIGKILL)
-            terminated_stdout, terminated_stderr = process.communicate()
+            try:
+                terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
+            except subprocess.TimeoutExpired:
+                terminated_stdout, terminated_stderr = stdout, stderr
         stdout = _coerce_text(terminated_stdout) or stdout
         stderr = _coerce_text(terminated_stderr) or stderr
         raise subprocess.TimeoutExpired(
@@ -1337,20 +1359,96 @@ def _is_sensitive_mcp_trace_key(key: str) -> bool:
 
 
 def _has_actbench_tool_result(transcript: List[Dict[str, Any]]) -> bool:
-    for entry in transcript:
-        message = entry.get("message") if isinstance(entry, dict) else None
-        if not isinstance(message, dict):
+    return bool(_actbench_tool_result_counts(transcript))
+
+
+def _missing_mcp_trace_transcript(
+    *,
+    transcript: List[Dict[str, Any]],
+    trace_transcript: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not trace_transcript:
+        return []
+    existing_counts = _actbench_tool_result_counts(transcript)
+    missing: List[Dict[str, Any]] = []
+    pending_call: Dict[str, Any] | None = None
+    for entry in trace_transcript:
+        result_signature = _actbench_tool_result_signature(entry)
+        if result_signature is None:
+            if _entry_has_actbench_tool_call(entry):
+                pending_call = entry
             continue
-        content = message.get("content") if isinstance(message.get("content"), list) else []
-        for block in content:
-            if (
-                isinstance(block, dict)
-                and block.get("type") == "toolResult"
-                and str(block.get("name") or "").startswith("actbench_")
-                and str(block.get("text") or "").strip()
-            ):
-                return True
-    return False
+        count = existing_counts.get(result_signature, 0)
+        if count > 0:
+            existing_counts[result_signature] = count - 1
+            pending_call = None
+            continue
+        if pending_call is not None:
+            missing.append(pending_call)
+        missing.append(entry)
+        pending_call = None
+    return missing
+
+
+def _actbench_tool_result_counts(
+    transcript: List[Dict[str, Any]],
+) -> Dict[Tuple[str, str, bool], int]:
+    counts: Dict[Tuple[str, str, bool], int] = {}
+    for entry in transcript:
+        signature = _actbench_tool_result_signature(entry)
+        if signature is None:
+            continue
+        counts[signature] = counts.get(signature, 0) + 1
+    return counts
+
+
+def _actbench_tool_result_signature(entry: Dict[str, Any]) -> Tuple[str, str, bool] | None:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return None
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    for block in content:
+        if not isinstance(block, dict) or block.get("type") != "toolResult":
+            continue
+        name = str(block.get("name") or "")
+        text = str(block.get("text") or "")
+        if not _is_actbench_tool_name(name) or not text.strip():
+            continue
+        return (_canonical_actbench_tool_name(name), text, _coerce_bool(block.get("isError")))
+    return None
+
+
+def _entry_has_actbench_tool_call(entry: Dict[str, Any]) -> bool:
+    message = entry.get("message") if isinstance(entry, dict) else None
+    if not isinstance(message, dict):
+        return False
+    content = message.get("content") if isinstance(message.get("content"), list) else []
+    return any(
+        isinstance(block, dict)
+        and block.get("type") == "toolCall"
+        and _is_actbench_tool_name(str(block.get("name") or ""))
+        for block in content
+    )
+
+
+def _is_actbench_tool_name(name: str) -> bool:
+    return name.startswith("actbench_") or "__actbench__actbench_" in name
+
+
+def _canonical_actbench_tool_name(name: str) -> str:
+    if "__actbench__" in name:
+        return name.rsplit("__actbench__", 1)[-1]
+    if name.startswith("actbench_actbench_"):
+        return name[len("actbench_") :]
+    return name
+
+
+def _coerce_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "on"}
+    return bool(value)
 
 
 def _effective_prompt(*, prompts: List[str], mcp_instruction: str | None) -> str:

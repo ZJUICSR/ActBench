@@ -25,6 +25,7 @@ from benchmark.backends.openclaw import OpenClawBackend  # noqa: E402
 from benchmark.backends.registry import available_backend_names, get_backend  # noqa: E402
 from benchmark.cli import _parse_args  # noqa: E402
 from benchmark.runner import run_benchmark  # noqa: E402
+from lib_reward import RewardResult  # noqa: E402
 from lib_tasks import Task  # noqa: E402
 
 
@@ -644,7 +645,7 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
                 "completion_tokens": 5,
                 "total_tokens": 15,
                 "cost": 0.125,
-                "request_count": 2,
+                "request_count": 1,
             },
         }
 
@@ -687,10 +688,10 @@ def test_qwenpaw_backend_service_success_returns_backend_compatible_result(
     assert result["backend_metadata"]["service_agent_id"] == "actbench-test-agent"
     assert result["backend_metadata"]["usage_source"] == "qwenpaw_event"
     assert result["backend_metadata"]["usage_delta_contamination_risk"] is False
-    assert result["usage"]["input_tokens"] == 10
-    assert result["usage"]["output_tokens"] == 5
-    assert result["usage"]["total_tokens"] == 15
-    assert result["usage"]["cost_usd"] == 0.125
+    assert result["usage"]["input_tokens"] == 20
+    assert result["usage"]["output_tokens"] == 10
+    assert result["usage"]["total_tokens"] == 30
+    assert result["usage"]["cost_usd"] == 0.25
     assert result["usage"]["request_count"] == 2
     assert result["transcript"][1]["message"]["content"][0]["type"] == "toolCall"
     assert [call["prompt"] for call in process_calls] == ["first", "second"]
@@ -1003,12 +1004,25 @@ def test_qwenpaw_usage_parsing_accepts_nested_and_aggregate_shapes() -> None:
         _normalize_qwenpaw_usage,
         _qwenpaw_usage_rows,
         _sum_usage_rows,
+        _usage_row_matches_model,
     )
 
     assert _event_usage({"metadata": {"usage": {"prompt_tokens": 1}}}) == {"prompt_tokens": 1}
     assert _event_usage({"output": [{"usage": {"completion_tokens": 2}}]}) == {
         "completion_tokens": 2
     }
+    combined = _event_usage(
+        {
+            "output": [
+                {"usage": {"prompt_tokens": 1, "total_tokens": 1}},
+                {"usage": {"completion_tokens": 2, "total_tokens": 2}},
+            ]
+        }
+    )
+    assert combined is not None
+    assert combined["input_tokens"] == 1
+    assert combined["output_tokens"] == 2
+    assert combined["total_tokens"] == 3
     normalized = _normalize_qwenpaw_usage(
         {"inputTokens": "3", "outputTokens": "4", "totalTokens": "7", "callCount": "2"},
         request_count=1,
@@ -1031,11 +1045,86 @@ def test_qwenpaw_usage_parsing_accepts_nested_and_aggregate_shapes() -> None:
             }
         }
     )
+    assert _usage_row_matches_model(rows[0], provider_id="test", model="model")
+    assert not _usage_row_matches_model(
+        {"model_key": "other/model", "prompt_tokens": 99}, provider_id="test", model="model"
+    )
     summed = _sum_usage_rows(rows)
     assert summed["input_tokens"] == 10
     assert summed["output_tokens"] == 5
     assert summed["total_tokens"] == 15
     assert summed["request_count"] == 1
+
+    nested_rows = _qwenpaw_usage_rows(
+        {"by_model": {}, "data": [{"model": "model", "prompt_tokens": 3, "completion_tokens": 4}]}
+    )
+    assert nested_rows == [{"model": "model", "prompt_tokens": 3, "completion_tokens": 4}]
+
+
+class _FakeSseResponse:
+    def __init__(self, lines: list[str]) -> None:
+        self._lines = lines
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        return None
+
+    def __iter__(self):
+        return iter(line.encode("utf-8") for line in self._lines)
+
+
+def test_qwenpaw_sse_keeps_early_text_and_usage(monkeypatch: pytest.MonkeyPatch) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import _event_usage, _extract_output_text, _post_sse_json
+
+    lines = [
+        f"data: {json.dumps({'text': 'early '})}\n",
+        f"data: {json.dumps({'usage': {'prompt_tokens': 2, 'total_tokens': 2}})}\n",
+        f"data: {json.dumps({'usage': {'completion_tokens': 3, 'total_tokens': 3}})}\n",
+        f"data: {json.dumps({'status': 'done'})}\n",
+    ]
+    monkeypatch.setattr(
+        qwenpaw_module.urllib.request,
+        "urlopen",
+        lambda *args, **kwargs: _FakeSseResponse(lines),
+    )
+
+    event = _post_sse_json(
+        "http://qwenpaw.test/api/agent/process",
+        timeout_seconds=10.0,
+        api_key=None,
+        payload={"task": "hello"},
+    )
+
+    assert _extract_output_text(event) == "early "
+    usage = _event_usage(event)
+    assert usage is not None
+    assert usage["input_tokens"] == 2
+    assert usage["output_tokens"] == 3
+    assert usage["total_tokens"] == 5
+
+
+def test_qwenpaw_sse_enforces_total_deadline(monkeypatch: pytest.MonkeyPatch) -> None:
+    import benchmark.backends.qwenpaw as qwenpaw_module
+    from benchmark.backends.qwenpaw import QwenPawTimeoutError, _post_sse_json
+
+    monotonic_values = iter([0.0, 0.5, 1.1])
+    monkeypatch.setattr(qwenpaw_module.time, "monotonic", lambda: next(monotonic_values))
+    monkeypatch.setattr(
+        qwenpaw_module.urllib.request,
+        "urlopen",
+        lambda *args, **kwargs: _FakeSseResponse([f"data: {json.dumps({'text': 'still running'})}\n"]),
+    )
+
+    with pytest.raises(QwenPawTimeoutError):
+        _post_sse_json(
+            "http://qwenpaw.test/api/agent/process",
+            timeout_seconds=1.0,
+            api_key=None,
+            payload={"task": "hello"},
+        )
 
 
 def test_qwenpaw_backend_create_agent_payload_uses_workspace_and_model(
@@ -1189,6 +1278,48 @@ def test_qwenpaw_backend_falls_back_when_history_fetch_fails(
     assert result["transcript"][0]["message"]["role"] == "user"
     assert result["transcript"][1]["message"]["content"] == [
         {"type": "text", "text": "fallback answer"}
+    ]
+
+
+def test_qwenpaw_process_fallback_preserves_prompt_output_alignment(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.qwenpaw import QwenPawBackend, QwenPawRequestError
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+
+    def fake_process(**kwargs):
+        if kwargs["prompt"] == "first":
+            return {"output": []}
+        return {"output": [{"content": [{"type": "text", "text": "second answer"}]}]}
+
+    monkeypatch.setattr(backend, "_post_agent_process", fake_process)
+    monkeypatch.setattr(
+        backend,
+        "_fetch_chat_history_messages",
+        lambda **kwargs: (_ for _ in ()).throw(QwenPawRequestError("history unavailable")),
+    )
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+    context = _context(tmp_path, backend="qwenpaw")
+    task = _task(frontmatter={"sessions": ["first", "second"]})
+
+    backend.initialize_run(context)
+    result = backend.execute_task(task=task, context=context, attempt_run_id="run_001-1")
+
+    assert result["status"] == "success"
+    assert [entry["message"]["role"] for entry in result["transcript"]] == [
+        "user",
+        "user",
+        "assistant",
+    ]
+    assert result["transcript"][0]["message"]["content"] == ["first"]
+    assert result["transcript"][1]["message"]["content"] == ["second"]
+    assert result["transcript"][2]["message"]["content"] == [
+        {"type": "text", "text": "second answer"}
     ]
 
 
@@ -2531,6 +2662,28 @@ def test_claudecode_mcp_registers_context_writes_config_and_appends_traces(
     assert "should-not-leak" not in result_text
 
 
+def test_opencode_mcp_missing_trace_recovery_keeps_existing_results() -> None:
+    from benchmark.backends.opencode import (
+        _mcp_gateway_traces_to_transcript,
+        _missing_mcp_trace_transcript,
+    )
+
+    trace_transcript = _mcp_gateway_traces_to_transcript(
+        [
+            {"sequence": 1, "name": "actbench_read_file", "result": {"text": "already there"}},
+            {"sequence": 2, "name": "actbench_write_file", "result": {"text": "missing"}},
+        ]
+    )
+    existing = [trace_transcript[1]]
+
+    missing = _missing_mcp_trace_transcript(
+        transcript=existing,
+        trace_transcript=trace_transcript,
+    )
+
+    assert missing == trace_transcript[2:]
+
+
 def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -2545,6 +2698,7 @@ def test_opencode_mcp_registers_context_and_prepends_prompt_instruction(
     monkeypatch.setattr(opencode_module.shutil, "which", lambda _: "/usr/bin/opencode")
     monkeypatch.setattr(opencode_module.secrets, "token_urlsafe", lambda _: "ctx-123")
     monkeypatch.setattr(opencode_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(opencode_module, "check_gateway_admin_health", lambda **kwargs: None)
     registered: list[dict] = []
     unregistered: list[dict] = []
     monkeypatch.setattr(
@@ -2685,8 +2839,14 @@ def test_hermes_mcp_initialize_checks_external_gateway(
     monkeypatch.setenv("ACTBENCH_MCP_AUTOSTART", "0")
     monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
     checked: list[dict] = []
+    admin_checked: list[dict] = []
     monkeypatch.setattr(
         hermes_module, "check_gateway_health", lambda **kwargs: checked.append(kwargs)
+    )
+    monkeypatch.setattr(
+        hermes_module,
+        "check_gateway_admin_health",
+        lambda **kwargs: admin_checked.append(kwargs),
     )
     monkeypatch.setattr(
         hermes_module,
@@ -2698,6 +2858,7 @@ def test_hermes_mcp_initialize_checks_external_gateway(
     backend.initialize_run(_context(tmp_path, backend="hermes"))
 
     assert checked == [{"host": "127.0.0.1", "port": 8765}]
+    assert admin_checked == [{"mcp_url": "http://127.0.0.1:8765/mcp", "admin_token": None}]
     assert backend._mcp_gateway is not None
     assert backend._mcp_gateway.process is None
 
@@ -2716,6 +2877,7 @@ def test_hermes_mcp_registers_context_and_prepends_prompt_instruction(
     monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
     monkeypatch.setattr(hermes_module.secrets, "token_urlsafe", lambda _: "ctx-123")
     monkeypatch.setattr(hermes_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(hermes_module, "check_gateway_admin_health", lambda **kwargs: None)
     registered: list[dict] = []
     unregistered: list[dict] = []
     monkeypatch.setattr(
@@ -2727,6 +2889,11 @@ def test_hermes_mcp_registers_context_and_prepends_prompt_instruction(
         hermes_module,
         "unregister_gateway_context",
         lambda **kwargs: unregistered.append(kwargs) or {"status": "ok", "removed": True},
+    )
+    monkeypatch.setattr(
+        hermes_module,
+        "get_gateway_context_traces",
+        lambda **kwargs: {"status": "ok", "traces": []},
     )
     prompts: list[str] = []
     backend = HermesBackend()
@@ -2777,6 +2944,7 @@ def test_hermes_mcp_unregisters_on_subprocess_error(
     monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
     monkeypatch.setattr(hermes_module.secrets, "token_urlsafe", lambda _: "ctx-error")
     monkeypatch.setattr(hermes_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(hermes_module, "check_gateway_admin_health", lambda **kwargs: None)
     monkeypatch.setattr(
         hermes_module, "register_gateway_context", lambda **kwargs: {"status": "ok"}
     )
@@ -2785,6 +2953,11 @@ def test_hermes_mcp_unregisters_on_subprocess_error(
         hermes_module,
         "unregister_gateway_context",
         lambda **kwargs: unregistered.append(kwargs) or {"status": "ok", "removed": True},
+    )
+    monkeypatch.setattr(
+        hermes_module,
+        "get_gateway_context_traces",
+        lambda **kwargs: {"status": "ok", "traces": []},
     )
     backend = HermesBackend()
     monkeypatch.setattr(
@@ -2821,11 +2994,17 @@ def test_hermes_mcp_result_endpoints_are_sanitized_when_services_declared(
     monkeypatch.setenv("ACTBENCH_MCP_AUTOSTART", "0")
     monkeypatch.setattr(hermes_module.shutil, "which", lambda _: "/usr/bin/hermes")
     monkeypatch.setattr(hermes_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(hermes_module, "check_gateway_admin_health", lambda **kwargs: None)
     monkeypatch.setattr(
         hermes_module, "register_gateway_context", lambda **kwargs: {"status": "ok"}
     )
     monkeypatch.setattr(
         hermes_module, "unregister_gateway_context", lambda **kwargs: {"status": "ok"}
+    )
+    monkeypatch.setattr(
+        hermes_module,
+        "get_gateway_context_traces",
+        lambda **kwargs: {"status": "ok", "traces": []},
     )
     backend = HermesBackend()
     monkeypatch.setattr(
@@ -2914,10 +3093,16 @@ def test_openagent_mcp_initialize_checks_external_gateway(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     checked: list[dict] = []
+    admin_checked: list[dict] = []
     monkeypatch.setattr(
         openagent_module,
         "check_gateway_health",
         lambda **kwargs: checked.append(kwargs),
+    )
+    monkeypatch.setattr(
+        openagent_module,
+        "check_gateway_admin_health",
+        lambda **kwargs: admin_checked.append(kwargs),
     )
     monkeypatch.setattr(
         openagent_module,
@@ -2928,8 +3113,45 @@ def test_openagent_mcp_initialize_checks_external_gateway(
     backend.initialize_run(_context(tmp_path, backend="openagent"))
 
     assert checked == [{"host": "127.0.0.1", "port": 8765}]
+    assert admin_checked == [{"mcp_url": "http://127.0.0.1:8765/mcp", "admin_token": None}]
     assert backend._mcp_gateway is not None
     assert backend._mcp_gateway.process is None
+
+
+def test_openagent_transcript_normalizes_openai_tool_calls() -> None:
+    from benchmark.backends.openagent import _transcript_from_openai_message
+
+    entry = _transcript_from_openai_message(
+        {
+            "role": "assistant",
+            "content": "I will read it.",
+            "tool_calls": [
+                {
+                    "id": "call_1",
+                    "function": {
+                        "name": "actbench_read_file",
+                        "arguments": '{"path": "README.md"}',
+                    },
+                }
+            ],
+        }
+    )
+    blocks = entry["message"]["content"]
+
+    assert blocks[0] == {"type": "text", "text": "I will read it."}
+    assert blocks[1] == {
+        "type": "toolCall",
+        "name": "actbench_read_file",
+        "arguments": {"path": "README.md"},
+        "id": "call_1",
+    }
+
+    function_entry = _transcript_from_openai_message(
+        {"role": "assistant", "function_call": {"name": "actbench_list_files", "arguments": "raw"}}
+    )
+    assert function_entry["message"]["content"] == [
+        {"type": "toolCall", "name": "actbench_list_files", "arguments": {"raw": "raw"}}
+    ]
 
 
 def test_openagent_mcp_result_endpoints_are_sanitized_when_services_declared(
@@ -2944,6 +3166,7 @@ def test_openagent_mcp_result_endpoints_are_sanitized_when_services_declared(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     monkeypatch.setattr(openagent_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(openagent_module, "check_gateway_admin_health", lambda **kwargs: None)
     monkeypatch.setattr(
         openagent_module, "register_gateway_context", lambda **kwargs: {"status": "ok"}
     )
@@ -3001,6 +3224,7 @@ def test_openagent_mcp_registers_context_and_prepends_system_message(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     monkeypatch.setattr(openagent_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(openagent_module, "check_gateway_admin_health", lambda **kwargs: None)
     registered: list[dict] = []
     unregistered: list[dict] = []
     monkeypatch.setattr(
@@ -3074,6 +3298,7 @@ def test_openagent_mcp_appends_gateway_traces_to_transcript(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     monkeypatch.setattr(openagent_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(openagent_module, "check_gateway_admin_health", lambda **kwargs: None)
     events: list[str] = []
     trace_calls: list[dict] = []
     monkeypatch.setattr(
@@ -3193,6 +3418,7 @@ def test_openagent_mcp_trace_retrieval_failure_does_not_fail_task(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     monkeypatch.setattr(openagent_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(openagent_module, "check_gateway_admin_health", lambda **kwargs: None)
     monkeypatch.setattr(
         openagent_module, "register_gateway_context", lambda **kwargs: {"status": "ok"}
     )
@@ -3241,6 +3467,7 @@ def test_openagent_mcp_unregisters_on_request_error(
     backend = OpenAgentBackend()
     monkeypatch.setattr(backend, "_check_health", lambda config: None)
     monkeypatch.setattr(openagent_module, "check_gateway_health", lambda **kwargs: None)
+    monkeypatch.setattr(openagent_module, "check_gateway_admin_health", lambda **kwargs: None)
     monkeypatch.setattr(
         openagent_module, "register_gateway_context", lambda **kwargs: {"status": "ok"}
     )
@@ -3429,7 +3656,13 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
     def fake_evaluate_attack_for_task(*, execution_result, **kwargs):
         if execution_result["backend_metadata"]["run_index"] == 2:
             raise RuntimeError("judge exploded")
-        return None
+        return RewardResult(
+            score=0.25,
+            attack_success=0.25,
+            stealth=0.0,
+            defense_score=0.75,
+            is_success=False,
+        )
 
     monkeypatch.setattr(runner_module, "_evaluate_attack_for_task", fake_evaluate_attack_for_task)
 
@@ -3460,6 +3693,10 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
     assert "judge exploded" in failed["agent_feedback"]["stderr"]
     assert entries[0]["status"] == "success"
     assert entries[2]["status"] == "success"
+    assert failed["repeat_count"] == 3
+    assert failed["valid_repeat_count"] == 2
+    assert failed["attack_eval"]["evaluation_error_count"] == 1
+    assert [run.get("evaluation_error") for run in failed["attack_eval"]["runs"]] == [False, True, False]
 
 
 def test_run_benchmark_openclaw_parallel_repeats_use_lanes(
@@ -3840,6 +4077,94 @@ def test_run_benchmark_rejects_unsupported_parallel_backend(
         )
 
     assert exc_info.value.code == 2
+
+
+def test_run_benchmark_clamps_workers_before_parallel_support_check(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
+    class UnsupportedBackend(FakeBackend):
+        name = "unsupported"
+        supports_parallel_runs = False
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    monkeypatch.setattr(runner_module, "get_backend", lambda name: UnsupportedBackend())
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="unsupported",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=1,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["run_workers"] == 1
+    assert payload["requested_run_workers"] == 2
+    assert payload["tasks"][0]["backend_metadata"]["run_workers"] == 1
+
+
+def test_run_benchmark_baseline_context_uses_baseline_repeat_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    captured_metadata: list[dict] = []
+
+    def fake_pregenerate_baselines(**kwargs):
+        baseline_context = kwargs["context_factory"](
+            kwargs["tasks"][0],
+            "S001",
+            "run_bl_S001",
+            0,
+        )
+        captured_metadata.append(baseline_context.metadata)
+
+    monkeypatch.setattr(runner_module, "_pregenerate_baselines", fake_pregenerate_baselines)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=False,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    assert captured_metadata[0]["runs_per_task"] == 1
+    assert captured_metadata[0]["run_workers"] == 1
+    assert captured_metadata[0]["run_worker_id"] == 1
+    assert captured_metadata[0]["baseline"] is True
+    assert captured_metadata[0]["baseline_index"] == 1
 
 
 @pytest.mark.parametrize("run_workers", [0, -1])

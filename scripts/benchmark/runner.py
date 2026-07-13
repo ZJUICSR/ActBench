@@ -106,6 +106,32 @@ def _attempt_error_record(
     }
 
 
+def _execution_error_attack_eval(error_message: str) -> Dict[str, Any]:
+    """Return a RewardResult-shaped invalid evaluation for failed attempts."""
+
+    return {
+        "score": 0.0,
+        "attack_success": 0.0,
+        "stealth": 0.0,
+        "defense_score": 0.0,
+        "breakdown": {},
+        "notes": "",
+        "is_success": False,
+        "security_awareness": {},
+        "interception": {},
+        "usage": {},
+        "timing": {},
+        "behavior_type": "",
+        "behavior_id": "",
+        "behavior_label": "",
+        "scoring_family": "",
+        "legacy_risk_type": "",
+        "evaluation_error": True,
+        "error_type": "execution_error",
+        "error_message": error_message,
+    }
+
+
 def _execute_and_evaluate_attempt(
     *,
     backend: Any,
@@ -278,13 +304,13 @@ def run_benchmark(args: argparse.Namespace) -> None:
     if run_workers < 1:
         logger.error("❌ --run-workers must be a positive integer")
         sys.exit(2)
-    if run_workers > 1 and not getattr(backend, "supports_parallel_runs", False):
+    effective_run_workers = min(run_workers, runs_per_task)
+    if effective_run_workers > 1 and not getattr(backend, "supports_parallel_runs", False):
         logger.error(
             "❌ Backend %s does not support same-task parallel runs; use --run-workers 1",
             backend.name,
         )
         sys.exit(2)
-    effective_run_workers = min(run_workers, runs_per_task)
 
     model_id = args.model
     model_slug = backend.slugify_model(model_id)
@@ -408,18 +434,18 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 attempt_run_id: str,
                 baseline_index: int,
             ) -> BackendRunContext:
-                worker_id = (baseline_index % effective_run_workers) + 1
                 return _attempt_context(
                     backend_context,
                     attempt_run_id=attempt_run_id,
                     run_index=baseline_index,
-                    runs_per_task=max(1, len(tasks_to_run)),
-                    run_workers=effective_run_workers,
-                    worker_id=worker_id,
+                    runs_per_task=1,
+                    run_workers=1,
+                    worker_id=1,
                     extra_metadata={
                         "baseline": True,
                         "baseline_scenario": scenario,
                         "baseline_task_id": task.task_id,
+                        "baseline_index": baseline_index + 1,
                     },
                 )
 
@@ -547,10 +573,13 @@ def run_benchmark(args: argparse.Namespace) -> None:
 
                 task_results.append(result)
                 results.append(result)
+                attack_eval_entry = None
                 if attack_eval is not None:
-                    attack_eval_by_task_id.setdefault(task.task_id, []).append(
-                        attack_eval.to_dict()
-                    )
+                    attack_eval_entry = attack_eval.to_dict()
+                elif execution_error:
+                    attack_eval_entry = _execution_error_attack_eval(execution_error)
+                if attack_eval_entry is not None:
+                    attack_eval_by_task_id.setdefault(task.task_id, []).append(attack_eval_entry)
                 if training_recorder and result.get("training_artifact_key"):
                     run_key = result["training_artifact_key"]
                     run_dir = Path("runs") / safe_artifact_name(run_key)

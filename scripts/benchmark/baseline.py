@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import hashlib
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -361,11 +362,21 @@ def _generate_baseline_for_task(
         "execution_time": result.get("execution_time"),
     }
 
+    tmp_path: Path | None = None
     try:
         BASELINE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        tmp_path = cache_path.with_suffix(".json.tmp")
-        tmp_path.write_text(json.dumps(baseline, indent=2, ensure_ascii=False), encoding="utf-8")
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            delete=False,
+            dir=cache_path.parent,
+            prefix=f".{cache_path.name}.",
+            suffix=".tmp",
+        ) as tmp_file:
+            tmp_file.write(json.dumps(baseline, indent=2, ensure_ascii=False))
+            tmp_path = Path(tmp_file.name)
         os.replace(tmp_path, cache_path)
+        tmp_path = None
         logger.info(
             "Baseline cached for %s (%d read, %d written) → %s",
             scenario,
@@ -375,6 +386,12 @@ def _generate_baseline_for_task(
         )
     except OSError as exc:
         logger.warning("Failed to write baseline cache for %s: %s", scenario, exc)
+    finally:
+        if tmp_path is not None:
+            try:
+                tmp_path.unlink(missing_ok=True)
+            except OSError:
+                pass
 
     return baseline
 

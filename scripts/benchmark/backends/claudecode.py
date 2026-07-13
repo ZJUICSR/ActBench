@@ -702,7 +702,10 @@ def _run_subprocess_with_process_group(
             terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
         except subprocess.TimeoutExpired:
             _terminate_process_group(process, signal.SIGKILL)
-            terminated_stdout, terminated_stderr = process.communicate()
+            try:
+                terminated_stdout, terminated_stderr = process.communicate(timeout=2.0)
+            except subprocess.TimeoutExpired:
+                terminated_stdout, terminated_stderr = stdout, stderr
         stdout = _coerce_text(terminated_stdout) or stdout
         stderr = _coerce_text(terminated_stderr) or stderr
         raise subprocess.TimeoutExpired(
