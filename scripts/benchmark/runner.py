@@ -19,9 +19,14 @@ from lib_reward import ATTACK_SUCCESS_THRESHOLD, REWARD_JUDGE_MODEL
 from lib_gateway_lock import acquire as _gw_acquire, release as _gw_release
 from lib_tasks import Task, TaskLoader
 from lib_taxonomy import infer_behavior_from_metadata
-from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, safe_artifact_name
+from lib_training_artifacts import (
+    TrainingArtifactRecorder,
+    activate_recorder,
+    get_current_recorder,
+    safe_artifact_name,
+)
 
-from benchmark.backends.base import BackendInitializationError, BackendRunContext, backend_metadata
+from benchmark.backends.base import BackendInitializationError, BackendRunContext
 from benchmark.backends.common import execution_error_result
 from benchmark.backends.registry import get_backend
 from benchmark.baseline import _load_baseline_for_task, _pregenerate_baselines, _scene_for_task
@@ -35,6 +40,7 @@ from benchmark.metrics import (
     build_attack_summary,
 )
 from benchmark.task_loading import _build_scene_index, select_task_files_for_suite
+from benchmark.trajectories import persist_trajectory
 from benchmark.ui import _colorize_gradient, _get_git_version, _load_ascii_art, _next_run_id
 
 logger = logging.getLogger("benchmark")
@@ -103,10 +109,49 @@ def _attempt_error_record(
         ),
         "attack_eval": None,
         "execution_error": stderr,
+        "evaluation_error": None,
     }
 
 
-def _execution_error_attack_eval(error_message: str) -> Dict[str, Any]:
+def _persist_trajectory_before_scoring(
+    *,
+    backend: Any,
+    task: Task,
+    result: Dict[str, Any],
+    context: BackendRunContext,
+    scene_index: Dict[str, Dict[str, Any]],
+    model: str,
+    judge_model: Optional[str],
+) -> None:
+    """Best-effort trajectory write before inline scoring begins."""
+
+    recorder = get_current_recorder()
+    if recorder is None:
+        return
+    try:
+        path = persist_trajectory(
+            recorder=recorder,
+            task=task,
+            execution_result=result,
+            context=context,
+            scene_index=scene_index,
+            model=model,
+            judge_model=judge_model,
+        )
+        logger.info("Wrote %s trajectory artifact: %s", getattr(backend, "name", "backend"), path)
+    except Exception as exc:  # pragma: no cover - artifact failure should not change scoring
+        logger.warning(
+            "Failed to write trajectory for %s via %s: %s",
+            task.task_id,
+            getattr(backend, "name", "backend"),
+            exc,
+        )
+
+
+_persist_openclaw_trajectory_before_scoring = _persist_trajectory_before_scoring
+
+
+def _invalid_attack_eval(error_message: str, *, error_type: str) -> Dict[str, Any]:
     """Return a RewardResult-shaped invalid evaluation for failed attempts."""
 
     return {
@@ -127,9 +172,17 @@ def _execution_error_attack_eval(error_message: str) -> Dict[str, Any]:
         "scoring_family": "",
         "legacy_risk_type": "",
         "evaluation_error": True,
-        "error_type": "execution_error",
+        "error_type": error_type,
         "error_message": error_message,
     }
+
+
+def _execution_error_attack_eval(error_message: str) -> Dict[str, Any]:
+    return _invalid_attack_eval(error_message, error_type="execution_error")
+
+
+def _evaluation_error_attack_eval(error_message: str) -> Dict[str, Any]:
+    return _invalid_attack_eval(error_message, error_type="evaluation_error")
 
 
 def _execute_and_evaluate_attempt(
@@ -166,6 +219,7 @@ def _execute_and_evaluate_attempt(
     )
     logger.info("%s", "=" * 80)
     execution_error = None
+    evaluation_error = None
     try:
         result = backend.execute_task(
             task=task,
@@ -180,20 +234,35 @@ def _execute_and_evaluate_attempt(
             task=task,
             stderr=execution_error,
         )
-    attack_eval = _evaluate_attack_for_task(
+    _persist_trajectory_before_scoring(
+        backend=backend,
         task=task,
-        execution_result=result,
+        result=result,
+        context=attempt_context,
         scene_index=scene_index,
         model=model,
         judge_model=judge_model,
-        verbose=verbose,
-        backend_name=backend.name,
     )
+    try:
+        attack_eval = _evaluate_attack_for_task(
+            task=task,
+            execution_result=result,
+            scene_index=scene_index,
+            model=model,
+            judge_model=judge_model,
+            verbose=verbose,
+            backend_name=backend.name,
+        )
+    except Exception as exc:  # noqa: BLE001 - keep execution artifacts linked to failed scoring
+        evaluation_error = str(exc)
+        logger.warning("Attack evaluation failed for %s, continuing: %s", task.task_id, exc)
+        attack_eval = None
     return {
         "run_index": run_index,
         "result": result,
         "attack_eval": attack_eval,
         "execution_error": execution_error,
+        "evaluation_error": evaluation_error,
     }
 
 
@@ -202,6 +271,7 @@ def _log_attempt_outcome(
     task: Task,
     attack_eval: Any,
     execution_error: Optional[str],
+    evaluation_error: Optional[str] = None,
 ) -> None:
     if attack_eval is not None:
         attack_emoji = (
@@ -238,6 +308,8 @@ def _log_attempt_outcome(
             logger.info("   Notes: %s", attack_eval.notes[:200])
     elif execution_error:
         logger.warning("❌ Task %s: execution failed: %s", task.task_id, execution_error[:200])
+    elif evaluation_error:
+        logger.warning("❌ Task %s: evaluation failed: %s", task.task_id, evaluation_error[:200])
 
 
 def run_benchmark(args: argparse.Namespace) -> None:
@@ -570,6 +642,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 result = attempt_record["result"]
                 attack_eval = attempt_record["attack_eval"]
                 execution_error = attempt_record["execution_error"]
+                evaluation_error = attempt_record.get("evaluation_error")
 
                 task_results.append(result)
                 results.append(result)
@@ -578,6 +651,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     attack_eval_entry = attack_eval.to_dict()
                 elif execution_error:
                     attack_eval_entry = _execution_error_attack_eval(execution_error)
+                elif evaluation_error:
+                    attack_eval_entry = _evaluation_error_attack_eval(evaluation_error)
                 if attack_eval_entry is not None:
                     attack_eval_by_task_id.setdefault(task.task_id, []).append(attack_eval_entry)
                 if training_recorder and result.get("training_artifact_key"):
@@ -591,7 +666,14 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         (
                             attack_eval.to_dict()
                             if attack_eval is not None
-                            else {"error": execution_error}
+                            else {
+                                "error": execution_error or evaluation_error,
+                                "error_type": (
+                                    "execution_error"
+                                    if execution_error
+                                    else "evaluation_error" if evaluation_error else "missing_evaluation"
+                                ),
+                            }
                         ),
                     )
 
@@ -599,6 +681,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     task=task,
                     attack_eval=attack_eval,
                     execution_error=execution_error,
+                    evaluation_error=evaluation_error,
                 )
 
             # Build grading from attack_eval (defense = 1 - attack)

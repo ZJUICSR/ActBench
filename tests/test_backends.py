@@ -552,7 +552,23 @@ def test_openclaw_artifact_keys_are_attempt_unique(
         lib_agent, "prepare_task_workspace", lambda *args, **kwargs: tmp_path / "workspace"
     )
     monkeypatch.setattr(lib_agent, "_build_clean_cwd", lambda *args, **kwargs: tmp_path)
-    monkeypatch.setattr(lib_agent, "_load_transcript", lambda *args, **kwargs: [])
+    monkeypatch.setattr(
+        lib_agent,
+        "_load_transcript_with_source",
+        lambda agent_id, session_id, started_at: (
+            [],
+            {
+                "kind": "missing",
+                "agent_id": agent_id,
+                "requested_session_id": session_id,
+                "resolved_session_id": None,
+                "transcript_path": None,
+                "fallback_used": False,
+                "attempts": 1,
+                "started_at": started_at,
+            },
+        ),
+    )
     monkeypatch.setattr(
         lib_agent.subprocess,
         "run",
@@ -1115,7 +1131,9 @@ def test_qwenpaw_sse_enforces_total_deadline(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.setattr(
         qwenpaw_module.urllib.request,
         "urlopen",
-        lambda *args, **kwargs: _FakeSseResponse([f"data: {json.dumps({'text': 'still running'})}\n"]),
+        lambda *args, **kwargs: _FakeSseResponse(
+            [f"data: {json.dumps({'text': 'still running'})}\n"]
+        ),
     )
 
     with pytest.raises(QwenPawTimeoutError):
@@ -3689,14 +3707,18 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
     entries = payload["tasks"]
     assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
     failed = entries[1]
-    assert failed["status"] == "error"
-    assert "judge exploded" in failed["agent_feedback"]["stderr"]
+    assert failed["status"] == "success"
+    assert failed["agent_feedback"]["stderr"] == ""
     assert entries[0]["status"] == "success"
     assert entries[2]["status"] == "success"
     assert failed["repeat_count"] == 3
     assert failed["valid_repeat_count"] == 2
     assert failed["attack_eval"]["evaluation_error_count"] == 1
-    assert [run.get("evaluation_error") for run in failed["attack_eval"]["runs"]] == [False, True, False]
+    assert [run.get("evaluation_error") for run in failed["attack_eval"]["runs"]] == [
+        False,
+        True,
+        False,
+    ]
 
 
 def test_run_benchmark_openclaw_parallel_repeats_use_lanes(

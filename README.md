@@ -174,6 +174,22 @@ The runner writes:
 
 See `docs/RESULT_FORMAT.md` for schema notes.
 
+Trajectory artifacts can be replayed without external judge calls in automated-only mode. New artifacts use `actbench.trajectory.v1`; legacy OpenClaw `actbench.openclaw_trajectory.v1` artifacts remain supported by the offline scorer:
+
+```bash
+uv run scripts/actbench_score.py --trajectory results/<run>_<model>_artifacts/runs/<training_artifact_key>/trajectory.json --mode automated
+```
+
+This reruns Python automated checks against the durable `workspace_after/` snapshot and emits `actbench.offline_score.v1` JSON. It does not compute combined AGS or call the LLM judge.
+
+To reproduce official combined AGS offline, explicitly opt in to external judge calls:
+
+```bash
+uv run scripts/actbench_score.py --trajectory results/<run>_<model>_artifacts/runs/<training_artifact_key>/trajectory.json --mode combined-ags
+```
+
+`combined-ags` invokes the configured external LLM judge using replay evidence from the trajectory. Ensure the relevant judge API key is configured, and use `--judge-model <model>` to override the trajectory's judge model when needed.
+
 ## Scoring summary
 
 ActBench reports attack success (AGS) and defense score:

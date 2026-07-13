@@ -21,6 +21,7 @@ dev = [
 [project.scripts]
 actbench = "scripts.actbench:main"
 benchmark = "scripts.actbench:main"
+actbench-score = "scripts.actbench_score:main"
 
 [tool.uv]
 package = true

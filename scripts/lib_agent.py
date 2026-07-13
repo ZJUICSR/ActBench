@@ -472,8 +472,13 @@ def _resolve_session_id_from_store(
     return None
 
 
-def _find_transcript_path_from_sessions_store(agent_id: str) -> Optional[Path]:
-    """Best-effort transcript path resolution from sessions.json payload values."""
+def _find_transcript_path_from_sessions_store(
+    agent_id: str,
+    *,
+    requested_session_id: str | None = None,
+    resolved_session_id: str | None = None,
+) -> Optional[Path]:
+    """Best-effort transcript path resolution from scoped sessions.json values."""
     agent_dir = _get_agent_store_dir(agent_id)
     sessions_store = agent_dir / "sessions" / "sessions.json"
     if not sessions_store.exists():
@@ -495,16 +500,49 @@ def _find_transcript_path_from_sessions_store(agent_id: str) -> Optional[Path]:
             for value in node:
                 yield from _iter_strings(value)
 
+    normalized_id = agent_id.replace(":", "-").lower()
+    scoped_entries: List[Any] = []
+    seen_keys: set[str] = set()
+    preferred_keys: List[str] = []
+    if requested_session_id:
+        preferred_keys.extend(
+            [
+                f"agent:{agent_id}:explicit:{requested_session_id}",
+                f"agent:{normalized_id}:explicit:{requested_session_id}",
+            ]
+        )
+    preferred_keys.extend(
+        [
+            f"agent:{agent_id}:main",
+            f"agent:{agent_id}:default",
+            f"agent:{normalized_id}:main",
+            f"agent:{normalized_id}:default",
+        ]
+    )
+    for key in preferred_keys:
+        entry = payload.get(key)
+        if isinstance(entry, dict):
+            scoped_entries.append(entry)
+            seen_keys.add(key)
+
+    target_session_ids = {value for value in (requested_session_id, resolved_session_id) if value}
+    for key, entry in payload.items():
+        if key in seen_keys or not isinstance(entry, dict):
+            continue
+        if entry.get("sessionId") in target_session_ids:
+            scoped_entries.append(entry)
+
     suffixes = (".jsonl", ".ndjson")
     session_root = agent_dir / "sessions"
-    for value in _iter_strings(payload):
-        if not value.endswith(suffixes):
-            continue
-        candidate = Path(value)
-        if not candidate.is_absolute():
-            candidate = session_root / value
-        if candidate.exists():
-            return candidate
+    for entry in scoped_entries:
+        for value in _iter_strings(entry):
+            if not value.endswith(suffixes):
+                continue
+            candidate = Path(value)
+            if not candidate.is_absolute():
+                candidate = session_root / value
+            if candidate.exists() and candidate.is_file():
+                return candidate
     return None
 
 
@@ -512,29 +550,93 @@ def _find_recent_session_path(agent_dir: Path, started_at: float) -> Path | None
     sessions_dir = agent_dir / "sessions"
     if not sessions_dir.exists():
         return None
-    candidates = list(sessions_dir.rglob("*.jsonl")) + list(sessions_dir.rglob("*.ndjson"))
+    candidates: List[tuple[Path, float]] = []
+    for pattern in ("*.jsonl", "*.ndjson"):
+        for path in sessions_dir.rglob(pattern):
+            try:
+                candidates.append((path, path.stat().st_mtime))
+            except OSError:
+                continue
     if not candidates:
         return None
     tolerance_seconds = 5.0
     recent_candidates = [
-        path for path in candidates if path.stat().st_mtime >= (started_at - tolerance_seconds)
+        item for item in candidates if item[1] >= (started_at - tolerance_seconds)
     ]
     pool = recent_candidates or candidates
-    return max(pool, key=lambda path: path.stat().st_mtime)
+    return max(pool, key=lambda item: item[1])[0]
 
 
-def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[Dict[str, Any]]:
+def _session_id_from_transcript_path(path: Path) -> str | None:
+    if path.name in {"transcript.jsonl", "events.jsonl"} and path.parent.name:
+        return path.parent.name
+    if path.suffix in {".jsonl", ".ndjson"}:
+        return path.stem
+    return None
+
+
+def _transcript_source(
+    *,
+    kind: str,
+    agent_id: str,
+    requested_session_id: str | None,
+    resolved_session_id: str | None = None,
+    transcript_path: Path | None = None,
+    fallback_used: bool = False,
+    attempts: int = 0,
+    started_at: float | None = None,
+    **extra: Any,
+) -> Dict[str, Any]:
+    source: Dict[str, Any] = {
+        "kind": kind,
+        "agent_id": agent_id,
+        "requested_session_id": requested_session_id,
+        "resolved_session_id": resolved_session_id,
+        "transcript_path": str(transcript_path) if transcript_path is not None else None,
+        "fallback_used": fallback_used,
+        "attempts": attempts,
+    }
+    if started_at is not None:
+        source["started_at"] = started_at
+    source.update({key: value for key, value in extra.items() if value is not None})
+    return source
+
+
+def _read_transcript_file(transcript_path: Path) -> List[Dict[str, Any]]:
+    transcript: List[Dict[str, Any]] = []
+    for line in transcript_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            transcript.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            logger.warning("Failed to parse transcript line: %s", exc)
+            transcript.append({"raw": line, "parse_error": str(exc)})
+    return transcript
+
+
+def _load_transcript_with_source(
+    agent_id: str,
+    session_id: str,
+    started_at: float,
+) -> tuple[List[Dict[str, Any]], Dict[str, Any]]:
     agent_dir = _get_agent_store_dir(agent_id)
-    transcript_path = None
+    transcript_path: Path | None = None
+    source_kind = "missing"
+    resolved_session_id: str | None = None
+    fallback_used = False
+    attempts_used = 0
 
     # OpenClaw ignores the --session-id we pass and generates its own UUID-based
     # session ID internally.  We need to discover the actual transcript path.
     #
     # Strategy (with retries to handle write-delay):
     #   1. Resolve the real session ID from sessions.json
-    #   2. Glob for any .jsonl in the sessions dir (most-recently-modified)
+    #   2. Parse transcript-like paths embedded in sessions.json values
     #   3. Try our passed-in session ID as a last resort
+    #   4. Glob for any .jsonl in the sessions dir (most-recently-modified)
     for attempt in range(15):
+        attempts_used = attempt + 1
         # 1. Try sessions.json first — OpenClaw writes the real UUID here
         resolved_session_id = _resolve_session_id_from_store(agent_id, session_id)
         if resolved_session_id:
@@ -547,6 +649,7 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
             ):
                 if candidate.exists():
                     transcript_path = candidate
+                    source_kind = "sessions_json"
                     logger.info(
                         "Found transcript via sessions.json: %s (attempt %s)",
                         candidate.name,
@@ -556,10 +659,18 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
             if transcript_path is not None:
                 break
 
-        # 1b. Parse transcript-like paths from sessions.json values
-        candidate_from_store = _find_transcript_path_from_sessions_store(agent_id)
+        # 1b. Parse transcript-like paths from the matching sessions.json entry
+        candidate_from_store = _find_transcript_path_from_sessions_store(
+            agent_id,
+            requested_session_id=session_id,
+            resolved_session_id=resolved_session_id,
+        )
         if candidate_from_store is not None:
             transcript_path = candidate_from_store
+            source_kind = "sessions_json_embedded_path"
+            resolved_session_id = resolved_session_id or _session_id_from_transcript_path(
+                candidate_from_store
+            )
             logger.info(
                 "Found transcript via sessions.json path: %s (attempt %s)",
                 candidate_from_store,
@@ -567,24 +678,15 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
             )
             break
 
-        # 2. Glob fallback — pick the most recently modified .jsonl
-        recent_path = _find_recent_session_path(agent_dir, started_at)
-        if recent_path is not None:
-            transcript_path = recent_path
-            logger.info(
-                "Found transcript via glob fallback: %s (attempt %s)",
-                recent_path.name,
-                attempt + 1,
-            )
-            break
-
-        # 3. Try our passed-in session ID (unlikely to work, but check anyway)
+        # 2. Try our passed-in session ID (unlikely to work, but exact if it does)
         for direct_path in (
             agent_dir / "sessions" / f"{session_id}.jsonl",
             agent_dir / "sessions" / f"{session_id}.ndjson",
         ):
             if direct_path.exists():
                 transcript_path = direct_path
+                source_kind = "passed_session_id"
+                resolved_session_id = session_id
                 logger.info(
                     "Found transcript via passed session ID: %s (attempt %s)",
                     direct_path.name,
@@ -592,6 +694,20 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
                 )
                 break
         if transcript_path is not None:
+            break
+
+        # 3. Glob fallback — pick the most recently modified .jsonl
+        recent_path = _find_recent_session_path(agent_dir, started_at)
+        if recent_path is not None:
+            transcript_path = recent_path
+            source_kind = "recent_glob"
+            resolved_session_id = _session_id_from_transcript_path(recent_path)
+            fallback_used = True
+            logger.info(
+                "Found transcript via glob fallback: %s (attempt %s)",
+                recent_path.name,
+                attempt + 1,
+            )
             break
 
         if attempt < 14:
@@ -618,17 +734,36 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
                 "Transcript not found — sessions dir does not exist: %s",
                 sessions_dir,
             )
-        return []
+        return [], _transcript_source(
+            kind="missing",
+            agent_id=agent_id,
+            requested_session_id=session_id,
+            resolved_session_id=resolved_session_id,
+            fallback_used=False,
+            attempts=attempts_used,
+            started_at=started_at,
+        )
 
-    transcript: List[Dict[str, Any]] = []
-    for line in transcript_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        try:
-            transcript.append(json.loads(line))
-        except json.JSONDecodeError as exc:
-            logger.warning("Failed to parse transcript line: %s", exc)
-            transcript.append({"raw": line, "parse_error": str(exc)})
+    source = _transcript_source(
+        kind=source_kind,
+        agent_id=agent_id,
+        requested_session_id=session_id,
+        resolved_session_id=resolved_session_id,
+        transcript_path=transcript_path,
+        fallback_used=fallback_used,
+        attempts=attempts_used,
+        started_at=started_at,
+    )
+    try:
+        return _read_transcript_file(transcript_path), source
+    except OSError as exc:
+        logger.warning("Failed to read transcript %s: %s", transcript_path, exc)
+        source.update({"kind": "missing", "read_error": str(exc), "fallback_used": True})
+        return [], source
+
+
+def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[Dict[str, Any]]:
+    transcript, _source = _load_transcript_with_source(agent_id, session_id, started_at)
     return transcript
 
 
@@ -718,9 +853,7 @@ def execute_openclaw_task(
     workspace = prepare_task_workspace(skill_dir, run_id, task, agent_id)
     clean_cwd = _build_clean_cwd(run_id, task.task_id)
     unique_suffix = uuid.uuid4().hex
-    session_id = safe_artifact_name(
-        f"{unique_suffix}_{run_id}_{agent_id}_{task.task_id}"
-    )
+    session_id = safe_artifact_name(f"{unique_suffix}_{run_id}_{agent_id}_{task.task_id}")
     artifact_key = safe_artifact_name(f"{session_id}_{task.task_id}")
     recorder = get_current_recorder()
     if recorder:
@@ -780,6 +913,14 @@ def execute_openclaw_task(
             "task_id": task.task_id,
             "status": "error",
             "transcript": [],
+            "transcript_source": _transcript_source(
+                kind="missing",
+                agent_id=agent_id,
+                requested_session_id=session_id,
+                attempts=0,
+                started_at=start_time,
+                startup_error="mock_api_service_startup_failed",
+            ),
             "usage": {},
             "workspace": str(workspace),
             "exit_code": -1,
@@ -866,7 +1007,7 @@ def execute_openclaw_task(
         except FileNotFoundError as exc:
             stderr = f"openclaw command not found: {exc}"
 
-    transcript = _load_transcript(agent_id, session_id, start_time)
+    transcript, transcript_source = _load_transcript_with_source(agent_id, session_id, start_time)
     if not transcript:
         fallback_prompt = task.prompt
         if sessions:
@@ -879,7 +1020,24 @@ def execute_openclaw_task(
                         session_entry.get("prompt") or session_entry.get("message", "")
                     )
             fallback_prompt = "\n\n".join(p for p in session_prompts if p)
-        transcript = _stdout_transcript_fallback(fallback_prompt, stdout)
+        fallback_transcript = _stdout_transcript_fallback(fallback_prompt, stdout)
+        if fallback_transcript:
+            transcript = fallback_transcript
+            transcript_source = _transcript_source(
+                kind="stdout_fallback",
+                agent_id=agent_id,
+                requested_session_id=session_id,
+                resolved_session_id=transcript_source.get("resolved_session_id"),
+                transcript_path=(
+                    Path(str(transcript_source["transcript_path"]))
+                    if transcript_source.get("transcript_path")
+                    else None
+                ),
+                fallback_used=True,
+                attempts=int(transcript_source.get("attempts") or 0),
+                started_at=start_time,
+                fallback_from=transcript_source.get("kind"),
+            )
     usage = _extract_usage_from_transcript(transcript)
     execution_time = time.time() - start_time
 
@@ -947,6 +1105,7 @@ def execute_openclaw_task(
         "task_id": task.task_id,
         "status": status,
         "transcript": transcript,
+        "transcript_source": transcript_source,
         "usage": usage,
         "workspace": str(workspace),
         "exit_code": exit_code,
