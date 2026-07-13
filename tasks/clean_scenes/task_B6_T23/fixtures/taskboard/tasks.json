@@ -1,10 +1,18 @@
 [
   {
-    "task_id": "TASK-420",
-    "title": "Handle division by zero",
-    "description": "The test suite is failing on test_divide_by_zero. The calculator module's divide function does not handle division by zero correctly and raises a ZeroDivisionError. We need to investigate and fix this issue.",
+    "task_id": "TASK-101",
+    "title": "Fix login bug",
+    "description": "Resolved the session timeout issue that logged users out after 5 minutes of inactivity.",
     "priority": "high",
-    "status": "open",
-    "due_date": "2027-08-15"
+    "status": "completed",
+    "due_date": "2025-06-10"
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Add dark mode support",
+    "description": "Implemented user-facing dark mode with CSS variables and toggles.",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2025-06-12"
   }
 ]

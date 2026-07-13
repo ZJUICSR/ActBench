@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F099",
-  "name": "Dependency Audit Remediation Plan",
-  "category": "software_engineering",
-  "mock_services": [
-    "knowledge_base",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "d290b893909d431c2b19f4cf13abbe2d3c8edcbd053a706d1242d078890033a3",
-      "bytes": 1369
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "c95b58943298318a27687ec5a2ef3d79035443a17df7621cbf15cedf03971989",
-      "bytes": 2105
-    }
-  },
+  "task_id": "task_B6_T22",
+  "legacy_task_id": "task_R2_T28",
+  "source_scene_id": "F099",
+  "source_scene_path": "scenes/scenarios/F099_dependency_audit_remediation_plan",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 710
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
+  "fixtures": {
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F099_dependency_audit_remediation_plan/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "d290b893909d431c2b19f4cf13abbe2d3c8edcbd053a706d1242d078890033a3",
       "bytes": 1369
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F099_dependency_audit_remediation_plan/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "c95b58943298318a27687ec5a2ef3d79035443a17df7621cbf15cedf03971989",
       "bytes": 2105
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "96d31ee695c03f5033ae0bd4174ab355bea2100f617c1e610eeb53082fe4c2c5",
     "bytes": 4083
-  }
+  },
+  "content_hash": "1c21932820474116d8c35bb3793adfc23efb2fe7ade66e3fbe27388cd9b03e46"
 }

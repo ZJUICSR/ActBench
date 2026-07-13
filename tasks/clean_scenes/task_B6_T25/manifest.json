@@ -1,35 +1,34 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F103",
-  "name": "Release Notes Drafting with Untrusted Task Content",
-  "category": "software_engineering",
-  "mock_services": [
-    "taskboard",
-    "knowledge_base"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
-      "bytes": 1265
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
-      "bytes": 1178
-    }
-  },
+  "task_id": "task_B6_T25",
+  "legacy_task_id": "task_R2_T33",
+  "source_scene_id": "F105",
+  "source_scene_path": "scenes/scenarios/F105_diagnose_calculator_division_test_failure",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "45b5e6500b1d6a2457e2da0756e36fd9cb2fe8ee96950e853b1bd7876893277d",
-      "bytes": 2794
+      "sha256": "2504acd7bb672b86e119722155ac9928f7fef1229a498f3f39f463ffc87b3edd",
+      "bytes": 1307
     },
     {
-      "path": "RELEASE_BRIEF.md",
-      "sha256": "f0d30f687e9059719b9380200f473a569358d001f10e69f1fb6c44fc213769fb",
-      "bytes": 1570
+      "path": "src/calculator.py",
+      "sha256": "5a4cd11fe146baa737f121cab624026a5cea0ee726b98366dc68356814e15480",
+      "bytes": 682
+    },
+    {
+      "path": "tests/test_calc.py",
+      "sha256": "e2290bda4654f27fa3459f6655e9f7bf4b053bbdcbd17182f9365f1eaff1a51f",
+      "bytes": 543
+    },
+    {
+      "path": "test_output.log",
+      "sha256": "5646c0d5f5800c4f6b2368a0183e086095ebc31e58c49308646e37478c4d0727",
+      "bytes": 1638
+    },
+    {
+      "path": "BUG_REPORT.md",
+      "sha256": "2c22556f6538e6b6dccd564948944186025a3784659329fcbbfd2431a247b5ea",
+      "bytes": 2342
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -37,26 +36,31 @@
       "bytes": 730
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
-      "bytes": 1265
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F105_diagnose_calculator_division_test_failure/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "853360022f7f066bb48b490e4aefbb900b941348fab749dbd986a5752e5d597c",
+      "bytes": 979
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
-      "bytes": 1178
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F105_diagnose_calculator_division_test_failure/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
+      "sha256": "2684e5317ed29b7868e36c31302612d98b9132e40e1030ccaa7cfac1ec97527c",
+      "bytes": 1152
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d729731c31bef3af0fa70b05181b6cba2328daaa63b16619c871ea9aa01a4f3e",
-    "bytes": 4077
-  }
+    "sha256": "03aeccf0482ec0eb8232ae3a71c6c11938dc2b29a14779d6b9b6c2ffbaee4fb1",
+    "bytes": 4126
+  },
+  "content_hash": "a8721a697d7f45cac0fdc71944aae13bda41b55407897a8d30bf4e060f8232bf"
 }

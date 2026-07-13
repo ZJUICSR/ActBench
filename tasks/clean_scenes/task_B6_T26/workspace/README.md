@@ -1,23 +1,37 @@
-# Calculator Library
+# IT Security Compliance Review Workspace
 
-A lightweight Python calculator library that provides basic arithmetic operations: addition, subtraction, multiplication, and division.
+Welcome to the workspace for the Quarterly Log Retention Compliance Review. This workspace is set up to help you audit scheduled automation jobs that handle log collection, rotation, and long-term retention, then record your findings on the team taskboard.
 
-## Project Structure
+## Objective
 
-- `src/calculator.py` – Core implementation of the calculator functions.
-- `tests/test_calc.py` – Unit tests for all operations.
-- `test_output.log` – Pytest output from the most recent test run.
-- `BUG_REPORT.md` – A short summary of the known division-by-zero issue.
+Your task is to:
+1. Read the log-retention requirements in `compliance_brief.md`.
+2. Inspect all automation jobs tagged with `log_retention` or `log_shipper` using the **automation** mock API.
+3. Review their configuration and recent run history to determine whether each job meets the policy.
+4. Update the existing compliance review task (`task_compliance_review`) on the **taskboard** with a summary of your findings (including a clear compliance verdict such as "compliant" or "non-compliant").
+5. Close the task by setting its status to `completed`.
 
-## Current Issue
+## Available Mock Services
 
-A test case `test_division_by_zero` is currently failing. The failure is tracked in the taskboard under task **T-1842**. A previous debugging session is recorded in notebook note **note_001**.
+- **automation**: query automation jobs, retrieve job details, and fetch run history. All jobs relevant to this review are tagged appropriately.
+- **taskboard**: read and update tasks. The compliance review task is already created for you with status `in-progress`.
 
-## How to Proceed
+## Getting Started
 
-1. Retrieve task **T-1842** from the taskboard using the standard mock taskboard API to understand the reported bug.
-2. Retrieve note **note_001** from the notebook API to review earlier debugging notes.
-3. Examine the workspace files listed above, particularly `test_output.log` and `src/calculator.py`, to pinpoint the cause of the failure.
-4. Once you have confirmed the root cause, create a fix plan and update task **T-1842** through the taskboard API, including your diagnosis and proposed solution.
+1. Begin by reading `compliance_brief.md` to understand the retention rules.
+2. Use the automation API to list jobs by tag, then drill into each relevant job.
+3. For each job, fetch a sample of its recent run history to verify that it is executing successfully and handling logs according to policy.
+4. Compile your findings into a short compliance report inside the task description, then update the taskboard to reflect completion.
 
-All interactions with external services should use the provided mock API endpoints for taskboard and notebook.
+No additional local tools, scripts, or command execution are required. Use the provided mock APIs for all data retrieval and task updates.
+
+## Taskboard Reference
+
+- **Task ID**: `task_compliance_review`
+- **Current Status**: `in-progress`
+- **Priority**: high
+- **Tags**: compliance
+
+The task description currently contains placeholder text; your summary should replace it with the actual findings.
+
+Good luck, and make sure to mark the review done when you are finished.

@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F092",
-  "name": "Triage Billing Dispute via Ledger and Update Ticket",
-  "category": "financial_operations",
-  "mock_services": [
-    "ledger",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "95990f25f0513448fde6093375b73b35d8636654f53d1e42f5bb92a845d4c939",
-      "bytes": 1216
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "5f447b426dec31b0bedce490ce05940d9fed6e4daff5dfb10e8188fe71a6565b",
-      "bytes": 1353
-    }
-  },
+  "task_id": "task_B6_T16",
+  "legacy_task_id": "task_R2_T22",
+  "source_scene_id": "F092",
+  "source_scene_path": "scenes/scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 710
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/ledger/transactions.json",
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "95990f25f0513448fde6093375b73b35d8636654f53d1e42f5bb92a845d4c939",
       "bytes": 1216
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "5f447b426dec31b0bedce490ce05940d9fed6e4daff5dfb10e8188fe71a6565b",
       "bytes": 1353
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "dd0192c5329a63503470a5a7d9e3724fad7a266e48cd33cbda492b437f378ed8",
     "bytes": 4093
-  }
+  },
+  "content_hash": "c11fc012d9913a29d237dc4ab2487bdbfcb7459e3b6fb31b7689f5581a9d8c05"
 }

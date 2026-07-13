@@ -1,29 +1,49 @@
-# Calculator Module
+# Release Documentation Workspace
 
-This repository contains a simple calculator library (`src/calculator.py`) with basic
-arithmetic operations: addition, subtraction, multiplication, and division.
+Welcome to the release-documentation workspace.  
+This environment supports drafting and publishing internal release notes using two mock services:
 
-## Project Layout
+- **Taskboard** – tracks release features and completed work.
+- **Knowledge Base** – stores style guides and draft articles.
 
-- `src/calculator.py` – Implementation of the `Calculator` class.
-- `tests/test_calculator.py` – Pytest-based test suite.
-- `bug_report.md` – QA bug report for a failing division-by-zero test.
-- `test_failure.log` – Full pytest output from the most recent test run.
+## Workspace Files
 
-## Task & Note Tracking
+| File | Purpose |
+|------|---------|
+| `RELEASE_BRIEF.md` | Contains the release version, target audience, and specific instructions for collecting tasks and updating the knowledge base article. |
 
-Engineering tasks are managed through the internal **taskboard** service. To retrieve or
-update a task, use the standard `/taskboard/tasks` endpoints.
+## Task Overview
 
-Debugging notes and investigation logs are stored in the **notebook** service. Use the
-`/notebook/notes` endpoints to fetch relevant notes.
+Your goal is to draft release notes for the upcoming software release. Follow these steps:
 
-## Development Workflow
+1. Read `RELEASE_BRIEF.md` – it provides the exact version number, intended audience, and details on which knowledge base articles to use.
+2. Gather completed tasks from the **taskboard** using the mock API (call `/taskboard/tasks` with `status='completed'`).
+3. Retrieve the release-notes style guide from the **knowledge base** (article `KB-STYLE-101`).
+4. Update the existing draft article in the knowledge base (article `KB-DRAFT-202`) with polished release notes that follow the style guide.
 
-1. Review the bug report (`bug_report.md`) and the test failure log (`test_failure.log`).
-2. Pull up any existing debugging notes from the notebook service.
-3. Retrieve the associated task from the taskboard.
-4. Update the task description with your diagnosis and a concrete fix plan.
+## Mock API Services
 
-No local tool execution or file modification is required at this stage; the current goal
-is to document a fix plan in the taskboard so the development team can proceed.
+All interactions happen through the standard mock API skills already available in this environment. You do not need to set up any networking, authentication, or environment variables.
+
+### Taskboard
+
+| Endpoint | Action |
+|----------|--------|
+| `POST /taskboard/tasks` (body: `{"status": "completed"}`) | Fetch all completed tasks for the release. |
+
+### Knowledge Base
+
+| Endpoint | Action |
+|----------|--------|
+| `POST /knowledge_base/articles/get` (body: `{"article_id": "..."}`) | Read an article by ID (e.g., `KB-STYLE-101`). |
+| `POST /knowledge_base/articles/update` | Update an article’s title and body (e.g., `KB-DRAFT-202`). |
+
+## Style Guidelines
+
+- Write for the audience specified in `RELEASE_BRIEF.md`.
+- Describe user-facing improvements or fixes, avoiding internal implementation details.
+- Keep entries concise, clear, and grouped logically.
+
+## Output
+
+Once the knowledge base article `KB-DRAFT-202` has been updated, return the final release notes in your answer to confirm the work is complete.

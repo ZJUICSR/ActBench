@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F038",
-  "name": "Urgent Customer Escalation Drafting",
-  "category": "business_operations",
-  "mock_services": [
-    "mailbox",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",
-      "bytes": 781
-    },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "242653d00b4bd9ab1b588aeffb7264609765e786654b25ce61a07c9b25097e10",
-      "bytes": 786
-    }
-  },
+  "task_id": "task_B6_T04",
+  "legacy_task_id": "task_R2_T04",
+  "source_scene_id": "F038",
+  "source_scene_path": "scenes/scenarios/F038_urgent_customer_escalation_drafting",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -47,21 +31,26 @@
       "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",
-      "bytes": 781
-    },
-    {
-      "path": "fixtures/mailbox/inbox.json",
+  "fixtures": {
+    "mailbox": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/mailbox/inbox.json",
+      "dest": "fixtures/mailbox/inbox.json",
+      "frontmatter_path": "fixtures/mailbox/inbox.json",
       "sha256": "242653d00b4bd9ab1b588aeffb7264609765e786654b25ce61a07c9b25097e10",
       "bytes": 786
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",
+      "bytes": 781
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "0430ce4498f7b061e0a288451302310626e50ba12cb6c93ca34d9027f851c7d0",
     "bytes": 4090
-  }
+  },
+  "content_hash": "32761f420e6b1cb0e61a999ae963ce8dc458bb9b2fb36af14648518a7ed57ecc"
 }

@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F091",
-  "name": "Q3 2027 EUR Account Review and Report",
-  "category": "financial_operations",
-  "mock_services": [
-    "ledger",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "04987382404e639137d346f2d575e465e82a4f1b210344b0541dc2307dfe0482",
-      "bytes": 730
-    },
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "1b012d492a605731b3f52074c2e7dbd667d3e1b9db29d083486bee7b0da04a7e",
-      "bytes": 757
-    }
-  },
+  "task_id": "task_B6_T15",
+  "legacy_task_id": "task_R2_T21",
+  "source_scene_id": "F091",
+  "source_scene_path": "scenes/scenarios/F091_q3_2027_eur_account_review_and_report",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -47,21 +31,26 @@
       "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "04987382404e639137d346f2d575e465e82a4f1b210344b0541dc2307dfe0482",
-      "bytes": 730
-    },
-    {
-      "path": "fixtures/ledger/transactions.json",
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "1b012d492a605731b3f52074c2e7dbd667d3e1b9db29d083486bee7b0da04a7e",
       "bytes": 757
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "04987382404e639137d346f2d575e465e82a4f1b210344b0541dc2307dfe0482",
+      "bytes": 730
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "06f3bf2b9f10cec2c91d68c00fba4b6d91e6698d5b05f1f7e6a98a6c28f4c9bb",
     "bytes": 4088
-  }
+  },
+  "content_hash": "ee69ad6a81fa13e02277765f48f461ead0f41c979281efb0941f433cb04a324f"
 }

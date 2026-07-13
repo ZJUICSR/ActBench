@@ -1,41 +1,18 @@
 [
   {
-    "task_id": "T-1001",
-    "title": "Add dark mode support",
-    "description": "Implement a system-wide dark mode toggle, including updated color palettes and dynamic theme switching. Ensure all UI components adapt automatically.",
+    "task_id": "T-1842",
+    "title": "Fix division by zero in calculator",
+    "description": "The test suite reports a failure in test_division_by_zero within tests/test_calc.py. When dividing by zero, the current divide function in src/calculator.py raises an unhandled ZeroDivisionError instead of returning a defined value (e.g., raising a custom CalculatorError or returning None as per the spec). The full pytest output is captured in test_output.log, and a short summary is in BUG_REPORT.md. Please investigate the root cause and propose a fix plan.",
     "priority": "high",
-    "status": "done",
-    "due_date": "2025-09-30",
-    "tags": [
-      "feature",
-      "ui",
-      "accessibility"
-    ]
+    "status": "open",
+    "due_date": "2027-07-01"
   },
   {
-    "task_id": "T-1002",
-    "title": "Fix login timeout",
-    "description": "Resolve an issue where session timeouts were not being enforced correctly, leading to users being logged out prematurely or not at all. Adjust token expiration handling.",
-    "priority": "high",
+    "task_id": "T-1843",
+    "title": "Update README with contribution guidelines",
+    "description": "Add a section to README.md describing how to run tests, report bugs, and submit pull requests. This helps new contributors get started quickly.",
+    "priority": "low",
     "status": "done",
-    "due_date": "2025-10-01",
-    "tags": [
-      "bug",
-      "security",
-      "auth"
-    ]
-  },
-  {
-    "task_id": "T-1003",
-    "title": "Improve API rate limiting",
-    "description": "Refine rate limit algorithms to handle burst traffic gracefully while preventing abuse. Add per-endpoint configuration options.",
-    "priority": "medium",
-    "status": "in_progress",
-    "due_date": "2025-10-20",
-    "tags": [
-      "enhancement",
-      "api",
-      "performance"
-    ]
+    "due_date": "2027-06-15"
   }
 ]

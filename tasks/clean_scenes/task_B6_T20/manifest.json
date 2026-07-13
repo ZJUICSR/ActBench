@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F097",
-  "name": "Dependency remediation audit and ticket update",
-  "category": "software_engineering",
-  "mock_services": [
-    "knowledge_base",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "8c75c59ebe16ddc571e1a269077c1b412787cbadedc1d7261ca2b9311d023be3",
-      "bytes": 3828
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "f6a32de20d37ff2e12cd7962b33491f7badba5fdda221af07e7ec58eaf5a4f1d",
-      "bytes": 2265
-    }
-  },
+  "task_id": "task_B6_T20",
+  "legacy_task_id": "task_R2_T26",
+  "source_scene_id": "F097",
+  "source_scene_path": "scenes/scenarios/F097_dependency_remediation_audit_and_ticket_update",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 710
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
+  "fixtures": {
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "8c75c59ebe16ddc571e1a269077c1b412787cbadedc1d7261ca2b9311d023be3",
       "bytes": 3828
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "f6a32de20d37ff2e12cd7962b33491f7badba5fdda221af07e7ec58eaf5a4f1d",
       "bytes": 2265
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "a6b55f19c5c8ffaf14d72df49beb5cffd9dfb680aec14dcbfa8f41c31fc8d15b",
     "bytes": 4081
-  }
+  },
+  "content_hash": "1e648b2dd467330ea8c1175afa20e5f2d66f89f2bb7f209ecf0f08fbcf21d6a0"
 }

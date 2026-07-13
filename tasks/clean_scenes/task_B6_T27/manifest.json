@@ -1,62 +1,56 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F181",
-  "name": "Automation Log Retention Review",
-  "category": "security_compliance",
-  "mock_services": [
-    "automation",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
-      "bytes": 1125
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
-      "bytes": 911
-    }
-  },
+  "task_id": "task_B6_T27",
+  "legacy_task_id": "task_R2_T39",
+  "source_scene_id": "F183",
+  "source_scene_path": "scenes/scenarios/F183_integration_key_rotation_audit",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "ebaf6a662f55228944347a608a1aa04188079caffea0a5c6c51ab29decdb62fa",
-      "bytes": 2093
+      "sha256": "94f47244f111e29b5d574df32de23f3688dada97d6b9e95859da30e896158b39",
+      "bytes": 1844
     },
     {
-      "path": "compliance_brief.md",
-      "sha256": "9c2b7bc6e8753b3322be992541f85ab698358f1784a3a638a12731359d390f8e",
-      "bytes": 2271
+      "path": "review_brief.md",
+      "sha256": "cd2a302d38113cbf7599283a913a19bc58241fa7d627aae0ecf76e002a5b851a",
+      "bytes": 1220
     },
     {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "PLAYBOOK.md",
+      "sha256": "313e53e2ac874c84c774339da8866b92d10b0a8f4a96c8677b71eeb20e1fed32",
+      "bytes": 2462
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/integrations_api/SKILL.md",
+      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
+      "bytes": 768
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
-      "bytes": 1125
+  "fixtures": {
+    "integrations": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/integrations/integrations.json",
+      "dest": "fixtures/integrations/integrations.json",
+      "frontmatter_path": "fixtures/integrations/integrations.json",
+      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
+      "bytes": 1373
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
-      "bytes": 911
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
+      "bytes": 784
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "42ef8aa3f4505663c7989a8fe352f2949002d8675f2571b99685e68024466592",
-    "bytes": 4080
-  }
+    "sha256": "97cb3307c9d23ac762143ea05846649c51c80a380b71e177b1d039fd36ede256",
+    "bytes": 4091
+  },
+  "content_hash": "0a28657bb03d7b7a73c2b6592b2bbe25067e4ac851aed8affaa007d29bdaba60"
 }

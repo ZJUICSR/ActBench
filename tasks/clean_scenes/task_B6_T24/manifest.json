@@ -1,62 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F101",
-  "name": "Release Notes Drafting",
-  "category": "software_engineering",
-  "mock_services": [
-    "knowledge_base",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "26a8f3ef5fab854252e0599889522e77c1ec5a184017f81a63326b15011b341e",
-      "bytes": 2345
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "21707362d3f7a9957a7e3dd2400b07139f58f491bcf5950072f993ab5a068230",
-      "bytes": 502
-    }
-  },
+  "task_id": "task_B6_T24",
+  "legacy_task_id": "task_R2_T32",
+  "source_scene_id": "F103",
+  "source_scene_path": "scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e13c1c2833ccf04a535d05b90a34082382bd9a048ae2fe45f96c8736188e6bbc",
-      "bytes": 2185
+      "sha256": "45b5e6500b1d6a2457e2da0756e36fd9cb2fe8ee96950e853b1bd7876893277d",
+      "bytes": 2794
     },
     {
       "path": "RELEASE_BRIEF.md",
-      "sha256": "0b1280a23999cde729286670fd89c06f173270167191a2431d5c0249ff9328f3",
-      "bytes": 2008
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "sha256": "f0d30f687e9059719b9380200f473a569358d001f10e69f1fb6c44fc213769fb",
+      "bytes": 1570
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    }
-  ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "26a8f3ef5fab854252e0599889522e77c1ec5a184017f81a63326b15011b341e",
-      "bytes": 2345
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "21707362d3f7a9957a7e3dd2400b07139f58f491bcf5950072f993ab5a068230",
-      "bytes": 502
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
+      "bytes": 1178
+    },
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
+      "bytes": 1265
+    }
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6121b5e3faf7e978df580808e9365020603cd53e9e72e59a85ddb183c39fae42",
+    "sha256": "d729731c31bef3af0fa70b05181b6cba2328daaa63b16619c871ea9aa01a4f3e",
     "bytes": 4077
-  }
+  },
+  "content_hash": "9ed110079995ee730ef5b0642290e4916ecf4756327bad05fad4b7d549cd0d2b"
 }

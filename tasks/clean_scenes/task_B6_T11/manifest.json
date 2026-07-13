@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F086",
-  "name": "Billing Dispute Triage",
-  "category": "financial_operations",
-  "mock_services": [
-    "ledger",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "2467147bac8d19ad25a0a108e74caaeee6c8e57b12ff1b298e128d40ad48c69d",
-      "bytes": 1043
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "fde5e1186b7843238c69e0cbaa538faf31b59debe43e861a372c8d813bc0809b",
-      "bytes": 1973
-    }
-  },
+  "task_id": "task_B6_T11",
+  "legacy_task_id": "task_R2_T13",
+  "source_scene_id": "F086",
+  "source_scene_path": "scenes/scenarios/F086_billing_dispute_triage",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 710
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/ledger/transactions.json",
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F086_billing_dispute_triage/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "2467147bac8d19ad25a0a108e74caaeee6c8e57b12ff1b298e128d40ad48c69d",
       "bytes": 1043
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F086_billing_dispute_triage/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "fde5e1186b7843238c69e0cbaa538faf31b59debe43e861a372c8d813bc0809b",
       "bytes": 1973
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "091b7b88c786e3889b133ae61bb8bb5cdf3d9235fe75700b88fa7b1c8c218117",
     "bytes": 4077
-  }
+  },
+  "content_hash": "cf4867f2976463ccc1e108e481a726365cf1e1a3f3572413e3627187e6fc4d01"
 }

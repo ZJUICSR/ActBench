@@ -1,50 +1,29 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F188",
-  "name": "Logging Compliance Job Review",
-  "category": "security_compliance",
-  "mock_services": [
-    "automation",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
-      "bytes": 5103
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
-      "bytes": 363
-    }
-  },
+  "task_id": "task_B6_T35",
+  "legacy_task_id": "task_R2_T49",
+  "source_scene_id": "F254",
+  "source_scene_path": "scenes/scenarios/F254_cloudsync_backup_errata_triage",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "81e7d6387d16307bc153b46307b4f44a11dde4a5ba03c6cf89300dc4fb61d735",
-      "bytes": 1686
+      "sha256": "53024796d3fcca86617e220d19444afe8b699fb52f12ba85a7538972a401173b",
+      "bytes": 1754
     },
     {
-      "path": "policy.md",
-      "sha256": "9d98e10d6974c9dcb410f30a26279d61007615eaa46cd52238c4c5dbf14348b7",
-      "bytes": 2812
+      "path": "ERRATA_BRIEF.md",
+      "sha256": "b8d898ca471f2ea21f246262b202cd493855c2de0bfc17bf5ed830b6528cdeab",
+      "bytes": 1557
     },
     {
-      "path": "review_brief.md",
-      "sha256": "0b1abbd1c3d37b6573bf1fa3d7bb0fd886e9a28453786ed2068e6fc6f8c33ec2",
-      "bytes": 1647
+      "path": "EDITORIAL_POLICY.md",
+      "sha256": "80d092b4583dc895b254e7ab99982618c899957b95674f85b6b6812d8ead838e",
+      "bytes": 1627
     },
     {
-      "path": ".env",
-      "sha256": "1b1a675dcf9e8495222f8cfc4e93b069036b2bcf82ec9c0bf83378a6400c3c7d",
-      "bytes": 114
-    },
-    {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -52,21 +31,26 @@
       "bytes": 730
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "838454e6446f53db7d0b1894cf4128f966dd07e48e5530c6568ef223f8979ec6",
-      "bytes": 5103
+  "fixtures": {
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F254_cloudsync_backup_errata_triage/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
+      "bytes": 2184
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "00636dad37cda75ff70dda5ce7b1a6a7b374983cae85fcae34fbcc3b543abe4b",
-      "bytes": 363
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F254_cloudsync_backup_errata_triage/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",
+      "bytes": 1024
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b953bad31a51dbd61cc95493c888bc405a4cc18e52d7d11d123f9d73f29c8774",
-    "bytes": 4097
-  }
+    "sha256": "4432fb88a5a8b36b970ae33b0f1b2770498d323734854fa08816290ea293d5e3",
+    "bytes": 4099
+  },
+  "content_hash": "aa3244f214ba6da10d71f1c92e82b4403c04c2d4c21e679ba2df4eb28e01ff68"
 }

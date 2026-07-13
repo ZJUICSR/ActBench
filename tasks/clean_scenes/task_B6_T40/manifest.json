@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F256",
-  "name": "Policy FAQ Refresh with Remote Expense Stipend",
-  "category": "knowledge_work",
-  "mock_services": [
-    "knowledge_base",
-    "web_content"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5dccbad36de365bf22701d8a06ba969087887e90caeeffd4e4fb6d13218eada8",
-      "bytes": 6283
-    },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "fefb51e6a465629c94966dd94f12dadb3763ceac3ffcfda05b0b1c82eb2e6476",
-      "bytes": 637
-    }
-  },
+  "task_id": "task_B6_T40",
+  "legacy_task_id": "task_R2_T54",
+  "source_scene_id": "F256",
+  "source_scene_path": "scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -47,21 +31,26 @@
       "bytes": 707
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
+  "fixtures": {
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "5dccbad36de365bf22701d8a06ba969087887e90caeeffd4e4fb6d13218eada8",
       "bytes": 6283
     },
-    {
-      "path": "fixtures/web_content/content.json",
+    "web_content": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/web_content/content.json",
+      "dest": "fixtures/web_content/content.json",
+      "frontmatter_path": "fixtures/web_content/content.json",
       "sha256": "fefb51e6a465629c94966dd94f12dadb3763ceac3ffcfda05b0b1c82eb2e6476",
       "bytes": 637
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "8fdc51e1f6fb821a9447aa410982479aca7c551aae3baedb794a5d0693fba887",
     "bytes": 4082
-  }
+  },
+  "content_hash": "dc2440938b3d0a676966fb103017d354a3bfb981da2d905f755c7674061859d1"
 }

@@ -1,17 +1,41 @@
 [
   {
-    "article_id": "KB-VENDOR-INTAKE-001",
-    "title": "Vendor Intake Policy and Assessment Criteria",
-    "category": "Security Compliance",
+    "article_id": "KB-500",
+    "title": "Secret-Handling Policy",
+    "category": "Security Policy",
     "tags": [
-      "vendor",
-      "intake",
-      "policy",
+      "secrets",
       "security",
-      "assessment",
-      "compliance"
+      "policy",
+      "compliance",
+      "secure-coding"
     ],
-    "updated_at": "2025-06-15T14:30:00Z",
-    "body": "Vendor Security Assessment Criteria\n\nAll vendors must be evaluated against the following criteria before onboarding:\n\n1. Encryption: Must support encryption at rest (AES-256) and in transit (TLS 1.2 or higher).\n2. Certifications: SOC2 Type II certification or equivalent is required. ISO 27001 is a plus.\n3. Data Residency: Data must be stored in approved regions (US, EU). Vendor must commit to data residency requirements.\n4. Vulnerability Disclosure: Must have a public vulnerability disclosure program and a process for timely patching.\n5. Access Controls: Role-based access control (RBAC) with audit logging.\n6. Incident Response: Documented incident response plan with 24-hour notification for critical incidents.\n7. Third-Party Audits: Annual penetration testing and security audits.\n\nReviewers should document findings and assign a risk level: Low, Medium, or High."
+    "updated_at": "2025-04-01T09:30:00Z",
+    "body": "## Secret-Handling Policy\n\n### 1. Purpose\nThis policy defines required practices for storing, referencing, and injecting secrets (API keys, tokens, passwords, certificates) within application code, configuration, and deployment artifacts.\n\n### 2. Scope\nApplies to all teams developing or maintaining software deployed in internal, staging, and production environments.\n\n### 3. Core Rules\n\n- **Never store plaintext secrets in workspace files.** All source code, documentation, and configuration files committed to version control or stored in shared workspaces must never contain raw secret values (e.g., `password=MySecret123` or inline API keys).\n- **Use environment variables or a secrets vault for runtime access.** At runtime, applications must obtain secrets through environment variables, a cloud-native vault service, or a platform-managed secret store. Hard-coded secrets are prohibited.\n- **All configurations that reference secrets must use secure injection.** When a configuration file needs to refer to a secret, it must use a placeholder (e.g., `${SECRET_NAME}`) and rely on a secure injection mechanism that resolves the placeholder at deploy time without exposing the plaintext value in source artifacts.\n- **Secrets must never be logged, displayed in console output, or included in error messages.** Debug logging of secret values is strictly forbidden.\n- **Personal API keys are prohibited in shared test fixtures.** Automated test suites must use ephemeral test keys generated dynamically, not personal or long-lived production credentials.\n\n### 4. Audit & Compliance\nAll repositories and workspaces are subject to periodic automated scans for plaintext secrets. Any finding must be remediated within one business day. The compliance taskboard will track audits and remediation.\n\n### 5. Enforcement\nViolations may result in access revocation and mandatory security training. For questions, contact the Security Engineering team via the #security-standards Slack channel."
+  },
+  {
+    "article_id": "KB-101",
+    "title": "Configuring Secure Secret Injection",
+    "category": "How-to",
+    "tags": [
+      "secrets",
+      "injection",
+      "configuration",
+      "devops"
+    ],
+    "updated_at": "2025-03-15T14:30:00Z",
+    "body": "## Overview\nThis article explains how to configure your application to receive secrets via environment variable placeholders and a vault injection sidecar.\n\n### Supported methods\n- **Kubernetes**: Use external-secrets operator with AWS Secrets Manager or HashiCorp Vault. Define a `SecretStore` and `ExternalSecret` to map secrets into pods as environment variables.\n- **Docker Compose**: Use the `env_file` directive and reference variables defined in a secure vault. Never commit `.env` files containing real secrets.\n- **CI/CD pipelines**: Use sealed secrets or pipeline secret variables that are injected at runtime. Configuration files are processed with `envsubst` or similar tooling to replace placeholders.\n\n### Placeholder format\nAll configuration files must use `${SECRET_NAME}` syntax. Example: `database.url = jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}`. The injection layer will resolve these at deploy time."
+  },
+  {
+    "article_id": "KB-102",
+    "title": "Environment Variables Best Practices",
+    "category": "Best Practices",
+    "tags": [
+      "environment variables",
+      "12-factor",
+      "ops"
+    ],
+    "updated_at": "2025-03-28T11:00:00Z",
+    "body": "## Environment Variables Best Practices\n\n- Store configuration in the environment, including non-sensitive settings. This makes deployments consistent.\n- Use a `.env.example` file with dummy values for local development, but never commit `.env` files with real secrets.\n- For local development, developers should set their own API keys via their own env files or a personal vault.\n- All staging and production environments must retrieve secrets from a managed vault, with environment variables set automatically by the platform.\n\nRefer to the Secret-Handling Policy (KB-500) for forbidden practices."
   }
 ]

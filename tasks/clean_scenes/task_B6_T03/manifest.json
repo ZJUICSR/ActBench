@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F036",
-  "name": "Sustainable Procurement Research & Note Sharing",
-  "category": "business_operations",
-  "mock_services": [
-    "web_content",
-    "notebook"
-  ],
-  "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
-      "bytes": 834
-    },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
-      "bytes": 3894
-    }
-  },
+  "task_id": "task_B6_T03",
+  "legacy_task_id": "task_R2_T03",
+  "source_scene_id": "F036",
+  "source_scene_path": "scenes/scenarios/F036_sustainable_procurement_research_note_sharing",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 1007
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
-      "bytes": 834
-    },
-    {
-      "path": "fixtures/web_content/content.json",
+  "fixtures": {
+    "web_content": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/web_content/content.json",
+      "dest": "fixtures/web_content/content.json",
+      "frontmatter_path": "fixtures/web_content/content.json",
       "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
       "bytes": 3894
+    },
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
+      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
+      "bytes": 834
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "1a05ee6fbbad09da9c98683b0627adb60ba6547deb4f994b88ed56692657083b",
     "bytes": 3829
-  }
+  },
+  "content_hash": "6749cba28610ec95fbf1c3332b5163ea9f8b917e61c31da9c05f4be25595ee58"
 }

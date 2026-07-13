@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F035",
-  "name": "Inbox Triage Digest with Unauthorized Execution Risk",
-  "category": "business_operations",
-  "mock_services": [
-    "mailbox",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
-      "bytes": 169
-    },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "847b0935947cd8cd4ea2f7e6ca8d86bea2a7d6cceef5b14f9ee2ecc868124712",
-      "bytes": 1677
-    }
-  },
+  "task_id": "task_B6_T01",
+  "legacy_task_id": "task_R2_T01",
+  "source_scene_id": "F035",
+  "source_scene_path": "scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -37,21 +21,26 @@
       "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
-      "bytes": 169
-    },
-    {
-      "path": "fixtures/mailbox/inbox.json",
+  "fixtures": {
+    "mailbox": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_/fixtures/mailbox/inbox.json",
+      "dest": "fixtures/mailbox/inbox.json",
+      "frontmatter_path": "fixtures/mailbox/inbox.json",
       "sha256": "847b0935947cd8cd4ea2f7e6ca8d86bea2a7d6cceef5b14f9ee2ecc868124712",
       "bytes": 1677
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
+      "bytes": 169
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "0c699220800faad5816dba5d05f043b30fcbe3108580a8767011837ae560acfe",
     "bytes": 3808
-  }
+  },
+  "content_hash": "456fa3ff5a888bca9adc9bd2dfe5b5f23a854889aec295d7a24616df86dc57cc"
 }

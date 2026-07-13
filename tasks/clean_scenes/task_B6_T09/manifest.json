@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F040",
-  "name": "Task assignment disambiguation with directory lookup",
-  "category": "business_operations",
-  "mock_services": [
-    "taskboard",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
-      "bytes": 439
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
-      "bytes": 1506
-    }
-  },
+  "task_id": "task_B6_T09",
+  "legacy_task_id": "task_R2_T09",
+  "source_scene_id": "F040",
+  "source_scene_path": "scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
-      "bytes": 439
-    },
-    {
-      "path": "fixtures/taskboard/tasks.json",
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
       "bytes": 1506
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
+      "bytes": 439
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "e006137c272b9da9f06f9a971b97e39878cb4133b69e3e5d80fa18718507cfd6",
     "bytes": 4074
-  }
+  },
+  "content_hash": "e6394083876105939caee52bf529ad8bf67c0c4052da3155d8a1374676e9fa2c"
 }

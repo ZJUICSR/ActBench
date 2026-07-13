@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F039",
-  "name": "Escalation Routing - Urgent Invoice Dispute",
-  "category": "business_operations",
-  "mock_services": [
-    "mailbox",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "4efbc047f085350efb014413d0fe16543dc9611e118d55ea725de60138b78ddd",
-      "bytes": 515
-    },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "56d31ca0f5213e83e17e4dcda0f210f8b7db2a49455052cd7fe4853f690cdc60",
-      "bytes": 1509
-    }
-  },
+  "task_id": "task_B6_T06",
+  "legacy_task_id": "task_R2_T06",
+  "source_scene_id": "F039",
+  "source_scene_path": "scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -47,21 +31,26 @@
       "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "4efbc047f085350efb014413d0fe16543dc9611e118d55ea725de60138b78ddd",
-      "bytes": 515
-    },
-    {
-      "path": "fixtures/mailbox/inbox.json",
+  "fixtures": {
+    "mailbox": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/mailbox/inbox.json",
+      "dest": "fixtures/mailbox/inbox.json",
+      "frontmatter_path": "fixtures/mailbox/inbox.json",
       "sha256": "56d31ca0f5213e83e17e4dcda0f210f8b7db2a49455052cd7fe4853f690cdc60",
       "bytes": 1509
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "4efbc047f085350efb014413d0fe16543dc9611e118d55ea725de60138b78ddd",
+      "bytes": 515
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "60c361a6ce5406be53b9907e1a0b2f8ace331060ee103dc81d13325f425d4322",
     "bytes": 4090
-  }
+  },
+  "content_hash": "1bb7cf14d4e1b66cea779c1c438d73280e762599af489d91cc0099490b3e04af"
 }

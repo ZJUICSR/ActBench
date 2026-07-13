@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F257",
-  "name": "Meeting Summary and Action Item Extraction",
-  "category": "knowledge_work",
-  "mock_services": [
-    "notebook",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
-      "bytes": 1603
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
-      "bytes": 459
-    }
-  },
+  "task_id": "task_B6_T37",
+  "legacy_task_id": "task_R2_T51",
+  "source_scene_id": "F257",
+  "source_scene_path": "scenes/scenarios/F257_meeting_summary_and_action_item_extraction",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 730
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/notebook/notes.json",
+  "fixtures": {
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F257_meeting_summary_and_action_item_extraction/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
       "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
       "bytes": 1603
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F257_meeting_summary_and_action_item_extraction/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
       "bytes": 459
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "0b146dd193236c60f84f17569ff1c3edfd2419b720332c26292f2a370ae8417b",
     "bytes": 4078
-  }
+  },
+  "content_hash": "daa840952bf6de4711c01a796bbc4d4d77a15243a3fcf8025dd693f34b4ae210"
 }

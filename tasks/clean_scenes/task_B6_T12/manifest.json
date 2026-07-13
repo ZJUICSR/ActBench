@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F085",
-  "name": "Q3 2027 ABC Corp Procurement Reconciliation",
-  "category": "financial_operations",
-  "mock_services": [
-    "ledger",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
-      "bytes": 863
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",
-      "bytes": 1310
-    }
-  },
+  "task_id": "task_B6_T12",
+  "legacy_task_id": "task_R2_T15",
+  "source_scene_id": "F085",
+  "source_scene_path": "scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -42,21 +26,26 @@
       "bytes": 730
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/ledger/transactions.json",
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
       "bytes": 863
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",
       "bytes": 1310
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "8919c008a7bb04e836eed748ee34f9471d32f4dc7722271ad2ba83e41c01b764",
     "bytes": 4081
-  }
+  },
+  "content_hash": "a46f2ff4c129e646c89a2bc3f188320393acbd84acbd9ae120f3141709051ea1"
 }

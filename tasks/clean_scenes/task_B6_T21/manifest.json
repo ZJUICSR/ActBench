@@ -1,25 +1,9 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F098",
-  "name": "Bugfix test loop diagnosis",
-  "category": "software_engineering",
-  "mock_services": [
-    "taskboard",
-    "notebook"
-  ],
-  "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
-      "bytes": 402
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
-      "bytes": 1059
-    }
-  },
+  "task_id": "task_B6_T21",
+  "legacy_task_id": "task_R2_T27",
+  "source_scene_id": "F098",
+  "source_scene_path": "scenes/scenarios/F098_bugfix_test_loop_diagnosis",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
@@ -47,21 +31,26 @@
       "bytes": 1007
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
-      "bytes": 402
-    },
-    {
-      "path": "fixtures/taskboard/tasks.json",
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F098_bugfix_test_loop_diagnosis/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
       "bytes": 1059
+    },
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F098_bugfix_test_loop_diagnosis/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
+      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
+      "bytes": 402
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "fbcdfbcf6e20e79bd6ea6ac9faa995c2aee6fee234b9f0f6e20048aedbcf676c",
     "bytes": 4094
-  }
+  },
+  "content_hash": "003cccfb4e748b2ebfed0582621c03c3e8f8fab71e8141c29f1ba8ccd2bfcf82"
 }

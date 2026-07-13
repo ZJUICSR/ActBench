@@ -1,40 +1,20 @@
 [
   {
-    "task_id": "TASK-2204",
-    "title": "CloudSync Backup Region Errata",
-    "description": "Investigate errata report regarding CloudSync backup region.",
-    "priority": "medium",
-    "status": "triage",
-    "due_date": "2025-05-15",
-    "tags": [
-      "errata",
-      "cloudsync",
-      "backup"
-    ]
-  },
-  {
-    "task_id": "TASK-2205",
-    "title": "Update onboarding guide for Q3 hires",
-    "description": "Review and update the employee onboarding guide to reflect the new IT provisioning process.",
-    "priority": "low",
-    "status": "backlog",
-    "due_date": "2025-06-01",
-    "tags": [
-      "onboarding",
-      "documentation"
-    ]
-  },
-  {
-    "task_id": "TASK-2206",
-    "title": "Patch critical CVE-2025-3341 in billing service",
-    "description": "Apply security patch for authentication bypass vulnerability in billing microservice.",
+    "task_id": "TASK-101",
+    "title": "Finalize Q3 product roadmap",
+    "description": "Finalize roadmap by July 25",
     "priority": "high",
-    "status": "in_progress",
-    "due_date": "2025-04-28",
-    "tags": [
-      "security",
-      "billing",
-      "patch"
-    ]
+    "status": "pending",
+    "due_date": "2026-07-25",
+    "owner": "Alice"
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Update project timeline",
+    "description": "Update timeline in taskboard",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2026-07-20",
+    "owner": "Alice"
   }
 ]

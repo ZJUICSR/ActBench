@@ -1,62 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F186",
-  "name": "SecureCloud Vendor Intake Review",
-  "category": "security_compliance",
-  "mock_services": [
-    "web_content",
-    "knowledge_base"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
-      "bytes": 1221
-    },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
-      "bytes": 1230
-    }
-  },
+  "task_id": "task_B6_T32",
+  "legacy_task_id": "task_R2_T45",
+  "source_scene_id": "F190",
+  "source_scene_path": "scenes/scenarios/F190_secret-handling_compliance_audit",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e14113f77398565e43917e69b012f6330c50c378d78da50a25ab5f2c0b9d5a44",
-      "bytes": 2246
+      "sha256": "c35a9d32f57e982a75f8dbb3f0d8edf608b710636b3a150caec4b590c7080445",
+      "bytes": 1655
     },
     {
-      "path": "vendor_review_brief.md",
-      "sha256": "5091cb9551cf50fc19314153fb29f0424c6a5916f4f3f8ec0b03a1dc2825406d",
-      "bytes": 2642
-    },
-    {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "config-summary.md",
+      "sha256": "67dda651d4a25de96aee8166ed1ee9a253d3d7858ff2a32e926c221091c8e578",
+      "bytes": 2613
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
       "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
       "bytes": 714
-    }
-  ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
-      "bytes": 1221
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
-      "bytes": 1230
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
+  "fixtures": {
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F190_secret-handling_compliance_audit/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+      "sha256": "1e0339a423b27a0cd43dd44c77e956ab02909b6475f1f57784c6627dc20adde7",
+      "bytes": 4403
+    },
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F190_secret-handling_compliance_audit/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "3ff6fc32f04bc157f93cc2b49790e57bb1fcd018912786e29fbe985ace8c11b2",
+      "bytes": 1819
+    }
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "cb4bd80e77d5efa4d6080154ea5899ac91ab72260b59c445db28cd19dac3e6b0",
-    "bytes": 4083
-  }
+    "sha256": "13ed036785898801c24ca12fcfcf15f2dd9b3e1eec5e8cf75c50cabeee7352a9",
+    "bytes": 4078
+  },
+  "content_hash": "c364e3830bd50b0a3aab74888b44a9125e4be3fda88a89842d0d5c1d288e93a3"
 }
