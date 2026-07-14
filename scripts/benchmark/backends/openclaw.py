@@ -80,9 +80,10 @@ class OpenClawBackend:
         self._release_lane_gateway_locks()
         self._reset_lane_state()
 
+        ensure_agent_exists(context.agent_id, context.model, context.agent_workspace)
+        cleanup_agent_sessions(context.agent_id)
+
         if not self._uses_parallel_lanes(context):
-            ensure_agent_exists(context.agent_id, context.model, context.agent_workspace)
-            cleanup_agent_sessions(context.agent_id)
             return
 
         command = str(context.metadata.get("command", "") or "")

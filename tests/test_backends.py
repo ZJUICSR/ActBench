@@ -430,10 +430,11 @@ def test_openclaw_backend_initializes_repeat_lanes(
         ),
     ]
     assert ensure_calls == [
+        (context.agent_id, context.model, context.agent_workspace),
         ("bench-test-model-rep1", context.model, rep1_workspace),
         ("bench-test-model-rep2", context.model, rep2_workspace),
     ]
-    assert cleanup_calls == ["bench-test-model-rep1", "bench-test-model-rep2"]
+    assert cleanup_calls == [context.agent_id, "bench-test-model-rep1", "bench-test-model-rep2"]
 
     backend.finalize_run(context)
 
