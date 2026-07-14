@@ -396,6 +396,61 @@ def test_persist_openclaw_trajectory_writes_one_file_per_attempt(tmp_path: Path)
     assert not (tmp_path / "artifacts" / "trajectories.jsonl").exists()
 
 
+def test_persist_trajectory_writes_canonical_slot_and_replacement_metadata(tmp_path: Path) -> None:
+    recorder = TrainingArtifactRecorder(
+        root=tmp_path / "artifacts", run_kind="actbench", run_id="run_001"
+    )
+    output_dir = tmp_path / "results"
+    first_execution = _execution_result("attempt-one")
+
+    persist_trajectory(
+        recorder=recorder,
+        task=_task(),
+        execution_result=first_execution,
+        context=_context(tmp_path),
+        scene_index=_scene_index(),
+        model="test/model",
+        judge_model=None,
+        canonical_output_dir=output_dir,
+        canonical_suite="B6",
+        write_canonical=True,
+    )
+
+    canonical_path = output_dir / "trajectories" / "B6" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    metadata_path = canonical_path.parent / "metadata.json"
+    index_path = output_dir / "trajectory_index.json"
+    payload = json.loads(canonical_path.read_text(encoding="utf-8"))
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+
+    assert first_execution["trajectory_artifacts"]["canonical_path"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    assert payload["canonical"]["slot_id"] == "B6/task_fake/run_1"
+    assert payload["artifacts"]["canonical_trajectory"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    assert metadata["training_artifact_key"] == "attempt-one"
+    assert metadata["sha256"]
+    assert metadata["size_bytes"] > 0
+    assert index["entries"]["B6/task_fake/run_1"]["canonical_trajectory_path"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+
+    second_execution = _execution_result("attempt-two")
+    persist_trajectory(
+        recorder=recorder,
+        task=_task(),
+        execution_result=second_execution,
+        context=_context(tmp_path),
+        scene_index=_scene_index(),
+        model="test/model",
+        judge_model=None,
+        canonical_output_dir=output_dir,
+        canonical_suite="B6",
+        write_canonical=True,
+    )
+
+    replaced_metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    assert replaced_metadata["training_artifact_key"] == "attempt-two"
+    assert replaced_metadata["replacement"]["previous_training_artifact_key"] == "attempt-one"
+    assert replaced_metadata["replacement"]["previous_sha256"] == metadata["sha256"]
+
+
 def test_runner_writes_openclaw_trajectory_before_scoring(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,

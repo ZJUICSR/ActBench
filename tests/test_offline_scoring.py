@@ -439,6 +439,56 @@ def test_collect_trajectory_paths_filters_globbed_non_trajectory_files(tmp_path:
     assert aggregate not in matches
 
 
+def test_collect_trajectory_paths_discovers_canonical_trajectory_tree(tmp_path: Path) -> None:
+    canonical_path = (
+        tmp_path
+        / "results"
+        / "trajectories"
+        / "B6"
+        / "task_fake"
+        / "runs"
+        / "run_1"
+        / "trajectory.json"
+    )
+    canonical_path.parent.mkdir(parents=True)
+    canonical_path.write_text("{}", encoding="utf-8")
+
+    matches = collect_trajectory_paths([str(tmp_path / "results" / "trajectories")])
+
+    assert matches == [canonical_path]
+
+
+def test_score_trajectory_files_prefers_canonical_copy_over_legacy_duplicate(tmp_path: Path) -> None:
+    legacy_path = _write_trajectory(tmp_path)
+    trajectory = json.loads(legacy_path.read_text(encoding="utf-8"))
+    trajectory["canonical"] = {
+        "slot_id": "B6/task_fake/run_1",
+        "trajectory_path": "trajectories/B6/task_fake/runs/run_1/trajectory.json",
+    }
+    legacy_path.write_text(json.dumps(trajectory), encoding="utf-8")
+    canonical_path = (
+        tmp_path
+        / "artifacts"
+        / "trajectories"
+        / "B6"
+        / "task_fake"
+        / "runs"
+        / "run_1"
+        / "trajectory.json"
+    )
+    canonical_path.parent.mkdir(parents=True)
+    canonical_path.write_text(json.dumps(trajectory), encoding="utf-8")
+
+    paths = collect_trajectory_paths([str(tmp_path / "artifacts")])
+    payload = score_trajectory_files(paths)
+
+    assert set(paths) == {legacy_path, canonical_path}
+    assert payload["trajectory_count"] == 1
+    assert payload["valid_scores"] == 1
+    assert payload["results"][0]["canonical_slot_id"] == "B6/task_fake/run_1"
+    assert payload["results"][0]["trajectory_path"] == str(canonical_path)
+
+
 def test_score_legacy_openclaw_schema_without_scoring_inputs_when_metadata_is_sufficient(
     tmp_path: Path,
 ) -> None:

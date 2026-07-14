@@ -227,6 +227,25 @@ def test_cli_accepts_parallel_run_workers(monkeypatch: pytest.MonkeyPatch) -> No
     assert args.run_workers == 2
 
 
+def test_cli_accepts_targeted_run_numbers(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--run-number", "2", "--run-number", "1,3"])
+
+    args = _parse_args()
+
+    assert args.run_number == ["2", "1,3"]
+
+
+@pytest.mark.parametrize("argv", [["actbench", "--run-number", "0"], ["actbench", "--run-number", "x"]])
+def test_cli_rejects_invalid_targeted_run_numbers(
+    monkeypatch: pytest.MonkeyPatch,
+    argv: list[str],
+) -> None:
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        _parse_args()
+
+
 def test_cli_accepts_execution_retry_options(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         sys,
@@ -3648,6 +3667,41 @@ def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -
     assert len({entry["workspace"] for entry in entries}) == 3
 
 
+def test_run_benchmark_targeted_run_number_executes_only_selected_slot(tmp_path: Path) -> None:
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            run_number=["2"],
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            skip_scoring=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["runs_per_task"] == 3
+    assert payload["selected_run_numbers"] == [2]
+    assert payload["scheduled_run_count"] == 1
+    assert payload["run_workers"] == 1
+    assert [entry["backend_metadata"]["run_index"] for entry in payload["tasks"]] == [2]
+    assert payload["tasks"][0]["backend_metadata"]["attempt_run_id"] == f"{payload['run_id']}-2"
+
+
 def test_run_benchmark_retries_retryable_execution_status(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -3756,6 +3810,13 @@ def test_run_benchmark_retries_retryable_execution_status(
     assert superseded_eval["superseded"] is True
     assert superseded_eval["retry"]["superseded_by_attempt_run_id"] == f"{payload['run_id']}-1-retry1"
     assert final_eval["schema_version"] == "actbench.evaluation_skipped.v1"
+
+    canonical_path = output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    canonical_payload = json.loads(canonical_path.read_text(encoding="utf-8"))
+    assert canonical_payload["trajectory_id"] == f"{payload['run_id']}-1-retry1_task_fake"
+    assert canonical_payload["canonical"]["slot_id"] == "B1/task_fake/run_1"
+    assert (artifact_root / "runs" / f"{payload['run_id']}-1_task_fake" / "trajectory.json").exists()
+    assert payload["tasks"][0]["trajectory"]["canonical_path"] == "trajectories/B1/task_fake/runs/run_1/trajectory.json"
 
 
 def test_run_benchmark_parallel_workers_are_reused_when_available(

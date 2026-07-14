@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextvars
 import hashlib
 import json
+import os
 import shutil
 import threading
 import time
@@ -54,6 +55,35 @@ def record_model_call(
     )
 
 
+def atomic_write_json(path: str | Path, data: Any) -> Path:
+    """Atomically write JSON to ``path`` with a same-directory temp file."""
+
+    final_path = Path(path)
+    final_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(data, indent=2, ensure_ascii=False, default=str)
+    tmp_path = final_path.with_name(
+        f".{final_path.name}.{os.getpid()}.{threading.get_ident()}.{time.time_ns()}.tmp"
+    )
+    try:
+        tmp_path.write_text(payload, encoding="utf-8")
+        os.replace(tmp_path, final_path)
+    except Exception:
+        tmp_path.unlink(missing_ok=True)
+        raise
+    return final_path
+
+
+def artifact_file_info(path: str | Path) -> Dict[str, Any]:
+    """Return stable integrity metadata for an artifact file."""
+
+    artifact_path = Path(path)
+    stat = artifact_path.stat()
+    return {
+        "size_bytes": stat.st_size,
+        "sha256": _sha256_file(artifact_path),
+    }
+
+
 class TrainingArtifactRecorder:
     """Writes raw, non-redacted artifacts for later red-team model training."""
 
@@ -98,13 +128,7 @@ class TrainingArtifactRecorder:
 
     def write_json(self, relative_path: str | Path, data: Any) -> Path:
         with self._lock:
-            path = self.root / relative_path
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(
-                json.dumps(data, indent=2, ensure_ascii=False, default=str),
-                encoding="utf-8",
-            )
-            return path
+            return atomic_write_json(self.root / relative_path, data)
 
     def write_text(self, relative_path: str | Path, text: str) -> Path:
         with self._lock:

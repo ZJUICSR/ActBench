@@ -22,6 +22,7 @@ from lib_taxonomy import infer_behavior_from_metadata
 from lib_training_artifacts import (
     TrainingArtifactRecorder,
     activate_recorder,
+    atomic_write_json,
     get_current_recorder,
 )
 
@@ -40,7 +41,7 @@ from benchmark.metrics import (
     build_attack_summary,
 )
 from benchmark.task_loading import _build_scene_index, select_task_files_for_suite
-from benchmark.trajectories import persist_trajectory
+from benchmark.trajectories import persist_trajectory, update_canonical_trajectory_scoring_metadata
 from benchmark.ui import _colorize_gradient, _get_git_version, _load_ascii_art, _next_run_id
 
 logger = logging.getLogger("benchmark")
@@ -90,6 +91,54 @@ def _normalize_retry_statuses(raw_statuses: Any) -> tuple[str, ...]:
         statuses.append(status)
         seen.add(status)
     return tuple(statuses)
+
+
+def _normalize_run_numbers(raw_run_numbers: Any, runs_per_task: int) -> tuple[int, ...]:
+    if raw_run_numbers in (None, ""):
+        return tuple(range(1, runs_per_task + 1))
+    if isinstance(raw_run_numbers, str):
+        raw_values = [raw_run_numbers]
+    else:
+        try:
+            raw_values = list(raw_run_numbers)
+        except TypeError:
+            raw_values = [raw_run_numbers]
+    selected: list[int] = []
+    seen: set[int] = set()
+    for value in raw_values:
+        parts = str(value).split(",")
+        for part in parts:
+            text = part.strip()
+            if not text:
+                continue
+            try:
+                number = int(text)
+            except ValueError as exc:
+                raise ValueError(f"invalid --run-number value {text!r}") from exc
+            if number < 1 or number > runs_per_task:
+                raise ValueError(
+                    f"--run-number {number} is outside 1..{runs_per_task} for --runs {runs_per_task}"
+                )
+            if number in seen:
+                continue
+            selected.append(number)
+            seen.add(number)
+    if not selected:
+        raise ValueError("--run-number must include at least one run number")
+    return tuple(selected)
+
+
+def _canonical_suite_for_task(requested_suite: str, task: Task) -> str:
+    """Return the stable trajectory suite bucket for a task."""
+
+    try:
+        behavior = infer_behavior_from_metadata(task.frontmatter or {}, path=task.file_path)
+        if behavior.behavior_id:
+            return behavior.behavior_id
+    except ValueError:
+        pass
+    tokens = [token.strip() for token in str(requested_suite or "").split(",") if token.strip()]
+    return tokens[0] if len(tokens) == 1 else str(requested_suite or "unknown_suite")
 
 
 def _attempt_context(
@@ -347,6 +396,9 @@ def _persist_trajectory_before_scoring(
     scene_index: Dict[str, Dict[str, Any]],
     model: str,
     judge_model: Optional[str],
+    canonical_output_dir: Optional[Path] = None,
+    canonical_suite: Optional[str] = None,
+    write_canonical: bool = False,
 ) -> None:
     """Best-effort trajectory write before inline scoring begins."""
 
@@ -362,6 +414,9 @@ def _persist_trajectory_before_scoring(
             scene_index=scene_index,
             model=model,
             judge_model=judge_model,
+            canonical_output_dir=canonical_output_dir,
+            canonical_suite=canonical_suite,
+            write_canonical=write_canonical,
         )
         logger.info("Wrote %s trajectory artifact: %s", getattr(backend, "name", "backend"), path)
     except Exception as exc:  # pragma: no cover - artifact failure should not change scoring
@@ -374,6 +429,63 @@ def _persist_trajectory_before_scoring(
 
 
 _persist_openclaw_trajectory_before_scoring = _persist_trajectory_before_scoring
+
+
+def _canonical_scoring_summary(
+    *,
+    attack_eval: Any,
+    execution_error: Optional[str],
+    evaluation_error: Optional[str],
+    scoring_skipped: bool,
+) -> Dict[str, Any]:
+    summary: Dict[str, Any] = {
+        "scoring_skipped": scoring_skipped,
+        "execution_error": execution_error,
+        "evaluation_error": evaluation_error,
+    }
+    if attack_eval is not None:
+        payload = attack_eval.to_dict()
+        summary.update(
+            {
+                "score": payload.get("score"),
+                "attack_success": payload.get("attack_success"),
+                "defense_score": payload.get("defense_score"),
+                "is_success": payload.get("is_success"),
+                "evaluation_error": payload.get("error_message")
+                if payload.get("evaluation_error")
+                else evaluation_error,
+                "error_type": payload.get("error_type"),
+                "usage": payload.get("usage", {}),
+                "timing": payload.get("timing", {}),
+            }
+        )
+    return summary
+
+
+def _update_canonical_scoring_metadata(
+    *,
+    output_dir: Path,
+    result: Dict[str, Any],
+    attack_eval: Any,
+    execution_error: Optional[str],
+    evaluation_error: Optional[str],
+    scoring_skipped: bool,
+) -> None:
+    if not result.get("trajectory_artifacts"):
+        return
+    try:
+        update_canonical_trajectory_scoring_metadata(
+            output_dir=output_dir,
+            execution_result=result,
+            scoring=_canonical_scoring_summary(
+                attack_eval=attack_eval,
+                execution_error=execution_error,
+                evaluation_error=evaluation_error,
+                scoring_skipped=scoring_skipped,
+            ),
+        )
+    except Exception as exc:  # pragma: no cover - metadata update should not break runs
+        logger.warning("Failed to update canonical trajectory scoring metadata: %s", exc)
 
 
 def _invalid_attack_eval(error_message: str, *, error_type: str) -> Dict[str, Any]:
@@ -426,6 +538,8 @@ def _execute_and_evaluate_attempt(
     skip_scoring: bool = False,
     execution_retries: int = 0,
     retry_statuses: Sequence[str] = ("error", "timeout"),
+    canonical_output_dir: Optional[Path] = None,
+    canonical_suite: Optional[str] = None,
 ) -> Dict[str, Any]:
     execution_retries = max(0, int(execution_retries or 0))
     retry_statuses = tuple(status.lower() for status in retry_statuses)
@@ -525,6 +639,9 @@ def _execute_and_evaluate_attempt(
             scene_index=scene_index,
             model=model,
             judge_model=judge_model,
+            canonical_output_dir=canonical_output_dir,
+            canonical_suite=canonical_suite,
+            write_canonical=not will_retry,
         )
 
         if will_retry:
@@ -690,12 +807,28 @@ def run_benchmark(args: argparse.Namespace) -> None:
         sys.exit(2)
 
     runs_per_task = max(1, args.runs)
+    try:
+        selected_run_numbers = _normalize_run_numbers(
+            getattr(args, "run_number", None),
+            runs_per_task,
+        )
+    except ValueError as exc:
+        logger.error("❌ %s", exc)
+        sys.exit(2)
+    run_indices_to_execute = [number - 1 for number in selected_run_numbers]
+    scheduled_run_count = len(run_indices_to_execute)
+    if scheduled_run_count != runs_per_task:
+        logger.info(
+            "🎯 Targeted run selection enabled: run number(s) %s of %d",
+            ",".join(str(number) for number in selected_run_numbers),
+            runs_per_task,
+        )
     raw_run_workers = getattr(args, "run_workers", 1)
     run_workers = 1 if raw_run_workers is None else int(raw_run_workers)
     if run_workers < 1:
         logger.error("❌ --run-workers must be a positive integer")
         sys.exit(2)
-    effective_run_workers = min(run_workers, runs_per_task)
+    effective_run_workers = min(run_workers, scheduled_run_count)
     if effective_run_workers > 1 and not getattr(backend, "supports_parallel_runs", False):
         logger.error(
             "❌ Backend %s does not support same-task parallel runs; use --run-workers 1",
@@ -734,7 +867,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
     agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
     command = "actbench " + " ".join(sys.argv[1:])
     run_metadata = {
+        "suite": args.suite,
         "runs_per_task": runs_per_task,
+        "selected_run_numbers": list(selected_run_numbers),
+        "scheduled_run_count": scheduled_run_count,
         "run_workers": effective_run_workers,
         "requested_run_workers": run_workers,
         "command": command,
@@ -781,6 +917,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "judge_model": args.judge_model or REWARD_JUDGE_MODEL,
                 "suite": args.suite,
                 "runs_per_task": runs_per_task,
+                "selected_run_numbers": list(selected_run_numbers),
+                "scheduled_run_count": scheduled_run_count,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
                 "execution_retries": execution_retries,
@@ -958,16 +1096,18 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         skip_scoring=getattr(args, "skip_scoring", False),
                         execution_retries=execution_retries,
                         retry_statuses=retry_statuses,
+                        canonical_output_dir=output_dir,
+                        canonical_suite=_canonical_suite_for_task(args.suite, task),
                         run_index=run_index,
                         runs_per_task=runs_per_task,
                         run_workers=effective_run_workers,
                         worker_id=1,
                     )
-                    for run_index in range(runs_per_task)
+                    for run_index in run_indices_to_execute
                 ]
             else:
                 attempt_records = []
-                next_run_index = 0
+                next_run_position = 0
                 futures: Dict[Any, tuple[int, int]] = {}
 
                 def _submit_attempt(
@@ -990,6 +1130,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         skip_scoring=getattr(args, "skip_scoring", False),
                         execution_retries=execution_retries,
                         retry_statuses=retry_statuses,
+                        canonical_output_dir=output_dir,
+                        canonical_suite=_canonical_suite_for_task(args.suite, task),
                         run_index=run_index,
                         runs_per_task=runs_per_task,
                         run_workers=effective_run_workers,
@@ -999,14 +1141,15 @@ def run_benchmark(args: argparse.Namespace) -> None:
 
                 with ThreadPoolExecutor(max_workers=effective_run_workers) as executor:
                     for worker_id in range(1, effective_run_workers + 1):
-                        if next_run_index >= runs_per_task:
+                        if next_run_position >= scheduled_run_count:
                             break
+                        run_index = run_indices_to_execute[next_run_position]
                         _submit_attempt(
                             executor,
-                            run_index=next_run_index,
+                            run_index=run_index,
                             worker_id=worker_id,
                         )
-                        next_run_index += 1
+                        next_run_position += 1
 
                     while futures:
                         done, _ = wait(futures, return_when=FIRST_COMPLETED)
@@ -1040,13 +1183,14 @@ def run_benchmark(args: argparse.Namespace) -> None:
                                         stderr=message,
                                     )
                                 )
-                            if next_run_index < runs_per_task:
+                            if next_run_position < scheduled_run_count:
+                                run_index = run_indices_to_execute[next_run_position]
                                 _submit_attempt(
                                     executor,
-                                    run_index=next_run_index,
+                                    run_index=run_index,
                                     worker_id=worker_id,
                                 )
-                                next_run_index += 1
+                                next_run_position += 1
 
             for attempt_record in sorted(attempt_records, key=lambda item: item["run_index"]):
                 result = attempt_record["result"]
@@ -1078,6 +1222,14 @@ def run_benchmark(args: argparse.Namespace) -> None:
                             evaluation_error=evaluation_error,
                             scoring_skipped=scoring_skipped,
                         ),
+                    )
+                    _update_canonical_scoring_metadata(
+                        output_dir=output_dir,
+                        result=result,
+                        attack_eval=attack_eval,
+                        execution_error=execution_error,
+                        evaluation_error=evaluation_error,
+                        scoring_skipped=scoring_skipped,
                     )
 
                 _log_attempt_outcome(
@@ -1243,6 +1395,24 @@ def run_benchmark(args: argparse.Namespace) -> None:
             if training_recorder and result.get("training_artifact_key"):
                 run_dir = artifact_run_dir(str(result["training_artifact_key"]))
                 training_recorder.write_json(run_dir / "baseline.json", baseline or {})
+            trajectory_artifacts = result.get("trajectory_artifacts")
+            trajectory_links = None
+            if isinstance(trajectory_artifacts, dict):
+                trajectory_links = {
+                    key: trajectory_artifacts.get(key)
+                    for key in (
+                        "canonical_slot_id",
+                        "canonical_path",
+                        "canonical_absolute",
+                        "canonical_metadata_path",
+                        "canonical_metadata_absolute",
+                        "canonical_sha256",
+                        "canonical_size_bytes",
+                        "legacy_path",
+                        "legacy_absolute",
+                    )
+                    if trajectory_artifacts.get(key) is not None
+                }
             task = tasks_by_id[tid]
             behavior = infer_behavior_from_metadata(task.frontmatter or {}, path=task.file_path)
             task_entry = {
@@ -1264,6 +1434,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "usage": result.get("usage", {}),
                 "workspace": result["workspace"],
                 "training_artifact_key": result.get("training_artifact_key"),
+                "trajectory": trajectory_links,
                 "grading": grades_by_task_id[tid],
                 "attack_eval": attack_eval_by_task_id.get(tid),
                 "scoring_semantics": "actbench_ags",
@@ -1310,6 +1481,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "timestamp": time.time(),
             "suite": args.suite,
             "runs_per_task": runs_per_task,
+            "selected_run_numbers": list(selected_run_numbers),
+            "scheduled_run_count": scheduled_run_count,
             "run_workers": effective_run_workers,
             "requested_run_workers": run_workers,
             "execution_retries": execution_retries,
@@ -1324,12 +1497,21 @@ def run_benchmark(args: argparse.Namespace) -> None:
         if training_recorder:
             aggregate["training_artifact_dir"] = str(training_recorder.root)
             aggregate["training_manifest_path"] = str(training_recorder.root / "manifest.json")
+            aggregate["canonical_trajectory_root"] = "trajectories"
+            aggregate["trajectory_index_path"] = "trajectory_index.json"
+            aggregate["canonical_output_dir"] = str(output_dir)
 
         output_path = output_dir / f"{run_id}_{model_slug}.json"
-        output_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
+        atomic_write_json(output_path, aggregate)
         if training_recorder:
             training_recorder.write_json("aggregate_result.json", aggregate)
-            training_recorder.write_manifest({"aggregate_result": str(output_path)})
+            training_recorder.write_manifest(
+                {
+                    "aggregate_result": str(output_path),
+                    "canonical_trajectory_root": str(output_dir / "trajectories"),
+                    "trajectory_index": str(output_dir / "trajectory_index.json"),
+                }
+            )
 
         # Compact, machine-readable per-task attack summary: lets curation tooling
         # read ags/py/llm/runs/attack_reproduced per task without grepping the
@@ -1342,6 +1524,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "run_id": run_id,
                 "suite": args.suite,
                 "runs_per_task": runs_per_task,
+                "selected_run_numbers": list(selected_run_numbers),
+                "scheduled_run_count": scheduled_run_count,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
                 "execution_retries": execution_retries,

@@ -469,6 +469,7 @@ def _base_result_metadata(
     task = _as_dict(trajectory.get("task"))
     backend = _as_dict(trajectory.get("backend"))
     execution = _as_dict(trajectory.get("execution"))
+    canonical = _as_dict(trajectory.get("canonical"))
     scoring_inputs = _as_dict(context.get("scoring_inputs"))
     behavior_context = _as_dict(context.get("behavior_context"))
     transcript_entries = _as_list(context.get("transcript_entries"))
@@ -478,6 +479,8 @@ def _base_result_metadata(
         "trajectory_schema_version": context.get("schema_version"),
         "trajectory_path": str(trajectory_path) if trajectory_path is not None else None,
         "trajectory_id": trajectory.get("trajectory_id"),
+        "canonical_slot_id": canonical.get("slot_id"),
+        "canonical_trajectory_path": canonical.get("trajectory_path"),
         "task_id": task.get("task_id") or execution.get("task_id"),
         "backend": backend.get("name") or execution.get("backend"),
         "model": backend.get("model") or scoring_inputs.get("target_model"),
@@ -817,6 +820,46 @@ def _error_result(path: Path, exc: Exception, *, mode: str) -> Dict[str, Any]:
     }
 
 
+def _is_canonical_trajectory_path(path: Path) -> bool:
+    return "trajectories" in path.resolve().parts
+
+
+def _dedupe_trajectory_paths(paths: Iterable[Path | str]) -> List[Path]:
+    """Prefer canonical copies when legacy and canonical trajectories share a slot."""
+
+    ordered: list[Path] = []
+    selected: dict[str, tuple[int, int, Path]] = {}
+    for raw_path in paths:
+        path = Path(raw_path)
+        identity = f"path:{path.resolve()}"
+        priority = 1
+        try:
+            with path.open("r", encoding="utf-8") as handle:
+                trajectory = json.load(handle)
+        except Exception:
+            trajectory = None
+        if isinstance(trajectory, dict):
+            canonical = _as_dict(trajectory.get("canonical"))
+            slot_id = canonical.get("slot_id")
+            if slot_id:
+                identity = f"canonical:{slot_id}"
+                execution = _as_dict(trajectory.get("execution"))
+                retry = _as_dict(_as_dict(execution.get("extra")).get("execution_retry"))
+                if retry.get("superseded") is True:
+                    priority = 0
+                else:
+                    priority = 2 if _is_canonical_trajectory_path(path) else 1
+        if identity not in selected:
+            selected[identity] = (priority, len(ordered), path)
+            ordered.append(path)
+            continue
+        existing_priority, existing_position, _existing_path = selected[identity]
+        if priority > existing_priority:
+            selected[identity] = (priority, existing_position, path)
+            ordered[existing_position] = path
+    return ordered
+
+
 def score_trajectory_files(
     paths: Iterable[Path | str],
     *,
@@ -826,7 +869,7 @@ def score_trajectory_files(
 ) -> Dict[str, Any]:
     mode_fields = _mode_fields(mode)
     results: List[Dict[str, Any]] = []
-    for raw_path in paths:
+    for raw_path in _dedupe_trajectory_paths(paths):
         path = Path(raw_path)
         try:
             results.append(

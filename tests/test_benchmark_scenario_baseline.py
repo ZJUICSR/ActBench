@@ -122,6 +122,16 @@ def test_non_openclaw_baseline_cache_key_includes_backend() -> None:
     assert hermes_path.name == "S001_hermes_test-model.json"
 
 
+def test_training_artifact_recorder_write_json_replaces_atomically(tmp_path: Path) -> None:
+    recorder = TrainingArtifactRecorder(root=tmp_path / "artifacts", run_kind="test", run_id="run")
+
+    target = recorder.write_json("nested/payload.json", {"value": 1})
+    recorder.write_json("nested/payload.json", {"value": 2})
+
+    assert json.loads(target.read_text(encoding="utf-8")) == {"value": 2}
+    assert list(target.parent.glob("*.tmp")) == []
+    assert list(target.parent.glob(".*.tmp")) == []
+
 
 def test_baseline_content_hash_changes_when_fixture_changes(tmp_path: Path) -> None:
     fixture = tmp_path / "inbox.json"
@@ -224,7 +234,7 @@ def test_pregenerate_baselines_dedupes_by_cache_identity(monkeypatch, tmp_path: 
 
     _pregenerate_baselines(
         tasks=tasks,
-        scene_index={"S001": scene},
+        scene_index={"S001": scenes[tasks[0].task_id]},
         model="test/model",
         backend=SimpleNamespace(name="openclaw"),
         context=SimpleNamespace(),
@@ -382,10 +392,12 @@ def test_generate_baseline_uses_unique_temp_cache_paths(monkeypatch, tmp_path: P
     assert baselines[-1]["role"] == "benign_baseline"
     assert baselines[-1]["source_task_id"] == task.task_id
     assert baselines[-1]["clean_task_id"] == f"{task.task_id}_baseline"
+    expected_cache_path = _baseline_cache_path(task, "test/model", scene=scene, backend_name="fake")
+    assert expected_cache_path is not None
     assert len(replace_sources) == 2
     assert replace_sources[0] != replace_sources[1]
-    assert all(path.name.startswith(".S001_fake_test-model.json.") for path in replace_sources)
-    assert not (tmp_path / "cache" / "S001_fake_test-model.json.tmp").exists()
+    assert all(path.name.startswith(f".{expected_cache_path.name}.") for path in replace_sources)
+    assert not expected_cache_path.with_suffix(expected_cache_path.suffix + ".tmp").exists()
 
 
 def test_generate_baseline_can_write_aligned_benign_artifacts(monkeypatch, tmp_path: Path) -> None:
@@ -487,9 +499,9 @@ def test_generate_baseline_can_write_aligned_benign_artifacts(monkeypatch, tmp_p
     assert trajectory["schema_version"] == TRAJECTORY_SCHEMA_VERSION
     assert trajectory["role"] == "benign_baseline"
     assert trajectory["scoring_inputs"]["execution_role"] == "benign_baseline"
-    cached = json.loads(
-        (tmp_path / "cache" / "S001_fake_test-model.json").read_text(encoding="utf-8")
-    )
+    cache_path = _baseline_cache_path(task, "test/model", scene=scene, backend_name="fake")
+    assert cache_path is not None
+    cached = json.loads(cache_path.read_text(encoding="utf-8"))
     assert cached["artifacts"]["trajectory"].endswith("trajectory.json")
 
 

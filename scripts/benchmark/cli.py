@@ -78,6 +78,15 @@ def _parse_args() -> argparse.Namespace:
         help="Number of same-task repeat runs to execute concurrently (default: 1)",
     )
     parser.add_argument(
+        "--run-number",
+        action="append",
+        default=None,
+        help=(
+            "Only execute selected 1-based repeat run number(s); may be repeated or "
+            "comma-separated, e.g. --run-number 2 or --run-number 1,3"
+        ),
+    )
+    parser.add_argument(
         "--judge-model",
         "--reward-judge",
         "--judge",
@@ -147,6 +156,18 @@ def _parse_args() -> argparse.Namespace:
         parser.error("--execution-retries must be a non-negative integer")
     if args.execution_retries > 0 and not any(part.strip() for part in args.retry_status.split(",")):
         parser.error("--retry-status must include at least one status when --execution-retries > 0")
+    if args.run_number:
+        for raw_value in args.run_number:
+            for part in str(raw_value).split(","):
+                text = part.strip()
+                if not text:
+                    continue
+                try:
+                    number = int(text)
+                except ValueError:
+                    parser.error(f"--run-number must be a positive integer, got {text!r}")
+                if number < 1:
+                    parser.error("--run-number must be a positive integer")
     return args
 
 
