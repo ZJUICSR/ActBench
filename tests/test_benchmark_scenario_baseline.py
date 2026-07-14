@@ -13,6 +13,9 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import benchmark.baseline as baseline_module  # noqa: E402
+from benchmark.artifacts import artifact_run_dir, write_execution_artifacts  # noqa: E402
+from benchmark.backends.base import BackendRunContext  # noqa: E402
+from benchmark.backends.fake import FakeBackend  # noqa: E402
 from benchmark.baseline import (  # noqa: E402
     _baseline_cache_path,
     _baseline_written_content,
@@ -23,7 +26,9 @@ from benchmark.baseline import (  # noqa: E402
     baseline_content_hash,
 )
 from benchmark.task_loading import _build_scene_index  # noqa: E402
+from benchmark.trajectories import TRAJECTORY_SCHEMA_VERSION, persist_trajectory  # noqa: E402
 from lib_tasks import Task  # noqa: E402
+from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, reset_recorder  # noqa: E402
 
 
 def _task(scenario: str = "S001") -> Task:
@@ -210,6 +215,46 @@ def test_pregenerate_baselines_dedupes_by_cache_identity(monkeypatch, tmp_path: 
     assert calls == ["task_B6_T01", "task_B6_T02"]
 
 
+def test_pregenerate_baselines_force_regenerates_valid_cache(monkeypatch, tmp_path: Path) -> None:
+    task = _task()
+    scene = {"id": "S001", "user_prompt": "Do it.", "workspace_files": []}
+    calls: list[dict] = []
+    monkeypatch.setattr(baseline_module, "_scene_for_task", lambda task, scene_index: scene)
+    monkeypatch.setattr(
+        baseline_module,
+        "_load_baseline_for_task",
+        lambda *args, **kwargs: {"scene_id": "S001", "content_hash": "valid"},
+    )
+    monkeypatch.setattr(
+        baseline_module,
+        "_generate_baseline_for_task",
+        lambda **kwargs: calls.append(kwargs),
+    )
+
+    _pregenerate_baselines(
+        tasks=[task],
+        scene_index={"S001": scene},
+        model="test/model",
+        backend=SimpleNamespace(name="openclaw"),
+        context=SimpleNamespace(),
+        run_id="run",
+    )
+    assert calls == []
+
+    _pregenerate_baselines(
+        tasks=[task],
+        scene_index={"S001": scene},
+        model="test/model",
+        backend=SimpleNamespace(name="openclaw"),
+        context=SimpleNamespace(),
+        run_id="run",
+        force_regenerate=True,
+    )
+
+    assert len(calls) == 1
+    assert calls[0]["force_regenerate"] is True
+
+
 def test_pregenerate_baselines_uses_context_factory_metadata(monkeypatch, tmp_path: Path) -> None:
     task = _task()
     scene = {"id": "S001", "user_prompt": "Do it.", "workspace_files": []}
@@ -299,21 +344,134 @@ def test_generate_baseline_uses_unique_temp_cache_paths(monkeypatch, tmp_path: P
     monkeypatch.setattr(baseline_module, "_load_baseline_for_task", lambda *args, **kwargs: None)
     monkeypatch.setattr(baseline_module.os, "replace", recording_replace)
 
+    baselines = []
     for index in range(2):
-        baseline_module._generate_baseline_for_task(
-            task=task,
-            scene=scene,
-            model="test/model",
-            backend=Backend(),
-            context=SimpleNamespace(metadata={}),
-            run_id="run",
-            attempt_run_id=f"run_bl_S001_{index}",
+        baselines.append(
+            baseline_module._generate_baseline_for_task(
+                task=task,
+                scene=scene,
+                model="test/model",
+                backend=Backend(),
+                context=SimpleNamespace(metadata={}),
+                run_id="run",
+                attempt_run_id=f"run_bl_S001_{index}",
+            )
         )
 
+    assert baselines[-1] is not None
+    assert baselines[-1]["schema_version"] == baseline_module.BASELINE_SCHEMA_VERSION
+    assert baselines[-1]["role"] == "benign_baseline"
+    assert baselines[-1]["source_task_id"] == task.task_id
+    assert baselines[-1]["clean_task_id"] == f"{task.task_id}_baseline"
     assert len(replace_sources) == 2
     assert replace_sources[0] != replace_sources[1]
     assert all(path.name.startswith(".S001_fake_test-model.json.") for path in replace_sources)
     assert not (tmp_path / "cache" / "S001_fake_test-model.json.tmp").exists()
+
+
+def test_generate_baseline_can_write_aligned_benign_artifacts(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(baseline_module, "BASELINE_CACHE_DIR", tmp_path / "cache")
+    task = _task()
+    scene = {
+        "id": "S001",
+        "user_prompt": "Do clean task.",
+        "workspace_files": [{"path": "README.md", "content": "clean"}],
+        "attack_check_code": "def check_attack_success(transcript_text, workspace_path): return 0.0",
+    }
+    recorder = TrainingArtifactRecorder(
+        root=tmp_path / "artifacts",
+        run_kind="actbench",
+        run_id="run_001",
+    )
+    context = BackendRunContext(
+        backend="fake",
+        model="test/model",
+        run_id="run_001",
+        run_root=tmp_path / "run_root",
+        skill_dir=ROOT,
+        agent_id="bench-test-model",
+        agent_workspace=tmp_path / "agent_workspace",
+        timeout_multiplier=1.0,
+        metadata={
+            "attempt_run_id": "run_001_bl_S001",
+            "run_index": 1,
+            "run_number": 1,
+            "runs_per_task": 1,
+            "run_worker_id": 1,
+            "run_worker_label": "w1",
+            "run_workers": 1,
+            "baseline": True,
+            "execution_role": "benign_baseline",
+        },
+    )
+
+    def artifact_callback(**kwargs):
+        result = kwargs["result"]
+        baseline = kwargs["baseline"]
+        run_key = result["training_artifact_key"]
+        refs = write_execution_artifacts(
+            recorder=recorder,
+            backend_name=kwargs["backend_name"],
+            training_artifact_key=run_key,
+            execution_result=result,
+            evaluation_payload={
+                "schema_version": "actbench.baseline_evaluation.v1",
+                "role": "benign_baseline",
+                "baseline_success": True,
+            },
+            baseline_payload=baseline,
+        )
+        baseline["artifacts"] = refs
+        persist_trajectory(
+            recorder=recorder,
+            task=kwargs["clean_task"],
+            execution_result=result,
+            context=kwargs["context"],
+            scene_index={"S001": kwargs["scene"]},
+            model=kwargs["model"],
+            judge_model=None,
+            scene_override=kwargs["scene"],
+            baseline_override=None,
+            execution_role="benign_baseline",
+        )
+
+    token = activate_recorder(recorder)
+    try:
+        baseline = baseline_module._generate_baseline_for_task(
+            task=task,
+            scene=scene,
+            model="test/model",
+            backend=FakeBackend(),
+            context=context,
+            run_id="run_001",
+            attempt_run_id="run_001_bl_S001",
+            artifact_callback=artifact_callback,
+        )
+    finally:
+        reset_recorder(token)
+
+    assert baseline is not None
+    assert baseline["schema_version"] == baseline_module.BASELINE_SCHEMA_VERSION
+    assert baseline["role"] == "benign_baseline"
+    assert baseline["artifacts"]["agent_execution"].endswith("agent_execution.json")
+    run_dir = recorder.root / artifact_run_dir(str(baseline["training_artifact_key"]))
+    assert (run_dir / "task.json").exists()
+    assert (run_dir / "agent_execution.json").exists()
+    assert (run_dir / "evaluation.json").exists()
+    assert (run_dir / "baseline.json").exists()
+    assert (run_dir / "trajectory.json").exists()
+    assert (run_dir / "workspace_before" / "files_manifest.json").exists()
+    assert (run_dir / "workspace_after" / "files_manifest.json").exists()
+    assert (run_dir / "api" / "endpoints.json").exists()
+    assert (run_dir / "api" / "audit.json").exists()
+    trajectory = json.loads((run_dir / "trajectory.json").read_text(encoding="utf-8"))
+    assert trajectory["schema_version"] == TRAJECTORY_SCHEMA_VERSION
+    assert trajectory["role"] == "benign_baseline"
+    assert trajectory["scoring_inputs"]["execution_role"] == "benign_baseline"
+    cached = json.loads(
+        (tmp_path / "cache" / "S001_fake_test-model.json").read_text(encoding="utf-8")
+    )
+    assert cached["artifacts"]["trajectory"].endswith("trajectory.json")
 
 
 def test_baseline_written_content_hashes_relative_written_files(tmp_path: Path) -> None:

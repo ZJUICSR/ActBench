@@ -25,6 +25,7 @@ BASELINE_CACHE_DIR = Path(
         str(Path(__file__).resolve().parents[2] / "results" / "benign_baselines"),
     )
 )
+BASELINE_SCHEMA_VERSION = "actbench.benign_baseline.v2"
 
 
 def _resolve_task_scenario(task: Task) -> Optional[str]:
@@ -266,6 +267,8 @@ def _generate_baseline_for_task(
     context: BackendRunContext,
     run_id: str,
     attempt_run_id: str | None = None,
+    force_regenerate: bool = False,
+    artifact_callback: Callable[..., None] | None = None,
 ) -> Optional[Dict[str, Any]]:
     """Run a benign (no-attack) execution for the scene and cache the result.
 
@@ -284,7 +287,7 @@ def _generate_baseline_for_task(
         return None
     expected_hash = baseline_content_hash(task, scene)
     cached = _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name)
-    if cached is not None:
+    if cached is not None and not force_regenerate:
         return cached
 
     clean_workspace = scene.get("workspace_files") or []
@@ -337,6 +340,11 @@ def _generate_baseline_for_task(
         )
         return None
 
+    result.setdefault("execution_role", "benign_baseline")
+    result.setdefault("source_task_id", task.task_id)
+    result.setdefault("scene_id", scenario)
+    result["baseline_cache_path"] = str(cache_path)
+
     transcript = result.get("transcript") or []
     file_ops = _extract_transcript_file_ops(transcript)
     files_written_content = _baseline_written_content(result.get("workspace"), file_ops["files_written"])
@@ -349,18 +357,41 @@ def _generate_baseline_for_task(
         )
 
     baseline = {
+        "schema_version": BASELINE_SCHEMA_VERSION,
+        "role": "benign_baseline",
         "scene_id": scenario,
+        "source_task_id": task.task_id,
+        "clean_task_id": clean_task.task_id,
         "target_model": model,
         "backend": backend.name,
         "content_hash": expected_hash,
         "user_prompt": user_prompt,
+        "status": result.get("status"),
         "transcript_summary": _summarize_transcript(transcript),
         "transcript": transcript,
         "files_read": file_ops["files_read"],
         "files_written": file_ops["files_written"],
         "files_written_content": files_written_content,
         "execution_time": result.get("execution_time"),
+        "training_artifact_key": result.get("training_artifact_key"),
     }
+
+    if artifact_callback is not None:
+        try:
+            artifact_callback(
+                source_task=task,
+                clean_task=clean_task,
+                scene=scene,
+                scene_id=scenario,
+                result=result,
+                baseline=baseline,
+                context=context,
+                model=model,
+                backend_name=backend.name,
+                cache_path=cache_path,
+            )
+        except Exception as exc:  # pragma: no cover - artifact failure should not break scoring
+            logger.warning("Failed to write baseline artifacts for %s: %s", scenario, exc)
 
     tmp_path: Path | None = None
     try:
@@ -405,6 +436,8 @@ def _pregenerate_baselines(
     context: BackendRunContext,
     run_id: str,
     context_factory: Callable[[Task, str, str, int], BackendRunContext] | None = None,
+    force_regenerate: bool = False,
+    artifact_callback: Callable[..., None] | None = None,
 ) -> None:
     """Pre-generate benign baselines for any tasks that don't have a cached one.
 
@@ -426,7 +459,9 @@ def _pregenerate_baselines(
         if cache_key in seen_cache_keys:
             continue
         seen_cache_keys.add(cache_key)
-        if scene and _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name) is None:
+        if force_regenerate:
+            missing.append(task)
+        elif scene and _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name) is None:
             missing.append(task)
         elif not scene and cache_path is not None and not cache_path.exists():
             missing.append(task)
@@ -435,7 +470,10 @@ def _pregenerate_baselines(
         logger.info("🧪 Baselines: all %d cache entries already cached", len(seen_cache_keys))
         return
 
-    logger.info("🧪 Generating baselines for %d scenes without a cache entry...", len(missing))
+    if force_regenerate:
+        logger.info("🧪 Regenerating baselines for %d scenes...", len(missing))
+    else:
+        logger.info("🧪 Generating baselines for %d scenes without a cache entry...", len(missing))
     for baseline_index, task in enumerate(missing):
         scenario = _resolve_task_scenario(task)
         scene = _scene_for_task(task, scene_index)
@@ -457,4 +495,6 @@ def _pregenerate_baselines(
             context=baseline_context,
             run_id=run_id,
             attempt_run_id=attempt_run_id,
+            force_regenerate=force_regenerate,
+            artifact_callback=artifact_callback,
         )

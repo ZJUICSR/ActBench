@@ -13,7 +13,7 @@ import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from dataclasses import replace
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 from lib_reward import ATTACK_SUCCESS_THRESHOLD, REWARD_JUDGE_MODEL
 from lib_gateway_lock import acquire as _gw_acquire, release as _gw_release
@@ -23,9 +23,9 @@ from lib_training_artifacts import (
     TrainingArtifactRecorder,
     activate_recorder,
     get_current_recorder,
-    safe_artifact_name,
 )
 
+from benchmark.artifacts import artifact_run_dir, write_execution_artifacts
 from benchmark.backends.base import BackendInitializationError, BackendRunContext
 from benchmark.backends.common import execution_error_result
 from benchmark.backends.registry import get_backend
@@ -62,6 +62,34 @@ def _execution_feedback(result: Dict[str, Any], backend_name: str) -> Dict[str, 
 
 def _attempt_run_id(run_id: str, run_index: int) -> str:
     return f"{run_id}-{run_index + 1}"
+
+
+def _retry_attempt_run_id(run_id: str, run_index: int, retry_attempt_index: int) -> str:
+    base_attempt_id = _attempt_run_id(run_id, run_index)
+    if retry_attempt_index <= 0:
+        return base_attempt_id
+    return f"{base_attempt_id}-retry{retry_attempt_index}"
+
+
+def _normalize_retry_statuses(raw_statuses: Any) -> tuple[str, ...]:
+    if raw_statuses is None:
+        raw_statuses = "error,timeout"
+    if isinstance(raw_statuses, str):
+        parts = raw_statuses.split(",")
+    else:
+        try:
+            parts = list(raw_statuses)
+        except TypeError:
+            parts = [raw_statuses]
+    statuses = []
+    seen = set()
+    for part in parts:
+        status = str(part).strip().lower()
+        if not status or status in seen:
+            continue
+        statuses.append(status)
+        seen.add(status)
+    return tuple(statuses)
 
 
 def _attempt_context(
@@ -110,6 +138,203 @@ def _attempt_error_record(
         "attack_eval": None,
         "execution_error": stderr,
         "evaluation_error": None,
+    }
+
+
+def _attempt_evaluation_payload(
+    *,
+    attack_eval: Any,
+    execution_error: Optional[str],
+    evaluation_error: Optional[str],
+    scoring_skipped: bool = False,
+) -> Dict[str, Any]:
+    if attack_eval is not None:
+        return attack_eval.to_dict()
+    if scoring_skipped:
+        return {
+            "schema_version": "actbench.evaluation_skipped.v1",
+            "skipped": True,
+            "reason": "--skip-scoring",
+        }
+    return {
+        "error": execution_error or evaluation_error,
+        "error_type": (
+            "execution_error"
+            if execution_error
+            else "evaluation_error" if evaluation_error else "missing_evaluation"
+        ),
+    }
+
+
+def _retry_context_metadata(
+    *,
+    base_attempt_run_id: str,
+    attempt_run_id: str,
+    retry_attempt_index: int,
+    execution_retries: int,
+    retry_statuses: Sequence[str],
+    previous_status: Optional[str],
+) -> Dict[str, Any]:
+    metadata: Dict[str, Any] = {
+        "base_attempt_run_id": base_attempt_run_id,
+        "execution_retries": execution_retries,
+        "retry_statuses": list(retry_statuses),
+        "retry_attempt_index": retry_attempt_index,
+        "retry_attempt_number": retry_attempt_index + 1,
+        "retry_max_attempts": execution_retries + 1,
+    }
+    if attempt_run_id != base_attempt_run_id:
+        metadata["attempt_run_id"] = attempt_run_id
+    if previous_status:
+        metadata["retry_reason_status"] = previous_status
+    return metadata
+
+
+def _annotate_retry_result(
+    *,
+    result: Dict[str, Any],
+    base_attempt_run_id: str,
+    attempt_run_id: str,
+    retry_attempt_index: int,
+    execution_retries: int,
+    retry_statuses: Sequence[str],
+    previous_status: Optional[str],
+    will_retry: bool,
+    next_attempt_run_id: Optional[str],
+    retry_history: Sequence[Dict[str, Any]],
+) -> Dict[str, Any]:
+    status = str(result.get("status") or "").lower()
+    payload: Dict[str, Any] = {
+        "enabled": execution_retries > 0,
+        "max_retries": execution_retries,
+        "max_attempts": execution_retries + 1,
+        "retry_statuses": list(retry_statuses),
+        "base_attempt_run_id": base_attempt_run_id,
+        "attempt_run_id": attempt_run_id,
+        "attempt_index": retry_attempt_index,
+        "attempt_number": retry_attempt_index + 1,
+        "status": status,
+        "will_retry": will_retry,
+        "superseded": will_retry,
+    }
+    if previous_status:
+        payload["retry_reason_status"] = previous_status
+    if will_retry and next_attempt_run_id:
+        payload["superseded_by_attempt_run_id"] = next_attempt_run_id
+    if retry_history:
+        payload["history"] = list(retry_history)
+        payload["attempts_made"] = len(retry_history) + 1
+    else:
+        payload["attempts_made"] = 1
+    result["execution_retry"] = payload
+
+    backend_metadata = result.get("backend_metadata")
+    if not isinstance(backend_metadata, dict):
+        backend_metadata = {}
+    backend_metadata.update(
+        {
+            "base_attempt_run_id": base_attempt_run_id,
+            "execution_retries": execution_retries,
+            "retry_statuses": list(retry_statuses),
+            "retry_attempt_index": retry_attempt_index,
+            "retry_attempt_number": retry_attempt_index + 1,
+            "retry_max_attempts": execution_retries + 1,
+            "retry_status": status,
+            "retry_will_retry": will_retry,
+        }
+    )
+    if previous_status:
+        backend_metadata["retry_reason_status"] = previous_status
+    if will_retry and next_attempt_run_id:
+        backend_metadata["retry_superseded_by_attempt_run_id"] = next_attempt_run_id
+    result["backend_metadata"] = backend_metadata
+    return payload
+
+
+def _retry_history_entry(
+    *,
+    result: Dict[str, Any],
+    execution_error: Optional[str],
+) -> Dict[str, Any]:
+    retry_payload = result.get("execution_retry") if isinstance(result, dict) else None
+    if not isinstance(retry_payload, dict):
+        retry_payload = {}
+    return {
+        "attempt_run_id": retry_payload.get("attempt_run_id"),
+        "attempt_index": retry_payload.get("attempt_index"),
+        "attempt_number": retry_payload.get("attempt_number"),
+        "status": result.get("status"),
+        "timed_out": result.get("timed_out"),
+        "exit_code": result.get("exit_code"),
+        "execution_time": result.get("execution_time"),
+        "training_artifact_key": result.get("training_artifact_key"),
+        "execution_error": execution_error,
+        "superseded_by_attempt_run_id": retry_payload.get("superseded_by_attempt_run_id"),
+    }
+
+
+def _superseded_retry_evaluation_payload(
+    *,
+    result: Dict[str, Any],
+    execution_error: Optional[str],
+) -> Dict[str, Any]:
+    return {
+        "schema_version": "actbench.execution_retry_superseded.v1",
+        "skipped": True,
+        "reason": "execution_retry_superseded",
+        "superseded": True,
+        "retry": result.get("execution_retry", {}),
+        "execution_status": result.get("status"),
+        "execution_error": execution_error,
+    }
+
+
+def _write_superseded_retry_artifacts(
+    *,
+    backend_name: str,
+    result: Dict[str, Any],
+    execution_error: Optional[str],
+) -> None:
+    recorder = get_current_recorder()
+    if recorder is None:
+        return
+    training_artifact_key = result.get("training_artifact_key")
+    if not training_artifact_key:
+        return
+    try:
+        write_execution_artifacts(
+            recorder=recorder,
+            backend_name=backend_name,
+            training_artifact_key=str(training_artifact_key),
+            execution_result=result,
+            evaluation_payload=_superseded_retry_evaluation_payload(
+                result=result,
+                execution_error=execution_error,
+            ),
+        )
+    except Exception as exc:  # pragma: no cover - artifact failure should not break retries
+        logger.warning("Failed to write superseded retry artifacts for %s: %s", training_artifact_key, exc)
+
+
+def _baseline_evaluation_payload(
+    *,
+    source_task: Task,
+    clean_task: Task,
+    scene_id: Optional[str],
+    baseline: Dict[str, Any],
+    execution_result: Dict[str, Any],
+) -> Dict[str, Any]:
+    return {
+        "schema_version": "actbench.baseline_evaluation.v1",
+        "role": "benign_baseline",
+        "source_task_id": source_task.task_id,
+        "clean_task_id": clean_task.task_id,
+        "scene_id": scene_id,
+        "status": execution_result.get("status"),
+        "baseline_success": execution_result.get("status") == "success",
+        "files_read": baseline.get("files_read", []),
+        "files_written": baseline.get("files_written", []),
+        "execution_time": execution_result.get("execution_time"),
     }
 
 
@@ -198,72 +423,166 @@ def _execute_and_evaluate_attempt(
     runs_per_task: int,
     run_workers: int,
     worker_id: int,
+    skip_scoring: bool = False,
+    execution_retries: int = 0,
+    retry_statuses: Sequence[str] = ("error", "timeout"),
 ) -> Dict[str, Any]:
-    attempt_id = _attempt_run_id(context.run_id, run_index)
-    attempt_context = _attempt_context(
-        context,
-        attempt_run_id=attempt_id,
-        run_index=run_index,
-        runs_per_task=runs_per_task,
-        run_workers=run_workers,
-        worker_id=worker_id,
-    )
-    logger.info("\n%s", "=" * 80)
-    logger.info(
-        "📋 Task %s (Run %s/%s, worker %s/%s)",
-        task.task_id,
-        run_index + 1,
-        runs_per_task,
-        attempt_context.metadata["run_worker_id"],
-        run_workers,
-    )
-    logger.info("%s", "=" * 80)
-    execution_error = None
-    evaluation_error = None
-    try:
-        result = backend.execute_task(
-            task=task,
-            context=attempt_context,
+    execution_retries = max(0, int(execution_retries or 0))
+    retry_statuses = tuple(status.lower() for status in retry_statuses)
+    retry_status_set = set(retry_statuses)
+    base_attempt_id = _attempt_run_id(context.run_id, run_index)
+    previous_status: Optional[str] = None
+    retry_history: list[Dict[str, Any]] = []
+
+    for retry_attempt_index in range(execution_retries + 1):
+        attempt_id = _retry_attempt_run_id(context.run_id, run_index, retry_attempt_index)
+        extra_metadata = None
+        if execution_retries or retry_attempt_index:
+            extra_metadata = _retry_context_metadata(
+                base_attempt_run_id=base_attempt_id,
+                attempt_run_id=attempt_id,
+                retry_attempt_index=retry_attempt_index,
+                execution_retries=execution_retries,
+                retry_statuses=retry_statuses,
+                previous_status=previous_status,
+            )
+        attempt_context = _attempt_context(
+            context,
             attempt_run_id=attempt_id,
+            run_index=run_index,
+            runs_per_task=runs_per_task,
+            run_workers=run_workers,
+            worker_id=worker_id,
+            extra_metadata=extra_metadata,
         )
-    except Exception as exc:
-        execution_error = str(exc)
-        logger.warning("Task execution failed for %s, continuing: %s", task.task_id, exc)
-        result = execution_error_result(
+        logger.info("\n%s", "=" * 80)
+        if execution_retries:
+            logger.info(
+                "📋 Task %s (Run %s/%s, worker %s/%s, execution attempt %s/%s)",
+                task.task_id,
+                run_index + 1,
+                runs_per_task,
+                attempt_context.metadata["run_worker_id"],
+                run_workers,
+                retry_attempt_index + 1,
+                execution_retries + 1,
+            )
+        else:
+            logger.info(
+                "📋 Task %s (Run %s/%s, worker %s/%s)",
+                task.task_id,
+                run_index + 1,
+                runs_per_task,
+                attempt_context.metadata["run_worker_id"],
+                run_workers,
+            )
+        logger.info("%s", "=" * 80)
+        execution_error = None
+        evaluation_error = None
+        try:
+            result = backend.execute_task(
+                task=task,
+                context=attempt_context,
+                attempt_run_id=attempt_id,
+            )
+        except Exception as exc:
+            execution_error = str(exc)
+            logger.warning("Task execution failed for %s, continuing: %s", task.task_id, exc)
+            result = execution_error_result(
+                context=attempt_context,
+                task=task,
+                stderr=execution_error,
+            )
+
+        status = str(result.get("status") or "").lower()
+        will_retry = retry_attempt_index < execution_retries and status in retry_status_set
+        next_attempt_id = (
+            _retry_attempt_run_id(context.run_id, run_index, retry_attempt_index + 1)
+            if will_retry
+            else None
+        )
+        if execution_retries > 0 or retry_attempt_index > 0 or retry_history:
+            _annotate_retry_result(
+                result=result,
+                base_attempt_run_id=base_attempt_id,
+                attempt_run_id=attempt_id,
+                retry_attempt_index=retry_attempt_index,
+                execution_retries=execution_retries,
+                retry_statuses=retry_statuses,
+                previous_status=previous_status,
+                will_retry=will_retry,
+                next_attempt_run_id=next_attempt_id,
+                retry_history=retry_history,
+            )
+        if retry_history:
+            result["retry_history"] = list(retry_history)
+
+        _persist_trajectory_before_scoring(
+            backend=backend,
+            task=task,
+            result=result,
             context=attempt_context,
-            task=task,
-            stderr=execution_error,
-        )
-    _persist_trajectory_before_scoring(
-        backend=backend,
-        task=task,
-        result=result,
-        context=attempt_context,
-        scene_index=scene_index,
-        model=model,
-        judge_model=judge_model,
-    )
-    try:
-        attack_eval = _evaluate_attack_for_task(
-            task=task,
-            execution_result=result,
             scene_index=scene_index,
             model=model,
             judge_model=judge_model,
-            verbose=verbose,
-            backend_name=backend.name,
         )
-    except Exception as exc:  # noqa: BLE001 - keep execution artifacts linked to failed scoring
-        evaluation_error = str(exc)
-        logger.warning("Attack evaluation failed for %s, continuing: %s", task.task_id, exc)
+
+        if will_retry:
+            _write_superseded_retry_artifacts(
+                backend_name=backend.name,
+                result=result,
+                execution_error=execution_error,
+            )
+            retry_entry = _retry_history_entry(result=result, execution_error=execution_error)
+            retry_history.append(retry_entry)
+            logger.warning(
+                "Retrying %s run %s/%s after status=%s (attempt %s/%s, next %s)",
+                task.task_id,
+                run_index + 1,
+                runs_per_task,
+                status,
+                retry_attempt_index + 1,
+                execution_retries + 1,
+                next_attempt_id,
+            )
+            previous_status = status
+            continue
+
         attack_eval = None
-    return {
-        "run_index": run_index,
-        "result": result,
-        "attack_eval": attack_eval,
-        "execution_error": execution_error,
-        "evaluation_error": evaluation_error,
-    }
+        if skip_scoring:
+            logger.info("Skipping inline attack scoring for %s (--skip-scoring)", task.task_id)
+        else:
+            try:
+                attack_eval = _evaluate_attack_for_task(
+                    task=task,
+                    execution_result=result,
+                    scene_index=scene_index,
+                    model=model,
+                    judge_model=judge_model,
+                    verbose=verbose,
+                    backend_name=backend.name,
+                )
+            except Exception as exc:  # noqa: BLE001 - keep execution artifacts linked to failed scoring
+                evaluation_error = str(exc)
+                logger.warning("Attack evaluation failed for %s, continuing: %s", task.task_id, exc)
+                attack_eval = None
+        return {
+            "run_index": run_index,
+            "result": result,
+            "attack_eval": attack_eval,
+            "execution_error": execution_error,
+            "evaluation_error": evaluation_error,
+            "scoring_skipped": skip_scoring,
+            "retry_history": retry_history,
+        }
+
+    # The loop always returns on the last allowed attempt. This is defensive only.
+    return _attempt_error_record(
+        task=task,
+        context=context,
+        run_index=run_index,
+        stderr="execution retry loop ended without a final attempt",
+    )
 
 
 def _log_attempt_outcome(
@@ -384,6 +703,25 @@ def run_benchmark(args: argparse.Namespace) -> None:
         )
         sys.exit(2)
 
+    try:
+        execution_retries = int(getattr(args, "execution_retries", 0) or 0)
+    except (TypeError, ValueError):
+        logger.error("❌ --execution-retries must be a non-negative integer")
+        sys.exit(2)
+    if execution_retries < 0:
+        logger.error("❌ --execution-retries must be a non-negative integer")
+        sys.exit(2)
+    retry_statuses = _normalize_retry_statuses(getattr(args, "retry_status", "error,timeout"))
+    if execution_retries > 0 and not retry_statuses:
+        logger.error("❌ --retry-status must include at least one status when --execution-retries > 0")
+        sys.exit(2)
+    if execution_retries > 0:
+        logger.info(
+            "🔁 Execution retries enabled: up to %d retry attempt(s) for status in %s",
+            execution_retries,
+            ",".join(retry_statuses),
+        )
+
     model_id = args.model
     model_slug = backend.slugify_model(model_id)
     run_root = Path("/tmp/claweval")
@@ -395,6 +733,19 @@ def run_benchmark(args: argparse.Namespace) -> None:
     # Use a shared workspace for the agent - we'll copy fixtures per task
     agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
     command = "actbench " + " ".join(sys.argv[1:])
+    run_metadata = {
+        "runs_per_task": runs_per_task,
+        "run_workers": effective_run_workers,
+        "requested_run_workers": run_workers,
+        "command": command,
+    }
+    if execution_retries > 0:
+        run_metadata.update(
+            {
+                "execution_retries": execution_retries,
+                "retry_statuses": list(retry_statuses),
+            }
+        )
     backend_context = BackendRunContext(
         backend=backend.name,
         model=model_id,
@@ -405,12 +756,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
         agent_workspace=agent_workspace,
         timeout_multiplier=args.timeout_multiplier,
         verbose=args.verbose,
-        metadata={
-            "runs_per_task": runs_per_task,
-            "run_workers": effective_run_workers,
-            "requested_run_workers": run_workers,
-            "command": command,
-        },
+        metadata=run_metadata,
     )
 
     training_recorder = None
@@ -437,6 +783,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "runs_per_task": runs_per_task,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
+                "execution_retries": execution_retries,
+                "retry_statuses": list(retry_statuses),
                 "tasks_dir": str(tasks_dir),
                 "actbench_version": _get_git_version(skill_root),
                 "benchmark_version": _get_git_version(skill_root),
@@ -515,11 +863,65 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     worker_id=1,
                     extra_metadata={
                         "baseline": True,
+                        "execution_role": "benign_baseline",
                         "baseline_scenario": scenario,
                         "baseline_task_id": task.task_id,
                         "baseline_index": baseline_index + 1,
                     },
                 )
+
+            def _baseline_artifact_callback(
+                *,
+                source_task: Task,
+                clean_task: Task,
+                scene: Dict[str, Any],
+                scene_id: Optional[str],
+                result: Dict[str, Any],
+                baseline: Dict[str, Any],
+                context: BackendRunContext,
+                model: str,
+                backend_name: str,
+                cache_path: Path,
+            ) -> None:
+                if training_recorder is None:
+                    return
+                run_key = result.get("training_artifact_key")
+                if not run_key:
+                    return
+                result["execution_role"] = "benign_baseline"
+                result["source_task_id"] = source_task.task_id
+                result["clean_task_id"] = clean_task.task_id
+                result["scene_id"] = scene_id
+                result["baseline_cache_path"] = str(cache_path)
+                baseline["training_artifact_key"] = run_key
+                refs = write_execution_artifacts(
+                    recorder=training_recorder,
+                    backend_name=backend_name,
+                    training_artifact_key=str(run_key),
+                    execution_result=result,
+                    evaluation_payload=_baseline_evaluation_payload(
+                        source_task=source_task,
+                        clean_task=clean_task,
+                        scene_id=scene_id,
+                        baseline=baseline,
+                        execution_result=result,
+                    ),
+                    baseline_payload=baseline,
+                )
+                baseline["artifacts"] = refs
+                path = persist_trajectory(
+                    recorder=training_recorder,
+                    task=clean_task,
+                    execution_result=result,
+                    context=context,
+                    scene_index={str(scene_id): scene} if scene_id else {},
+                    model=model,
+                    judge_model=args.judge_model,
+                    scene_override=scene,
+                    baseline_override=None,
+                    execution_role="benign_baseline",
+                )
+                logger.info("Wrote benign baseline trajectory artifact: %s", path)
 
             _pregenerate_baselines(
                 tasks=tasks_to_run,
@@ -529,6 +931,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 context=backend_context,
                 run_id=run_id,
                 context_factory=_baseline_context,
+                force_regenerate=getattr(args, "regenerate_baselines", False),
+                artifact_callback=_baseline_artifact_callback,
             )
 
         for i, task in enumerate(tasks_to_run, 1):
@@ -551,6 +955,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         model=model_id,
                         judge_model=args.judge_model,
                         verbose=args.verbose,
+                        skip_scoring=getattr(args, "skip_scoring", False),
+                        execution_retries=execution_retries,
+                        retry_statuses=retry_statuses,
                         run_index=run_index,
                         runs_per_task=runs_per_task,
                         run_workers=effective_run_workers,
@@ -580,6 +987,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         model=model_id,
                         judge_model=args.judge_model,
                         verbose=args.verbose,
+                        skip_scoring=getattr(args, "skip_scoring", False),
+                        execution_retries=execution_retries,
+                        retry_statuses=retry_statuses,
                         run_index=run_index,
                         runs_per_task=runs_per_task,
                         run_workers=effective_run_workers,
@@ -643,6 +1053,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 attack_eval = attempt_record["attack_eval"]
                 execution_error = attempt_record["execution_error"]
                 evaluation_error = attempt_record.get("evaluation_error")
+                scoring_skipped = bool(attempt_record.get("scoring_skipped", False))
 
                 task_results.append(result)
                 results.append(result)
@@ -656,24 +1067,16 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 if attack_eval_entry is not None:
                     attack_eval_by_task_id.setdefault(task.task_id, []).append(attack_eval_entry)
                 if training_recorder and result.get("training_artifact_key"):
-                    run_key = result["training_artifact_key"]
-                    run_dir = Path("runs") / safe_artifact_name(run_key)
-                    training_recorder.write_json(run_dir / "agent_execution.json", result)
-                    if backend.name == "openclaw":
-                        training_recorder.write_json(run_dir / "openclaw_execution.json", result)
-                    training_recorder.write_json(
-                        run_dir / "evaluation.json",
-                        (
-                            attack_eval.to_dict()
-                            if attack_eval is not None
-                            else {
-                                "error": execution_error or evaluation_error,
-                                "error_type": (
-                                    "execution_error"
-                                    if execution_error
-                                    else "evaluation_error" if evaluation_error else "missing_evaluation"
-                                ),
-                            }
+                    write_execution_artifacts(
+                        recorder=training_recorder,
+                        backend_name=backend.name,
+                        training_artifact_key=str(result["training_artifact_key"]),
+                        execution_result=result,
+                        evaluation_payload=_attempt_evaluation_payload(
+                            attack_eval=attack_eval,
+                            execution_error=execution_error,
+                            evaluation_error=evaluation_error,
+                            scoring_skipped=scoring_skipped,
                         ),
                     )
 
@@ -822,62 +1225,72 @@ def run_benchmark(args: argparse.Namespace) -> None:
             baseline_lite = None
             if baseline is not None:
                 baseline_lite = {
+                    "schema_version": baseline.get("schema_version"),
+                    "role": baseline.get("role"),
                     "scene_id": baseline.get("scene_id"),
+                    "source_task_id": baseline.get("source_task_id"),
+                    "clean_task_id": baseline.get("clean_task_id"),
                     "target_model": baseline.get("target_model"),
                     "backend": baseline.get("backend", backend.name),
+                    "content_hash": baseline.get("content_hash"),
+                    "training_artifact_key": baseline.get("training_artifact_key"),
+                    "artifacts": baseline.get("artifacts", {}),
                     "files_read": baseline.get("files_read", []),
                     "files_written": baseline.get("files_written", []),
                     "transcript_summary": baseline.get("transcript_summary", ""),
                     "execution_time": baseline.get("execution_time"),
                 }
             if training_recorder and result.get("training_artifact_key"):
-                run_dir = Path("runs") / safe_artifact_name(str(result["training_artifact_key"]))
+                run_dir = artifact_run_dir(str(result["training_artifact_key"]))
                 training_recorder.write_json(run_dir / "baseline.json", baseline or {})
             task = tasks_by_id[tid]
             behavior = infer_behavior_from_metadata(task.frontmatter or {}, path=task.file_path)
-            task_entries.append(
-                {
-                    "task_id": tid,
-                    "behavior_type": behavior.behavior_type,
-                    "behavior_id": behavior.behavior_id,
-                    "behavior_label": behavior.behavior_label,
-                    "scoring_family": behavior.scoring_family,
-                    "legacy_risk_type": behavior.legacy_risk_type,
-                    "backend": result.get("backend", backend.name),
-                    "backend_metadata": result.get(
-                        "backend_metadata",
-                        {"name": backend.name, "model": model_id, "agent_id": agent_id},
-                    ),
-                    "status": result["status"],
-                    "timed_out": result["timed_out"],
-                    "execution_time": result["execution_time"],
-                    "transcript_length": len(result["transcript"]),
-                    "usage": result.get("usage", {}),
-                    "workspace": result["workspace"],
-                    "training_artifact_key": result.get("training_artifact_key"),
-                    "grading": grades_by_task_id[tid],
-                    "attack_eval": attack_eval_by_task_id.get(tid),
-                    "scoring_semantics": "actbench_ags",
-                    "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
-                    "defense_pass_condition": "attack_success < attack_success_threshold",
-                    "repeat_count": (attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]).get(
-                        "repeat_count", 0
-                    ),
-                    "valid_repeat_count": (
-                        attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
-                    ).get("valid_repeat_count", 0),
-                    "attack_all_pass": (
-                        attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
-                    ).get("attack_all_pass", False),
-                    "defense_all_pass": (
-                        attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
-                    ).get("defense_all_pass", False),
-                    "agent_feedback": _execution_feedback(result, backend.name),
-                    "openclaw_feedback": _execution_feedback(result, backend.name),
-                    "frontmatter": tasks_by_id[tid].frontmatter,
-                    "baseline": baseline_lite,
-                }
-            )
+            task_entry = {
+                "task_id": tid,
+                "behavior_type": behavior.behavior_type,
+                "behavior_id": behavior.behavior_id,
+                "behavior_label": behavior.behavior_label,
+                "scoring_family": behavior.scoring_family,
+                "legacy_risk_type": behavior.legacy_risk_type,
+                "backend": result.get("backend", backend.name),
+                "backend_metadata": result.get(
+                    "backend_metadata",
+                    {"name": backend.name, "model": model_id, "agent_id": agent_id},
+                ),
+                "status": result["status"],
+                "timed_out": result["timed_out"],
+                "execution_time": result["execution_time"],
+                "transcript_length": len(result["transcript"]),
+                "usage": result.get("usage", {}),
+                "workspace": result["workspace"],
+                "training_artifact_key": result.get("training_artifact_key"),
+                "grading": grades_by_task_id[tid],
+                "attack_eval": attack_eval_by_task_id.get(tid),
+                "scoring_semantics": "actbench_ags",
+                "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
+                "defense_pass_condition": "attack_success < attack_success_threshold",
+                "repeat_count": (attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]).get(
+                    "repeat_count", 0
+                ),
+                "valid_repeat_count": (
+                    attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
+                ).get("valid_repeat_count", 0),
+                "attack_all_pass": (
+                    attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
+                ).get("attack_all_pass", False),
+                "defense_all_pass": (
+                    attack_eval_by_task_id.get(tid) or grades_by_task_id[tid]
+                ).get("defense_all_pass", False),
+                "agent_feedback": _execution_feedback(result, backend.name),
+                "openclaw_feedback": _execution_feedback(result, backend.name),
+                "frontmatter": tasks_by_id[tid].frontmatter,
+                "baseline": baseline_lite,
+            }
+            if result.get("execution_retry") is not None:
+                task_entry["execution_retry"] = result["execution_retry"]
+            if result.get("retry_history"):
+                task_entry["retry_history"] = result["retry_history"]
+            task_entries.append(task_entry)
 
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         pass_power = _compute_pass_power_summary(attack_eval_by_task_id)
@@ -899,6 +1312,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "runs_per_task": runs_per_task,
             "run_workers": effective_run_workers,
             "requested_run_workers": run_workers,
+            "execution_retries": execution_retries,
+            "retry_statuses": list(retry_statuses),
             "scoring_semantics": "actbench_ags",
             "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
             "defense_pass_condition": "attack_success < attack_success_threshold",
@@ -929,6 +1344,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "runs_per_task": runs_per_task,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
+                "execution_retries": execution_retries,
+                "retry_statuses": list(retry_statuses),
             }
         )
         summary_payload = json.dumps(attack_summary, indent=2)

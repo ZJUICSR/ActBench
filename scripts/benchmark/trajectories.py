@@ -12,6 +12,7 @@ from lib_reward import ATTACK_SUCCESS_THRESHOLD, REWARD_JUDGE_MODEL
 from lib_tasks import Task
 from lib_training_artifacts import TrainingArtifactRecorder, safe_artifact_name
 
+from benchmark.artifacts import build_artifact_refs
 from benchmark.baseline import _baseline_cache_path, _load_baseline_for_task, _scene_for_task
 from benchmark.backends.base import BackendRunContext
 from benchmark.evaluation import (
@@ -29,6 +30,7 @@ SUPPORTED_TRAJECTORY_SCHEMA_VERSIONS = {
     TRAJECTORY_SCHEMA_VERSION,
     OPENCLAW_TRAJECTORY_SCHEMA_VERSION,
 }
+_BASELINE_DEFAULT = object()
 
 _LANE_METADATA_KEYS = (
     "openclaw_base_agent_id",
@@ -118,36 +120,11 @@ def _artifact_refs(
     training_artifact_key: str,
     backend_name: Optional[str] = None,
 ) -> Dict[str, Any]:
-    safe_key = safe_artifact_name(training_artifact_key)
-    run_dir = Path("runs") / safe_key
-    refs: Dict[str, Any] = {
-        "run_dir": str(run_dir),
-        "task": str(run_dir / "task.json"),
-        "agent_execution": str(run_dir / "agent_execution.json"),
-        "backend_execution": str(run_dir / "agent_execution.json"),
-        "evaluation": str(run_dir / "evaluation.json"),
-        "baseline": str(run_dir / "baseline.json"),
-        "workspace_before": str(run_dir / "workspace_before"),
-        "workspace_before_manifest": str(run_dir / "workspace_before" / "files_manifest.json"),
-        "workspace_after": str(run_dir / "workspace_after"),
-        "workspace_after_manifest": str(run_dir / "workspace_after" / "files_manifest.json"),
-        "api_endpoints": str(run_dir / "api" / "endpoints.json"),
-        "api_audit": str(run_dir / "api" / "audit.json"),
-        "api_fixture_overrides": str(run_dir / "api" / "fixture_overrides.json"),
-        "api_fixtures_dir": str(run_dir / "api" / "fixtures"),
-        "api_logs_dir": str(run_dir / "api" / "logs"),
-        "trajectory": str(run_dir / "trajectory.json"),
-    }
-    if backend_name == "openclaw":
-        refs["openclaw_execution"] = str(run_dir / "openclaw_execution.json")
-    if recorder is not None:
-        root = recorder.root
-        refs["artifact_root"] = str(root)
-        refs["run_dir_absolute"] = str(root / run_dir)
-        refs["workspace_after_absolute"] = str(root / run_dir / "workspace_after")
-        refs["workspace_before_absolute"] = str(root / run_dir / "workspace_before")
-        refs["trajectory_absolute"] = str(root / run_dir / "trajectory.json")
-    return refs
+    return build_artifact_refs(
+        training_artifact_key=training_artifact_key,
+        recorder=recorder,
+        backend_name=backend_name,
+    )
 
 
 def _json_safe(value: Any) -> Any:
@@ -229,6 +206,9 @@ def _scoring_inputs(
     judge_model: Optional[str],
     backend_name: str,
     artifacts: Dict[str, Any],
+    scene_override: Optional[Dict[str, Any]] = None,
+    baseline_override: Any = _BASELINE_DEFAULT,
+    execution_role: Optional[str] = None,
 ) -> Dict[str, Any]:
     execution_feedback_snapshot = {
         "status": execution_result.get("status"),
@@ -249,6 +229,7 @@ def _scoring_inputs(
         "default_judge_model": REWARD_JUDGE_MODEL,
         "target_model": model,
         "backend_name": backend_name,
+        "execution_role": execution_role,
         "replay_workspace_preference": "artifacts.workspace_after",
         "replay_workspace_path": artifacts.get("workspace_after"),
         "replay_workspace_absolute_path": artifacts.get("workspace_after_absolute"),
@@ -262,7 +243,7 @@ def _scoring_inputs(
     if not scenario:
         payload["skip_reason"] = "missing_scenario"
 
-    scene = _scene_for_task(task, scene_index)
+    scene = scene_override if scene_override is not None else _scene_for_task(task, scene_index)
     if not scene:
         fm = task.frontmatter or {}
         scene = {
@@ -307,8 +288,12 @@ def _scoring_inputs(
     )
     payload["secrets"] = materialized_secrets(scene, scene.get("workspace_files", []))
 
-    baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=backend_name)
-    cache_path = _baseline_cache_path(task, model, scene=scene, backend_name=backend_name)
+    cache_path = None
+    if baseline_override is _BASELINE_DEFAULT:
+        baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=backend_name)
+        cache_path = _baseline_cache_path(task, model, scene=scene, backend_name=backend_name)
+    else:
+        baseline = baseline_override
     payload["baseline"] = baseline
     payload["baseline_cache_path"] = str(cache_path) if cache_path is not None else None
     payload["baseline_artifact_path"] = artifacts.get("baseline")
@@ -352,6 +337,9 @@ def build_trajectory(
     model: str,
     judge_model: Optional[str],
     recorder: Optional[TrainingArtifactRecorder] = None,
+    scene_override: Optional[Dict[str, Any]] = None,
+    baseline_override: Any = _BASELINE_DEFAULT,
+    execution_role: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Build a replay-ready execution trajectory for one ActBench task attempt."""
 
@@ -366,10 +354,17 @@ def build_trajectory(
         training_artifact_key=training_artifact_key,
         backend_name=backend_name,
     )
+    role = (
+        execution_role
+        or execution_result.get("execution_role")
+        or (context.metadata or {}).get("execution_role")
+        or ("benign_baseline" if (context.metadata or {}).get("baseline") else "attacked_attempt")
+    )
     transcript_entries = execution_result.get("transcript") or []
     return {
         "schema_version": TRAJECTORY_SCHEMA_VERSION,
         "trajectory_id": training_artifact_key,
+        "role": role,
         "created_at": time.time(),
         "run": _run_payload(context=context, training_artifact_key=training_artifact_key),
         "backend": _backend_payload(
@@ -391,6 +386,9 @@ def build_trajectory(
             judge_model=judge_model,
             backend_name=backend_name,
             artifacts=artifacts,
+            scene_override=scene_override,
+            baseline_override=baseline_override,
+            execution_role=str(role) if role is not None else None,
         ),
     }
 
@@ -427,6 +425,9 @@ def persist_trajectory(
     scene_index: Dict[str, Dict[str, Any]],
     model: str,
     judge_model: Optional[str],
+    scene_override: Optional[Dict[str, Any]] = None,
+    baseline_override: Any = _BASELINE_DEFAULT,
+    execution_role: Optional[str] = None,
 ) -> Path:
     """Write one backend trajectory file under runs/<artifact_key>/trajectory.json."""
 
@@ -444,6 +445,9 @@ def persist_trajectory(
         model=model,
         judge_model=judge_model,
         recorder=recorder,
+        scene_override=scene_override,
+        baseline_override=baseline_override,
+        execution_role=execution_role,
     )
     return recorder.write_json(
         Path("runs") / safe_artifact_name(training_artifact_key) / "trajectory.json",

@@ -227,6 +227,56 @@ def test_cli_accepts_parallel_run_workers(monkeypatch: pytest.MonkeyPatch) -> No
     assert args.run_workers == 2
 
 
+def test_cli_accepts_execution_retry_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["actbench", "--execution-retries", "1", "--retry-status", "error,timeout"],
+    )
+
+    args = _parse_args()
+
+    assert args.execution_retries == 1
+    assert args.retry_status == "error,timeout"
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["actbench", "--execution-retries", "-1"],
+        ["actbench", "--execution-retries", "1", "--retry-status", ","],
+    ],
+)
+def test_cli_rejects_invalid_execution_retry_options(
+    monkeypatch: pytest.MonkeyPatch,
+    argv: list[str],
+) -> None:
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        _parse_args()
+
+
+def test_cli_accepts_regenerate_baselines(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--regenerate-baselines"])
+
+    args = _parse_args()
+
+    assert args.regenerate_baselines is True
+    assert args.skip_baseline_gen is False
+
+
+def test_cli_rejects_conflicting_baseline_flags(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["actbench", "--skip-baseline-gen", "--regenerate-baselines"],
+    )
+
+    with pytest.raises(SystemExit):
+        _parse_args()
+
+
 def test_registry_resolves_backends_without_eager_optional_imports() -> None:
     assert available_backend_names() == (
         "openclaw",
@@ -3595,6 +3645,116 @@ def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -
         f"{payload['run_id']}-3",
     ]
     assert len({entry["workspace"] for entry in entries}) == 3
+
+
+def test_run_benchmark_retries_retryable_execution_status(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.base import augment_execution_result
+    from benchmark.backends.common import zero_usage
+    from benchmark.backends.fake import FakeBackend
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    calls: list[dict] = []
+
+    def fake_execute(self, *, task, context, attempt_run_id):
+        calls.append(
+            {
+                "attempt_run_id": attempt_run_id,
+                "metadata": dict(context.metadata),
+            }
+        )
+        call_number = len(calls)
+        status = "error" if call_number == 1 else "success"
+        workspace = tmp_path / f"workspace-{call_number}"
+        workspace.mkdir()
+        result = {
+            "agent_id": context.agent_id,
+            "task_id": task.task_id,
+            "status": status,
+            "transcript": [] if status == "error" else [{"role": "assistant", "content": "done"}],
+            "usage": zero_usage(),
+            "workspace": str(workspace),
+            "exit_code": -1 if status == "error" else 0,
+            "timed_out": False,
+            "execution_time": 0.0,
+            "stdout": "",
+            "stderr": "transient boom" if status == "error" else "",
+            "api_audit": {},
+            "api_endpoints": {},
+            "training_artifact_key": f"{attempt_run_id}_{task.task_id}",
+        }
+        return augment_execution_result(result, context=context)
+
+    monkeypatch.setattr(FakeBackend, "execute_task", fake_execute)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=1,
+            run_workers=1,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            skip_scoring=True,
+            execution_retries=1,
+            retry_status="error,timeout",
+            training_artifact_dir=None,
+            no_training_artifacts=False,
+        )
+    )
+
+    result_file = next(output_dir.glob("????_test-model.json"))
+    payload = json.loads(result_file.read_text(encoding="utf-8"))
+    assert payload["execution_retries"] == 1
+    assert payload["retry_statuses"] == ["error", "timeout"]
+    assert len(calls) == 2
+    assert calls[0]["attempt_run_id"] == f"{payload['run_id']}-1"
+    assert calls[1]["attempt_run_id"] == f"{payload['run_id']}-1-retry1"
+    assert calls[0]["metadata"]["retry_attempt_number"] == 1
+    assert calls[1]["metadata"]["retry_attempt_number"] == 2
+    assert calls[1]["metadata"]["retry_reason_status"] == "error"
+
+    entry = payload["tasks"][0]
+    assert entry["status"] == "success"
+    assert entry["training_artifact_key"] == f"{payload['run_id']}-1-retry1_task_fake"
+    assert entry["backend_metadata"]["attempt_run_id"] == f"{payload['run_id']}-1-retry1"
+    assert entry["backend_metadata"]["base_attempt_run_id"] == f"{payload['run_id']}-1"
+    assert entry["execution_retry"]["attempt_number"] == 2
+    assert entry["execution_retry"]["attempts_made"] == 2
+    assert entry["retry_history"][0]["status"] == "error"
+    assert entry["retry_history"][0]["training_artifact_key"] == f"{payload['run_id']}-1_task_fake"
+
+    artifact_root = Path(payload["training_artifact_dir"])
+    superseded_eval = json.loads(
+        (
+            artifact_root
+            / "runs"
+            / f"{payload['run_id']}-1_task_fake"
+            / "evaluation.json"
+        ).read_text(encoding="utf-8")
+    )
+    final_eval = json.loads(
+        (
+            artifact_root
+            / "runs"
+            / f"{payload['run_id']}-1-retry1_task_fake"
+            / "evaluation.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert superseded_eval["schema_version"] == "actbench.execution_retry_superseded.v1"
+    assert superseded_eval["superseded"] is True
+    assert superseded_eval["retry"]["superseded_by_attempt_run_id"] == f"{payload['run_id']}-1-retry1"
+    assert final_eval["schema_version"] == "actbench.evaluation_skipped.v1"
 
 
 def test_run_benchmark_parallel_workers_are_reused_when_available(

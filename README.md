@@ -15,7 +15,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 
 ## Task inventory
 
-ActBench currently contains 301 public tasks, grouped by B-class selectors:
+ActBench currently contains 300 public tasks, grouped by B-class selectors:
 
 | B class | Name | Tasks |
 | --- | --- | ---: |
@@ -24,7 +24,7 @@ ActBench currently contains 301 public tasks, grouped by B-class selectors:
 | B3 | Credential exposure | 14 |
 | B4 | Poisoned memory reliance | 15 |
 | B5 | Deceptive tool invocation | 14 |
-| B6 | Unauthorized command execution | 43 |
+| B6 | Unauthorized command execution | 42 |
 | B7 | Unauthorized API invocation | 12 |
 | B8 | Tool scope escalation | 12 |
 | B9 | State tampering | 37 |
@@ -34,7 +34,7 @@ ActBench currently contains 301 public tasks, grouped by B-class selectors:
 | B13 | False reporting | 14 |
 | B14 | Context flooding | 11 |
 | B15 | Permission chaining | 12 |
-| **Total** |  | **301** |
+| **Total** |  | **300** |
 
 ## Requirements
 
@@ -157,12 +157,17 @@ Common options:
 
 ```bash
 --runs 3                    # repeat each task three times
+--run-workers 3             # run same-task repeats concurrently when the backend supports it
 --skip-baseline-gen          # use cached benign baselines only
+--regenerate-baselines       # rerun benign baselines and refresh aligned artifacts
+--skip-scoring               # collect trajectories/artifacts without inline attack scoring
+--execution-retries 1        # retry retryable execution statuses within each repeat slot
+--retry-status error,timeout # comma-separated statuses retried by --execution-retries
 --no-training-artifacts      # do not record raw execution artifacts
 --output-dir results         # where JSON results are written
 ```
 
-Raw training artifacts may contain task prompts, transcripts, workspace contents, and model outputs. Use `--no-training-artifacts` when you only need aggregate benchmark results.
+Raw training artifacts may contain task prompts, transcripts, workspace contents, and model outputs. Benign baseline runs use the same artifact directory layout as attacked attempts when they are generated during a run; use `--regenerate-baselines` to refresh legacy baseline cache entries into the aligned artifact structure. Use `--no-training-artifacts` when you only need aggregate benchmark results.
 
 ## Outputs
 

@@ -110,6 +110,27 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--regenerate-baselines",
+        action="store_true",
+        help="Regenerate benign baselines even when a valid cache entry already exists",
+    )
+    parser.add_argument(
+        "--skip-scoring",
+        action="store_true",
+        help="Skip inline attack scoring; record execution artifacts and trajectories only",
+    )
+    parser.add_argument(
+        "--execution-retries",
+        type=int,
+        default=0,
+        help="Retry each task repeat up to N times when execution status is retryable (default: 0)",
+    )
+    parser.add_argument(
+        "--retry-status",
+        default="error,timeout",
+        help="Comma-separated execution statuses that trigger --execution-retries (default: error,timeout)",
+    )
+    parser.add_argument(
         "--training-artifact-dir",
         default=None,
         help="Directory for raw training artifacts (default: results/<run>_<model>_artifacts)",
@@ -119,7 +140,14 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable raw training artifact recording",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.skip_baseline_gen and args.regenerate_baselines:
+        parser.error("--regenerate-baselines cannot be used with --skip-baseline-gen")
+    if args.execution_retries < 0:
+        parser.error("--execution-retries must be a non-negative integer")
+    if args.execution_retries > 0 and not any(part.strip() for part in args.retry_status.split(",")):
+        parser.error("--retry-status must include at least one status when --execution-retries > 0")
+    return args
 
 
 def main() -> None:
