@@ -141,6 +141,22 @@ def test_baseline_content_hash_changes_when_fixture_changes(tmp_path: Path) -> N
     assert first != second
 
 
+def test_baseline_cache_path_with_scene_uses_actual_content_hash() -> None:
+    task = _task()
+    task.frontmatter["clean_source"] = {"content_hash": "same-declared-clean-source"}
+    scene_a = {"id": "S001", "user_prompt": "Do clean task A.", "workspace_files": []}
+    scene_b = {"id": "S001", "user_prompt": "Do clean task B.", "workspace_files": []}
+
+    path_a = _baseline_cache_path(task, "test/model", scene=scene_a)
+    path_b = _baseline_cache_path(task, "test/model", scene=scene_b)
+
+    assert path_a is not None
+    assert path_b is not None
+    assert path_a != path_b
+    assert baseline_content_hash(task, scene_a)[:12] in path_a.name
+    assert baseline_content_hash(task, scene_b)[:12] in path_b.name
+
+
 def test_load_clean_source_scene_for_task_reads_bundle(tmp_path: Path) -> None:
     output_dir = tmp_path / "tasks"
     bundle = output_dir / "clean_scenes" / "task_B6_T01"
@@ -193,9 +209,12 @@ def test_pregenerate_baselines_dedupes_by_cache_identity(monkeypatch, tmp_path: 
     for index, task in enumerate(tasks):
         task.task_id = f"task_B6_T0{index + 1}"
         task.frontmatter["clean_source"] = {"content_hash": f"hash-{index}"}
-    scene = {"id": "S001", "user_prompt": "Do it.", "workspace_files": []}
+    scenes = {
+        tasks[0].task_id: {"id": "S001", "user_prompt": "Do it 1.", "workspace_files": []},
+        tasks[1].task_id: {"id": "S001", "user_prompt": "Do it 2.", "workspace_files": []},
+    }
     calls = []
-    monkeypatch.setattr(baseline_module, "_scene_for_task", lambda task, scene_index: scene)
+    monkeypatch.setattr(baseline_module, "_scene_for_task", lambda task, scene_index: scenes[task.task_id])
     monkeypatch.setattr(baseline_module, "_load_baseline_for_task", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         baseline_module,

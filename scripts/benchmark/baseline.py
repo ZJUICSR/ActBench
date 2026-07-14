@@ -120,10 +120,10 @@ def _baseline_cache_path(
         return None
     slug = str(scenario)
     clean_source = (task.frontmatter or {}).get("clean_source")
-    if isinstance(clean_source, dict) and clean_source.get("content_hash"):
+    if scene is not None:
+        slug = f"{slug}_{baseline_content_hash(task, scene)[:12]}"
+    elif isinstance(clean_source, dict) and clean_source.get("content_hash"):
         slug = f"{slug}_{str(clean_source['content_hash'])[:12]}"
-    elif scene and scene.get("_fixture_base_dir"):
-        slug = f"{slug}_{hashlib.sha256(str(scene.get('_fixture_base_dir')).encode()).hexdigest()[:12]}"
     model_slug = slugify_model(model)
     if backend_name and backend_name != "openclaw":
         return BASELINE_CACHE_DIR / f"{slug}_{backend_name}_{model_slug}.json"
