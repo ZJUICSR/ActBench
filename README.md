@@ -49,6 +49,7 @@ ActBench currently contains 300 public tasks, grouped by B-class selectors:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
   - `OPENROUTER_API_KEY` for OpenRouter-routed judge models
   - `TAISURE_API_KEY` for `taisure/...` judge models
+  - `ZJUICSR_API_KEY` for `zjuicsr/...` judge models; set `ZJUICSR_API_BASE` if the OpenAI-compatible endpoint is not `https://router.zjuicsr.cn/v1/chat/completions`
 
 Install dependencies:
 

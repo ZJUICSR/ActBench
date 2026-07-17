@@ -2,8 +2,9 @@
 LLM backend router for ActBench support models.
 
 Dispatches based on the model id prefix:
-  - "taisure/..."                                          -> TAISURE (taisure.com)
-  - "deepseek/...", "deepseek-..."                         -> DeepSeek (api.deepseek.com)
+  - "zjuicsr/..."                                         -> ZJUICSR OpenAI-compatible gateway
+  - "taisure/..."                                         -> TAISURE (taisure.com)
+  - "deepseek/...", "deepseek-..."                        -> DeepSeek (api.deepseek.com)
   - everything else                                        -> OpenRouter
 
 Target models (run via OpenClaw) are unaffected — they don't use this module.
@@ -17,10 +18,17 @@ from typing import Any, Dict, List
 import lib_deepseek
 import lib_openrouter
 import lib_taisure
+import lib_zjuicsr
 from lib_training_artifacts import record_model_call
 
+ZJUICSR_PREFIXES = ("zjuicsr/",)
 TAISURE_PREFIXES = ("taisure/",)
 DEEPSEEK_PREFIXES = ("deepseek/", "deepseek-")
+
+
+def _is_zjuicsr(model: str) -> bool:
+    m = (model or "").lower()
+    return any(m.startswith(p) for p in ZJUICSR_PREFIXES)
 
 
 def _is_taisure(model: str) -> bool:
@@ -34,8 +42,10 @@ def _is_deepseek(model: str) -> bool:
 
 
 def _backend(model: str):
-    # Order matters: a `taisure/deepseek-v4-pro` id must route to TAISURE, not
-    # the DeepSeek-direct backend, so check the explicit taisure/ prefix first.
+    # Order matters: explicit gateway prefixes must win over bare/provider-looking
+    # model names inside those gateways (e.g. zjuicsr/deepseek-v4-pro).
+    if _is_zjuicsr(model):
+        return lib_zjuicsr
     if _is_taisure(model):
         return lib_taisure
     if _is_deepseek(model):
@@ -153,6 +163,7 @@ def get_last_usage() -> Dict[str, Any]:
     merged.update(lib_openrouter.get_last_usage())
     merged.update(lib_deepseek.get_last_usage())
     merged.update(lib_taisure.get_last_usage())
+    merged.update(lib_zjuicsr.get_last_usage())
     return normalize_usage(merged)
 
 
@@ -160,3 +171,4 @@ def reset_usage() -> None:
     lib_openrouter.reset_usage()
     lib_deepseek.reset_usage()
     lib_taisure.reset_usage()
+    lib_zjuicsr.reset_usage()
