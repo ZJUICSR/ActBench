@@ -1,0 +1,497 @@
+"""Read-only helpers for consuming raw-by-task ActBench packs."""
+
+from __future__ import annotations
+
+import json
+from collections import Counter
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Sequence
+
+RAW_BY_TASK_SCHEMA_VERSION = "actbench.raw_by_task.v1"
+DEFAULT_RAW_BY_TASK_ROOT = Path.home() / "pack" / "raw_by_task"
+RAW_BY_TASK_GLOBAL_MANIFEST = "raw_by_task_manifest.json"
+BASELINE_CACHE_ONLY_REASON = "baseline_cache_only"
+
+RAW_ROLE_ATTACKED = "attacked"
+RAW_ROLE_BENIGN = "benign"
+RAW_ROLE_ALL = "all"
+
+
+class RawByTaskError(ValueError):
+    """Raised when a raw-by-task pack cannot be resolved or validated."""
+
+
+@dataclass(frozen=True)
+class RawByTaskDataset:
+    """Validated raw-by-task dataset directory and manifest."""
+
+    path: Path
+    manifest: Dict[str, Any]
+
+    @property
+    def name(self) -> str:
+        return str(self.manifest.get("name") or self.path.name)
+
+    @property
+    def backend(self) -> str:
+        return str(self.manifest.get("backend") or "")
+
+    @property
+    def target_model(self) -> str:
+        return str(self.manifest.get("target_model") or "")
+
+    def summary(self) -> Dict[str, Any]:
+        fields = {
+            "name": self.name,
+            "path": str(self.path),
+            "backend": self.manifest.get("backend"),
+            "target_model": self.manifest.get("target_model"),
+            "copied_success_runs": self.manifest.get("copied_success_runs"),
+            "task_count": self.manifest.get("task_count"),
+            "suite_counts": self.manifest.get("suite_counts"),
+            "baseline_summary": self.manifest.get("baseline_summary"),
+        }
+        if self.manifest.get("merged_from"):
+            fields["merged_from"] = self.manifest.get("merged_from")
+        return {key: value for key, value in fields.items() if value is not None}
+
+
+@dataclass(frozen=True)
+class RawByTaskCollection:
+    """Trajectory paths plus provenance/exclusions from a raw-by-task selection."""
+
+    trajectory_paths: List[Path]
+    excluded: List[Dict[str, Any]]
+    source: Dict[str, Any]
+
+
+def _as_dict(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _as_list(value: Any) -> List[Any]:
+    return value if isinstance(value, list) else []
+
+
+def _expanded_path(value: Path | str | None, default: Path) -> Path:
+    if value is None:
+        return default.expanduser()
+    return Path(value).expanduser()
+
+
+def _load_json(path: Path) -> Any:
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _load_optional_json(path: Path) -> Optional[Dict[str, Any]]:
+    try:
+        payload = _load_json(path)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def load_raw_by_task_dataset_manifest(dataset_dir: Path | str) -> Dict[str, Any]:
+    """Load and validate ``<dataset>/manifest.json``."""
+
+    dataset_path = Path(dataset_dir).expanduser()
+    manifest_path = dataset_path / "manifest.json"
+    try:
+        manifest = _load_json(manifest_path)
+    except FileNotFoundError as exc:
+        raise RawByTaskError(f"raw_by_task dataset manifest not found: {manifest_path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RawByTaskError(f"raw_by_task dataset manifest is invalid JSON: {manifest_path}") from exc
+    except OSError as exc:
+        raise RawByTaskError(f"Cannot read raw_by_task dataset manifest: {manifest_path}") from exc
+    if not isinstance(manifest, dict):
+        raise RawByTaskError(f"raw_by_task dataset manifest must be a JSON object: {manifest_path}")
+    schema_version = manifest.get("schema_version")
+    if schema_version != RAW_BY_TASK_SCHEMA_VERSION:
+        raise RawByTaskError(
+            f"Unsupported raw_by_task manifest schema {schema_version!r} in {manifest_path}; "
+            f"expected {RAW_BY_TASK_SCHEMA_VERSION!r}"
+        )
+    return manifest
+
+
+def is_raw_by_task_dataset_dir(path: Path | str) -> bool:
+    """Return true when ``path`` is a validated raw-by-task dataset directory."""
+
+    try:
+        load_raw_by_task_dataset_manifest(path)
+    except RawByTaskError:
+        return False
+    return True
+
+
+def find_raw_by_task_dataset_dir(path: Path | str | None) -> Optional[Path]:
+    """Find the nearest raw-by-task dataset ancestor for a path, if any."""
+
+    if path is None:
+        return None
+    current = Path(path).expanduser()
+    if current.is_file() or current.name == "trajectory.json":
+        current = current.parent
+    for candidate in (current, *current.parents):
+        manifest_path = candidate / "manifest.json"
+        manifest = _load_optional_json(manifest_path)
+        if manifest and manifest.get("schema_version") == RAW_BY_TASK_SCHEMA_VERSION:
+            return candidate
+    return None
+
+
+def is_raw_by_task_trajectory_path(path: Path | str | None) -> bool:
+    """Return true when ``path`` is inside a raw-by-task dataset."""
+
+    return find_raw_by_task_dataset_dir(path) is not None
+
+
+def load_raw_by_task_global_manifest(raw_by_task_root: Path | str | None = None) -> Optional[Dict[str, Any]]:
+    """Load the optional global ``raw_by_task_manifest.json`` for a pack root."""
+
+    root = _expanded_path(raw_by_task_root, DEFAULT_RAW_BY_TASK_ROOT)
+    candidates = [root / RAW_BY_TASK_GLOBAL_MANIFEST, root.parent / RAW_BY_TASK_GLOBAL_MANIFEST]
+    seen: set[Path] = set()
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        payload = _load_optional_json(candidate)
+        if payload:
+            return payload
+    return None
+
+
+def _dataset_from_dir(dataset_dir: Path) -> RawByTaskDataset:
+    return RawByTaskDataset(path=dataset_dir, manifest=load_raw_by_task_dataset_manifest(dataset_dir))
+
+
+def list_raw_by_task_datasets(raw_by_task_root: Path | str | None = None) -> List[RawByTaskDataset]:
+    """List validated dataset directories under a raw-by-task root."""
+
+    root = _expanded_path(raw_by_task_root, DEFAULT_RAW_BY_TASK_ROOT)
+    if not root.exists():
+        return []
+    if root.is_dir() and (root / "manifest.json").exists():
+        return [_dataset_from_dir(root)]
+    datasets: List[RawByTaskDataset] = []
+    for child in sorted(root.iterdir(), key=lambda item: item.name):
+        if not child.is_dir() or not (child / "manifest.json").exists():
+            continue
+        datasets.append(_dataset_from_dir(child))
+    return datasets
+
+
+def _explicit_dataset_path(raw_by_task_root: Path, value: str) -> Path:
+    raw = Path(value).expanduser()
+    candidates: List[Path] = []
+    if raw.exists():
+        candidates.append(raw)
+    if not raw.is_absolute():
+        candidates.append(raw_by_task_root / raw)
+        candidates.append(raw)
+    else:
+        candidates.append(raw)
+    for candidate in candidates:
+        if (candidate / "manifest.json").exists():
+            return candidate
+    return candidates[0]
+
+
+def _matches_filter(value: str, filters: Optional[Sequence[str]], *, fuzzy: bool = False) -> bool:
+    if not filters:
+        return True
+    for item in filters:
+        needle = str(item)
+        if value == needle:
+            return True
+        if fuzzy and needle and needle in value:
+            return True
+    return False
+
+
+def _merged_superseded_names(
+    datasets: Sequence[RawByTaskDataset],
+    raw_by_task_root: Path,
+) -> set[str]:
+    names = {dataset.name for dataset in datasets}
+    superseded: set[str] = set()
+    for dataset in datasets:
+        merged_from = dataset.manifest.get("merged_from")
+        if isinstance(merged_from, list):
+            superseded.update(str(item) for item in merged_from)
+    global_manifest = load_raw_by_task_global_manifest(raw_by_task_root)
+    groups = _as_dict(_as_dict(global_manifest).get("merged_dataset_groups"))
+    for group in groups.values():
+        group_data = _as_dict(group)
+        merged_name = str(group_data.get("dataset") or "")
+        if merged_name not in names:
+            continue
+        superseded.update(str(item) for item in _as_list(group_data.get("merged_from")))
+    return superseded
+
+
+def resolve_raw_by_task_datasets(
+    *,
+    raw_by_task_root: Path | str | None = None,
+    raw_by_task_dataset: Optional[Sequence[str]] = None,
+    backend: Optional[Sequence[str]] = None,
+    model: Optional[Sequence[str]] = None,
+    prefer_merged_openagent: bool = True,
+) -> List[RawByTaskDataset]:
+    """Resolve raw-by-task dataset selections to validated dataset entries."""
+
+    root = _expanded_path(raw_by_task_root, DEFAULT_RAW_BY_TASK_ROOT)
+    explicit = [str(item) for item in (raw_by_task_dataset or []) if str(item)]
+    if explicit:
+        datasets = []
+        for value in explicit:
+            dataset_path = _explicit_dataset_path(root, value)
+            datasets.append(_dataset_from_dir(dataset_path))
+        return datasets
+
+    datasets = [
+        dataset
+        for dataset in list_raw_by_task_datasets(root)
+        if _matches_filter(dataset.backend, backend)
+        and _matches_filter(dataset.target_model, model, fuzzy=True)
+    ]
+    if prefer_merged_openagent and datasets:
+        superseded = _merged_superseded_names(datasets, root)
+        if superseded:
+            datasets = [dataset for dataset in datasets if dataset.name not in superseded]
+    if not datasets:
+        filter_bits = []
+        if backend:
+            filter_bits.append(f"backend={list(backend)!r}")
+        if model:
+            filter_bits.append(f"model={list(model)!r}")
+        suffix = f" matching {' '.join(filter_bits)}" if filter_bits else ""
+        raise RawByTaskError(f"No raw_by_task datasets found under {root}{suffix}")
+    return datasets
+
+
+def normalize_raw_by_task_role(role: str) -> str:
+    """Normalize public role aliases to raw layout buckets."""
+
+    text = str(role or RAW_ROLE_ATTACKED).strip()
+    if text in {"attacked", "attacked_attempt"}:
+        return RAW_ROLE_ATTACKED
+    if text in {"benign", "benign_baseline", "clean"}:
+        return RAW_ROLE_BENIGN
+    if text == RAW_ROLE_ALL:
+        return RAW_ROLE_ALL
+    raise RawByTaskError(f"Unsupported raw_by_task role: {role!r}")
+
+
+def raw_by_task_role_from_roles(roles: Optional[Sequence[str]]) -> str:
+    """Map utility-prep role filters to one raw-by-task collection role."""
+
+    if not roles:
+        return RAW_ROLE_ALL
+    normalized = {normalize_raw_by_task_role(str(role)) for role in roles}
+    if RAW_ROLE_ALL in normalized or len(normalized) > 1:
+        return RAW_ROLE_ALL
+    return next(iter(normalized))
+
+
+def _allowed(value: str, filters: Optional[Sequence[str]]) -> bool:
+    return not filters or value in {str(item) for item in filters}
+
+
+def _suite_dirs(dataset_dir: Path, *, suites: Optional[Sequence[str]]) -> List[Path]:
+    dirs: List[Path] = []
+    for child in sorted(dataset_dir.iterdir(), key=lambda item: item.name):
+        if not child.is_dir() or child.name.startswith("_"):
+            continue
+        if not _allowed(child.name, suites):
+            continue
+        dirs.append(child)
+    return dirs
+
+
+def _task_dirs(suite_dir: Path, *, task_ids: Optional[Sequence[str]]) -> List[Path]:
+    dirs: List[Path] = []
+    for child in sorted(suite_dir.iterdir(), key=lambda item: item.name):
+        if not child.is_dir():
+            continue
+        if not _allowed(child.name, task_ids):
+            continue
+        dirs.append(child)
+    return dirs
+
+
+def _run_name_sort_key(name: str) -> tuple[int, str]:
+    try:
+        return (int(name.rsplit("_", 1)[1]), name)
+    except (IndexError, ValueError):
+        return (0, name)
+
+
+def _run_sort_key(path: Path) -> tuple[int, str]:
+    return _run_name_sort_key(path.parent.name)
+
+
+def _attack_trajectory_paths(
+    dataset: RawByTaskDataset,
+    *,
+    suites: Optional[Sequence[str]],
+    task_ids: Optional[Sequence[str]],
+) -> List[Path]:
+    paths: List[Path] = []
+    for suite_dir in _suite_dirs(dataset.path, suites=suites):
+        for task_dir in _task_dirs(suite_dir, task_ids=task_ids):
+            for run_dir in sorted(task_dir.iterdir(), key=lambda item: _run_name_sort_key(item.name)):
+                if not run_dir.is_dir() or not run_dir.name.startswith("run_"):
+                    continue
+                trajectory = run_dir / "trajectory.json"
+                if trajectory.exists():
+                    paths.append(trajectory)
+    return sorted(paths, key=lambda path: (*path.parent.parent.parts, _run_sort_key(path)))
+
+
+def _baseline_exclusion(dataset: RawByTaskDataset, baseline_dir: Path) -> Dict[str, Any]:
+    task_dir = baseline_dir.parent
+    suite_dir = task_dir.parent
+    return {
+        "dataset": dataset.name,
+        "path": str(baseline_dir),
+        "reason": BASELINE_CACHE_ONLY_REASON,
+        "message": "Baseline cache exists but no raw trajectory.json is present; excluded from utility prep.",
+        "role": "benign_baseline",
+        "suite": suite_dir.name,
+        "task_id": task_dir.name,
+    }
+
+
+def _baseline_trajectory_paths(
+    dataset: RawByTaskDataset,
+    *,
+    suites: Optional[Sequence[str]],
+    task_ids: Optional[Sequence[str]],
+) -> tuple[List[Path], List[Dict[str, Any]]]:
+    paths: List[Path] = []
+    excluded: List[Dict[str, Any]] = []
+    baselines_root = dataset.path / "_baselines"
+    if not baselines_root.is_dir():
+        return paths, excluded
+    for suite_dir in sorted(baselines_root.iterdir(), key=lambda item: item.name):
+        if not suite_dir.is_dir() or not _allowed(suite_dir.name, suites):
+            continue
+        for task_dir in _task_dirs(suite_dir, task_ids=task_ids):
+            baseline_dir = task_dir / "baseline"
+            if not baseline_dir.is_dir():
+                continue
+            trajectory = baseline_dir / "trajectory.json"
+            if trajectory.exists():
+                paths.append(trajectory)
+                continue
+            if (baseline_dir / "baseline_cache.json").exists():
+                excluded.append(_baseline_exclusion(dataset, baseline_dir))
+    return sorted(paths, key=lambda path: path.parts), excluded
+
+
+def _source_summary(
+    datasets: Sequence[RawByTaskDataset],
+    *,
+    role: str,
+    trajectory_count: int,
+    excluded: Sequence[Dict[str, Any]],
+    suites: Optional[Sequence[str]],
+    task_ids: Optional[Sequence[str]],
+) -> Dict[str, Any]:
+    roots = sorted({str(dataset.path.parent) for dataset in datasets})
+    reason_counts = Counter(str(item.get("reason")) for item in excluded if item.get("reason"))
+    source = {
+        "enabled": True,
+        "root": roots[0] if len(roots) == 1 else roots,
+        "role": role,
+        "datasets": [dataset.summary() for dataset in datasets],
+        "selected_trajectory_count": trajectory_count,
+        "excluded_count": len(excluded),
+        "excluded_by_reason": dict(sorted(reason_counts.items())),
+    }
+    if suites:
+        source["suites"] = list(suites)
+    if task_ids:
+        source["task_ids"] = list(task_ids)
+    return source
+
+
+def collect_raw_by_task_trajectories(
+    dataset_dirs: Sequence[Path | str | RawByTaskDataset],
+    *,
+    role: str = RAW_ROLE_ATTACKED,
+    suites: Optional[Sequence[str]] = None,
+    task_ids: Optional[Sequence[str]] = None,
+) -> RawByTaskCollection:
+    """Collect trajectory paths from raw-by-task datasets for a specific role."""
+
+    normalized_role = normalize_raw_by_task_role(role)
+    datasets: List[RawByTaskDataset] = []
+    for item in dataset_dirs:
+        if isinstance(item, RawByTaskDataset):
+            datasets.append(item)
+        else:
+            datasets.append(_dataset_from_dir(Path(item).expanduser()))
+
+    paths: List[Path] = []
+    excluded: List[Dict[str, Any]] = []
+    if normalized_role in {RAW_ROLE_ATTACKED, RAW_ROLE_ALL}:
+        for dataset in datasets:
+            paths.extend(_attack_trajectory_paths(dataset, suites=suites, task_ids=task_ids))
+    if normalized_role in {RAW_ROLE_BENIGN, RAW_ROLE_ALL}:
+        for dataset in datasets:
+            baseline_paths, baseline_excluded = _baseline_trajectory_paths(
+                dataset,
+                suites=suites,
+                task_ids=task_ids,
+            )
+            paths.extend(baseline_paths)
+            excluded.extend(baseline_excluded)
+
+    deduped: List[Path] = []
+    seen: set[Path] = set()
+    for path in sorted(paths, key=lambda item: item.parts):
+        resolved = path.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        deduped.append(path)
+
+    source = _source_summary(
+        datasets,
+        role=normalized_role,
+        trajectory_count=len(deduped),
+        excluded=excluded,
+        suites=suites,
+        task_ids=task_ids,
+    )
+    return RawByTaskCollection(trajectory_paths=deduped, excluded=excluded, source=source)
+
+
+__all__ = [
+    "BASELINE_CACHE_ONLY_REASON",
+    "DEFAULT_RAW_BY_TASK_ROOT",
+    "RAW_BY_TASK_SCHEMA_VERSION",
+    "RAW_ROLE_ALL",
+    "RAW_ROLE_ATTACKED",
+    "RAW_ROLE_BENIGN",
+    "RawByTaskCollection",
+    "RawByTaskDataset",
+    "RawByTaskError",
+    "collect_raw_by_task_trajectories",
+    "find_raw_by_task_dataset_dir",
+    "is_raw_by_task_dataset_dir",
+    "is_raw_by_task_trajectory_path",
+    "list_raw_by_task_datasets",
+    "load_raw_by_task_dataset_manifest",
+    "load_raw_by_task_global_manifest",
+    "normalize_raw_by_task_role",
+    "raw_by_task_role_from_roles",
+    "resolve_raw_by_task_datasets",
+]
