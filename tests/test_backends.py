@@ -402,6 +402,55 @@ def test_openclaw_backend_delegates_to_existing_helpers(
     assert "openclaw_lane_id" not in result["backend_metadata"]
 
 
+def test_openclaw_agent_is_recreated_when_model_changes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import lib_agent
+
+    workspace = tmp_path / "agent_workspace"
+    existing = {
+        "id": "bench-taisure-claude-sonnet-4-6",
+        "workspace": str(workspace),
+        "model": "taisure/claude-sonnet-4-6",
+    }
+    run_calls: list[list[str]] = []
+
+    monkeypatch.setattr(lib_agent, "_find_openclaw_agent", lambda agent_id: existing)
+
+    def fake_run(cmd, **kwargs):
+        run_calls.append(cmd)
+        return SimpleNamespace(returncode=0, stderr="")
+
+    monkeypatch.setattr(lib_agent.subprocess, "run", fake_run)
+
+    recreated = lib_agent.ensure_agent_exists(
+        "bench-taisure-claude-sonnet-4-6",
+        "taisure/claude-sonnet-4.6",
+        workspace,
+    )
+
+    assert recreated is True
+    assert run_calls[0] == [
+        "openclaw",
+        "agents",
+        "delete",
+        "bench-taisure-claude-sonnet-4-6",
+        "--force",
+    ]
+    assert run_calls[1] == [
+        "openclaw",
+        "agents",
+        "add",
+        "bench-taisure-claude-sonnet-4-6",
+        "--model",
+        "taisure/claude-sonnet-4.6",
+        "--workspace",
+        str(workspace),
+        "--non-interactive",
+    ]
+
+
 def test_openclaw_backend_initializes_repeat_lanes(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,

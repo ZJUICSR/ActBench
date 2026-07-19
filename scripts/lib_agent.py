@@ -244,11 +244,22 @@ def _get_agent_workspace(agent_id: str) -> Path | None:
     return Path(workspace).expanduser()
 
 
-def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bool:
-    """Ensure the OpenClaw agent exists with the correct workspace.
+def _get_agent_model(agent_id: str) -> str | None:
+    """Get the configured model id for an agent from OpenClaw config."""
+    agent = _find_openclaw_agent(agent_id)
+    if not agent:
+        return None
+    model = agent.get("model")
+    if not isinstance(model, str) or not model:
+        return None
+    return model
 
-    If the agent already exists but points to a different workspace, it is
-    deleted and recreated so that the new workspace takes effect.
+
+def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bool:
+    """Ensure the OpenClaw agent exists with the correct workspace and model.
+
+    If the agent already exists but points to a different workspace or model, it
+    is deleted and recreated so that the new configuration takes effect.
     Returns True if the agent was (re)created.
     """
     workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -256,17 +267,24 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
     existing_agent = _find_openclaw_agent(agent_id)
     if existing_agent:
         current_workspace = _get_agent_workspace(agent_id)
-        if current_workspace is not None and current_workspace.resolve() == workspace_dir.resolve():
-            logger.info("Agent %s already exists with correct workspace", agent_id)
+        current_model = _get_agent_model(agent_id)
+        workspace_matches = (
+            current_workspace is not None and current_workspace.resolve() == workspace_dir.resolve()
+        )
+        model_matches = current_model is None or current_model == model_id
+        if workspace_matches and model_matches:
+            logger.info("Agent %s already exists with correct workspace and model", agent_id)
             return False
         delete_name = existing_agent.get("id")
         if not isinstance(delete_name, str) or not delete_name:
             delete_name = _normalized_agent_id(agent_id)
         logger.info(
-            "Agent %s exists with stale workspace (%s != %s), recreating",
+            "Agent %s exists with stale config (workspace %s != %s or model %s != %s), recreating",
             agent_id,
             current_workspace,
             workspace_dir,
+            current_model,
+            model_id,
         )
         subprocess.run(
             ["openclaw", "agents", "delete", delete_name, "--force"],

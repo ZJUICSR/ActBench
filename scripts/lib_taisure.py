@@ -2,13 +2,13 @@
 ClawEval TAISURE API Client.
 
 OpenAI-compatible client for the TAISURE gateway (https://taisure.com/v1), which
-fronts many providers behind one key — e.g. deepseek-v4-pro, claude-opus-4-8,
+fronts many providers behind one key — e.g. deepseek-v4-pro, claude-opus-4.8,
 gpt-5.5, qwen3.7-max. Target models still go through OpenClaw, not this client.
 
 Routing note: TAISURE exposes BARE model ids (`deepseek-v4-pro`, not
 `deepseek/deepseek-v4-pro`). To avoid colliding with the DeepSeek-direct and
 OpenRouter routes, callers select this backend with an explicit `taisure/`
-prefix (e.g. `taisure/claude-opus-4-8`), which is stripped before the request.
+prefix (e.g. `taisure/claude-opus-4.8`), which is stripped before the request.
 """
 
 from __future__ import annotations
