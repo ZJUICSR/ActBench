@@ -298,12 +298,27 @@ def test_cli_accepts_regenerate_baselines(monkeypatch: pytest.MonkeyPatch) -> No
     assert args.skip_baseline_gen is False
 
 
-def test_cli_rejects_conflicting_baseline_flags(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(
-        sys,
-        "argv",
+def test_cli_accepts_baseline_only(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--baseline-only"])
+
+    args = _parse_args()
+
+    assert args.baseline_only is True
+    assert args.skip_baseline_gen is False
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
         ["actbench", "--skip-baseline-gen", "--regenerate-baselines"],
-    )
+        ["actbench", "--skip-baseline-gen", "--baseline-only"],
+    ],
+)
+def test_cli_rejects_conflicting_baseline_flags(
+    monkeypatch: pytest.MonkeyPatch,
+    argv: list[str],
+) -> None:
+    monkeypatch.setattr(sys, "argv", argv)
 
     with pytest.raises(SystemExit):
         _parse_args()
@@ -882,9 +897,11 @@ def test_qwenpaw_process_and_history_use_attempt_scoped_chat_scope(
         channel="console-run-001-1-scope",
     )
     process_payloads: list[dict] = []
+    process_urls: list[str] = []
     requested_urls: list[str] = []
 
     def fake_post_sse_json(url, **kwargs):
+        process_urls.append(url)
         process_payloads.append(kwargs["payload"])
         return {"output": [{"content": [{"type": "text", "text": "answer"}]}]}
 
@@ -914,6 +931,7 @@ def test_qwenpaw_process_and_history_use_attempt_scoped_chat_scope(
         timeout_seconds=1.0,
     )
 
+    assert process_urls == ["http://qwenpaw.test/api/agents/agent-1/console/chat"]
     assert process_payloads[0]["user_id"] == chat_scope.user_id
     assert process_payloads[0]["channel"] == chat_scope.channel
     assert process_payloads[0]["request_context"]["user_id"] == chat_scope.user_id
@@ -2006,6 +2024,64 @@ def test_opencode_backend_returns_backend_compatible_result(
     assert calls[0]["config"].opencode_home == Path(result["workspace"]).parent / "opencode_home"
     assert (calls[0]["config"].opencode_home / "actbench-config.json").exists()
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_opencode_export_captures_large_json_with_file_stdout(tmp_path: Path) -> None:
+    from benchmark.backends.opencode import (
+        OpenCodeBackend,
+        OpenCodeConfig,
+        _coerce_export_payload,
+    )
+
+    executable = tmp_path / "fake_opencode_export"
+    executable.write_text(
+        "#!/usr/bin/env python3\n"
+        "import json, os, stat, sys\n"
+        "session_id = sys.argv[-1]\n"
+        "payload = {\n"
+        "    'info': {'id': session_id},\n"
+        "    'messages': [{\n"
+        "        'info': {'role': 'assistant', 'id': 'msg_large', 'sessionID': session_id},\n"
+        "        'parts': [{'type': 'text', 'id': 'txt_large', 'text': 'x' * 70000}],\n"
+        "    }],\n"
+        "}\n"
+        "text = json.dumps(payload)\n"
+        "sys.stderr.write(f'Exporting session: {session_id}\\n')\n"
+        "mode = os.fstat(sys.stdout.fileno()).st_mode\n"
+        "if stat.S_ISFIFO(mode):\n"
+        "    text = text[:65536]\n"
+        "os.write(sys.stdout.fileno(), text.encode('utf-8'))\n",
+        encoding="utf-8",
+    )
+    os.chmod(executable, 0o755)
+    config = OpenCodeConfig(
+        executable=str(executable),
+        model="deepseek/deepseek-v4-pro",
+        agent=None,
+        timeout_seconds=None,
+        opencode_home=tmp_path / "opencode_home",
+        auto_approve=True,
+        mcp_enabled=False,
+        mcp_autostart=False,
+        mcp_host="127.0.0.1",
+        mcp_port=8765,
+        mcp_public_url="http://127.0.0.1:8765/mcp",
+        mcp_admin_token=None,
+    )
+    completed = OpenCodeBackend()._run_opencode_export(
+        config=config,
+        session_id="ses_large",
+        workspace=tmp_path,
+        timeout_seconds=30,
+    )
+    payload, metadata = _coerce_export_payload(completed)
+
+    assert completed.returncode == 0
+    assert len(completed.stdout.encode("utf-8")) > 65536
+    assert "Exporting session: ses_large" in completed.stderr
+    assert metadata["export_exit_code"] == 0
+    assert payload is not None
+    assert payload["messages"][0]["parts"][0]["text"] == "x" * 70000
 
 
 def test_opencode_backend_uses_attempt_scoped_home(
@@ -4554,6 +4630,54 @@ def test_run_benchmark_baseline_context_uses_baseline_repeat_metadata(
     assert captured_metadata[0]["run_worker_id"] == 1
     assert captured_metadata[0]["baseline"] is True
     assert captured_metadata[0]["baseline_index"] == 1
+
+
+def test_run_benchmark_baseline_only_skips_attack_execution(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+    from benchmark.backends.fake import FakeBackend
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+    pregenerated: list[list[str]] = []
+
+    def fake_pregenerate_baselines(**kwargs):
+        pregenerated.append([task.task_id for task in kwargs["tasks"]])
+
+    def fail_execute_task(self, **kwargs):
+        raise AssertionError("attack execution should be skipped in baseline-only mode")
+
+    monkeypatch.setattr(runner_module, "_pregenerate_baselines", fake_pregenerate_baselines)
+    monkeypatch.setattr(FakeBackend, "execute_task", fail_execute_task)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=1,
+            run_workers=1,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=False,
+            baseline_only=True,
+            training_artifact_dir=None,
+            no_training_artifacts=True,
+        )
+    )
+
+    assert pregenerated == [["task_fake"]]
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["baseline_only"] is True
+    assert payload["tasks"] == []
+    assert payload["pass_power"]["total_tasks"] == 0
 
 
 @pytest.mark.parametrize("run_workers", [0, -1])

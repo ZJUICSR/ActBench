@@ -10,6 +10,7 @@ import secrets
 import shutil
 import signal
 import subprocess
+import tempfile
 import time
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -604,7 +605,7 @@ class OpenCodeBackend:
         timeout_seconds: float,
     ) -> subprocess.CompletedProcess[str]:
         cmd = [config.executable, "export", session_id]
-        return _run_subprocess_with_process_group(
+        return _run_subprocess_with_stdout_file(
             cmd,
             cwd=workspace,
             env=_opencode_env(config),
@@ -711,6 +712,63 @@ def _run_subprocess_with_process_group(
     return subprocess.CompletedProcess(
         args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr
     )
+
+
+def _run_subprocess_with_stdout_file(
+    cmd: List[str],
+    *,
+    cwd: Path,
+    env: Dict[str, str],
+    timeout_seconds: float,
+) -> subprocess.CompletedProcess[str]:
+    """Run a subprocess with stdout redirected to a file.
+
+    Some CLIs, including opencode 1.18.3's ``export`` command, truncate large
+    JSON payloads when stdout is a pipe. Writing stdout to a regular file avoids
+    that truncation while preserving the same CompletedProcess interface.
+    """
+
+    with tempfile.NamedTemporaryFile(
+        prefix="opencode-export-", suffix=".json", mode="w+b"
+    ) as stdout_file:
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(cwd),
+            env=env,
+            stdout=stdout_file,
+            stderr=subprocess.PIPE,
+            text=True,
+            start_new_session=True,
+        )
+        try:
+            _, stderr = process.communicate(timeout=timeout_seconds)
+        except subprocess.TimeoutExpired as exc:
+            stderr = _coerce_text(getattr(exc, "stderr", ""))
+            _terminate_process_group(process, signal.SIGTERM)
+            try:
+                _, terminated_stderr = process.communicate(timeout=2.0)
+            except subprocess.TimeoutExpired:
+                _terminate_process_group(process, signal.SIGKILL)
+                try:
+                    _, terminated_stderr = process.communicate(timeout=2.0)
+                except subprocess.TimeoutExpired:
+                    terminated_stderr = stderr
+            stderr = _coerce_text(terminated_stderr) or stderr
+            stdout_file.flush()
+            stdout_file.seek(0)
+            stdout = _coerce_text(stdout_file.read())
+            raise subprocess.TimeoutExpired(
+                cmd=cmd,
+                timeout=timeout_seconds,
+                output=stdout,
+                stderr=stderr,
+            ) from exc
+        stdout_file.flush()
+        stdout_file.seek(0)
+        stdout = _coerce_text(stdout_file.read())
+        return subprocess.CompletedProcess(
+            args=cmd, returncode=process.returncode, stdout=stdout, stderr=stderr
+        )
 
 
 def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals) -> None:

@@ -545,8 +545,9 @@ class QwenPawBackend:
             ],
             "request_context": request_context,
         }
+        scoped_agent_id = urllib.parse.quote(agent_id, safe="")
         return _post_sse_json(
-            _join_url(config.base_url, "/api/agent/process"),
+            _join_url(config.base_url, f"/api/agents/{scoped_agent_id}/console/chat"),
             api_key=config.api_key,
             payload=payload,
             timeout_seconds=timeout_seconds,

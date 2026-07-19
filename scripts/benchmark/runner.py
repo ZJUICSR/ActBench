@@ -806,6 +806,11 @@ def run_benchmark(args: argparse.Namespace) -> None:
         logger.error("❌ %s", exc)
         sys.exit(2)
 
+    baseline_only = bool(getattr(args, "baseline_only", False))
+    if baseline_only and getattr(args, "skip_baseline_gen", False):
+        logger.error("❌ --baseline-only cannot be used with --skip-baseline-gen")
+        sys.exit(2)
+
     runs_per_task = max(1, args.runs)
     try:
         selected_run_numbers = _normalize_run_numbers(
@@ -873,6 +878,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
         "scheduled_run_count": scheduled_run_count,
         "run_workers": effective_run_workers,
         "requested_run_workers": run_workers,
+        "baseline_only": baseline_only,
         "command": command,
     }
     if execution_retries > 0:
@@ -921,6 +927,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "scheduled_run_count": scheduled_run_count,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
+                "baseline_only": baseline_only,
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
                 "tasks_dir": str(tasks_dir),
@@ -1073,8 +1080,15 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 artifact_callback=_baseline_artifact_callback,
             )
 
-        for i, task in enumerate(tasks_to_run, 1):
-            logger.info("\n🚩 Task %s/%s: %s", i, len(tasks_to_run), task.task_id)
+        if baseline_only:
+            logger.info(
+                "🧪 Baseline-only mode enabled; skipping attack execution for %d selected task(s)",
+                len(tasks_to_run),
+            )
+        tasks_to_execute = [] if baseline_only else tasks_to_run
+
+        for i, task in enumerate(tasks_to_execute, 1):
+            logger.info("\n🚩 Task %s/%s: %s", i, len(tasks_to_execute), task.task_id)
             task_results = []
             if effective_run_workers > 1:
                 logger.info(
@@ -1485,6 +1499,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "scheduled_run_count": scheduled_run_count,
             "run_workers": effective_run_workers,
             "requested_run_workers": run_workers,
+            "baseline_only": baseline_only,
             "execution_retries": execution_retries,
             "retry_statuses": list(retry_statuses),
             "scoring_semantics": "actbench_ags",
@@ -1528,6 +1543,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "scheduled_run_count": scheduled_run_count,
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
+                "baseline_only": baseline_only,
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
             }

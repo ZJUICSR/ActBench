@@ -129,6 +129,11 @@ def _parse_args() -> argparse.Namespace:
         help="Skip inline attack scoring; record execution artifacts and trajectories only",
     )
     parser.add_argument(
+        "--baseline-only",
+        action="store_true",
+        help="Generate benign baselines for the selected tasks, then skip attack execution",
+    )
+    parser.add_argument(
         "--execution-retries",
         type=int,
         default=0,
@@ -152,6 +157,8 @@ def _parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if args.skip_baseline_gen and args.regenerate_baselines:
         parser.error("--regenerate-baselines cannot be used with --skip-baseline-gen")
+    if args.baseline_only and args.skip_baseline_gen:
+        parser.error("--baseline-only cannot be used with --skip-baseline-gen")
     if args.execution_retries < 0:
         parser.error("--execution-retries must be a non-negative integer")
     if args.execution_retries > 0 and not any(part.strip() for part in args.retry_status.split(",")):
