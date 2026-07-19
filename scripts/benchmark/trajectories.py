@@ -29,6 +29,7 @@ from benchmark.evaluation import (
     _resolve_task_scenario,
 )
 from benchmark.scoring_guides import RISK_GUIDES
+from benchmark.transcript_metrics import transcript_length_metrics
 
 TRAJECTORY_SCHEMA_VERSION = "actbench.trajectory.v1"
 OPENCLAW_TRAJECTORY_SCHEMA_VERSION = "actbench.openclaw_trajectory.v1"
@@ -234,7 +235,8 @@ def _scoring_inputs(
         "scoreable": bool(scenario),
         "scoring_semantics": "actbench_ags",
         "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
-        "defense_pass_condition": "attack_success < attack_success_threshold",
+        "attack_pass_condition": "attack_success >= attack_success_threshold",
+        "pass_threshold_ags_gte": ATTACK_SUCCESS_THRESHOLD,
         "configured_judge_model": judge_model or REWARD_JUDGE_MODEL,
         "default_judge_model": REWARD_JUDGE_MODEL,
         "target_model": model,
@@ -275,7 +277,9 @@ def _scoring_inputs(
     payload["behavior"] = behavior.to_dict() if behavior is not None else None
 
     try:
-        risk_type = behavior.scoring_family if behavior is not None else _resolve_task_risk_type(task)
+        risk_type = (
+            behavior.scoring_family if behavior is not None else _resolve_task_risk_type(task)
+        )
     except Exception as exc:  # pragma: no cover - defensive metadata capture
         risk_type = None
         payload["risk_type_error"] = str(exc)
@@ -293,9 +297,7 @@ def _scoring_inputs(
     payload["attack_payload"] = attack_payload
     payload["malicious_skill_names"] = _extract_malicious_skill_names(task, attack_payload) or []
     payload["user_prompt"] = scene.get("user_prompt", "")
-    payload["attack_check_code"] = task.automated_checks or scene.get(
-        "attack_check_code", ""
-    )
+    payload["attack_check_code"] = task.automated_checks or scene.get("attack_check_code", "")
     payload["secrets"] = materialized_secrets(scene, scene.get("workspace_files", []))
 
     cache_path = None
@@ -376,11 +378,14 @@ def canonical_trajectory_relative_path(
     task_id: str,
     run_number: int,
 ) -> Path:
-    return canonical_trajectory_relative_dir(
-        suite=suite,
-        task_id=task_id,
-        run_number=run_number,
-    ) / "trajectory.json"
+    return (
+        canonical_trajectory_relative_dir(
+            suite=suite,
+            task_id=task_id,
+            run_number=run_number,
+        )
+        / "trajectory.json"
+    )
 
 
 def canonical_trajectory_slot_id(
@@ -702,6 +707,7 @@ def build_trajectory(
         or ("benign_baseline" if (context.metadata or {}).get("baseline") else "attacked_attempt")
     )
     transcript_entries = execution_result.get("transcript") or []
+    transcript_metrics = transcript_length_metrics(transcript_entries)
     return {
         "schema_version": TRAJECTORY_SCHEMA_VERSION,
         "trajectory_id": training_artifact_key,
@@ -715,7 +721,13 @@ def build_trajectory(
         "execution": _execution_payload(execution_result),
         "transcript": {
             "entries": transcript_entries,
-            "entry_count": len(transcript_entries) if isinstance(transcript_entries, list) else 0,
+            "entry_count": transcript_metrics["entry_count"],
+            "iteration_count": transcript_metrics["iteration_count"],
+            "message_count": transcript_metrics["message_count"],
+            "message_json_chars": transcript_metrics["message_json_chars"],
+            "message_text_chars": transcript_metrics["message_text_chars"],
+            "transcript_json_chars": transcript_metrics["transcript_json_chars"],
+            "message_role_counts": transcript_metrics["message_role_counts"],
             "source": _transcript_source_payload(execution_result),
         },
         "artifacts": artifacts,
@@ -813,7 +825,9 @@ def persist_trajectory(
         )
         _attach_canonical_refs(trajectory, canonical)
 
-    legacy_relative_path = Path("runs") / safe_artifact_name(training_artifact_key) / "trajectory.json"
+    legacy_relative_path = (
+        Path("runs") / safe_artifact_name(training_artifact_key) / "trajectory.json"
+    )
     legacy_path = recorder.write_json(legacy_relative_path, trajectory)
     trajectory_artifacts = dict(_as_dict(execution_result.get("trajectory_artifacts")))
     trajectory_artifacts.update(
@@ -831,7 +845,12 @@ def persist_trajectory(
             }
         )
 
-    if write_canonical and canonical is not None and canonical_paths is not None and canonical_output_dir is not None:
+    if (
+        write_canonical
+        and canonical is not None
+        and canonical_paths is not None
+        and canonical_output_dir is not None
+    ):
         metadata = _persist_canonical_trajectory(
             output_dir=Path(canonical_output_dir),
             recorder=recorder,

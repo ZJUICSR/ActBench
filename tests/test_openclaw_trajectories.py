@@ -260,7 +260,9 @@ def test_build_openclaw_trajectory_schema_preserves_replay_inputs(
     assert trajectory["artifacts"]["workspace_after"] == "runs/artifact-one/workspace_after"
     assert trajectory["artifacts"]["agent_execution"] == "runs/artifact-one/agent_execution.json"
     assert trajectory["artifacts"]["backend_execution"] == "runs/artifact-one/agent_execution.json"
-    assert trajectory["artifacts"]["openclaw_execution"] == "runs/artifact-one/openclaw_execution.json"
+    assert (
+        trajectory["artifacts"]["openclaw_execution"] == "runs/artifact-one/openclaw_execution.json"
+    )
     assert trajectory["scoring_inputs"]["scoring_semantics"] == "actbench_ags"
     assert trajectory["scoring_inputs"]["configured_judge_model"] == "judge/model"
     assert trajectory["scoring_inputs"]["reward_criteria"]
@@ -315,7 +317,9 @@ def test_build_trajectory_uses_backend_metadata_transcript_source(
     assert trajectory["backend"]["lane_metadata"] == {}
     assert trajectory["transcript"]["source"] == {"kind": "hermes_oneshot_stdout"}
     assert trajectory["artifacts"]["agent_execution"] == "runs/hermes-attempt/agent_execution.json"
-    assert trajectory["artifacts"]["backend_execution"] == "runs/hermes-attempt/agent_execution.json"
+    assert (
+        trajectory["artifacts"]["backend_execution"] == "runs/hermes-attempt/agent_execution.json"
+    )
     assert "openclaw_execution" not in trajectory["artifacts"]
 
 
@@ -394,9 +398,7 @@ def test_build_trajectory_preserves_claudecode_clean_attack_metadata(
 
     assert clean["role"] == "benign_baseline"
     assert clean["scoring_inputs"]["execution_role"] == "benign_baseline"
-    assert clean["backend"]["backend_metadata"]["claudecode_cli_model"] == (
-        "deepseek-v4-pro[1m]"
-    )
+    assert clean["backend"]["backend_metadata"]["claudecode_cli_model"] == ("deepseek-v4-pro[1m]")
 
 
 def test_build_trajectory_preserves_execution_extra_evidence(
@@ -496,20 +498,31 @@ def test_persist_trajectory_writes_canonical_slot_and_replacement_metadata(tmp_p
         write_canonical=True,
     )
 
-    canonical_path = output_dir / "trajectories" / "B6" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    canonical_path = (
+        output_dir / "trajectories" / "B6" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    )
     metadata_path = canonical_path.parent / "metadata.json"
     index_path = output_dir / "trajectory_index.json"
     payload = json.loads(canonical_path.read_text(encoding="utf-8"))
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     index = json.loads(index_path.read_text(encoding="utf-8"))
 
-    assert first_execution["trajectory_artifacts"]["canonical_path"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    assert (
+        first_execution["trajectory_artifacts"]["canonical_path"]
+        == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    )
     assert payload["canonical"]["slot_id"] == "B6/task_fake/run_1"
-    assert payload["artifacts"]["canonical_trajectory"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    assert (
+        payload["artifacts"]["canonical_trajectory"]
+        == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    )
     assert metadata["training_artifact_key"] == "attempt-one"
     assert metadata["sha256"]
     assert metadata["size_bytes"] > 0
-    assert index["entries"]["B6/task_fake/run_1"]["canonical_trajectory_path"] == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    assert (
+        index["entries"]["B6/task_fake/run_1"]["canonical_trajectory_path"]
+        == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
+    )
 
     second_execution = _execution_result("attempt-two")
     persist_trajectory(
@@ -559,8 +572,13 @@ def test_runner_writes_openclaw_trajectory_before_scoring(
         assert payload["schema_version"] == TRAJECTORY_SCHEMA_VERSION
         assert payload["trajectory_id"] == "runner-attempt"
         assert payload["backend"]["name"] == "openclaw"
-        assert payload["artifacts"]["backend_execution"] == "runs/runner-attempt/agent_execution.json"
-        assert payload["artifacts"]["openclaw_execution"] == "runs/runner-attempt/openclaw_execution.json"
+        assert (
+            payload["artifacts"]["backend_execution"] == "runs/runner-attempt/agent_execution.json"
+        )
+        assert (
+            payload["artifacts"]["openclaw_execution"]
+            == "runs/runner-attempt/openclaw_execution.json"
+        )
         assert "attack_eval" not in payload
         assert execution_result["training_artifact_key"] == "runner-attempt"
         scoring_observed_trajectory = True
@@ -568,7 +586,6 @@ def test_runner_writes_openclaw_trajectory_before_scoring(
             score=0.0,
             attack_success=0.0,
             stealth=1.0,
-            defense_score=1.0,
             is_success=False,
         )
 
@@ -622,14 +639,19 @@ def test_runner_writes_generic_backend_trajectory_before_scoring(
 
     def fake_evaluate_attack_for_task(*, execution_result, **kwargs):
         nonlocal scoring_observed_trajectory
-        trajectory_path = tmp_path / "artifacts" / "runs" / "runner-hermes-attempt" / "trajectory.json"
+        trajectory_path = (
+            tmp_path / "artifacts" / "runs" / "runner-hermes-attempt" / "trajectory.json"
+        )
         assert trajectory_path.exists()
         payload = json.loads(trajectory_path.read_text(encoding="utf-8"))
         assert payload["schema_version"] == TRAJECTORY_SCHEMA_VERSION
         assert payload["trajectory_id"] == "runner-hermes-attempt"
         assert payload["backend"]["name"] == "hermes"
         assert payload["transcript"]["source"] == {"kind": "hermes_oneshot_stdout"}
-        assert payload["artifacts"]["backend_execution"] == "runs/runner-hermes-attempt/agent_execution.json"
+        assert (
+            payload["artifacts"]["backend_execution"]
+            == "runs/runner-hermes-attempt/agent_execution.json"
+        )
         assert "openclaw_execution" not in payload["artifacts"]
         assert "attack_eval" not in payload
         assert "attack_eval" not in payload["execution"]
@@ -640,7 +662,6 @@ def test_runner_writes_generic_backend_trajectory_before_scoring(
             score=0.0,
             attack_success=0.0,
             stealth=1.0,
-            defense_score=1.0,
             is_success=False,
         )
 
@@ -756,7 +777,9 @@ def test_runner_writes_openclaw_error_trajectory_with_fallback_key(
     assert payload["schema_version"] == TRAJECTORY_SCHEMA_VERSION
     assert payload["trajectory_id"] == fallback_key
     assert payload["backend"]["name"] == "openclaw"
-    assert payload["artifacts"]["openclaw_execution"] == f"runs/{fallback_key}/openclaw_execution.json"
+    assert (
+        payload["artifacts"]["openclaw_execution"] == f"runs/{fallback_key}/openclaw_execution.json"
+    )
     assert payload["execution"]["status"] == "error"
     assert payload["transcript"]["source"]["kind"] == "missing"
 

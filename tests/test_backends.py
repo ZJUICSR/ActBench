@@ -248,7 +248,9 @@ def test_cli_accepts_targeted_run_numbers(monkeypatch: pytest.MonkeyPatch) -> No
     assert args.run_number == ["2", "1,3"]
 
 
-@pytest.mark.parametrize("argv", [["actbench", "--run-number", "0"], ["actbench", "--run-number", "x"]])
+@pytest.mark.parametrize(
+    "argv", [["actbench", "--run-number", "0"], ["actbench", "--run-number", "x"]]
+)
 def test_cli_rejects_invalid_targeted_run_numbers(
     monkeypatch: pytest.MonkeyPatch,
     argv: list[str],
@@ -2692,17 +2694,12 @@ def test_claudecode_permission_prompt_becomes_backend_error(
     context = _context(tmp_path, backend="claudecode")
 
     backend.initialize_run(context)
-    result = backend.execute_task(
-        task=_task(), context=context, attempt_run_id="run_001-1"
-    )
+    result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
 
     assert result["status"] == "error"
     assert result["exit_code"] == -1
     assert result["backend_metadata"]["permission_prompt_detected"] is True
-    assert (
-        result["backend_metadata"]["transcript_extraction"]["permission_prompt_detected"]
-        is True
-    )
+    assert result["backend_metadata"]["transcript_extraction"]["permission_prompt_detected"] is True
     assert "interactive approvals are unsupported" in result["stderr"]
     assert "anthropic-secret-token" not in result["stdout"]
     assert "api_key=[redacted]" in result["stdout"]
@@ -4012,32 +4009,35 @@ def test_run_benchmark_retries_retryable_execution_status(
 
     artifact_root = Path(payload["training_artifact_dir"])
     superseded_eval = json.loads(
-        (
-            artifact_root
-            / "runs"
-            / f"{payload['run_id']}-1_task_fake"
-            / "evaluation.json"
-        ).read_text(encoding="utf-8")
+        (artifact_root / "runs" / f"{payload['run_id']}-1_task_fake" / "evaluation.json").read_text(
+            encoding="utf-8"
+        )
     )
     final_eval = json.loads(
         (
-            artifact_root
-            / "runs"
-            / f"{payload['run_id']}-1-retry1_task_fake"
-            / "evaluation.json"
+            artifact_root / "runs" / f"{payload['run_id']}-1-retry1_task_fake" / "evaluation.json"
         ).read_text(encoding="utf-8")
     )
     assert superseded_eval["schema_version"] == "actbench.execution_retry_superseded.v1"
     assert superseded_eval["superseded"] is True
-    assert superseded_eval["retry"]["superseded_by_attempt_run_id"] == f"{payload['run_id']}-1-retry1"
+    assert (
+        superseded_eval["retry"]["superseded_by_attempt_run_id"] == f"{payload['run_id']}-1-retry1"
+    )
     assert final_eval["schema_version"] == "actbench.evaluation_skipped.v1"
 
-    canonical_path = output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    canonical_path = (
+        output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "trajectory.json"
+    )
     canonical_payload = json.loads(canonical_path.read_text(encoding="utf-8"))
     assert canonical_payload["trajectory_id"] == f"{payload['run_id']}-1-retry1_task_fake"
     assert canonical_payload["canonical"]["slot_id"] == "B1/task_fake/run_1"
-    assert (artifact_root / "runs" / f"{payload['run_id']}-1_task_fake" / "trajectory.json").exists()
-    assert payload["tasks"][0]["trajectory"]["canonical_path"] == "trajectories/B1/task_fake/runs/run_1/trajectory.json"
+    assert (
+        artifact_root / "runs" / f"{payload['run_id']}-1_task_fake" / "trajectory.json"
+    ).exists()
+    assert (
+        payload["tasks"][0]["trajectory"]["canonical_path"]
+        == "trajectories/B1/task_fake/runs/run_1/trajectory.json"
+    )
 
 
 def test_run_benchmark_parallel_workers_are_reused_when_available(
@@ -4121,7 +4121,6 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
             score=0.25,
             attack_success=0.25,
             stealth=0.0,
-            defense_score=0.75,
             is_success=False,
         )
 
@@ -4677,7 +4676,7 @@ def test_run_benchmark_baseline_only_skips_attack_execution(
     payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
     assert payload["baseline_only"] is True
     assert payload["tasks"] == []
-    assert payload["pass_power"]["total_tasks"] == 0
+    assert payload["attack_pass_summary"]["total_tasks"] == 0
 
 
 @pytest.mark.parametrize("run_workers", [0, -1])

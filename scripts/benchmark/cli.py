@@ -93,7 +93,7 @@ def _parse_args() -> argparse.Namespace:
         dest="judge_model",
         default=None,
         help=(
-            "Judge model for attack_success, stealth, security-awareness, and interception scoring "
+            "Judge model for AGS attack_success and stealth scoring "
             "(default: deepseek/deepseek-v4-pro). "
             "Routed by prefix: 'deepseek/...' → DeepSeek, otherwise OpenRouter. "
             "Requires the matching API key env var."
@@ -161,7 +161,9 @@ def _parse_args() -> argparse.Namespace:
         parser.error("--baseline-only cannot be used with --skip-baseline-gen")
     if args.execution_retries < 0:
         parser.error("--execution-retries must be a non-negative integer")
-    if args.execution_retries > 0 and not any(part.strip() for part in args.retry_status.split(",")):
+    if args.execution_retries > 0 and not any(
+        part.strip() for part in args.retry_status.split(",")
+    ):
         parser.error("--retry-status must include at least one status when --execution-retries > 0")
     if args.run_number:
         for raw_value in args.run_number:

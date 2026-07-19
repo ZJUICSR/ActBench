@@ -42,8 +42,6 @@ def _run(score: float, *, py: float = 0.0, llm: float = 0.0, error: bool = False
         "attack_success": score,
         "score": score,
         "breakdown": {"auto_attack_success": py, "llm_attack_success": llm},
-        "security_awareness": {"score": 0.0},
-        "interception": {"stage": "unclear"},
     }
     if error:
         run["evaluation_error"] = True
@@ -54,17 +52,11 @@ def test_compute_efficiency_summary_counts_aggregate_attack_eval_once_per_task()
     attack_eval = {
         "runs": [
             {
-                "usage": {
-                    "attack_judge": {"total_tokens": 10},
-                    "awareness_stage_judge": {"total_tokens": 3},
-                },
+                "usage": {"attack_judge": {"total_tokens": 10}},
                 "timing": {"total_reward_seconds": 1.5},
             },
             {
-                "usage": {
-                    "attack_judge": {"total_tokens": 20},
-                    "awareness_stage_judge": {"total_tokens": 4},
-                },
+                "usage": {"attack_judge": {"total_tokens": 20}},
                 "timing": {"total_reward_seconds": 2.5},
             },
         ]
@@ -88,43 +80,47 @@ def test_compute_efficiency_summary_counts_aggregate_attack_eval_once_per_task()
 
     assert summary["total_tokens"] == 12
     assert summary["judge_tokens"] == 30
-    assert summary["awareness_stage_judge_tokens"] == 7
+    assert "awareness_stage_judge_tokens" not in summary
     assert summary["total_reward_time_seconds"] == 4.0
     assert summary["total_time_seconds"] == 7.0
 
 
-def test_build_attack_summary_marks_reproduced_and_defended() -> None:
+def test_build_attack_summary_marks_reproduced_and_attack_passes() -> None:
     reproduced = 0.9
-    defended = 0.1
-    assert reproduced >= ATTACK_SUCCESS_THRESHOLD > defended
+    blocked = 0.1
+    assert reproduced >= ATTACK_SUCCESS_THRESHOLD > blocked
     attack_eval = {
         "task_B6_T05": {
             "runs": [_run(reproduced, py=1.0, llm=0.8), _run(reproduced, py=1.0, llm=0.8)],
-            "all_pass": False,
+            "pass_count": 2,
         },
         "task_B2_T01": {
-            "runs": [_run(defended), _run(defended)],
-            "all_pass": True,
+            "runs": [_run(blocked), _run(blocked)],
+            "pass_count": 0,
         },
     }
     summary = build_attack_summary(attack_eval)
 
     assert summary["total_tasks"] == 2
     assert summary["attack_reproduced_tasks"] == 1
+    assert summary["attack_success_count"] == 2
+    assert summary["asr"] == 0.5
     by_id = {t["task_id"]: t for t in summary["tasks"]}
 
     rep = by_id["task_B6_T05"]
     assert rep["attack_reproduced"] is True
-    assert rep["all_pass_defended"] is False
     assert rep["display"] == "B6_T05"
     assert rep["attack_runs"] == 2
-    assert rep["pass_count"] == 0
+    assert rep["pass_count"] == 2
+    assert rep["pass@k1"] is True
+    assert rep["pass@k2"] is True
     assert abs(rep["ags"] - reproduced) < 1e-6
 
-    defd = by_id["task_B2_T01"]
-    assert defd["attack_reproduced"] is False
-    assert defd["all_pass_defended"] is True
-    assert defd["pass_count"] == 2
+    blocked_row = by_id["task_B2_T01"]
+    assert blocked_row["attack_reproduced"] is False
+    assert blocked_row["pass_count"] == 0
+    assert blocked_row["pass@k1"] is False
+    assert blocked_row["pass@k2"] is False
 
 
 def test_build_attack_summary_includes_behavior_breakdown_when_tasks_available() -> None:
@@ -366,8 +362,8 @@ def test_build_attack_summary_handles_empty() -> None:
     assert summary["tasks"] == []
 
 
-def test_final_table_has_attack_column_and_prefix(caplog) -> None:
-    """The per-task table is prefixed [FINAL] and carries the ATTACK (✅/❌) column."""
+def test_final_table_has_attack_pass_column_and_prefix(caplog) -> None:
+    """The per-task table is prefixed [FINAL] and carries the attack PASS column."""
 
     class _Task:
         def __init__(self, risk_type: str):
@@ -395,8 +391,8 @@ def test_final_table_has_attack_column_and_prefix(caplog) -> None:
 
     text = caplog.text
     assert "[FINAL]" in text
-    # Header legend mentions the ATK column.
-    assert "ATK" in text
-    # Reproduced task gets ✅, defended task gets ❌.
+    # Header legend mentions the attack PASS column.
+    assert "PASS" in text
+    # Successful attack gets ✅, unsuccessful attack gets ❌.
     assert "✅" in text
     assert "❌" in text
