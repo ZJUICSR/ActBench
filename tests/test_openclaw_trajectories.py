@@ -319,6 +319,86 @@ def test_build_trajectory_uses_backend_metadata_transcript_source(
     assert "openclaw_execution" not in trajectory["artifacts"]
 
 
+def test_build_trajectory_preserves_claudecode_clean_attack_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.trajectories as trajectories
+
+    monkeypatch.setattr(trajectories, "_load_baseline_for_task", lambda *args, **kwargs: None)
+    monkeypatch.setattr(trajectories, "_baseline_cache_path", lambda *args, **kwargs: None)
+
+    execution = _execution_result("claudecode-attempt")
+    execution["backend"] = "claudecode"
+    execution.pop("transcript_source", None)
+    execution["backend_metadata"] = {
+        "name": "claudecode",
+        "model": "deepseek/deepseek-v4-pro",
+        "agent_id": "bench-test-model",
+        "transcript_source": "claudecode_stream_json",
+        "claudecode_cli_model": "deepseek-v4-pro[1m]",
+        "claudecode_cli_model_matches_result_label": False,
+        "provider_env": {
+            "anthropic_base_url": "https://api.deepseek.com/anthropic",
+            "auth_env_present": {
+                "anthropic_auth_token": True,
+                "anthropic_api_key": False,
+            },
+            "auth_token_source": "ANTHROPIC_AUTH_TOKEN",
+        },
+        "permission_mode": "dontAsk",
+        "permission_prompt_detected": False,
+    }
+
+    attacked = build_trajectory(
+        task=_task(),
+        execution_result=execution,
+        context=_context(tmp_path, backend="claudecode"),
+        scene_index=_scene_index(),
+        model="deepseek/deepseek-v4-pro",
+        judge_model="judge/model",
+        recorder=None,
+    )
+
+    assert attacked["role"] == "attacked_attempt"
+    assert attacked["backend"]["name"] == "claudecode"
+    assert attacked["backend"]["model"] == "deepseek/deepseek-v4-pro"
+    assert attacked["backend"]["backend_metadata"]["claudecode_cli_model"] == (
+        "deepseek-v4-pro[1m]"
+    )
+    assert attacked["backend"]["backend_metadata"]["provider_env"]["auth_token_source"] == (
+        "ANTHROPIC_AUTH_TOKEN"
+    )
+    assert attacked["backend"]["backend_metadata"]["permission_prompt_detected"] is False
+    assert attacked["transcript"]["source"] == {"kind": "claudecode_stream_json"}
+    assert attacked["artifacts"]["backend_execution"] == (
+        "runs/claudecode-attempt/agent_execution.json"
+    )
+    assert "openclaw_execution" not in attacked["artifacts"]
+    assert attacked["scoring_inputs"]["target_model"] == "deepseek/deepseek-v4-pro"
+    assert attacked["scoring_inputs"]["execution_role"] == "attacked_attempt"
+
+    clean_metadata = dict(_context(tmp_path).metadata)
+    clean_metadata["baseline"] = True
+    clean_metadata["execution_role"] = "benign_baseline"
+    clean = build_trajectory(
+        task=_task(),
+        execution_result={**execution, "training_artifact_key": "claudecode-clean"},
+        context=_context(tmp_path, metadata=clean_metadata, backend="claudecode"),
+        scene_index=_scene_index(),
+        model="deepseek/deepseek-v4-pro",
+        judge_model="judge/model",
+        recorder=None,
+        execution_role="benign_baseline",
+    )
+
+    assert clean["role"] == "benign_baseline"
+    assert clean["scoring_inputs"]["execution_role"] == "benign_baseline"
+    assert clean["backend"]["backend_metadata"]["claudecode_cli_model"] == (
+        "deepseek-v4-pro[1m]"
+    )
+
+
 def test_build_trajectory_preserves_execution_extra_evidence(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,

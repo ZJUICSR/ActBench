@@ -18,7 +18,7 @@ uv run scripts/actbench.py \
   --runs 1
 ```
 
-`--model` is recorded as the model under test and is passed to Claude Code with `--model`. Set `ACTBENCH_CLAUDECODE_MODEL` only when you need the CLI to receive a different model string from the ActBench result label.
+`--model` is recorded as the model under test. The value passed to Claude Code with `--model` is the same value unless `ACTBENCH_CLAUDECODE_MODEL` is set. Result and trajectory metadata record both the ActBench label (`backend_metadata.model`) and the actual Claude Code CLI model (`backend_metadata.claudecode_cli_model`) so provider-specific model strings remain replayable.
 
 ## Parallel repeat runs
 
@@ -74,6 +74,33 @@ When MCP is enabled, ActBench result payloads sanitize `api_endpoints`: raw mock
 | `ACTBENCH_CLAUDECODE_TOOLS` | disables built-in tools when MCP is enabled; unset otherwise | Value passed to `--tools`. Use `none`, `disabled`, or an empty value to disable built-ins. |
 | `ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP` | `1` | Set to `0` to disable ActBench MCP integration for weak direct-workspace debugging. |
 
+### Provider/runtime variables passed to Claude Code
+
+The backend inherits the ActBench process environment. These variables are not required for first-party Claude Code credentials, but they are useful for Anthropic-compatible providers and are recorded in safe form under `backend_metadata.provider_env` when present:
+
+| Variable | Recorded value | Description |
+| --- | --- | --- |
+| `ANTHROPIC_BASE_URL` | sanitized value | Anthropic-compatible provider endpoint, for example `https://api.deepseek.com/anthropic`. URL userinfo and credential-like query parameters are redacted. |
+| `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_API_KEY` | presence only | Auth material is never recorded. Metadata records which auth env was present. |
+| `DEEPSEEK_API_KEY` | presence only | If `ANTHROPIC_AUTH_TOKEN` is absent, ActBench maps this value into the Claude Code subprocess as `ANTHROPIC_AUTH_TOKEN`; only the mapping and presence are recorded. |
+| `ANTHROPIC_MODEL` / `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` | value | Claude Code/provider default model hints inherited by the subprocess. The explicit `--model` flag still comes from `ACTBENCH_CLAUDECODE_MODEL` or ActBench `--model`. |
+| `CLAUDE_CODE_SUBAGENT_MODEL` | value | Claude Code subagent model override inherited by the subprocess. |
+| `CLAUDE_CODE_EFFORT_LEVEL` | value | Claude Code effort setting inherited by the subprocess. |
+
+For DeepSeek Anthropic-compatible runs where the ActBench result label and Claude Code provider model differ, use both values explicitly:
+
+```bash
+export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+export ANTHROPIC_AUTH_TOKEN="$DEEPSEEK_API_KEY"
+export ACTBENCH_CLAUDECODE_MODEL='deepseek-v4-pro[1m]'
+
+uv run scripts/actbench.py \
+  --backend claudecode \
+  --model deepseek/deepseek-v4-pro \
+  --suite task_B7_T01 \
+  --runs 1
+```
+
 ### Shared MCP gateway variables
 
 | Variable | Default | Description |
@@ -99,7 +126,7 @@ In this mode ActBench still runs Claude Code from the task workspace and permits
 
 The backend uses Claude Code `stream-json` output as the transcript source. ActBench normalizes assistant text, tool calls, tool results, terminal result events, and usage into the common ActBench result schema while omitting raw thinking/reasoning blocks. MCP gateway traces are appended when Claude Code's stream omits ActBench tool evidence that the gateway recorded.
 
-Result metadata records `claudecode_home`, `claudecode_config_dir`, `claudecode_session_id`, and `mcp_config_path` when an MCP config file is used.
+Result metadata records `claudecode_home`, `claudecode_config_dir`, `claudecode_session_id`, `mcp_config_path` when an MCP config file is used, `claudecode_cli_model`, safe `provider_env` details, permission settings, and `permission_prompt_detected`.
 
 ## Troubleshooting
 

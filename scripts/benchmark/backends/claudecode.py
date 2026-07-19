@@ -17,6 +17,7 @@ import uuid
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from lib_mcp_gateway import (
     DEFAULT_MCP_HOST,
@@ -83,6 +84,30 @@ _CLAUDECODE_DIRECT_WORKSPACE_TOOLS = (
     "Glob",
     "Grep",
     "LS",
+)
+_CLAUDECODE_PROVIDER_ENV_KEYS = (
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_MODEL",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+    "CLAUDE_CODE_SUBAGENT_MODEL",
+    "CLAUDE_CODE_EFFORT_LEVEL",
+)
+_CLAUDECODE_AUTH_ENV_KEYS = (
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_API_KEY",
+)
+_CLAUDECODE_REDACT_ENV_KEYS = _CLAUDECODE_AUTH_ENV_KEYS + ("DEEPSEEK_API_KEY",)
+_SENSITIVE_URL_PARAM_RE = re.compile(
+    r"(?i)(api[_-]?key|auth|token|access[_-]?token|refresh[_-]?token|secret|password|credential)"
+)
+_CLAUDECODE_PERMISSION_PROMPT_PATTERNS = (
+    re.compile(r"(?i)\bpermission prompt\b"),
+    re.compile(r"(?i)\bneeds? your permission\b"),
+    re.compile(r"(?i)\bpermission(?:s)?\s+(?:required|requested)\b"),
+    re.compile(r"(?is)\b(?:do you want to|would you like to)\b.{0,160}\b(?:allow|approve)\b"),
+    re.compile(r"(?is)\b(?:allow|approve|deny)\b.{0,120}\b(?:tool|permission|request)\b"),
 )
 
 
@@ -401,6 +426,23 @@ class ClaudeCodeBackend:
                         str(exc)[:500], redactions
                     )
 
+            if transcript_extraction is None:
+                transcript_extraction = {}
+            permission_prompt_detected = _detect_claudecode_permission_prompt(
+                stdout=stdout,
+                stderr=stderr,
+                transcript_extraction=transcript_extraction,
+            )
+            transcript_extraction["permission_prompt_detected"] = permission_prompt_detected
+            if permission_prompt_detected:
+                if status == "success":
+                    status = "error"
+                    exit_code = -1
+                stderr = _append_stderr(
+                    stderr,
+                    "claudecode permission prompt detected; interactive approvals are unsupported",
+                )
+
             transcript = _redact_transcript(transcript, redactions)
             if usage.get("request_count", 0) == 0 and status in {"success", "error", "timeout"}:
                 usage["request_count"] = 1
@@ -566,6 +608,8 @@ class ClaudeCodeBackend:
                     {
                         "backend": "claudecode",
                         "model": config.model,
+                        "claudecode_cli_model": config.model,
+                        "provider_env": _claudecode_provider_env_metadata(),
                         "permission_mode": config.permission_mode,
                         "allowed_tools": list(config.allowed_tools),
                         "builtin_tools": config.builtin_tools,
@@ -735,6 +779,10 @@ def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals
 
 def _claudecode_env(config: ClaudeCodeConfig) -> Dict[str, str]:
     env = os.environ.copy()
+    if not str(env.get("ANTHROPIC_AUTH_TOKEN") or "").strip():
+        deepseek_api_key = str(env.get("DEEPSEEK_API_KEY") or "").strip()
+        if deepseek_api_key:
+            env["ANTHROPIC_AUTH_TOKEN"] = deepseek_api_key
     env["HOME"] = str(config.home_dir)
     env["XDG_CONFIG_HOME"] = str(config.config_dir)
     env["XDG_DATA_HOME"] = str(config.data_dir)
@@ -772,13 +820,18 @@ def _augment_claudecode_result(
     session_id: str | None = None,
     mcp_config_path: Path | None = None,
 ) -> Dict[str, Any]:
+    extraction = transcript_extraction or {}
     return augment_execution_result(
         result,
         context=context,
         transcript_source=transcript_source,
         transcript_extraction=transcript_extraction,
         executable=config.executable,
+        claudecode_cli_model=config.model,
+        claudecode_cli_model_matches_result_label=config.model == context.model,
+        provider_env=_claudecode_provider_env_metadata(),
         permission_mode=config.permission_mode,
+        permission_prompt_detected=extraction.get("permission_prompt_detected"),
         allowed_tools=list(config.allowed_tools),
         builtin_tools=config.builtin_tools,
         claudecode_session_id=session_id,
@@ -788,6 +841,99 @@ def _augment_claudecode_result(
         mcp_enabled=config.mcp_enabled,
         mcp_public_url=config.mcp_public_url if config.mcp_enabled else None,
     )
+
+
+def _claudecode_provider_env_metadata(env: Dict[str, str] | None = None) -> Dict[str, Any]:
+    source = os.environ if env is None else env
+    metadata: Dict[str, Any] = {}
+    for key in _CLAUDECODE_PROVIDER_ENV_KEYS:
+        value = source.get(key)
+        if value is None or not str(value).strip():
+            continue
+        metadata[key.lower()] = _sanitize_provider_env_value(key, value)
+
+    auth_present = {
+        key.lower(): bool(str(source.get(key) or "").strip()) for key in _CLAUDECODE_AUTH_ENV_KEYS
+    }
+    deepseek_key_present = bool(str(source.get("DEEPSEEK_API_KEY") or "").strip())
+    anthropic_auth_token_present = bool(str(source.get("ANTHROPIC_AUTH_TOKEN") or "").strip())
+    anthropic_api_key_present = bool(str(source.get("ANTHROPIC_API_KEY") or "").strip())
+    metadata["auth_env_present"] = auth_present
+    metadata["deepseek_api_key_present"] = deepseek_key_present
+    metadata["effective_auth_present"] = (
+        anthropic_auth_token_present or anthropic_api_key_present or deepseek_key_present
+    )
+    metadata["effective_anthropic_auth_token_present"] = (
+        anthropic_auth_token_present or deepseek_key_present
+    )
+    metadata["auth_token_source"] = _claudecode_auth_token_source(source)
+    metadata["deepseek_api_key_mapped_to_anthropic_auth_token"] = (
+        deepseek_key_present and not anthropic_auth_token_present
+    )
+    metadata["auth_mapping"] = "deepseek_api_key_to_anthropic_auth_token" if (
+        deepseek_key_present and not anthropic_auth_token_present
+    ) else None
+    metadata = {key: value for key, value in metadata.items() if value is not None}
+    return metadata
+
+
+def _claudecode_auth_token_source(env: Dict[str, str]) -> str | None:
+    if str(env.get("ANTHROPIC_AUTH_TOKEN") or "").strip():
+        return "ANTHROPIC_AUTH_TOKEN"
+    if str(env.get("DEEPSEEK_API_KEY") or "").strip():
+        return "DEEPSEEK_API_KEY"
+    if str(env.get("ANTHROPIC_API_KEY") or "").strip():
+        return "ANTHROPIC_API_KEY"
+    return None
+
+
+def _sanitize_provider_env_value(key: str, value: str) -> str:
+    text = str(value).strip()
+    if "URL" in key:
+        return _sanitize_provider_env_url(text)
+    return text
+
+
+def _sanitize_provider_env_url(url: str) -> str:
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return url
+    if not parts.scheme and not parts.netloc:
+        return url
+
+    netloc = parts.netloc
+    if "@" in netloc:
+        _userinfo, host = netloc.rsplit("@", 1)
+        netloc = f"[redacted]@{host}"
+
+    query_pairs = parse_qsl(parts.query, keep_blank_values=True)
+    if query_pairs:
+        query = urlencode(
+            [
+                (name, "[redacted]" if _SENSITIVE_URL_PARAM_RE.search(name) else value)
+                for name, value in query_pairs
+            ]
+        )
+    else:
+        query = parts.query
+    return urlunsplit((parts.scheme, netloc, parts.path, query, parts.fragment))
+
+
+def _detect_claudecode_permission_prompt(
+    *,
+    stdout: str,
+    stderr: str,
+    transcript_extraction: Dict[str, Any] | None = None,
+) -> bool:
+    if isinstance(transcript_extraction, dict) and transcript_extraction.get(
+        "permission_prompt_detected"
+    ) is True:
+        return True
+    text = "\n".join(part for part in (stdout[-8000:], stderr[-8000:]) if part)
+    if not text:
+        return False
+    return any(pattern.search(text) for pattern in _CLAUDECODE_PERMISSION_PROMPT_PATTERNS)
 
 
 def _result_api_endpoints(
@@ -1582,6 +1728,10 @@ def _redaction_values(*, config: ClaudeCodeConfig, mcp_context_id: str | None) -
         values.append(mcp_context_id)
     if config.mcp_admin_token:
         values.append(config.mcp_admin_token)
+    for key in _CLAUDECODE_REDACT_ENV_KEYS:
+        value = os.environ.get(key)
+        if value:
+            values.append(value)
     return values
 
 

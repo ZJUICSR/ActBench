@@ -121,6 +121,19 @@ def _configure_claudecode_test_env(
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_PERMISSION_MODE", raising=False)
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_ALLOWED_TOOLS", raising=False)
     monkeypatch.delenv("ACTBENCH_CLAUDECODE_TOOLS", raising=False)
+    for key in (
+        "ANTHROPIC_BASE_URL",
+        "ANTHROPIC_AUTH_TOKEN",
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_MODEL",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+        "CLAUDE_CODE_SUBAGENT_MODEL",
+        "CLAUDE_CODE_EFFORT_LEVEL",
+        "DEEPSEEK_API_KEY",
+    ):
+        monkeypatch.delenv(key, raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_ADMIN_TOKEN", raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_URL", raising=False)
     monkeypatch.delenv("ACTBENCH_MCP_HOST", raising=False)
@@ -2348,6 +2361,9 @@ def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_en
     from benchmark.backends.claudecode import ClaudeCodeBackend, ClaudeCodeConfig
 
     monkeypatch.setenv("ACTBENCH_MCP_ADMIN_TOKEN", "secret-token")
+    monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "deepseek-secret-token")
     captured: dict[str, object] = {}
 
     def fake_run_with_process_group(cmd, **kwargs):
@@ -2404,6 +2420,7 @@ def test_claudecode_subprocess_uses_headless_flags_allowed_tools_and_isolated_en
     assert isinstance(env, dict)
     assert env["HOME"] == str(config.home_dir)
     assert env["CLAUDE_CONFIG_DIR"] == str(config.config_dir)
+    assert env["ANTHROPIC_AUTH_TOKEN"] == "deepseek-secret-token"
     assert "ACTBENCH_MCP_ADMIN_TOKEN" not in env
 
 
@@ -2415,6 +2432,15 @@ def test_claudecode_backend_returns_backend_compatible_result(
     from benchmark.backends.claudecode import ClaudeCodeBackend
 
     _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ACTBENCH_CLAUDECODE_MODEL", "deepseek-v4-pro[1m]")
+    monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+    monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "anthropic-secret-token")
+    monkeypatch.setenv("ANTHROPIC_MODEL", "deepseek-v4-pro[1m]")
+    monkeypatch.setenv("ANTHROPIC_DEFAULT_OPUS_MODEL", "deepseek-v4-pro[1m]")
+    monkeypatch.setenv("ANTHROPIC_DEFAULT_SONNET_MODEL", "deepseek-v4-pro[1m]")
+    monkeypatch.setenv("ANTHROPIC_DEFAULT_HAIKU_MODEL", "deepseek-v4-flash")
+    monkeypatch.setenv("CLAUDE_CODE_SUBAGENT_MODEL", "deepseek-v4-flash")
+    monkeypatch.setenv("CLAUDE_CODE_EFFORT_LEVEL", "max")
     monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
     monkeypatch.setattr(
         claudecode_module.uuid,
@@ -2469,6 +2495,25 @@ def test_claudecode_backend_returns_backend_compatible_result(
         == "00000000-0000-4000-8000-000000000001"
     )
     assert result["backend_metadata"]["permission_mode"] == "dontAsk"
+    assert result["backend_metadata"]["permission_prompt_detected"] is False
+    assert result["backend_metadata"]["claudecode_cli_model"] == "deepseek-v4-pro[1m]"
+    assert result["backend_metadata"]["claudecode_cli_model_matches_result_label"] is False
+    provider_env = result["backend_metadata"]["provider_env"]
+    assert provider_env["anthropic_base_url"] == "https://api.deepseek.com/anthropic"
+    assert provider_env["anthropic_model"] == "deepseek-v4-pro[1m]"
+    assert provider_env["anthropic_default_opus_model"] == "deepseek-v4-pro[1m]"
+    assert provider_env["anthropic_default_sonnet_model"] == "deepseek-v4-pro[1m]"
+    assert provider_env["anthropic_default_haiku_model"] == "deepseek-v4-flash"
+    assert provider_env["claude_code_subagent_model"] == "deepseek-v4-flash"
+    assert provider_env["claude_code_effort_level"] == "max"
+    assert provider_env["auth_env_present"] == {
+        "anthropic_auth_token": True,
+        "anthropic_api_key": False,
+    }
+    assert provider_env["auth_token_source"] == "ANTHROPIC_AUTH_TOKEN"
+    assert provider_env["effective_auth_present"] is True
+    assert provider_env["effective_anthropic_auth_token_present"] is True
+    assert "anthropic-secret-token" not in json.dumps(result["backend_metadata"])
     assert result["backend_metadata"]["mcp_enabled"] is False
     assert result["usage"]["input_tokens"] == 10
     assert result["usage"]["output_tokens"] == 5
@@ -2483,8 +2528,59 @@ def test_claudecode_backend_returns_backend_compatible_result(
     assert (
         calls[0]["config"].claudecode_home == Path(result["workspace"]).parent / "claudecode_home"
     )
-    assert (calls[0]["config"].claudecode_home / "actbench-claudecode.json").exists()
+    marker = json.loads(
+        (calls[0]["config"].claudecode_home / "actbench-claudecode.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert marker["claudecode_cli_model"] == "deepseek-v4-pro[1m]"
+    assert marker["provider_env"]["auth_env_present"]["anthropic_auth_token"] is True
+    assert "anthropic-secret-token" not in json.dumps(marker)
     assert (Path(result["workspace"]) / "README.md").read_text(encoding="utf-8") == "hello"
+
+
+def test_claudecode_permission_prompt_becomes_backend_error(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.backends.claudecode as claudecode_module
+    from benchmark.backends.claudecode import ClaudeCodeBackend
+
+    _configure_claudecode_test_env(monkeypatch, mcp_enabled=False)
+    monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "anthropic-secret-token")
+    monkeypatch.setattr(claudecode_module.shutil, "which", lambda _: "/usr/bin/claude")
+    backend = ClaudeCodeBackend()
+
+    def fake_run(**kwargs):
+        return subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=0,
+            stdout=(
+                "Claude needs your permission to use Bash.\n"
+                "Do you want to allow this tool request?\n"
+                "api_key=anthropic-secret-token\n"
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr(backend, "_run_claudecode_subprocess", fake_run)
+    context = _context(tmp_path, backend="claudecode")
+
+    backend.initialize_run(context)
+    result = backend.execute_task(
+        task=_task(), context=context, attempt_run_id="run_001-1"
+    )
+
+    assert result["status"] == "error"
+    assert result["exit_code"] == -1
+    assert result["backend_metadata"]["permission_prompt_detected"] is True
+    assert (
+        result["backend_metadata"]["transcript_extraction"]["permission_prompt_detected"]
+        is True
+    )
+    assert "interactive approvals are unsupported" in result["stderr"]
+    assert "anthropic-secret-token" not in result["stdout"]
+    assert "api_key=[redacted]" in result["stdout"]
 
 
 def test_claudecode_backend_uses_attempt_scoped_home(
