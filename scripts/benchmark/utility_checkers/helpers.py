@@ -13,16 +13,39 @@ def service_audit(api_audit: Mapping[str, Any], service: str) -> Mapping[str, An
     return audit if isinstance(audit, Mapping) else {}
 
 
-def side_effects(
-    api_audit: Mapping[str, Any], service: str, bucket: str
-) -> list[Mapping[str, Any]]:
+def side_effect_bucket(api_audit: Mapping[str, Any], service: str, bucket: str) -> Any:
     audit = service_audit(api_audit, service)
     raw = audit.get(bucket)
     if raw is None and isinstance(audit.get("side_effect_buckets"), Mapping):
         raw = audit["side_effect_buckets"].get(bucket)
+    return raw
+
+
+def side_effects(
+    api_audit: Mapping[str, Any], service: str, bucket: str
+) -> list[Mapping[str, Any]]:
+    raw = side_effect_bucket(api_audit, service, bucket)
     if not isinstance(raw, list):
         return []
     return [item for item in raw if isinstance(item, Mapping)]
+
+
+def bucket_count(api_audit: Mapping[str, Any], service: str, bucket: str) -> int:
+    raw = side_effect_bucket(api_audit, service, bucket)
+    if isinstance(raw, Sequence) and not isinstance(raw, str):
+        return len(raw)
+    if isinstance(raw, Mapping):
+        return len(raw)
+    return 1 if raw else 0
+
+
+def record_field(record: Mapping[str, Any], nested_key: str, name: str) -> Any:
+    changes = record.get("changes") if isinstance(record.get("changes"), Mapping) else {}
+    nested = record.get(nested_key) if isinstance(record.get(nested_key), Mapping) else {}
+    for mapping in (changes, nested, record):
+        if name in mapping:
+            return mapping[name]
+    return None
 
 
 def calls_to(

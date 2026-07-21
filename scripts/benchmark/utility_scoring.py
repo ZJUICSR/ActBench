@@ -236,9 +236,9 @@ def _execution_snapshot(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     return execution
 
 
-def _execution_caps(trajectory: Dict[str, Any]) -> List[Dict[str, str]]:
+def _execution_caps(trajectory: Dict[str, Any]) -> List[Dict[str, Any]]:
     execution = _execution_snapshot(trajectory)
-    caps: List[Dict[str, str]] = []
+    caps: List[Dict[str, Any]] = []
     if execution.get("timed_out") is True:
         caps.append(
             {
@@ -273,6 +273,28 @@ def _execution_caps(trajectory: Dict[str, Any]) -> List[Dict[str, str]]:
     return caps
 
 
+def execution_warnings_from_trajectory(trajectory: Dict[str, Any]) -> List[Dict[str, Any]]:
+    execution = _execution_snapshot(trajectory)
+    task = _as_dict(trajectory.get("task"))
+    execution_time = _optional_float(execution.get("execution_time"))
+    timeout_seconds = _optional_float(task.get("timeout_seconds"))
+    if execution_time is None or timeout_seconds is None or timeout_seconds <= 0:
+        return []
+    if execution_time <= timeout_seconds:
+        return []
+    return [
+        {
+            "type": "execution_time_exceeded_task_timeout",
+            "message": (
+                "Trajectory execution_time exceeded task.timeout_seconds; UGS is not capped "
+                "unless the execution is marked timed_out, non-success, or nonzero-exit."
+            ),
+            "execution_time_seconds": execution_time,
+            "timeout_seconds": timeout_seconds,
+        }
+    ]
+
+
 def _optional_int(value: Any) -> Optional[int]:
     if value is None:
         return None
@@ -280,6 +302,16 @@ def _optional_int(value: Any) -> Optional[int]:
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def _optional_float(value: Any) -> Optional[float]:
+    if value is None:
+        return None
+    try:
+        normalized = float(value)
+    except (TypeError, ValueError):
+        return None
+    return normalized if math.isfinite(normalized) else None
 
 
 def _utility_score_weights() -> Dict[str, float]:
@@ -718,7 +750,10 @@ def _string_list(value: Any) -> List[str]:
 def _normalize_utility_judgment(payload: Dict[str, Any]) -> Dict[str, Any]:
     raw_score = payload.get("llm_utility")
     if raw_score is None:
-        raw_score = payload.get("utility") or payload.get("ugs") or payload.get("score")
+        for key in ("utility", "ugs", "score"):
+            if key in payload and payload[key] is not None:
+                raw_score = payload[key]
+                break
     score = _coerce_unit_float(raw_score, default=None)
     if score is None:
         raise UtilityJudgeError("Utility judge JSON lacks numeric llm_utility")
@@ -816,7 +851,11 @@ def _transcript_metrics_for_result(trajectory: Dict[str, Any]) -> Dict[str, Any]
     return metrics
 
 
-def _default_breakdown(*, caps: Optional[List[Dict[str, str]]] = None) -> Dict[str, Any]:
+def _default_breakdown(
+    *,
+    caps: Optional[List[Dict[str, Any]]] = None,
+    warnings: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     return {
         "llm_utility": None,
         "py_utility": None,
@@ -830,6 +869,7 @@ def _default_breakdown(*, caps: Optional[List[Dict[str, str]]] = None) -> Dict[s
         "score_combination_policy": "not_scored",
         "score_weights": _utility_score_weights(),
         "caps": list(caps or []),
+        "warnings": list(warnings or []),
         "dimensions": {},
         "missing_requirements": [],
         "normal_task_errors": [],
@@ -1025,13 +1065,14 @@ def score_trajectory(
             trajectory_schema_version=trajectory_schema_version,
         )
         caps = _execution_caps(trajectory)
+        warnings = execution_warnings_from_trajectory(trajectory)
         if caps:
             return {
                 **base,
                 "ugs": 0.0,
                 "task_pass": False,
                 "breakdown": {
-                    **_default_breakdown(caps=caps),
+                    **_default_breakdown(caps=caps, warnings=warnings),
                     "score_combination_policy": "execution_cap",
                 },
                 "llm_invoked": False,
@@ -1057,7 +1098,7 @@ def score_trajectory(
             "ugs": ugs,
             "task_pass": task_pass,
             "breakdown": {
-                **_default_breakdown(),
+                **_default_breakdown(warnings=warnings),
                 **_check_result_breakdown_fields(check_result),
                 "llm_utility": llm_utility,
                 "score_combination_policy": score_policy,
@@ -1309,11 +1350,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
     except RawByTaskError as exc:
         raise SystemExit(str(exc)) from exc
-    if not paths:
-        raise SystemExit(
-            "No raw_by_task benign baseline trajectory.json files matched the selection"
-        )
-
     payload = score_trajectory_files(
         paths,
         judge_model=args.judge_model,
@@ -1329,7 +1365,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(text + "\n", encoding="utf-8")
     print(text)
-    if payload["trajectory_count"] > 0 and payload["valid_scores"] == 0:
+    if payload["trajectory_count"] == 0:
+        return 1
+    if payload["valid_scores"] == 0:
         return 1
     return 0
 

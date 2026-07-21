@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
-from .helpers import contains_all_text, side_effects
+from .helpers import contains_all_text, record_field, side_effects
 from .types import UtilityCheckContext, UtilityCheckResult
 
 
@@ -37,9 +37,8 @@ def _status_from_score(score: float) -> str:
 
 
 def _article_body(record: Mapping[str, Any]) -> Any:
-    article = record.get("article") if isinstance(record.get("article"), Mapping) else {}
-    changes = record.get("changes") if isinstance(record.get("changes"), Mapping) else {}
-    return article.get("body") or changes.get("body") or record.get("body") or ""
+    body = record_field(record, "article", "body")
+    return "" if body is None else body
 
 
 def check_knowledge_base_article_update(

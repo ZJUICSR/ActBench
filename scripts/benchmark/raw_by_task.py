@@ -6,12 +6,14 @@ import json
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 RAW_BY_TASK_SCHEMA_VERSION = "actbench.raw_by_task.v1"
 DEFAULT_RAW_BY_TASK_ROOT = Path.home() / "pack" / "raw_by_task"
 RAW_BY_TASK_GLOBAL_MANIFEST = "raw_by_task_manifest.json"
 BASELINE_CACHE_ONLY_REASON = "baseline_cache_only"
+PROTECTED_VALUE_LEAK_REASON = "protected_value_leak"
+PROTECTED_VALUE_SCAN_ERROR_REASON = "protected_value_scan_error"
 
 RAW_ROLE_ATTACKED = "attacked"
 RAW_ROLE_BENIGN = "benign"
@@ -368,6 +370,159 @@ def _baseline_exclusion(dataset: RawByTaskDataset, baseline_dir: Path) -> Dict[s
     }
 
 
+def _protected_value_exclusion(
+    dataset: RawByTaskDataset,
+    trajectory_path: Path,
+    protected_value_scan: Dict[str, Any],
+    *,
+    reason: str = PROTECTED_VALUE_LEAK_REASON,
+    message: str = "Protected value scanner detected a leak; excluded from clean utility selection.",
+) -> Dict[str, Any]:
+    baseline_dir = trajectory_path.parent
+    task_dir = baseline_dir.parent
+    suite_dir = task_dir.parent
+    return {
+        "dataset": dataset.name,
+        "path": str(trajectory_path),
+        "reason": reason,
+        "message": message,
+        "role": "benign_baseline",
+        "suite": suite_dir.name,
+        "task_id": task_dir.name,
+        "protected_value_scan": protected_value_scan,
+    }
+
+
+def _raw_baseline_execution(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+    execution = dict(_as_dict(trajectory.get("execution")))
+    scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
+    snapshot = _as_dict(scoring_inputs.get("execution_feedback_snapshot"))
+    for key, value in snapshot.items():
+        if value is not None:
+            execution[key] = value
+    return execution
+
+
+def _string_or_none(value: Any) -> Optional[str]:
+    if value is None:
+        return None
+    text = str(value)
+    return text if text else None
+
+
+def _raw_baseline_identity(
+    trajectory: Dict[str, Any],
+    *,
+    suite: str,
+    task_id: str,
+) -> Dict[str, Optional[str]]:
+    task = _as_dict(trajectory.get("task"))
+    canonical = _as_dict(trajectory.get("canonical"))
+    run = _as_dict(trajectory.get("run"))
+    context_metadata = _as_dict(run.get("context_metadata"))
+    frontmatter = _as_dict(task.get("frontmatter"))
+    trajectory_task_id = str(task.get("task_id") or canonical.get("task_id") or task_id)
+    source_task_id = _string_or_none(
+        trajectory.get("source_task_id")
+        or task.get("source_task_id")
+        or context_metadata.get("baseline_task_id")
+        or frontmatter.get("source_task_id")
+        or frontmatter.get("id")
+    )
+    clean_task_id = _string_or_none(
+        trajectory.get("clean_task_id")
+        or task.get("clean_task_id")
+        or (trajectory_task_id if trajectory_task_id.endswith("_baseline") else None)
+    )
+    return {
+        "suite": suite,
+        "task_id": task_id,
+        "trajectory_task_id": trajectory_task_id,
+        "source_task_id": source_task_id,
+        "clean_task_id": clean_task_id,
+    }
+
+
+def _path_candidate(value: Any, *, base: Path) -> Optional[Path]:
+    if not isinstance(value, (str, Path)):
+        return None
+    text = str(value)
+    if not text:
+        return None
+    path = Path(text).expanduser()
+    if not path.is_absolute():
+        path = base / path
+    return path
+
+
+def _raw_baseline_workspace_after(
+    trajectory_path: Path,
+    trajectory: Dict[str, Any],
+    execution: Dict[str, Any],
+) -> Optional[Path]:
+    scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
+    artifacts = _as_dict(trajectory.get("artifacts"))
+    candidates = [
+        _path_candidate(artifacts.get("workspace_after"), base=trajectory_path.parent),
+        _path_candidate(scoring_inputs.get("replay_workspace_path"), base=trajectory_path.parent),
+        _path_candidate(scoring_inputs.get("replay_workspace_absolute_path"), base=Path("/")),
+        _path_candidate(artifacts.get("workspace_after_absolute"), base=Path("/")),
+        _path_candidate(execution.get("workspace"), base=trajectory_path.parent),
+        trajectory_path.parent / "workspace_after",
+    ]
+    for workspace in candidates:
+        if workspace is not None and workspace.is_dir():
+            return workspace
+    return next((workspace for workspace in candidates if workspace is not None), None)
+
+
+def _protected_value_scan_for_raw_baseline(trajectory_path: Path) -> Optional[Dict[str, Any]]:
+    try:
+        trajectory = _load_json(trajectory_path)
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(trajectory, dict):
+        return None
+    try:
+        task_dir = trajectory_path.parents[1]
+        suite_dir = trajectory_path.parents[2]
+    except IndexError:
+        return None
+
+    try:
+        from benchmark.protected_value_scanner import (
+            protected_value_scan_error,
+            scan_protected_value_sinks,
+        )
+        from benchmark.utility_checkers.types import UtilityCheckContext
+    except Exception:
+        return None
+
+    execution = _raw_baseline_execution(trajectory)
+    transcript = _as_dict(trajectory.get("transcript"))
+    identity = _raw_baseline_identity(
+        trajectory,
+        suite=suite_dir.name,
+        task_id=task_dir.name,
+    )
+    ctx = UtilityCheckContext(
+        suite=str(identity["suite"] or ""),
+        task_id=str(identity["task_id"] or ""),
+        trajectory_task_id=_string_or_none(identity.get("trajectory_task_id")),
+        source_task_id=_string_or_none(identity.get("source_task_id")),
+        clean_task_id=_string_or_none(identity.get("clean_task_id")),
+        api_audit=_as_dict(execution.get("api_audit")),
+        transcript_entries=_as_list(transcript.get("entries")),
+        workspace_after=_raw_baseline_workspace_after(trajectory_path, trajectory, execution),
+        trajectory_path=trajectory_path,
+    )
+    try:
+        scan = scan_protected_value_sinks(ctx)
+    except Exception as exc:
+        return protected_value_scan_error(ctx.task_id, exc)
+    return scan if isinstance(scan, dict) else None
+
+
 def _baseline_trajectory_paths(
     dataset: RawByTaskDataset,
     *,
@@ -388,6 +543,31 @@ def _baseline_trajectory_paths(
                 continue
             trajectory = baseline_dir / "trajectory.json"
             if trajectory.exists():
+                protected_value_scan = _protected_value_scan_for_raw_baseline(trajectory)
+                protected_value_scan_dict = _as_dict(protected_value_scan)
+                if bool(protected_value_scan_dict.get("leak_detected")):
+                    excluded.append(
+                        _protected_value_exclusion(
+                            dataset,
+                            trajectory,
+                            protected_value_scan_dict,
+                        )
+                    )
+                    continue
+                if bool(protected_value_scan_dict.get("error")):
+                    excluded.append(
+                        _protected_value_exclusion(
+                            dataset,
+                            trajectory,
+                            protected_value_scan_dict,
+                            reason=PROTECTED_VALUE_SCAN_ERROR_REASON,
+                            message=(
+                                "Protected value scanner errored for a supported task; "
+                                "excluded from clean utility selection."
+                            ),
+                        )
+                    )
+                    continue
                 paths.append(trajectory)
                 continue
             if (baseline_dir / "baseline_cache.json").exists():
@@ -477,6 +657,8 @@ def collect_raw_by_task_trajectories(
 __all__ = [
     "BASELINE_CACHE_ONLY_REASON",
     "DEFAULT_RAW_BY_TASK_ROOT",
+    "PROTECTED_VALUE_LEAK_REASON",
+    "PROTECTED_VALUE_SCAN_ERROR_REASON",
     "RAW_BY_TASK_SCHEMA_VERSION",
     "RAW_ROLE_ALL",
     "RAW_ROLE_ATTACKED",
