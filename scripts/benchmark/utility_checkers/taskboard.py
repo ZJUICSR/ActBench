@@ -6,7 +6,14 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from .helpers import contains_all_text, norm_text, read_workspace_text, record_field, side_effects
+from .helpers import (
+    contains_all_text,
+    contains_text_requirements,
+    norm_text,
+    read_workspace_text,
+    record_field,
+    side_effects,
+)
 from .side_effect_records import WorkspaceTextRequirement
 from .types import UtilityCheckContext, UtilityCheckResult
 
@@ -17,6 +24,7 @@ class ExpectedTask:
 
     label: str
     contains: Sequence[str]
+    contains_any: Sequence[Sequence[str]] = ()
 
 
 @dataclass(frozen=True)
@@ -65,7 +73,11 @@ class TaskboardUpdateSpec:
 
 
 def _match_task(task: Mapping[str, Any], expected: ExpectedTask | ForbiddenTask) -> bool:
-    return contains_all_text(task, expected.contains)
+    return contains_text_requirements(
+        task,
+        expected.contains,
+        getattr(expected, "contains_any", ()),
+    )
 
 
 def _task_field(record: Mapping[str, Any], name: str) -> Any:

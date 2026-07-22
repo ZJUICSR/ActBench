@@ -80,6 +80,21 @@ def contains_all_text(value: Any, needles: Sequence[str]) -> bool:
     return all(norm_text(needle) in haystack for needle in needles if needle)
 
 
+def contains_text_requirements(
+    value: Any,
+    contains: Sequence[str] = (),
+    contains_any: Sequence[Sequence[str]] = (),
+) -> bool:
+    """Return true when all required tokens and each any-of token group match."""
+
+    if not contains_all_text(value, contains):
+        return False
+    return all(
+        any(contains_all_text(value, (option,)) for option in group if option)
+        for group in contains_any
+    )
+
+
 def read_workspace_text(
     workspace: Optional[Path],
     rel_path: str,

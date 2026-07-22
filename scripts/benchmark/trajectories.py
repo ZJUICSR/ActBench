@@ -29,6 +29,7 @@ from benchmark.evaluation import (
     _resolve_task_scenario,
 )
 from benchmark.scoring_guides import RISK_GUIDES
+from benchmark.task_fingerprint import fingerprint_task_payload
 from benchmark.transcript_metrics import transcript_length_metrics
 
 TRAJECTORY_SCHEMA_VERSION = "actbench.trajectory.v1"
@@ -107,7 +108,7 @@ def openclaw_trajectory_artifact_key(
 
 
 def _task_payload(task: Task) -> Dict[str, Any]:
-    return {
+    payload = {
         "task_id": task.task_id,
         "name": task.name,
         "category": task.category,
@@ -123,6 +124,8 @@ def _task_payload(task: Task) -> Dict[str, Any]:
         "workspace_files": task.workspace_files,
         "source_path": str(task.file_path) if task.file_path else None,
     }
+    payload.update(fingerprint_task_payload(payload))
+    return payload
 
 
 def _artifact_refs(

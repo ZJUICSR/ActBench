@@ -8,16 +8,30 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+from benchmark.task_fingerprint import (
+    TASK_HASH_ALGORITHM,
+    clean_source_content_hash_from_payload,
+    fingerprint_task_payload,
+    task_prompt_from_payload,
+    task_prompt_sha256_from_payload,
+    task_spec_sha256_from_payload,
+)
+
 RAW_BY_TASK_SCHEMA_VERSION = "actbench.raw_by_task.v1"
 DEFAULT_RAW_BY_TASK_ROOT = Path.home() / "pack" / "raw_by_task"
 RAW_BY_TASK_GLOBAL_MANIFEST = "raw_by_task_manifest.json"
 BASELINE_CACHE_ONLY_REASON = "baseline_cache_only"
 PROTECTED_VALUE_LEAK_REASON = "protected_value_leak"
 PROTECTED_VALUE_SCAN_ERROR_REASON = "protected_value_scan_error"
+TASK_VERSION_MISMATCH_REASON = "task_version_mismatch"
 
 RAW_ROLE_ATTACKED = "attacked"
 RAW_ROLE_BENIGN = "benign"
 RAW_ROLE_ALL = "all"
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_CURRENT_TASKS_ROOT = _REPO_ROOT / "tasks"
+_CURRENT_TASK_PAYLOAD_CACHE: Dict[str, Optional[Dict[str, Any]]] = {}
 
 
 class RawByTaskError(ValueError):
@@ -406,8 +420,158 @@ def _raw_baseline_execution(trajectory: Dict[str, Any]) -> Dict[str, Any]:
 def _string_or_none(value: Any) -> Optional[str]:
     if value is None:
         return None
-    text = str(value)
+    text = str(value).strip()
     return text if text else None
+
+
+def _load_current_task_payload(task_id: str) -> Optional[Dict[str, Any]]:
+    if task_id in _CURRENT_TASK_PAYLOAD_CACHE:
+        return _CURRENT_TASK_PAYLOAD_CACHE[task_id]
+    task_file = _CURRENT_TASKS_ROOT / task_id / "task.yaml"
+    if not task_file.is_file():
+        _CURRENT_TASK_PAYLOAD_CACHE[task_id] = None
+        return None
+    try:
+        from lib_tasks import TaskLoader
+
+        task = TaskLoader(_CURRENT_TASKS_ROOT).load_task(task_file)
+    except Exception:
+        _CURRENT_TASK_PAYLOAD_CACHE[task_id] = None
+        return None
+    payload = dict(task.to_dict())
+    if task.file_path:
+        payload["source_path"] = str(task.file_path)
+    payload.update(fingerprint_task_payload(payload))
+    _CURRENT_TASK_PAYLOAD_CACHE[task_id] = payload
+    return payload
+
+
+def _task_payload_fingerprints(payload: Dict[str, Any]) -> Dict[str, Optional[str]]:
+    algorithm = _string_or_none(payload.get("task_hash_algorithm"))
+    prompt_hash = None
+    spec_hash = None
+    if algorithm == TASK_HASH_ALGORITHM:
+        prompt_hash = _string_or_none(payload.get("task_prompt_sha256"))
+        spec_hash = _string_or_none(payload.get("task_spec_sha256"))
+    return {
+        "algorithm": algorithm,
+        "prompt_sha256": prompt_hash or task_prompt_sha256_from_payload(payload),
+        "spec_sha256": spec_hash or task_spec_sha256_from_payload(payload),
+        "clean_source_content_hash": clean_source_content_hash_from_payload(payload),
+    }
+
+
+def _task_version_mismatch_exclusion(
+    dataset: RawByTaskDataset,
+    trajectory_path: Path,
+    *,
+    mismatch_fields: Sequence[str],
+    embedded_fingerprint: Dict[str, Optional[str]],
+    current_fingerprint: Dict[str, Optional[str]],
+) -> Dict[str, Any]:
+    baseline_dir = trajectory_path.parent
+    task_dir = baseline_dir.parent
+    suite_dir = task_dir.parent
+    return {
+        "dataset": dataset.name,
+        "path": str(trajectory_path),
+        "reason": TASK_VERSION_MISMATCH_REASON,
+        "message": (
+            "Baseline trajectory embeds a different task prompt/spec than the current "
+            "task registry; excluded from clean utility selection."
+        ),
+        "role": "benign_baseline",
+        "suite": suite_dir.name,
+        "task_id": task_dir.name,
+        "mismatch_fields": list(mismatch_fields),
+        "task_hash_algorithm": TASK_HASH_ALGORITHM,
+        "embedded_task_hash_algorithm": embedded_fingerprint.get("algorithm"),
+        "embedded_task_prompt_sha256": embedded_fingerprint.get("prompt_sha256"),
+        "current_task_prompt_sha256": current_fingerprint.get("prompt_sha256"),
+        "embedded_task_spec_sha256": embedded_fingerprint.get("spec_sha256"),
+        "current_task_spec_sha256": current_fingerprint.get("spec_sha256"),
+        "embedded_clean_source_content_hash": embedded_fingerprint.get(
+            "clean_source_content_hash"
+        ),
+        "current_clean_source_content_hash": current_fingerprint.get(
+            "clean_source_content_hash"
+        ),
+    }
+
+
+def _task_version_mismatch_for_raw_baseline(
+    dataset: RawByTaskDataset,
+    trajectory_path: Path,
+) -> Optional[Dict[str, Any]]:
+    try:
+        trajectory = _load_json(trajectory_path)
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(trajectory, dict):
+        return None
+    try:
+        task_id = trajectory_path.parents[1].name
+    except IndexError:
+        return None
+    current_payload = _load_current_task_payload(task_id)
+    if current_payload is None:
+        return None
+    embedded_payload = _as_dict(trajectory.get("task"))
+    if not embedded_payload:
+        return None
+
+    embedded_fingerprint = _task_payload_fingerprints(embedded_payload)
+    current_fingerprint = _task_payload_fingerprints(current_payload)
+    embedded_has_hash = bool(
+        embedded_fingerprint.get("algorithm")
+        or _string_or_none(embedded_payload.get("task_prompt_sha256"))
+        or _string_or_none(embedded_payload.get("task_spec_sha256"))
+    )
+    embedded_frontmatter = _as_dict(embedded_payload.get("frontmatter"))
+    embedded_has_registry_provenance = bool(
+        _string_or_none(embedded_payload.get("source_path"))
+        or _string_or_none(embedded_frontmatter.get("id"))
+        or _string_or_none(embedded_frontmatter.get("legacy_task_id"))
+    )
+    embedded_has_comparison_provenance = bool(
+        embedded_has_hash
+        or embedded_fingerprint.get("clean_source_content_hash")
+        or embedded_has_registry_provenance
+    )
+
+    mismatch_fields: list[str] = []
+    embedded_prompt = task_prompt_from_payload(embedded_payload)
+    current_prompt = task_prompt_from_payload(current_payload)
+    if (
+        embedded_has_comparison_provenance
+        and embedded_prompt
+        and current_prompt
+        and embedded_fingerprint.get("prompt_sha256") != current_fingerprint.get("prompt_sha256")
+    ):
+        mismatch_fields.append("prompt")
+
+    embedded_clean_hash = embedded_fingerprint.get("clean_source_content_hash")
+    current_clean_hash = current_fingerprint.get("clean_source_content_hash")
+    if embedded_clean_hash and current_clean_hash and embedded_clean_hash != current_clean_hash:
+        mismatch_fields.append("clean_source.content_hash")
+
+    if (
+        embedded_fingerprint.get("algorithm") == TASK_HASH_ALGORITHM
+        and embedded_fingerprint.get("spec_sha256")
+        and current_fingerprint.get("spec_sha256")
+        and embedded_fingerprint.get("spec_sha256") != current_fingerprint.get("spec_sha256")
+    ):
+        mismatch_fields.append("task_spec_sha256")
+
+    if not mismatch_fields:
+        return None
+    return _task_version_mismatch_exclusion(
+        dataset,
+        trajectory_path,
+        mismatch_fields=mismatch_fields,
+        embedded_fingerprint=embedded_fingerprint,
+        current_fingerprint=current_fingerprint,
+    )
 
 
 def _raw_baseline_identity(
@@ -568,6 +732,13 @@ def _baseline_trajectory_paths(
                         )
                     )
                     continue
+                task_version_mismatch = _task_version_mismatch_for_raw_baseline(
+                    dataset,
+                    trajectory,
+                )
+                if task_version_mismatch is not None:
+                    excluded.append(task_version_mismatch)
+                    continue
                 paths.append(trajectory)
                 continue
             if (baseline_dir / "baseline_cache.json").exists():
@@ -659,6 +830,7 @@ __all__ = [
     "DEFAULT_RAW_BY_TASK_ROOT",
     "PROTECTED_VALUE_LEAK_REASON",
     "PROTECTED_VALUE_SCAN_ERROR_REASON",
+    "TASK_VERSION_MISMATCH_REASON",
     "RAW_BY_TASK_SCHEMA_VERSION",
     "RAW_ROLE_ALL",
     "RAW_ROLE_ATTACKED",

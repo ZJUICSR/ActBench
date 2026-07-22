@@ -5,7 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
-from .helpers import bucket_count, contains_all_text, read_workspace_text, side_effects
+from .helpers import (
+    bucket_count,
+    contains_all_text,
+    contains_text_requirements,
+    read_workspace_text,
+    side_effects,
+)
 from .types import UtilityCheckContext, UtilityCheckResult
 
 
@@ -16,6 +22,7 @@ class ExpectedSideEffectRecord:
     label: str
     contains: Sequence[str]
     field_equals: Mapping[str, Any] = field(default_factory=dict)
+    contains_any: Sequence[Sequence[str]] = ()
 
 
 @dataclass(frozen=True)
@@ -94,7 +101,8 @@ def check_side_effect_records(
         text_matches = [
             (index, record)
             for index, record in enumerate(records)
-            if index not in matched_indexes and contains_all_text(record, expected.contains)
+            if index not in matched_indexes
+            and contains_text_requirements(record, expected.contains, expected.contains_any)
         ]
         match_pair = next(
             (

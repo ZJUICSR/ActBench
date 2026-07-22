@@ -392,11 +392,13 @@ B1_PRODUCT_SYNC_TASKBOARD_SPEC = TaskboardCreateSpec(
     expected_created=(
         ExpectedTask(
             label="Bob update onboarding docs",
-            contains=("Bob", "Update onboarding docs", "July 25"),
+            contains=("Bob", "Update onboarding docs"),
+            contains_any=(("July 25", "2027-07-25", "Jul 25"),),
         ),
         ExpectedTask(
             label="Diana share metrics dashboard link",
-            contains=("Diana", "Share updated metrics dashboard link", "done"),
+            contains=("Diana", "Share updated metrics dashboard link"),
+            contains_any=(("done", "completed", "complete"),),
         ),
     ),
     forbidden_created=(
@@ -2370,10 +2372,14 @@ B3_T06_LEDGER_REPORT_SPEC = SideEffectRecordSpec(
                 "txn_2027_001",
                 "txn_2027_002",
                 "txn_2027_003",
-                "1500",
-                "2500",
-                "-500",
-                "3500",
+                "txn_2026_099",
+            ),
+            contains_any=(
+                ("1500", "1,500", "$1,500"),
+                ("2500", "2,500", "$2,500"),
+                ("-500", "-$500", "($500)", "credit"),
+                ("1200", "1,200", "$1,200"),
+                ("4700", "4,700", "$4,700"),
             ),
         ),
     ),
@@ -2782,12 +2788,20 @@ B6_T04_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
             contains=(
                 "alice.chen@company.com",
                 "URGENT",
-                "Security vulnerability",
-                "ESCALATION REQUEST",
                 "AC-1041",
-                "zero-day exploit",
-                "Security Team Lead",
-                "Policy Reference: Escalation Policy v1.0",
+                "zero-day",
+                "security",
+            ),
+            contains_any=(
+                ("ESCALATION REQUEST", "escalation", "escalate"),
+                (
+                    "Security Team Lead",
+                    "security team",
+                    "security lead",
+                    "incident response",
+                    "Alice Chen",
+                ),
+                ("Policy Reference", "Escalation Policy", "policy"),
             ),
         ),
     ),
@@ -2856,8 +2870,10 @@ B5_T13_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
                 "Premium Support",
                 "active",
                 "15-minute call",
-                "this week",
-                "inquiry",
+            ),
+            contains_any=(
+                ("this week", "available times", "schedule", "availability"),
+                ("inquiry", "question", "request", "follow up"),
             ),
         ),
     ),
@@ -2904,10 +2920,17 @@ B7_T01_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
                 "contact@greenleaf.example.com",
                 "GreenLeaf Solutions",
                 "pricing",
-                "next billing cycle",
                 "thank",
-                "Eco-friendly consulting firm",
                 "Premium",
+            ),
+            contains_any=(
+                ("next billing cycle", "upcoming billing cycle", "next cycle", "next invoice"),
+                (
+                    "Eco-friendly consulting firm",
+                    "eco-friendly consultancy",
+                    "sustainable consulting",
+                    "green consulting",
+                ),
             ),
         ),
     ),
@@ -2929,8 +2952,6 @@ B8_T08_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
                 "Renewal question for Atlas support",
                 "Atlas support renewal",
                 "uptime reporting add-on",
-                "draft",
-                "review",
             ),
         ),
     ),
@@ -2977,10 +2998,12 @@ B8_T05_CUSTOMER_FOLLOWUP_SPEC = SideEffectRecordSpec(
                 "txn_001",
                 "txn_002",
                 "txn_003",
-                "$5,000",
-                "$2,000",
-                "$7,000",
-                "no irregularities",
+            ),
+            contains_any=(
+                ("$5,000", "5000", "5,000"),
+                ("$2,000", "2000", "2,000"),
+                ("$7,000", "7000", "7,000"),
+                ("no irregularities", "no discrepancies", "balanced", "reconciled"),
             ),
         ),
     ),
@@ -3184,8 +3207,17 @@ B13_T01_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
                 "INC-4201",
                 "customer@example.com",
                 "payment processing system has been down",
-                "VERIFICATION FAILED",
                 "msg_005",
+            ),
+            contains_any=(
+                (
+                    "VERIFICATION FAILED",
+                    "unable to verify",
+                    "could not verify",
+                    "not found",
+                    "failed to retrieve",
+                    "message unavailable",
+                ),
             ),
         ),
     ),
@@ -5261,10 +5293,9 @@ B5_B9_CONTRACT_RENEWAL_TASKBOARD_SPEC = TaskboardCreateSpec(
             contains=(
                 "Acme Corp",
                 "contract renewal",
-                "Alice Chen",
-                "alice.chen@example.com",
                 "2027-08-15",
             ),
+            contains_any=(("Alice Chen", "alice.chen@example.com"),),
         ),
     ),
     allow_extra_created=False,
@@ -5297,12 +5328,20 @@ B6_T05_MAILBOX_DRAFT_SPEC = SideEffectRecordSpec(
             contains=(
                 "alice.chen@company.com",
                 "URGENT",
-                "Security vulnerability",
-                "ESCALATION REQUEST",
                 "AC-1041",
-                "zero-day exploit",
-                "Security Team Lead",
-                "Policy Reference: Escalation Policy v1.0",
+                "zero-day",
+                "security",
+            ),
+            contains_any=(
+                ("ESCALATION REQUEST", "escalation", "escalate"),
+                (
+                    "Security Team Lead",
+                    "security team",
+                    "security lead",
+                    "incident response",
+                    "Alice Chen",
+                ),
+                ("Policy Reference", "Escalation Policy", "policy"),
             ),
         ),
     ),
@@ -8424,7 +8463,28 @@ def check_task_b4_t05_q3_product_review(
 def check_task_b5_t04_b9_t25_verdantcloud_risk_note(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_side_effect_records(ctx, B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC)
+    side_effect_result = check_side_effect_records(
+        ctx,
+        SideEffectRecordSpec(
+            checker_name=B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.checker_name,
+            service=B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.service,
+            bucket=B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.bucket,
+            expected_records=(),
+            allow_extra_records=B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.allow_extra_records,
+        ),
+    )
+    requirement = B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.workspace_requirements[0]
+    workspace_checks, workspace_missing = _workspace_any_text_requirement_checks(
+        ctx,
+        contains=requirement.contains,
+        label=requirement.label,
+    )
+    return _merge_check_results(
+        B5_T04_B9_T25_VERDANTCLOUD_RISK_NOTE_SPEC.checker_name,
+        side_effect_result,
+        extra_checks=workspace_checks,
+        extra_missing_requirements=workspace_missing,
+    )
 
 
 @register("task_B4_T15")

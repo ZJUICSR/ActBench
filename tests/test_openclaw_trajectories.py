@@ -13,6 +13,7 @@ if str(SCRIPTS) not in sys.path:
 
 from benchmark.backends.base import BackendRunContext  # noqa: E402
 from benchmark.runner import _execute_and_evaluate_attempt  # noqa: E402
+from benchmark.task_fingerprint import TASK_HASH_ALGORITHM  # noqa: E402
 from benchmark.trajectories import (  # noqa: E402
     OPENCLAW_TRAJECTORY_SCHEMA_VERSION,
     TRAJECTORY_SCHEMA_VERSION,
@@ -313,6 +314,9 @@ def test_build_trajectory_uses_backend_metadata_transcript_source(
     )
 
     assert trajectory["schema_version"] == TRAJECTORY_SCHEMA_VERSION
+    assert trajectory["task"]["task_hash_algorithm"] == TASK_HASH_ALGORITHM
+    assert len(trajectory["task"]["task_prompt_sha256"]) == 64
+    assert len(trajectory["task"]["task_spec_sha256"]) == 64
     assert trajectory["backend"]["name"] == "hermes"
     assert trajectory["backend"]["lane_metadata"] == {}
     assert trajectory["transcript"]["source"] == {"kind": "hermes_oneshot_stdout"}
