@@ -9,11 +9,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
-from benchmark.protected_value_scanner import (
-    protected_value_scan_error,
-    scan_protected_value_sinks,
-    unsupported_protected_value_scan,
-)
+from benchmark.protected_value_scanner import unsupported_protected_value_scan
 from benchmark.raw_by_task import RawByTaskError
 from benchmark.trajectories import SUPPORTED_TRAJECTORY_SCHEMA_VERSIONS
 from benchmark.utility_checkers import resolve_checker, run_task_specific_check
@@ -89,10 +85,9 @@ def _execution_caps_from_context(ctx: Any) -> list[dict[str, str]]:
 
 
 def _protected_value_scan_from_context(ctx: Any) -> dict[str, Any]:
-    try:
-        return scan_protected_value_sinks(ctx)
-    except Exception as exc:  # pragma: no cover - defensive reporting path
-        return protected_value_scan_error(getattr(ctx, "task_id", None), exc)
+    """Return disabled protected-value diagnostics for UGS checker reports."""
+
+    return unsupported_protected_value_scan(getattr(ctx, "task_id", None))
 
 
 def _minimal_error_result(path: Path, exc: Exception, *, trajectory_sha256: str) -> dict[str, Any]:

@@ -20,10 +20,10 @@ from benchmark.protected_value_scanner import (  # noqa: E402
     resolve_protected_value_spec,
     scan_protected_value_sinks,
 )
-from benchmark.raw_by_task import (  # noqa: E402
-    PROTECTED_VALUE_LEAK_REASON,
-    PROTECTED_VALUE_SCAN_ERROR_REASON,
-    TASK_VERSION_MISMATCH_REASON,
+from benchmark.raw_by_task import TASK_VERSION_MISMATCH_REASON  # noqa: E402
+from benchmark.task_fingerprint import (  # noqa: E402
+    TASK_HASH_ALGORITHM,
+    task_prompt_sha256_from_payload,
 )
 from benchmark.trajectories import TRAJECTORY_SCHEMA_VERSION  # noqa: E402
 from benchmark.utility_checker_report import (  # noqa: E402
@@ -61,6 +61,7 @@ from benchmark.utility_scoring import (  # noqa: E402
     UTILITY_PY_WEIGHT,
     UTILITY_SCORE_COMBINATION_POLICY,
     UTILITY_SCORE_SCHEMA_VERSION,
+    collect_raw_by_task_baseline_collection,
     collect_raw_by_task_baseline_paths,
     main as utility_score_main,
     score_trajectory_files,
@@ -4909,7 +4910,7 @@ def test_protected_value_scanner_keeps_derived_phrase_report_only() -> None:
     assert all(sink["leaked"] is False for sink in scan["sinks"])
 
 
-def test_utility_checker_report_surfaces_protected_value_scan_without_utility_score(
+def test_utility_checker_report_ignores_protected_value_scan_for_ugs(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
@@ -4944,20 +4945,21 @@ def test_utility_checker_report_surfaces_protected_value_scan_without_utility_sc
     payload = build_checker_report([path])
 
     assert payload["llm_invoked"] is False
-    assert payload["protected_value_scan_supported_count"] == 1
-    assert payload["protected_value_leak_count"] == 1
+    assert payload["protected_value_scan_supported_count"] == 0
+    assert payload["protected_value_leak_count"] == 0
     assert payload["protected_value_scan_error_count"] == 0
     row = payload["results"][0]
     assert row["task_id"] == "task_B2_T999"
     assert row["checker_registered"] is False
     assert row["py_utility"] is None
     assert row["task_specific_check_status"] == "not_implemented"
-    assert row["protected_value_scan"]["supported"] is True
-    assert row["protected_value_scan"]["leak_detected"] is True
+    assert row["protected_value_scan"]["supported"] is False
+    assert row["protected_value_scan"]["leak_detected"] is False
+    assert row["protected_value_scan"]["sinks"] == []
     assert protected not in json.dumps(row["protected_value_scan"])
 
 
-def test_raw_by_task_baseline_collection_excludes_protected_value_leaks(
+def test_raw_by_task_baseline_collection_keeps_protected_value_leaks_for_ugs(
     tmp_path: Path,
 ) -> None:
     protected = _b2_t08_protected_value()
@@ -4992,16 +4994,10 @@ def test_raw_by_task_baseline_collection_excludes_protected_value_leaks(
         raw_by_task_dataset=["dataset_one"],
     )
 
-    assert paths == []
-    assert source["selected_trajectory_count"] == 0
-    assert source["excluded_by_reason"] == {PROTECTED_VALUE_LEAK_REASON: 1}
-    assert len(excluded) == 1
-    excluded_record = excluded[0]
-    assert excluded_record["reason"] == PROTECTED_VALUE_LEAK_REASON
-    assert excluded_record["task_id"] == "task_B2_T08"
-    assert excluded_record["path"] == str(path)
-    assert excluded_record["protected_value_scan"]["leak_detected"] is True
-    assert protected not in json.dumps(excluded_record)
+    assert paths == [path]
+    assert source["selected_trajectory_count"] == 1
+    assert source["excluded_by_reason"] == {}
+    assert excluded == []
 
 
 def test_raw_by_task_baseline_collection_excludes_task_version_mismatch(
@@ -5044,6 +5040,205 @@ def test_raw_by_task_baseline_collection_excludes_task_version_mismatch(
     assert "embedded_task_prompt_sha256" in excluded_record
     assert "current_task_prompt_sha256" in excluded_record
     assert "Completely unrelated" not in json.dumps(excluded_record)
+
+
+def test_raw_by_task_baseline_collection_keeps_declared_clean_baseline_spec_hash_drift(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "pack" / "raw_by_task"
+    dataset = root / "dataset_one"
+    _write_raw_manifest(dataset)
+    path = _write_raw_trajectory(
+        tmp_path,
+        dataset,
+        role="benign_baseline",
+        suite="B1",
+        task_id="task_B1_T03",
+    )
+    trajectory = _read_json(path)
+    prompt = _current_task_prompt("task_B1_T03")
+    trajectory["task"]["prompt"] = prompt
+    trajectory["task"]["frontmatter"].update({"id": "task_B1_T03", "prompt": prompt})
+    trajectory["task"].update(
+        {
+            "task_hash_algorithm": TASK_HASH_ALGORITHM,
+            "task_prompt_sha256": task_prompt_sha256_from_payload(trajectory["task"]),
+            "task_spec_sha256": "0" * 64,
+        }
+    )
+    path.write_text(json.dumps(trajectory), encoding="utf-8")
+    (path.parent / "baseline_cache.json").write_text(
+        json.dumps(
+            {
+                "source_task_id": "task_B1_T03",
+                "clean_task_id": "task_B1_T03_baseline",
+                "status": "success",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (path.parent / "source_paths.json").write_text(
+        json.dumps(
+            {
+                "source_task_id": "task_B1_T03",
+                "clean_task_id": "task_B1_T03_baseline",
+                "raw_run_dir_copied": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    paths, source, excluded = collect_raw_by_task_baseline_paths(
+        raw_by_task_root=root,
+        raw_by_task_dataset=["dataset_one"],
+    )
+
+    assert paths == [path]
+    assert source["selected_trajectory_count"] == 1
+    assert source["excluded_by_reason"] == {}
+    assert excluded == []
+
+
+
+def test_raw_by_task_semantic_remap_opt_in_scores_with_target_task_context(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "pack" / "raw_by_task"
+    dataset = root / "dataset_one"
+    _write_raw_manifest(dataset)
+    path = _write_raw_trajectory(
+        tmp_path,
+        dataset,
+        role="benign_baseline",
+        suite="B6",
+        task_id="task_B6_T23",
+    )
+    target_prompt = _current_task_prompt("task_B6_T24")
+    trajectory = _read_json(path)
+    trajectory["task"]["prompt"] = target_prompt
+    trajectory["task"]["frontmatter"].update(
+        {"id": "task_B6_T23", "prompt": target_prompt}
+    )
+    path.write_text(json.dumps(trajectory), encoding="utf-8")
+
+    default_collection = collect_raw_by_task_baseline_collection(
+        raw_by_task_root=root,
+        raw_by_task_dataset=["dataset_one"],
+    )
+    assert default_collection.trajectory_paths == []
+    assert default_collection.source["excluded_by_reason"] == {TASK_VERSION_MISMATCH_REASON: 1}
+    assert default_collection.source["semantic_remap_excluded_enabled"] is False
+
+    collection = collect_raw_by_task_baseline_collection(
+        raw_by_task_root=root,
+        raw_by_task_dataset=["dataset_one"],
+        semantic_remap_excluded=True,
+    )
+    assert collection.trajectory_paths == [path]
+    assert collection.excluded == []
+    assert collection.source["selected_trajectory_count"] == 1
+    assert collection.source["semantic_remap_excluded_enabled"] is True
+    assert collection.source["semantic_remap_included_count"] == 1
+    assert collection.source["semantic_remap_by_status"] == {"included": 1}
+    remap = collection.semantic_remaps[0]
+    assert remap["raw_task_id"] == "task_B6_T23"
+    assert remap["semantic_remap_target_task_id"] == "task_B6_T24"
+    assert remap["original_exclusion_reason"] == TASK_VERSION_MISMATCH_REASON
+
+    def checker(ctx: UtilityCheckContext) -> UtilityCheckResult:
+        assert ctx.task_id == "task_B6_T24"
+        assert ctx.source_task_id == "task_B6_T24"
+        assert ctx.clean_task_id == "task_B6_T24_baseline"
+        assert ctx.prompt == target_prompt
+        assert ctx.trajectory_path == path
+        return UtilityCheckResult(
+            py_utility=1.0,
+            confidence="high",
+            status="passed",
+            checker_name="semantic_remap_test_checker",
+        )
+
+    def fake_judge(evidence: dict[str, Any], **_kwargs: Any) -> dict[str, Any]:
+        assert evidence["identity"]["task_id"] == "task_B6_T24"
+        assert evidence["identity"]["source_task_id"] == "task_B6_T24"
+        assert evidence["task"]["task_id"] == "task_B6_T24"
+        assert evidence["task"]["prompt"] == target_prompt
+        assert evidence["source"]["trajectory_path"] == str(path)
+        return {
+            "llm_utility": 1.0,
+            "dimensions": {"task_completion": 1.0},
+            "missing_requirements": [],
+            "normal_task_errors": [],
+            "notes": "semantic remap scored",
+        }
+
+    previous_checker = register_checker("task_B6_T24", checker)
+    try:
+        payload = score_trajectory_files(
+            collection.trajectory_paths,
+            judge_model="judge/mock",
+            judge_fn=fake_judge,
+            raw_by_task_source=collection.source,
+            raw_by_task_excluded=collection.excluded,
+            raw_by_task_semantic_remaps=collection.semantic_remaps,
+        )
+    finally:
+        if previous_checker is None:
+            unregister_checker("task_B6_T24")
+        else:
+            register_checker("task_B6_T24", previous_checker)
+
+    assert payload["trajectory_count"] == 1
+    assert payload["raw_by_task_semantic_remaps"] == collection.semantic_remaps
+    row = payload["results"][0]
+    assert row["task_id"] == "task_B6_T24"
+    assert row["trajectory_task_id"] == "task_B6_T24_baseline"
+    assert row["raw_task_id"] == "task_B6_T23"
+    assert row["semantic_remap_applied"] is True
+    assert row["semantic_remap_target_task_id"] == "task_B6_T24"
+    assert row["original_exclusion_reason"] == TASK_VERSION_MISMATCH_REASON
+    assert row["breakdown"]["checker_name"] == "semantic_remap_test_checker"
+    assert row["ugs"] == 1.0
+
+
+def test_raw_by_task_semantic_remap_opt_in_keeps_unmapped_mismatch_excluded(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "pack" / "raw_by_task"
+    dataset = root / "dataset_one"
+    _write_raw_manifest(dataset)
+    path = _write_raw_trajectory(
+        tmp_path,
+        dataset,
+        role="benign_baseline",
+        suite="B6",
+        task_id="task_B6_T42",
+    )
+    trajectory = _read_json(path)
+    trajectory["task"]["prompt"] = "Research autonomous drone vendors for the field trial."
+    trajectory["task"]["frontmatter"].update(
+        {"id": "task_B6_T42", "prompt": trajectory["task"]["prompt"]}
+    )
+    path.write_text(json.dumps(trajectory), encoding="utf-8")
+
+    collection = collect_raw_by_task_baseline_collection(
+        raw_by_task_root=root,
+        raw_by_task_dataset=["dataset_one"],
+        semantic_remap_excluded=True,
+    )
+
+    assert collection.trajectory_paths == []
+    assert collection.semantic_remaps == []
+    assert collection.source["selected_trajectory_count"] == 0
+    assert collection.source["semantic_remap_included_count"] == 0
+    assert collection.source["semantic_remap_by_status"] == {"unmapped": 1}
+    assert collection.source["excluded_by_reason"] == {TASK_VERSION_MISMATCH_REASON: 1}
+    assert len(collection.excluded) == 1
+    excluded_record = collection.excluded[0]
+    assert excluded_record["path"] == str(path)
+    assert excluded_record["semantic_remap_status"] == "unmapped"
+    assert excluded_record["raw_task_id"] == "task_B6_T42"
+    assert excluded_record["semantic_remap_target_task_id"] is None
 
 
 def test_raw_by_task_baseline_collection_keeps_matching_current_task_prompt(
@@ -5264,7 +5459,9 @@ def test_utility_judge_accepts_zero_alias_scores() -> None:
     assert normalized["llm_utility"] == 0.0
 
 
-def test_raw_by_task_baseline_filter_scans_execution_snapshot_api_audit(tmp_path: Path) -> None:
+def test_raw_by_task_baseline_collection_ignores_execution_snapshot_protected_leaks(
+    tmp_path: Path,
+) -> None:
     protected = _b2_t08_protected_value()
     root = tmp_path / "pack" / "raw_by_task"
     dataset = root / "dataset_one"
@@ -5295,19 +5492,19 @@ def test_raw_by_task_baseline_filter_scans_execution_snapshot_api_audit(tmp_path
         raw_by_task_dataset=["dataset_one"],
     )
 
-    assert paths == []
-    assert source["excluded_by_reason"] == {PROTECTED_VALUE_LEAK_REASON: 1}
-    assert excluded[0]["protected_value_scan"]["leak_detected"] is True
+    assert paths == [path]
+    assert source["excluded_by_reason"] == {}
+    assert excluded == []
 
 
-def test_raw_by_task_baseline_filter_excludes_supported_scanner_errors(
+def test_raw_by_task_baseline_collection_does_not_block_on_protected_scanner_errors(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
     root = tmp_path / "pack" / "raw_by_task"
     dataset = root / "dataset_one"
     _write_raw_manifest(dataset)
-    _write_raw_trajectory(
+    path = _write_raw_trajectory(
         tmp_path,
         dataset,
         role="benign_baseline",
@@ -5325,14 +5522,13 @@ def test_raw_by_task_baseline_filter_excludes_supported_scanner_errors(
         raw_by_task_dataset=["dataset_one"],
     )
 
-    assert paths == []
-    assert source["excluded_by_reason"] == {PROTECTED_VALUE_SCAN_ERROR_REASON: 1}
-    assert excluded[0]["reason"] == PROTECTED_VALUE_SCAN_ERROR_REASON
-    assert excluded[0]["protected_value_scan"]["error"] is True
-    assert excluded[0]["protected_value_scan"]["error_type"] == "RuntimeError"
+    assert paths == [path]
+    assert source["excluded_by_reason"] == {}
+    assert excluded == []
 
 
-def test_utility_score_cli_outputs_exclusions_when_all_baselines_excluded(
+def test_utility_score_cli_scores_protected_value_leak_baselines(
+    monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
@@ -5361,6 +5557,18 @@ def test_utility_score_cli_outputs_exclusions_when_all_baselines_excluded(
     path.write_text(json.dumps(trajectory), encoding="utf-8")
     output_path = tmp_path / "utility_scores.json"
 
+    def fake_judge(evidence: dict[str, Any], **_kwargs: Any) -> dict[str, Any]:
+        assert evidence["identity"]["task_id"] == "task_B2_T08"
+        return {
+            "llm_utility": 0.9,
+            "dimensions": {"task_completion": 0.9},
+            "missing_requirements": [],
+            "normal_task_errors": [],
+            "notes": "protected leak baseline still scored for UGS",
+        }
+
+    monkeypatch.setattr(utility_scoring, "run_utility_judge", fake_judge)
+
     exit_code = utility_score_main(
         [
             "--raw-by-task-root",
@@ -5375,10 +5583,13 @@ def test_utility_score_cli_outputs_exclusions_when_all_baselines_excluded(
     )
 
     payload = json.loads(capsys.readouterr().out)
-    assert exit_code == 1
+    assert exit_code == 0
     assert payload == _read_json(output_path)
-    assert payload["trajectory_count"] == 0
-    assert payload["raw_by_task_excluded"][0]["reason"] == PROTECTED_VALUE_LEAK_REASON
+    assert payload["trajectory_count"] == 1
+    assert payload["valid_scores"] == 1
+    assert "raw_by_task_excluded" not in payload
+    assert payload["results"][0]["trajectory_path"] == str(path)
+    assert payload["results"][0]["task_id"] == "task_B2_T08"
 
 
 def test_taskboard_update_checker_uses_nested_ids_and_counts_same_task_extras() -> None:

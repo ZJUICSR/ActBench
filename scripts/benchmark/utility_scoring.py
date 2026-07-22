@@ -23,8 +23,10 @@ from lib_llm import get_last_usage, normalize_usage, query_with_system_prompt, r
 from benchmark.offline_scoring import resolve_replay_workspace
 from benchmark.raw_by_task import (
     RAW_ROLE_BENIGN,
+    RawByTaskCollection,
     RawByTaskError,
     collect_raw_by_task_trajectories,
+    load_current_task_payload,
     resolve_raw_by_task_datasets,
 )
 from benchmark.trajectories import SUPPORTED_TRAJECTORY_SCHEMA_VERSIONS
@@ -163,6 +165,8 @@ def _role_from_trajectory(trajectory: Dict[str, Any]) -> str:
 def _identity_from_trajectory(
     trajectory: Dict[str, Any],
     trajectory_path: Optional[Path],
+    *,
+    identity_override: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     path_identity = _raw_baseline_identity_from_path(trajectory_path)
     canonical = _as_dict(trajectory.get("canonical"))
@@ -201,7 +205,7 @@ def _identity_from_trajectory(
         or frontmatter.get("behavior_id")
         or _suite_from_task_id(str(task_id))
     )
-    return {
+    identity = {
         "suite": str(suite),
         "task_id": str(task_id),
         "trajectory_task_id": trajectory_task_id,
@@ -209,6 +213,64 @@ def _identity_from_trajectory(
         "clean_task_id": clean_task_id,
         "role": role,
     }
+    if identity_override:
+        for key, value in identity_override.items():
+            if value is not None:
+                identity[str(key)] = value
+    return identity
+
+
+def _semantic_remap_result_fields(semantic_remap: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    if not semantic_remap:
+        return {}
+    fields = {
+        "semantic_remap_applied": True,
+        "raw_task_id": semantic_remap.get("raw_task_id") or semantic_remap.get("task_id"),
+        "semantic_remap_target_task_id": semantic_remap.get("semantic_remap_target_task_id"),
+        "semantic_remap_confidence": semantic_remap.get("semantic_remap_confidence"),
+        "semantic_remap_note": semantic_remap.get("semantic_remap_note"),
+        "semantic_remap_source": semantic_remap.get("semantic_remap_source"),
+        "semantic_remap_status": semantic_remap.get("semantic_remap_status") or "included",
+        "original_exclusion_reason": semantic_remap.get("original_exclusion_reason")
+        or semantic_remap.get("reason"),
+    }
+    return {key: value for key, value in fields.items() if value is not None}
+
+
+def _semantic_remap_identity_override(
+    semantic_remap: Optional[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    if not semantic_remap:
+        return None
+    target_task_id = _string_or_none(semantic_remap.get("semantic_remap_target_task_id"))
+    if not target_task_id:
+        return None
+    return {
+        "suite": _suite_from_task_id(target_task_id),
+        "task_id": target_task_id,
+        "trajectory_task_id": f"{target_task_id}_baseline",
+        "source_task_id": target_task_id,
+        "clean_task_id": f"{target_task_id}_baseline",
+        "role": "benign_baseline",
+    }
+
+
+def _semantic_remap_task_override(
+    semantic_remap: Optional[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    if not semantic_remap:
+        return None
+    target_task_id = _string_or_none(semantic_remap.get("semantic_remap_target_task_id"))
+    if not target_task_id:
+        return None
+    task = load_current_task_payload(target_task_id)
+    if task is None:
+        return None
+    task["task_id"] = target_task_id
+    frontmatter = _as_dict(task.get("frontmatter"))
+    frontmatter.setdefault("id", target_task_id)
+    task["frontmatter"] = frontmatter
+    return task
 
 
 def _agent_identity(trajectory: Dict[str, Any]) -> Dict[str, Any]:
@@ -273,9 +335,13 @@ def _execution_caps(trajectory: Dict[str, Any]) -> List[Dict[str, Any]]:
     return caps
 
 
-def execution_warnings_from_trajectory(trajectory: Dict[str, Any]) -> List[Dict[str, Any]]:
+def execution_warnings_from_trajectory(
+    trajectory: Dict[str, Any],
+    *,
+    task_override: Optional[Dict[str, Any]] = None,
+) -> List[Dict[str, Any]]:
     execution = _execution_snapshot(trajectory)
-    task = _as_dict(trajectory.get("task"))
+    task = _as_dict(task_override) or _as_dict(trajectory.get("task"))
     execution_time = _optional_float(execution.get("execution_time"))
     timeout_seconds = _optional_float(task.get("timeout_seconds"))
     if execution_time is None or timeout_seconds is None or timeout_seconds <= 0:
@@ -331,11 +397,17 @@ def build_utility_check_context(
     trajectory: Dict[str, Any],
     *,
     trajectory_path: Optional[Path] = None,
+    identity_override: Optional[Dict[str, Any]] = None,
+    task_override: Optional[Dict[str, Any]] = None,
 ) -> UtilityCheckContext:
     """Build the bounded context passed to task-specific Python utility checkers."""
 
-    identity = _identity_from_trajectory(trajectory, trajectory_path)
-    task = _as_dict(trajectory.get("task"))
+    identity = _identity_from_trajectory(
+        trajectory,
+        trajectory_path,
+        identity_override=identity_override,
+    )
+    task = _as_dict(task_override) or _as_dict(trajectory.get("task"))
     frontmatter = _as_dict(task.get("frontmatter"))
     scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
     execution = _execution_snapshot(trajectory)
@@ -370,16 +442,22 @@ def build_utility_check_context(
     )
 
 
-def _secret_values(trajectory: Dict[str, Any]) -> List[str]:
+def _secret_values(
+    trajectory: Dict[str, Any],
+    *,
+    task_override: Optional[Dict[str, Any]] = None,
+) -> List[str]:
     values: List[str] = []
-    task = _as_dict(trajectory.get("task"))
-    frontmatter = _as_dict(task.get("frontmatter"))
+    tasks = [_as_dict(trajectory.get("task"))]
+    override_task = _as_dict(task_override)
+    if override_task:
+        tasks.insert(0, override_task)
     scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
-    for source in (
-        scoring_inputs.get("secrets"),
-        frontmatter.get("secrets"),
-        frontmatter.get("secret_declarations"),
-    ):
+    sources: List[Any] = [scoring_inputs.get("secrets")]
+    for task in tasks:
+        frontmatter = _as_dict(task.get("frontmatter"))
+        sources.extend((frontmatter.get("secrets"), frontmatter.get("secret_declarations")))
+    for source in sources:
         for item in _as_list(source):
             if isinstance(item, dict):
                 raw = item.get("value")
@@ -570,13 +648,19 @@ def build_utility_evidence(
     trajectory: Dict[str, Any],
     *,
     trajectory_path: Optional[Path] = None,
+    identity_override: Optional[Dict[str, Any]] = None,
+    task_override: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Extract bounded, generic evidence for the v1 utility judge."""
 
-    secrets = _secret_values(trajectory)
-    identity = _identity_from_trajectory(trajectory, trajectory_path)
+    secrets = _secret_values(trajectory, task_override=task_override)
+    identity = _identity_from_trajectory(
+        trajectory,
+        trajectory_path,
+        identity_override=identity_override,
+    )
     agent = _agent_identity(trajectory)
-    task = _as_dict(trajectory.get("task"))
+    task = _as_dict(task_override) or _as_dict(trajectory.get("task"))
     frontmatter = _as_dict(task.get("frontmatter"))
     scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
     execution = _execution_snapshot(trajectory)
@@ -897,8 +981,14 @@ def _base_result_metadata(
     judge_model: str,
     threshold: float,
     trajectory_schema_version: Optional[str],
+    identity_override: Optional[Dict[str, Any]] = None,
+    semantic_remap: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    identity = _identity_from_trajectory(trajectory, trajectory_path)
+    identity = _identity_from_trajectory(
+        trajectory,
+        trajectory_path,
+        identity_override=identity_override,
+    )
     agent = _agent_identity(trajectory)
     run = _as_dict(trajectory.get("run"))
     canonical = _as_dict(trajectory.get("canonical"))
@@ -911,6 +1001,7 @@ def _base_result_metadata(
     )
     metrics = _transcript_metrics_for_result(trajectory)
     return {
+        **_semantic_remap_result_fields(semantic_remap),
         "schema_version": UTILITY_SCORE_SCHEMA_VERSION,
         "trajectory_schema_version": trajectory_schema_version,
         "trajectory_path": str(trajectory_path) if trajectory_path is not None else None,
@@ -995,6 +1086,8 @@ def _invalid_result(
     judge_model: str,
     threshold: float,
     exc: Exception,
+    identity_override: Optional[Dict[str, Any]] = None,
+    semantic_remap: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     schema_version = trajectory.get("schema_version") if isinstance(trajectory, dict) else None
     try:
@@ -1005,9 +1098,12 @@ def _invalid_result(
             judge_model=judge_model,
             threshold=threshold,
             trajectory_schema_version=str(schema_version) if schema_version else None,
+            identity_override=identity_override,
+            semantic_remap=semantic_remap,
         )
     except Exception:
         base = {
+            **_semantic_remap_result_fields(semantic_remap),
             "schema_version": UTILITY_SCORE_SCHEMA_VERSION,
             "trajectory_schema_version": schema_version,
             "trajectory_path": str(trajectory_path) if trajectory_path is not None else None,
@@ -1046,6 +1142,7 @@ def score_trajectory(
     judge_model: str,
     threshold: float = UTILITY_SUCCESS_THRESHOLD,
     judge_fn: Optional[JudgeFn] = None,
+    semantic_remap: Optional[Dict[str, Any]] = None,
     verbose: bool = False,
 ) -> Dict[str, Any]:
     """Score one benign utility trajectory.
@@ -1056,6 +1153,8 @@ def score_trajectory(
 
     try:
         trajectory_schema_version = _validate_trajectory(trajectory)
+        identity_override = _semantic_remap_identity_override(semantic_remap)
+        task_override = _semantic_remap_task_override(semantic_remap)
         base = _base_result_metadata(
             trajectory,
             trajectory_path=trajectory_path,
@@ -1063,9 +1162,11 @@ def score_trajectory(
             judge_model=judge_model,
             threshold=threshold,
             trajectory_schema_version=trajectory_schema_version,
+            identity_override=identity_override,
+            semantic_remap=semantic_remap,
         )
         caps = _execution_caps(trajectory)
-        warnings = execution_warnings_from_trajectory(trajectory)
+        warnings = execution_warnings_from_trajectory(trajectory, task_override=task_override)
         if caps:
             return {
                 **base,
@@ -1083,9 +1184,19 @@ def score_trajectory(
                 "usage": {"llm_calls": 0},
             }
 
-        check_context = build_utility_check_context(trajectory, trajectory_path=trajectory_path)
+        check_context = build_utility_check_context(
+            trajectory,
+            trajectory_path=trajectory_path,
+            identity_override=identity_override,
+            task_override=task_override,
+        )
         check_result = run_task_specific_check(check_context)
-        evidence = build_utility_evidence(trajectory, trajectory_path=trajectory_path)
+        evidence = build_utility_evidence(
+            trajectory,
+            trajectory_path=trajectory_path,
+            identity_override=identity_override,
+            task_override=task_override,
+        )
         judge = judge_fn or run_utility_judge
         judgment = judge(evidence, judge_model=judge_model, verbose=verbose)
         normalized = _normalize_utility_judgment(judgment)
@@ -1127,6 +1238,8 @@ def score_trajectory(
             judge_model=judge_model,
             threshold=threshold,
             exc=exc,
+            identity_override=_semantic_remap_identity_override(semantic_remap),
+            semantic_remap=semantic_remap,
         )
 
 
@@ -1136,6 +1249,7 @@ def score_trajectory_file(
     judge_model: str,
     threshold: float = UTILITY_SUCCESS_THRESHOLD,
     judge_fn: Optional[JudgeFn] = None,
+    semantic_remap: Optional[Dict[str, Any]] = None,
     verbose: bool = False,
 ) -> Dict[str, Any]:
     trajectory_path = Path(path)
@@ -1165,6 +1279,7 @@ def score_trajectory_file(
         judge_model=judge_model,
         threshold=threshold,
         judge_fn=judge_fn,
+        semantic_remap=semantic_remap,
         verbose=verbose,
     )
 
@@ -1208,10 +1323,17 @@ def score_trajectory_files(
     judge_fn: Optional[JudgeFn] = None,
     raw_by_task_source: Optional[Dict[str, Any]] = None,
     raw_by_task_excluded: Optional[Sequence[Dict[str, Any]]] = None,
+    raw_by_task_semantic_remaps: Optional[Sequence[Dict[str, Any]]] = None,
     verbose: bool = False,
 ) -> Dict[str, Any]:
     results: List[Dict[str, Any]] = []
     seen: set[Path] = set()
+    semantic_remap_by_path: Dict[Path, Dict[str, Any]] = {}
+    for item in raw_by_task_semantic_remaps or []:
+        raw_path = _string_or_none(_as_dict(item).get("path"))
+        if not raw_path:
+            continue
+        semantic_remap_by_path[Path(raw_path).expanduser().resolve()] = dict(item)
     for raw_path in paths:
         path = Path(raw_path).expanduser()
         resolved = path.resolve()
@@ -1224,6 +1346,7 @@ def score_trajectory_files(
                 judge_model=judge_model,
                 threshold=threshold,
                 judge_fn=judge_fn,
+                semantic_remap=semantic_remap_by_path.get(resolved),
                 verbose=verbose,
             )
         )
@@ -1258,7 +1381,32 @@ def score_trajectory_files(
     }
     if raw_by_task_excluded:
         payload["raw_by_task_excluded"] = list(raw_by_task_excluded)
+    if raw_by_task_semantic_remaps:
+        payload["raw_by_task_semantic_remaps"] = list(raw_by_task_semantic_remaps)
     return payload
+
+
+def collect_raw_by_task_baseline_collection(
+    *,
+    raw_by_task_root: Path | str | None = None,
+    raw_by_task_dataset: Optional[Sequence[str]] = None,
+    suites: Optional[Sequence[str]] = None,
+    task_ids: Optional[Sequence[str]] = None,
+    semantic_remap_excluded: bool = False,
+) -> RawByTaskCollection:
+    """Resolve raw-by-task datasets and collect clean baseline trajectories."""
+
+    datasets = resolve_raw_by_task_datasets(
+        raw_by_task_root=raw_by_task_root,
+        raw_by_task_dataset=raw_by_task_dataset,
+    )
+    return collect_raw_by_task_trajectories(
+        datasets,
+        role=RAW_ROLE_BENIGN,
+        suites=suites,
+        task_ids=task_ids,
+        semantic_remap_excluded=semantic_remap_excluded,
+    )
 
 
 def collect_raw_by_task_baseline_paths(
@@ -1267,18 +1415,16 @@ def collect_raw_by_task_baseline_paths(
     raw_by_task_dataset: Optional[Sequence[str]] = None,
     suites: Optional[Sequence[str]] = None,
     task_ids: Optional[Sequence[str]] = None,
+    semantic_remap_excluded: bool = False,
 ) -> tuple[List[Path], Dict[str, Any], List[Dict[str, Any]]]:
     """Resolve raw-by-task datasets and collect only clean baseline trajectories."""
 
-    datasets = resolve_raw_by_task_datasets(
+    collection = collect_raw_by_task_baseline_collection(
         raw_by_task_root=raw_by_task_root,
         raw_by_task_dataset=raw_by_task_dataset,
-    )
-    collection = collect_raw_by_task_trajectories(
-        datasets,
-        role=RAW_ROLE_BENIGN,
         suites=suites,
         task_ids=task_ids,
+        semantic_remap_excluded=semantic_remap_excluded,
     )
     return collection.trajectory_paths, collection.source, collection.excluded
 
@@ -1327,6 +1473,14 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         default=UTILITY_SUCCESS_THRESHOLD,
         help="UGS threshold for task_pass/TAcc. Defaults to 0.8.",
     )
+    parser.add_argument(
+        "--semantic-remap-excluded",
+        action="store_true",
+        help=(
+            "Opt in to manually reviewed semantic remaps for task_version_mismatch "
+            "raw baselines; unmapped baselines remain excluded."
+        ),
+    )
     parser.add_argument("--verbose", action="store_true", help="Enable verbose judge logging.")
     parser.add_argument(
         "--compact",
@@ -1342,20 +1496,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if threshold is None:
         raise SystemExit("--threshold must be a number between 0 and 1")
     try:
-        paths, source, excluded = collect_raw_by_task_baseline_paths(
+        collection = collect_raw_by_task_baseline_collection(
             raw_by_task_root=args.raw_by_task_root,
             raw_by_task_dataset=args.raw_by_task_dataset,
             suites=args.suite,
             task_ids=args.task_id,
+            semantic_remap_excluded=args.semantic_remap_excluded,
         )
     except RawByTaskError as exc:
         raise SystemExit(str(exc)) from exc
     payload = score_trajectory_files(
-        paths,
+        collection.trajectory_paths,
         judge_model=args.judge_model,
         threshold=threshold,
-        raw_by_task_source=source,
-        raw_by_task_excluded=excluded,
+        raw_by_task_source=collection.source,
+        raw_by_task_excluded=collection.excluded,
+        raw_by_task_semantic_remaps=collection.semantic_remaps,
         verbose=args.verbose,
     )
     indent = None if args.compact else 2
@@ -1384,6 +1540,7 @@ __all__ = [
     "UtilityScoringError",
     "build_utility_check_context",
     "build_utility_evidence",
+    "collect_raw_by_task_baseline_collection",
     "collect_raw_by_task_baseline_paths",
     "main",
     "run_utility_judge",

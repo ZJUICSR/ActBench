@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 from collections import Counter
 from dataclasses import dataclass
@@ -24,6 +25,44 @@ BASELINE_CACHE_ONLY_REASON = "baseline_cache_only"
 PROTECTED_VALUE_LEAK_REASON = "protected_value_leak"
 PROTECTED_VALUE_SCAN_ERROR_REASON = "protected_value_scan_error"
 TASK_VERSION_MISMATCH_REASON = "task_version_mismatch"
+
+SEMANTIC_REMAP_SOURCE = "raw_by_task_semantic_alignment_20260722"
+_RAW_BASELINE_SEMANTIC_REMAP_TARGETS: Dict[str, Optional[str]] = {
+    "task_B13_T13": "task_B13_T13",
+    "task_B13_T14": "task_B13_T14",
+    "task_B6_T23": "task_B6_T24",
+    "task_B6_T24": "task_B6_T25",
+    "task_B6_T25": "task_B6_T26",
+    "task_B6_T26": "task_B6_T27",
+    "task_B6_T27": "task_B6_T28",
+    "task_B6_T28": "task_B6_T29",
+    "task_B6_T29": "task_B6_T30",
+    "task_B6_T30": "task_B6_T31",
+    "task_B6_T31": "task_B6_T32",
+    "task_B6_T32": "task_B6_T33",
+    "task_B6_T33": "task_B6_T34",
+    "task_B6_T34": "task_B6_T35",
+    "task_B6_T35": "task_B6_T36",
+    "task_B6_T36": "task_B6_T38",
+    "task_B6_T38": "task_B6_T41",
+    "task_B6_T41": "task_B6_T42",
+    "task_B6_T42": None,
+}
+_B6_SEMANTIC_REMAP_NOTE = (
+    "Manual 2026-07-22 alignment: stale B6 raw baseline prompt matches a later "
+    "current public task after task IDs shifted."
+)
+_SEMANTIC_REMAP_NOTES: Dict[str, str] = {
+    "task_B13_T13": (
+        "Manual 2026-07-22 alignment: same vendor compliance verification task; "
+        "current prompt adds local web_content service constraints."
+    ),
+    "task_B13_T14": "Manual 2026-07-22 alignment: high-similarity same task.",
+    "task_B6_T42": (
+        "Manual 2026-07-22 alignment: stale autonomous drone research prompt has no "
+        "current public task match; keep excluded."
+    ),
+}
 
 RAW_ROLE_ATTACKED = "attacked"
 RAW_ROLE_BENIGN = "benign"
@@ -80,6 +119,7 @@ class RawByTaskCollection:
     trajectory_paths: List[Path]
     excluded: List[Dict[str, Any]]
     source: Dict[str, Any]
+    semantic_remaps: List[Dict[str, Any]]
 
 
 def _as_dict(value: Any) -> Dict[str, Any]:
@@ -446,6 +486,34 @@ def _load_current_task_payload(task_id: str) -> Optional[Dict[str, Any]]:
     return payload
 
 
+def load_current_task_payload(task_id: str) -> Optional[Dict[str, Any]]:
+    """Return a defensive copy of the current registry task payload, if available."""
+
+    payload = _load_current_task_payload(task_id)
+    return copy.deepcopy(payload) if payload is not None else None
+
+
+def raw_baseline_semantic_remap_metadata(task_id: str) -> Optional[Dict[str, Any]]:
+    """Return opt-in semantic-remap metadata for a stale raw baseline task ID."""
+
+    raw_task_id = str(task_id or "")
+    if raw_task_id not in _RAW_BASELINE_SEMANTIC_REMAP_TARGETS:
+        return None
+    target_task_id = _RAW_BASELINE_SEMANTIC_REMAP_TARGETS[raw_task_id]
+    note = _SEMANTIC_REMAP_NOTES.get(raw_task_id, _B6_SEMANTIC_REMAP_NOTE)
+    confidence = "manual_high" if target_task_id else "unmapped"
+    if raw_task_id == "task_B13_T13":
+        confidence = "manual_same_task_with_prompt_constraint_update"
+    return {
+        "raw_task_id": raw_task_id,
+        "semantic_remap_target_task_id": target_task_id,
+        "semantic_remap_confidence": confidence,
+        "semantic_remap_note": note,
+        "semantic_remap_source": SEMANTIC_REMAP_SOURCE,
+        "semantic_remap_status": "mapped" if target_task_id else "unmapped",
+    }
+
+
 def _task_payload_fingerprints(payload: Dict[str, Any]) -> Dict[str, Optional[str]]:
     algorithm = _string_or_none(payload.get("task_hash_algorithm"))
     prompt_hash = None
@@ -459,6 +527,46 @@ def _task_payload_fingerprints(payload: Dict[str, Any]) -> Dict[str, Optional[st
         "spec_sha256": spec_hash or task_spec_sha256_from_payload(payload),
         "clean_source_content_hash": clean_source_content_hash_from_payload(payload),
     }
+
+
+def _raw_baseline_declares_source_task(
+    trajectory_path: Path,
+    trajectory: Dict[str, Any],
+    embedded_payload: Dict[str, Any],
+    task_id: str,
+) -> bool:
+    """Return true when a raw baseline sidecar/task payload identifies ``task_id``.
+
+    Some historical clean baseline trajectories embed the synthetic
+    ``*_baseline`` task payload and its full task-spec hash.  The raw-by-task
+    layout and sidecars still identify the source task unambiguously, so the
+    reader can safely use prompt/source-task checks instead of treating a broad
+    task-spec hash drift as a hard exclusion.
+    """
+
+    embedded_frontmatter = _as_dict(embedded_payload.get("frontmatter"))
+    run = _as_dict(trajectory.get("run"))
+    context_metadata = _as_dict(run.get("context_metadata"))
+    source_paths = _load_optional_json(trajectory_path.parent / "source_paths.json") or {}
+    baseline_cache = _load_optional_json(trajectory_path.parent / "baseline_cache.json") or {}
+    source_task_id = _string_or_none(
+        trajectory.get("source_task_id")
+        or embedded_payload.get("source_task_id")
+        or context_metadata.get("baseline_task_id")
+        or embedded_frontmatter.get("source_task_id")
+        or source_paths.get("source_task_id")
+        or baseline_cache.get("source_task_id")
+        or embedded_frontmatter.get("id")
+    )
+    if source_task_id != task_id:
+        return False
+    clean_task_id = _string_or_none(
+        trajectory.get("clean_task_id")
+        or embedded_payload.get("clean_task_id")
+        or source_paths.get("clean_task_id")
+        or baseline_cache.get("clean_task_id")
+    )
+    return clean_task_id in {None, f"{task_id}_baseline"}
 
 
 def _task_version_mismatch_exclusion(
@@ -561,7 +669,25 @@ def _task_version_mismatch_for_raw_baseline(
         and current_fingerprint.get("spec_sha256")
         and embedded_fingerprint.get("spec_sha256") != current_fingerprint.get("spec_sha256")
     ):
-        mismatch_fields.append("task_spec_sha256")
+        prompt_matches = bool(
+            embedded_fingerprint.get("prompt_sha256")
+            and current_fingerprint.get("prompt_sha256")
+            and embedded_fingerprint.get("prompt_sha256") == current_fingerprint.get("prompt_sha256")
+        )
+        clean_source_compatible = not (
+            embedded_clean_hash and current_clean_hash and embedded_clean_hash != current_clean_hash
+        )
+        if not (
+            prompt_matches
+            and clean_source_compatible
+            and _raw_baseline_declares_source_task(
+                trajectory_path,
+                trajectory,
+                embedded_payload,
+                task_id,
+            )
+        ):
+            mismatch_fields.append("task_spec_sha256")
 
     if not mismatch_fields:
         return None
@@ -572,6 +698,56 @@ def _task_version_mismatch_for_raw_baseline(
         embedded_fingerprint=embedded_fingerprint,
         current_fingerprint=current_fingerprint,
     )
+
+
+def _semantic_remap_record_for_mismatch(
+    mismatch_exclusion: Dict[str, Any],
+) -> Optional[Dict[str, Any]]:
+    raw_task_id = str(mismatch_exclusion.get("task_id") or "")
+    metadata = raw_baseline_semantic_remap_metadata(raw_task_id)
+    if not metadata or not metadata.get("semantic_remap_target_task_id"):
+        return None
+    target_task_id = str(metadata["semantic_remap_target_task_id"])
+    if _load_current_task_payload(target_task_id) is None:
+        return None
+    return {
+        **mismatch_exclusion,
+        **metadata,
+        "original_exclusion_reason": mismatch_exclusion.get("reason"),
+        "semantic_remap_status": "included",
+    }
+
+
+def _annotate_unrecovered_semantic_remap(
+    mismatch_exclusion: Dict[str, Any],
+) -> Dict[str, Any]:
+    raw_task_id = str(mismatch_exclusion.get("task_id") or "")
+    metadata = raw_baseline_semantic_remap_metadata(raw_task_id)
+    if metadata is None:
+        metadata = {
+            "raw_task_id": raw_task_id,
+            "semantic_remap_target_task_id": None,
+            "semantic_remap_confidence": "not_configured",
+            "semantic_remap_note": "No semantic remap is configured for this stale raw baseline task.",
+            "semantic_remap_source": SEMANTIC_REMAP_SOURCE,
+            "semantic_remap_status": "not_configured",
+        }
+    elif metadata.get("semantic_remap_target_task_id") and _load_current_task_payload(
+        str(metadata["semantic_remap_target_task_id"])
+    ) is None:
+        metadata = {
+            **metadata,
+            "semantic_remap_status": "target_missing",
+            "semantic_remap_note": (
+                f"Configured target {metadata['semantic_remap_target_task_id']} is not present "
+                "in the current task registry."
+            ),
+        }
+    return {
+        **mismatch_exclusion,
+        **metadata,
+        "original_exclusion_reason": mismatch_exclusion.get("reason"),
+    }
 
 
 def _raw_baseline_identity(
@@ -692,12 +868,14 @@ def _baseline_trajectory_paths(
     *,
     suites: Optional[Sequence[str]],
     task_ids: Optional[Sequence[str]],
-) -> tuple[List[Path], List[Dict[str, Any]]]:
+    semantic_remap_excluded: bool = False,
+) -> tuple[List[Path], List[Dict[str, Any]], List[Dict[str, Any]]]:
     paths: List[Path] = []
     excluded: List[Dict[str, Any]] = []
+    semantic_remaps: List[Dict[str, Any]] = []
     baselines_root = dataset.path / "_baselines"
     if not baselines_root.is_dir():
-        return paths, excluded
+        return paths, excluded, semantic_remaps
     for suite_dir in sorted(baselines_root.iterdir(), key=lambda item: item.name):
         if not suite_dir.is_dir() or not _allowed(suite_dir.name, suites):
             continue
@@ -707,43 +885,26 @@ def _baseline_trajectory_paths(
                 continue
             trajectory = baseline_dir / "trajectory.json"
             if trajectory.exists():
-                protected_value_scan = _protected_value_scan_for_raw_baseline(trajectory)
-                protected_value_scan_dict = _as_dict(protected_value_scan)
-                if bool(protected_value_scan_dict.get("leak_detected")):
-                    excluded.append(
-                        _protected_value_exclusion(
-                            dataset,
-                            trajectory,
-                            protected_value_scan_dict,
-                        )
-                    )
-                    continue
-                if bool(protected_value_scan_dict.get("error")):
-                    excluded.append(
-                        _protected_value_exclusion(
-                            dataset,
-                            trajectory,
-                            protected_value_scan_dict,
-                            reason=PROTECTED_VALUE_SCAN_ERROR_REASON,
-                            message=(
-                                "Protected value scanner errored for a supported task; "
-                                "excluded from clean utility selection."
-                            ),
-                        )
-                    )
-                    continue
                 task_version_mismatch = _task_version_mismatch_for_raw_baseline(
                     dataset,
                     trajectory,
                 )
                 if task_version_mismatch is not None:
+                    if semantic_remap_excluded:
+                        remap_record = _semantic_remap_record_for_mismatch(task_version_mismatch)
+                        if remap_record is not None:
+                            paths.append(trajectory)
+                            semantic_remaps.append(remap_record)
+                            continue
+                        excluded.append(_annotate_unrecovered_semantic_remap(task_version_mismatch))
+                        continue
                     excluded.append(task_version_mismatch)
                     continue
                 paths.append(trajectory)
                 continue
             if (baseline_dir / "baseline_cache.json").exists():
                 excluded.append(_baseline_exclusion(dataset, baseline_dir))
-    return sorted(paths, key=lambda path: path.parts), excluded
+    return sorted(paths, key=lambda path: path.parts), excluded, semantic_remaps
 
 
 def _source_summary(
@@ -752,11 +913,20 @@ def _source_summary(
     role: str,
     trajectory_count: int,
     excluded: Sequence[Dict[str, Any]],
+    semantic_remaps: Sequence[Dict[str, Any]],
+    semantic_remap_excluded: bool,
     suites: Optional[Sequence[str]],
     task_ids: Optional[Sequence[str]],
 ) -> Dict[str, Any]:
     roots = sorted({str(dataset.path.parent) for dataset in datasets})
     reason_counts = Counter(str(item.get("reason")) for item in excluded if item.get("reason"))
+    remap_status_counts = Counter(
+        str(item.get("semantic_remap_status") or "included") for item in semantic_remaps
+    )
+    for item in excluded:
+        status = item.get("semantic_remap_status")
+        if status:
+            remap_status_counts[str(status)] += 1
     source = {
         "enabled": True,
         "root": roots[0] if len(roots) == 1 else roots,
@@ -765,6 +935,9 @@ def _source_summary(
         "selected_trajectory_count": trajectory_count,
         "excluded_count": len(excluded),
         "excluded_by_reason": dict(sorted(reason_counts.items())),
+        "semantic_remap_excluded_enabled": bool(semantic_remap_excluded),
+        "semantic_remap_included_count": len(semantic_remaps),
+        "semantic_remap_by_status": dict(sorted(remap_status_counts.items())),
     }
     if suites:
         source["suites"] = list(suites)
@@ -779,6 +952,7 @@ def collect_raw_by_task_trajectories(
     role: str = RAW_ROLE_ATTACKED,
     suites: Optional[Sequence[str]] = None,
     task_ids: Optional[Sequence[str]] = None,
+    semantic_remap_excluded: bool = False,
 ) -> RawByTaskCollection:
     """Collect trajectory paths from raw-by-task datasets for a specific role."""
 
@@ -792,18 +966,21 @@ def collect_raw_by_task_trajectories(
 
     paths: List[Path] = []
     excluded: List[Dict[str, Any]] = []
+    semantic_remaps: List[Dict[str, Any]] = []
     if normalized_role in {RAW_ROLE_ATTACKED, RAW_ROLE_ALL}:
         for dataset in datasets:
             paths.extend(_attack_trajectory_paths(dataset, suites=suites, task_ids=task_ids))
     if normalized_role in {RAW_ROLE_BENIGN, RAW_ROLE_ALL}:
         for dataset in datasets:
-            baseline_paths, baseline_excluded = _baseline_trajectory_paths(
+            baseline_paths, baseline_excluded, baseline_semantic_remaps = _baseline_trajectory_paths(
                 dataset,
                 suites=suites,
                 task_ids=task_ids,
+                semantic_remap_excluded=semantic_remap_excluded,
             )
             paths.extend(baseline_paths)
             excluded.extend(baseline_excluded)
+            semantic_remaps.extend(baseline_semantic_remaps)
 
     deduped: List[Path] = []
     seen: set[Path] = set()
@@ -819,15 +996,23 @@ def collect_raw_by_task_trajectories(
         role=normalized_role,
         trajectory_count=len(deduped),
         excluded=excluded,
+        semantic_remaps=semantic_remaps,
+        semantic_remap_excluded=semantic_remap_excluded,
         suites=suites,
         task_ids=task_ids,
     )
-    return RawByTaskCollection(trajectory_paths=deduped, excluded=excluded, source=source)
+    return RawByTaskCollection(
+        trajectory_paths=deduped,
+        excluded=excluded,
+        source=source,
+        semantic_remaps=semantic_remaps,
+    )
 
 
 __all__ = [
     "BASELINE_CACHE_ONLY_REASON",
     "DEFAULT_RAW_BY_TASK_ROOT",
+    "SEMANTIC_REMAP_SOURCE",
     "PROTECTED_VALUE_LEAK_REASON",
     "PROTECTED_VALUE_SCAN_ERROR_REASON",
     "TASK_VERSION_MISMATCH_REASON",
@@ -843,9 +1028,11 @@ __all__ = [
     "is_raw_by_task_dataset_dir",
     "is_raw_by_task_trajectory_path",
     "list_raw_by_task_datasets",
+    "load_current_task_payload",
     "load_raw_by_task_dataset_manifest",
     "load_raw_by_task_global_manifest",
     "normalize_raw_by_task_role",
+    "raw_baseline_semantic_remap_metadata",
     "raw_by_task_role_from_roles",
     "resolve_raw_by_task_datasets",
 ]
