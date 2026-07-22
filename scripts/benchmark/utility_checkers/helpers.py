@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
@@ -93,6 +94,49 @@ def contains_text_requirements(
         any(contains_all_text(value, (option,)) for option in group if option)
         for group in contains_any
     )
+
+
+_TEXT_TOKEN_RE = re.compile(r"[\w]+", re.UNICODE)
+
+
+def _text_tokens(value: Any) -> list[str]:
+    return _TEXT_TOKEN_RE.findall(norm_text(value))
+
+
+def text_requirement_match_score(value: Any, needle: str) -> float:
+    """Score one text requirement, allowing reordered/intervening words."""
+
+    normalized_needle = norm_text(needle)
+    if not normalized_needle:
+        return 1.0
+    haystack = norm_text(value)
+    if normalized_needle in haystack:
+        return 1.0
+    needle_tokens = _text_tokens(normalized_needle)
+    if not needle_tokens:
+        return 0.0
+    haystack_tokens = set(_text_tokens(haystack))
+    if not haystack_tokens:
+        return 0.0
+    matched = sum(1 for token in needle_tokens if token in haystack_tokens)
+    return matched / len(needle_tokens)
+
+
+def text_requirements_match_score(
+    value: Any,
+    contains: Sequence[str] = (),
+    contains_any: Sequence[Sequence[str]] = (),
+) -> tuple[float, int]:
+    """Return aggregate soft-match score and requirement count for text checks."""
+
+    scores = [text_requirement_match_score(value, needle) for needle in contains if needle]
+    for group in contains_any:
+        option_scores = [text_requirement_match_score(value, option) for option in group if option]
+        if option_scores:
+            scores.append(max(option_scores))
+    if not scores:
+        return 1.0, 0
+    return sum(scores) / len(scores), len(scores)
 
 
 def read_workspace_text(

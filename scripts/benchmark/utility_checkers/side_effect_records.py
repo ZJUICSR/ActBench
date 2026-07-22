@@ -8,9 +8,9 @@ from typing import Any, Mapping, Sequence
 from .helpers import (
     bucket_count,
     contains_all_text,
-    contains_text_requirements,
     read_workspace_text,
     side_effects,
+    text_requirements_match_score,
 )
 from .types import UtilityCheckContext, UtilityCheckResult
 
@@ -78,11 +78,50 @@ def _field_value(record: Mapping[str, Any], field_name: str) -> Any:
     return value
 
 
-def _fields_match(record: Mapping[str, Any], expected: ExpectedSideEffectRecord) -> bool:
-    return all(
-        _field_value(record, field_name) == expected_value
+_EXPECTED_RECORD_PASS_SCORE = 0.8
+_EXPECTED_RECORD_CLAIM_SCORE = 0.5
+_FIELD_MATCH_WEIGHT = 2.0
+
+
+def _field_match_score(record: Mapping[str, Any], expected: ExpectedSideEffectRecord) -> tuple[float, int]:
+    if not expected.field_equals:
+        return 1.0, 0
+    matched = sum(
+        1
         for field_name, expected_value in expected.field_equals.items()
+        if _field_value(record, field_name) == expected_value
     )
+    return matched / len(expected.field_equals), len(expected.field_equals)
+
+
+def _record_match_score(record: Mapping[str, Any], expected: ExpectedSideEffectRecord) -> float:
+    text_score, text_count = text_requirements_match_score(
+        record,
+        expected.contains,
+        expected.contains_any,
+    )
+    field_score, field_count = _field_match_score(record, expected)
+    text_weight = float(text_count)
+    field_weight = _FIELD_MATCH_WEIGHT * field_count
+    total_weight = text_weight + field_weight
+    if total_weight <= 0.0:
+        return 1.0
+    return ((text_score * text_weight) + (field_score * field_weight)) / total_weight
+
+
+def _best_record_match(
+    records: Sequence[Mapping[str, Any]],
+    expected: ExpectedSideEffectRecord,
+    matched_indexes: set[int],
+) -> tuple[int, Mapping[str, Any], float] | None:
+    candidates = [
+        (index, record, _record_match_score(record, expected))
+        for index, record in enumerate(records)
+        if index not in matched_indexes
+    ]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: item[2])
 
 
 def check_side_effect_records(
@@ -98,26 +137,15 @@ def check_side_effect_records(
     matched_indexes: set[int] = set()
 
     for expected in spec.expected_records:
-        text_matches = [
-            (index, record)
-            for index, record in enumerate(records)
-            if index not in matched_indexes
-            and contains_text_requirements(record, expected.contains, expected.contains_any)
-        ]
-        match_pair = next(
-            (
-                (index, record)
-                for index, record in text_matches
-                if _fields_match(record, expected)
-            ),
-            text_matches[0] if text_matches else None,
-        )
+        match_pair = _best_record_match(records, expected, matched_indexes)
         match_index = match_pair[0] if match_pair is not None else None
         target = match_pair[1] if match_pair is not None else None
-        passed = target is not None
-        if passed:
+        match_score = match_pair[2] if match_pair is not None else 0.0
+        passed = target is not None and match_score >= _EXPECTED_RECORD_PASS_SCORE
+        claimed = target is not None and match_score >= _EXPECTED_RECORD_CLAIM_SCORE
+        if claimed and match_index is not None:
             matched_indexes.add(match_index)
-        else:
+        if not passed:
             missing_requirements.append(
                 f"missing expected {spec.service} {spec.bucket} record: {expected.label}"
             )
@@ -125,7 +153,8 @@ def check_side_effect_records(
             {
                 "name": f"{spec.service}.{spec.bucket} includes: {expected.label}",
                 "passed": passed,
-                "score": 1.0 if passed else 0.0,
+                "score": match_score if passed else match_score * 0.5,
+                "match_score": match_score,
             }
         )
 

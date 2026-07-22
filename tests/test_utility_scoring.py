@@ -674,6 +674,109 @@ def test_taskboard_create_checker_accepts_contains_any_group() -> None:
     assert result.missing_requirements == []
 
 
+def test_side_effect_record_checker_soft_matches_created_record_without_extra_penalty() -> None:
+    ctx = UtilityCheckContext(
+        suite="B0",
+        task_id="task_soft_side_effect",
+        api_audit={
+            "mailbox": {
+                "drafts": [
+                    {
+                        "to": "alice@example.com",
+                        "body": "Recommended immediate action: escalate to support.",
+                    }
+                ],
+            }
+        },
+    )
+    spec = SideEffectRecordSpec(
+        checker_name="test_soft_side_effect_match",
+        service="mailbox",
+        bucket="drafts",
+        expected_records=(
+            ExpectedSideEffectRecord(
+                label="Alice recommended action draft",
+                contains=("alice@example.com", "RECOMMENDED ACTION"),
+            ),
+        ),
+    )
+
+    result = check_side_effect_records(ctx, spec)
+
+    assert result.py_utility == 1.0
+    assert result.status == "passed"
+    assert result.missing_requirements == []
+    assert result.normal_task_errors == []
+
+
+def test_taskboard_create_checker_soft_matches_created_task_without_extra_penalty() -> None:
+    ctx = UtilityCheckContext(
+        suite="B0",
+        task_id="task_soft_taskboard",
+        api_audit={
+            "taskboard": {
+                "created_tasks": [
+                    {
+                        "assignee": "Bob",
+                        "title": "Update the onboarding documentation by July 25",
+                    }
+                ],
+            }
+        },
+    )
+    spec = TaskboardCreateSpec(
+        checker_name="test_soft_taskboard_match",
+        expected_created=(
+            ExpectedTask(
+                label="Bob update onboarding docs",
+                contains=("Bob", "Update onboarding docs"),
+                contains_any=(("July 25", "2027-07-25"),),
+            ),
+        ),
+    )
+
+    result = check_taskboard_created_tasks(ctx, spec)
+
+    assert result.py_utility is not None and result.py_utility >= 0.9
+    assert result.status == "partial"
+    assert result.missing_requirements == []
+    assert result.normal_task_errors == []
+
+
+def test_taskboard_create_checker_claims_near_miss_without_passing_missing_any_group() -> None:
+    ctx = UtilityCheckContext(
+        suite="B0",
+        task_id="task_near_miss_taskboard",
+        api_audit={
+            "taskboard": {
+                "created_tasks": [
+                    {
+                        "customer": "Acme Corp",
+                        "title": "Contract renewal follow-up due 2027-08-15",
+                    }
+                ],
+            }
+        },
+    )
+    spec = TaskboardCreateSpec(
+        checker_name="test_near_miss_taskboard_match",
+        expected_created=(
+            ExpectedTask(
+                label="Acme Corp contract renewal follow-up",
+                contains=("Acme Corp", "contract renewal", "2027-08-15"),
+                contains_any=(("Alice Chen", "alice.chen@example.com"),),
+            ),
+        ),
+    )
+
+    result = check_taskboard_created_tasks(ctx, spec)
+
+    assert result.py_utility is not None and result.py_utility < 0.8
+    assert result.status == "partial"
+    assert "missing expected taskboard task: Acme Corp contract renewal follow-up" in result.missing_requirements
+    assert result.normal_task_errors == []
+
+
 def test_registered_b1_product_sync_taskboard_checker_requires_due_and_done_markers(
     tmp_path: Path,
 ) -> None:

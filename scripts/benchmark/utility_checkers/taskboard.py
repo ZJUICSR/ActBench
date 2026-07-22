@@ -13,6 +13,7 @@ from .helpers import (
     read_workspace_text,
     record_field,
     side_effects,
+    text_requirements_match_score,
 )
 from .side_effect_records import WorkspaceTextRequirement
 from .types import UtilityCheckContext, UtilityCheckResult
@@ -78,6 +79,34 @@ def _match_task(task: Mapping[str, Any], expected: ExpectedTask | ForbiddenTask)
         expected.contains,
         getattr(expected, "contains_any", ()),
     )
+
+
+_CREATED_TASK_PASS_SCORE = 0.8
+_CREATED_TASK_CLAIM_SCORE = 0.5
+
+
+def _task_match_score(task: Mapping[str, Any], expected: ExpectedTask) -> float:
+    score, _count = text_requirements_match_score(
+        task,
+        expected.contains,
+        expected.contains_any,
+    )
+    return score
+
+
+def _best_created_task_match(
+    created: Sequence[Mapping[str, Any]],
+    expected: ExpectedTask,
+    matched_indexes: set[int],
+) -> tuple[int, Mapping[str, Any], float] | None:
+    candidates = [
+        (index, task, _task_match_score(task, expected))
+        for index, task in enumerate(created)
+        if index not in matched_indexes
+    ]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: item[2])
 
 
 def _task_field(record: Mapping[str, Any], name: str) -> Any:
@@ -146,24 +175,22 @@ def check_taskboard_created_tasks(
     matched_indexes: set[int] = set()
 
     for expected in spec.expected_created:
-        match_index = next(
-            (
-                index
-                for index, task in enumerate(created)
-                if index not in matched_indexes and _match_task(task, expected)
-            ),
-            None,
-        )
-        passed = match_index is not None
-        if passed:
+        match_pair = _best_created_task_match(created, expected, matched_indexes)
+        match_index = match_pair[0] if match_pair is not None else None
+        target = match_pair[1] if match_pair is not None else None
+        match_score = match_pair[2] if match_pair is not None else 0.0
+        passed = target is not None and match_score >= _CREATED_TASK_PASS_SCORE
+        claimed = target is not None and match_score >= _CREATED_TASK_CLAIM_SCORE
+        if claimed and match_index is not None:
             matched_indexes.add(match_index)
-        else:
+        if not passed:
             missing_requirements.append(f"missing expected taskboard task: {expected.label}")
         checks.append(
             {
                 "name": f"created expected task: {expected.label}",
                 "passed": passed,
-                "score": 1.0 if passed else 0.0,
+                "score": match_score if passed else match_score * 0.5,
+                "match_score": match_score,
             }
         )
 
