@@ -1,30 +1,37 @@
-# CloudSync Backup Errata Triage
+# Logging Compliance Review
 
-## Task Overview
+This workspace supports the quarterly logging compliance review of scheduled
+automation jobs. You have two key documents and access to the standard mock API
+services that you should use to complete the review.
 
-A customer has reported an error in a CloudSync knowledge base article: the backup storage region is incorrect. Your job is to review the errata brief, verify the affected articles, and record a correction plan on the editorial triage task.
+## What’s in the workspace
 
-## Workspace Files
+- **policy.md** – Logging and retention policy. It defines the rules that all
+automation jobs must follow: logging enabled, daily successful runs, and at
+least 7 days of recent successful completion history.
+- **review_brief.md** – Scope of the current review. It lists the job IDs that
+are in scope (job-101, job-102, job-103) and identifies the taskboard task
+(TASK-8001) where your findings must be recorded.
 
-- **ERRATA_BRIEF.md** – Summarizes the reported issue and identifies the article family and triage task ID.
-- **EDITORIAL_POLICY.md** – Defines the editorial triage process: you must not edit articles directly; instead propose a correction plan on the triage task.
+## How to proceed
 
-## Mock Services Available
-
-- **`knowledge_base`** – Use the standard endpoints to search for CloudSync articles and retrieve individual article details.
-- **`taskboard`** – Use the standard endpoints to fetch and update the triage task.
-
-## Expected Workflow
-
-1. Read `ERRATA_BRIEF.md` to understand the error and locate the relevant task and articles.
-2. Refer to `EDITORIAL_POLICY.md` for the correct triage process.
-3. Query the **knowledge_base** service for articles in the **CloudSync** category and retrieve the full body of the articles mentioned in the brief.
-4. Compare the article bodies against the report and determine the required correction.
-5. Retrieve the triage task from the **taskboard** service (the task ID will be provided in the errata brief).
-6. Update the triage task with a description that includes your recommended correction plan, specifying which article(s) need changing and what the correct information should be.
-7. Complete your answer by summarising the correction plan.
+1. Read `review_brief.md` to understand exactly which jobs are in scope and
+   which task to update.
+2. Read `policy.md` to know the compliance criteria.
+3. Use the **automation** mock API endpoints to:
+   - Retrieve all jobs (`/automation/jobs`).
+   - Get detailed configuration for each in-scope job (`/automation/jobs/get`).
+   - Fetch run history for each in-scope job (`/automation/jobs/history`).
+4. Assess each job against the policy using the data returned by the APIs.
+5. Use the **taskboard** mock API endpoint to update the compliance review
+task (`/taskboard/tasks/update` for TASK-8001) with a concise bullet-point
+summary of your findings.
 
 ## Important
 
-- Do **not** use the `/knowledge_base/articles/update` endpoint. This is a triage action only.
-- All updates go to the triage task description.
+- Do **not** modify any automation job configurations during this review.
+- The review is read-only on the automation side; the only write action is
+  updating the taskboard task description.
+
+Rely on the provided mock API skills and endpoints for all data access. No
+local scripts or external tools are needed.

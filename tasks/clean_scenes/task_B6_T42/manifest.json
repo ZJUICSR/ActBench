@@ -1,51 +1,56 @@
 {
-  "task_id": "task_B6_T42",
-  "legacy_task_id": "task_R2_T56",
-  "source_scene_id": "F261",
-  "source_scene_path": "scenes/scenarios/F261_urban_drone_navigation_literature_digest",
+  "task_id": "task_B6_T41",
+  "legacy_task_id": "task_R2_T55",
+  "source_scene_id": "F263",
+  "source_scene_path": "scenes/scenarios/F263_meeting_action_reconciliation",
   "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "a230bc89762f304fb2c2e10cf5ece1390560022c500afd92230784aee84a2418",
-      "bytes": 1189
+      "sha256": "175d0179520766054b2867e1d65fbfb31664811679fcc6b5f1550200a03a0df4",
+      "bytes": 1239
     },
     {
-      "path": "digest_assignment.md",
-      "sha256": "40eb22f684d432919838e3b18e7c1d0cb5b3becd40cefc50a6cde339b22890c7",
-      "bytes": 1732
+      "path": "reconciliation_brief.md",
+      "sha256": "c28bf46ddb3368f603e8820a33c6d419b2bc3f80e5ff5c7119c5fd3051cad1be",
+      "bytes": 3429
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": ".env",
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
     },
     {
       "path": "skills/notebook_api/SKILL.md",
       "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
       "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixtures": {
-    "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F261_urban_drone_navigation_literature_digest/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
-      "sha256": "e5015eca8887643c6d7f590839a9f48cb10b97daeeb68af227237d9d027d2d0b",
-      "bytes": 4628
-    },
     "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F261_urban_drone_navigation_literature_digest/fixtures/notebook/notes.json",
+      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/notebook/notes.json",
       "dest": "fixtures/notebook/notes.json",
       "frontmatter_path": "fixtures/notebook/notes.json",
-      "sha256": "fbbac3fa22c716bfb21ac1680a6763212f7adc8b98d8e2538db7e3a335da76e6",
-      "bytes": 656
+      "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
+      "bytes": 641
+    },
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
+      "bytes": 1965
     }
   },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c616083404956eaefc2382bd8f161f42de7b995c40e71a1c07f6c61a5f4e623d",
-    "bytes": 4081
+    "sha256": "3c15af3a714e6472321a3d74f078a80173632666322b575f196d7075dd9cae04",
+    "bytes": 4092
   },
-  "content_hash": "9c8f33a686cbbf1802f52bbea72224f40e1004b73ed2f5b7722f11d2a174c14a"
+  "content_hash": "f286c956dbe19994470ca6448ff5a16b6d7fbab1455579cc0ddc1b860fc3806a"
 }

@@ -1,56 +1,51 @@
 {
-  "task_id": "task_B6_T38",
-  "legacy_task_id": "task_R2_T52",
-  "source_scene_id": "F256",
-  "source_scene_path": "scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend",
+  "task_id": "task_B6_T36",
+  "legacy_task_id": "task_R2_T50",
+  "source_scene_id": "F257",
+  "source_scene_path": "scenes/scenarios/F257_meeting_summary_and_action_item_extraction",
   "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "2a55bc209b83061c3078c63954298850cc68cd2539d6861fb316feadff93f9c0",
-      "bytes": 1373
+      "sha256": "adda27be3367a2a151e22f5d97962424ff515feb5febe2c7b3b65fbcdc1b7ea4",
+      "bytes": 1426
     },
     {
-      "path": "task_brief.md",
-      "sha256": "de93b44071efc6139b3b617db00ae700d9743df5fbc64454a290a8d6edc29324",
-      "bytes": 1826
+      "path": "HANDSOFF_BRIEF.md",
+      "sha256": "423d33d335cada038e596fb213df11bbcdf7bf2a166e37e28ae71a758706cca9",
+      "bytes": 1768
     },
     {
-      "path": ".env",
-      "sha256": "76338ffe9b2155a59361dffc5b3f0a2f96320ac169380bced9897862577a5682",
-      "bytes": 116
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixtures": {
-    "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/knowledge_base/articles.json",
-      "dest": "fixtures/knowledge_base/articles.json",
-      "frontmatter_path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5dccbad36de365bf22701d8a06ba969087887e90caeeffd4e4fb6d13218eada8",
-      "bytes": 6283
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F257_meeting_summary_and_action_item_extraction/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
+      "sha256": "df36474b3ae6ae305a63c4da683bc32140077fae7603c85ebe7a495e84def590",
+      "bytes": 1603
     },
-    "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
-      "sha256": "fefb51e6a465629c94966dd94f12dadb3763ceac3ffcfda05b0b1c82eb2e6476",
-      "bytes": 637
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F257_meeting_summary_and_action_item_extraction/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "1f0a0569169b185d4db72d3119d78c982764654aa98311664f23e89361e5b74e",
+      "bytes": 459
     }
   },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "8fdc51e1f6fb821a9447aa410982479aca7c551aae3baedb794a5d0693fba887",
-    "bytes": 4082
+    "sha256": "0b146dd193236c60f84f17569ff1c3edfd2419b720332c26292f2a370ae8417b",
+    "bytes": 4078
   },
-  "content_hash": "c716dbda11eb92e552f08fc61941c807d4c500d3604dad0dab3ceaa4ccf0a160"
+  "content_hash": "19f5f04100a33780bab85f42395b3e425c48999204d696a03c9ff4816f3a6c82"
 }

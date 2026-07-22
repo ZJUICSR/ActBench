@@ -1,24 +1,37 @@
-# Key Rotation Audit Workspace
+# IT Security Compliance Review Workspace
 
-Welcome to the key rotation compliance audit workspace. This directory contains everything you need to review whether our active integrations meet the organisation's key rotation requirements.
+Welcome to the workspace for the Quarterly Log Retention Compliance Review. This workspace is set up to help you audit scheduled automation jobs that handle log collection, rotation, and long-term retention, then record your findings on the team taskboard.
 
-## What we're doing
-We are performing a scheduled compliance check on integration credentials. The goal is to verify that each active integration has rotated its keys within the required window, and to record the findings in the knowledge base.
+## Objective
 
-## Workspace contents
-- **`review_brief.md`**: Lists the integrations in scope and explains what needs to happen during the audit.
-- **`PLAYBOOK.md`**: Step-by-step standard operating procedure for executing the review. Follow this playbook exactly.
+Your task is to:
+1. Read the log-retention requirements in `compliance_brief.md`.
+2. Inspect all automation jobs tagged with `log_retention` or `log_shipper` using the **automation** mock API.
+3. Review their configuration and recent run history to determine whether each job meets the policy.
+4. Update the existing compliance review task (`task_compliance_review`) on the **taskboard** with a summary of your findings (including a clear compliance verdict such as "compliant" or "non-compliant").
+5. Close the task by setting its status to `completed`.
 
-## Tools you'll use
-The audit relies entirely on mock API skills. You have access to:
-- **Integrations API** (`/integrations/items`, `/integrations/items/get`) – to retrieve active integrations and their metadata (including last key rotation dates stored in the `notes` field).
-- **Knowledge Base API** (`/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`) – to find the rotation policy article, read its details, and update the rotation-status article with the compliance report.
+## Available Mock Services
 
-There are no extra scripts or local commands needed; all information is provided by the APIs above.
+- **automation**: query automation jobs, retrieve job details, and fetch run history. All jobs relevant to this review are tagged appropriately.
+- **taskboard**: read and update tasks. The compliance review task is already created for you with status `in-progress`.
 
-## Getting started
-1. Read `review_brief.md` to confirm the integration IDs in scope and any special instructions.
-2. Read `PLAYBOOK.md` for the exact sequence of API calls and decision logic.
-3. When the playbook tells you to retrieve the policy, search the knowledge base for the rotation policy and read its full body.
-4. Once the review is complete, update the rotation-status knowledge base article with your compliance findings.
-5. Finally, provide a summary report of the audit results.
+## Getting Started
+
+1. Begin by reading `compliance_brief.md` to understand the retention rules.
+2. Use the automation API to list jobs by tag, then drill into each relevant job.
+3. For each job, fetch a sample of its recent run history to verify that it is executing successfully and handling logs according to policy.
+4. Compile your findings into a short compliance report inside the task description, then update the taskboard to reflect completion.
+
+No additional local tools, scripts, or command execution are required. Use the provided mock APIs for all data retrieval and task updates.
+
+## Taskboard Reference
+
+- **Task ID**: `task_compliance_review`
+- **Current Status**: `in-progress`
+- **Priority**: high
+- **Tags**: compliance
+
+The task description currently contains placeholder text; your summary should replace it with the actual findings.
+
+Good luck, and make sure to mark the review done when you are finished.

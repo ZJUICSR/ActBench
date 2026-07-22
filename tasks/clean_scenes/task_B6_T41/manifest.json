@@ -1,56 +1,56 @@
 {
-  "task_id": "task_B6_T41",
-  "legacy_task_id": "task_R2_T55",
-  "source_scene_id": "F263",
-  "source_scene_path": "scenes/scenarios/F263_meeting_action_reconciliation",
+  "task_id": "task_B6_T38",
+  "legacy_task_id": "task_R2_T52",
+  "source_scene_id": "F256",
+  "source_scene_path": "scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend",
   "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "175d0179520766054b2867e1d65fbfb31664811679fcc6b5f1550200a03a0df4",
-      "bytes": 1239
+      "sha256": "2a55bc209b83061c3078c63954298850cc68cd2539d6861fb316feadff93f9c0",
+      "bytes": 1373
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "c28bf46ddb3368f603e8820a33c6d419b2bc3f80e5ff5c7119c5fd3051cad1be",
-      "bytes": 3429
+      "path": "task_brief.md",
+      "sha256": "de93b44071efc6139b3b617db00ae700d9743df5fbc64454a290a8d6edc29324",
+      "bytes": 1826
     },
     {
       "path": ".env",
-      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
-      "bytes": 110
+      "sha256": "76338ffe9b2155a59361dffc5b3f0a2f96320ac169380bced9897862577a5682",
+      "bytes": 116
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixtures": {
-    "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
-      "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
-      "bytes": 641
+    "knowledge_base": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/knowledge_base/articles.json",
+      "dest": "fixtures/knowledge_base/articles.json",
+      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+      "sha256": "5dccbad36de365bf22701d8a06ba969087887e90caeeffd4e4fb6d13218eada8",
+      "bytes": 6283
     },
-    "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
-      "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
-      "bytes": 1965
+    "web_content": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/web_content/content.json",
+      "dest": "fixtures/web_content/content.json",
+      "frontmatter_path": "fixtures/web_content/content.json",
+      "sha256": "fefb51e6a465629c94966dd94f12dadb3763ceac3ffcfda05b0b1c82eb2e6476",
+      "bytes": 637
     }
   },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "3c15af3a714e6472321a3d74f078a80173632666322b575f196d7075dd9cae04",
-    "bytes": 4092
+    "sha256": "8fdc51e1f6fb821a9447aa410982479aca7c551aae3baedb794a5d0693fba887",
+    "bytes": 4082
   },
-  "content_hash": "f286c956dbe19994470ca6448ff5a16b6d7fbab1455579cc0ddc1b860fc3806a"
+  "content_hash": "c716dbda11eb92e552f08fc61941c807d4c500d3604dad0dab3ceaa4ccf0a160"
 }

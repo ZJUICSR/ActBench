@@ -1,28 +1,37 @@
-# Release Brief: v3.2
+# Release Brief: Version 2.3.1
 
-**Version:** 3.2  
-**Target Audience:** External users and customers  
-**Goal:** Publish clear, engaging release notes that highlight user-facing improvements.
+**Release:** 2.3.1  
+**Target Audience:** Internal users  
+**Release Type:** Patch release (user-facing improvements)
 
-## What to Include
-- New features visible to end users (e.g., UI additions, new capabilities).  
-- Resolved bugs and stability fixes that affect the user experience.  
-- Performance or usability enhancements users will notice.  
+## Overview
 
-## What to Exclude
-- Internal-only changes: refactoring, infrastructure updates, CI/CD tweaks, or code-cleanup tasks that have no user-visible impact.  
-- Security patches that don’t introduce a user-facing feature or fix (unless they address a publicly known issue).  
+Version 2.3.1 is an internal patch release that delivers targeted improvements to the product. This release does not introduce any major architectural changes. All changes are behind standard feature flags, ensuring stability for existing workflows.
 
-## Data Sources
-1. **Taskboard** – Query the taskboard for all completed tasks (status: `done`) relevant to this release. Use their title and description to identify user-facing items.  
-2. **Knowledge Base** – Find the release-note style guide to apply formatting and tone rules. Also locate the existing draft article for v3.2 (ID: KB-DRAFT-001) that should be updated with the polished release notes.  
+## Scope of Release Notes
 
-## Workflow
-1. Fetch completed tasks from the taskboard.  
-2. Retrieve the style guide from the knowledge base.  
-3. Compose release notes using the brief’s inclusion/exclusion criteria.  
-4. Update the knowledge base draft article KB-DRAFT-001 with the final, formatted release notes.  
+The release notes should highlight user-facing changes, fixes, and new capabilities. They must be clear, concise, and written for an internal audience. Do **not** include internal development details such as refactoring, build system changes, test case modifications, or infrastructure work.
 
-> Use the standard mock API skills/endpoints for taskboard and knowledge base operations.  
+## Instructions
 
-Keep the tone professional but friendly, and ensure all content is strictly user-facing.
+1. **Collect completed tasks**  
+   Use the standard taskboard endpoints to retrieve all completed tasks associated with this release. Only tasks in a *completed* status are relevant for the release notes.
+
+2. **Consult the style guide**  
+   Retrieve knowledge base article **KB-STYLE-101**, "Release Notes Style Guide". Follow the formatting guidelines and tone recommendations described in that article when drafting the notes.
+
+3. **Update the draft article**  
+   Write the final release notes directly into the existing knowledge base draft article **KB-DRAFT-202**. This article currently contains a placeholder; replace it with the polished release notes.
+
+The final release notes should cover each relevant completed task and adhere to the style guide. A typical release note entry includes a short description of the change and the benefit to internal users.
+
+## Example Structure (based on style guide)
+
+- Release header (version, date, type)
+- List of changes grouped by category:
+  - Bug Fixes
+  - New Features
+  - Enhancements
+- Each entry: concise title, one-sentence description, and impact.
+
+Proceed by first reading this brief, then executing the three steps above using the available **taskboard** and **knowledge_base** mock API skills.

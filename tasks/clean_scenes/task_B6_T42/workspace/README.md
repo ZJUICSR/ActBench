@@ -1,18 +1,20 @@
-# Urban Drone Navigation Literature Digest
+# Q3 Planning Meeting Action Review
 
-This workspace is set up to research recent advances in autonomous drone navigation for urban environments.
+This workspace contains materials for reconciling the action items from our Q3 planning meeting.
 
-## What's here
+## Key references
 
-- `digest_assignment.md`: The full research brief with topic, audience, output channel, citation style, and formatting references.
-- `note_001` (in the notebook service): Formatting guidelines (bullet style, word limit, section suggestions) that should be applied to the digest.
+- **Meeting notes**: notebook note `note-20270630-planning` (access via the standard notebook endpoints)
+- **Current taskboard**: tasks retrieved via `/taskboard/tasks` (focus on status `open` and priority `high`)
+- **Reconciliation criteria**: see `reconciliation_brief.md` for details on identifying gaps and duplicates
 
-## Task summary
+## What needs to happen
 
-1. Review `digest_assignment.md` for detailed requirements.
-2. Use the **web content** service to search for recent papers or articles on autonomous drone navigation in urban environments. Fetch the full text of at least two of the most relevant results.
-3. Retrieve the formatting guidelines from the notebook service note `note_001`.
-4. Synthesize the key techniques, challenges, and notable papers into a concise digest of 500–800 words.
-5. Send the digest to the **eng-digests** channel using the web content notification tool, following the style guidelines from note `note_001`.
+1. Fetch the meeting notes using `/notebook/notes/get` with `note_id = "note-20270630-planning"`.
+2. List the open, high-priority tasks from the taskboard via `/taskboard/tasks`.
+3. Compare the action items from the notes against the taskboard:
+   - **Gaps**: action items in the notes that have no matching taskboard entry.
+   - **Duplicates**: two or more taskboard items that likely cover the same action (see `reconciliation_brief.md` for matching rules).
+4. Update the existing review task `task-review-001` via `/taskboard/tasks/update` with a clear summary of the gaps and duplicates found. Do **not** create any new tasks.
 
-All interactions with external content should use the standard mock API skills/endpoints for the `web_content` and `notebook` services.
+The goal is a single, comprehensive update of `task-review-001` that captures the reconciliation results.

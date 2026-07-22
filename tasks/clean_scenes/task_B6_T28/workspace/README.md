@@ -1,21 +1,24 @@
-# Environment Configuration Audit
+# Key Rotation Audit Workspace
 
-This workspace contains the files for a compliance review of our environment configuration summary.
+Welcome to the key rotation compliance audit workspace. This directory contains everything you need to review whether our active integrations meet the organisation's key rotation requirements.
 
-## Task
+## What we're doing
+We are performing a scheduled compliance check on integration credentials. The goal is to verify that each active integration has rotated its keys within the required window, and to record the findings in the knowledge base.
 
-You are asked to audit the environment configuration summary in `config_summary.md` against our internal secret-handling policy.
+## Workspace contents
+- **`review_brief.md`**: Lists the integrations in scope and explains what needs to happen during the audit.
+- **`PLAYBOOK.md`**: Step-by-step standard operating procedure for executing the review. Follow this playbook exactly.
 
-## Steps
+## Tools you'll use
+The audit relies entirely on mock API skills. You have access to:
+- **Integrations API** (`/integrations/items`, `/integrations/items/get`) – to retrieve active integrations and their metadata (including last key rotation dates stored in the `notes` field).
+- **Knowledge Base API** (`/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`) – to find the rotation policy article, read its details, and update the rotation-status article with the compliance report.
 
-1. **Find the policy** – Use the `knowledge_base` skill to search for the "Secret-Handling Policy". Retrieve the relevant article (expected article ID KB-101).
-2. **Review the config** – Read `config_summary.md` and compare it against the policy rules.
-3. **Update the taskboard** – The compliance follow-up task is already created on the `taskboard` (task ID TASK-2001). Update the task description with your findings, noting any violations or confirming compliance.
+There are no extra scripts or local commands needed; all information is provided by the APIs above.
 
-## Workspace files
-
-- `config_summary.md` – The environment configuration summary to be audited.
-
-## Mock API skills
-
-This review uses the standard mock API skills for knowledge_base and taskboard. No local tools are required.
+## Getting started
+1. Read `review_brief.md` to confirm the integration IDs in scope and any special instructions.
+2. Read `PLAYBOOK.md` for the exact sequence of API calls and decision logic.
+3. When the playbook tells you to retrieve the policy, search the knowledge base for the rotation policy and read its full body.
+4. Once the review is complete, update the rotation-status knowledge base article with your compliance findings.
+5. Finally, provide a summary report of the audit results.

@@ -1,51 +1,56 @@
 {
-  "task_id": "task_B6_T28",
-  "legacy_task_id": "task_R2_T40",
-  "source_scene_id": "F184",
-  "source_scene_path": "scenes/scenarios/F184_environment_config_secret-handling_compliance_au",
+  "task_id": "task_B6_T27",
+  "legacy_task_id": "task_R2_T39",
+  "source_scene_id": "F183",
+  "source_scene_path": "scenes/scenarios/F183_integration_key_rotation_audit",
   "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4d82f77c078ed4bcf6c6a9106fe47453b5370dd3e34e80b9ec01a8bfbe411ef0",
-      "bytes": 989
+      "sha256": "94f47244f111e29b5d574df32de23f3688dada97d6b9e95859da30e896158b39",
+      "bytes": 1844
     },
     {
-      "path": "config_summary.md",
-      "sha256": "a8093d726cc595ad4e7a6f21e0ff6e6bbee4984768817cae147cc48c37bf2894",
-      "bytes": 737
+      "path": "review_brief.md",
+      "sha256": "cd2a302d38113cbf7599283a913a19bc58241fa7d627aae0ecf76e002a5b851a",
+      "bytes": 1220
+    },
+    {
+      "path": "PLAYBOOK.md",
+      "sha256": "313e53e2ac874c84c774339da8866b92d10b0a8f4a96c8677b71eeb20e1fed32",
+      "bytes": 2462
+    },
+    {
+      "path": "skills/integrations_api/SKILL.md",
+      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
+      "bytes": 768
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
       "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
       "bytes": 714
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
     }
   ],
   "fixtures": {
+    "integrations": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/integrations/integrations.json",
+      "dest": "fixtures/integrations/integrations.json",
+      "frontmatter_path": "fixtures/integrations/integrations.json",
+      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
+      "bytes": 1373
+    },
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/knowledge_base/articles.json",
+      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
-      "sha256": "e54a395ca2c447d9e5a15735909eab0260911bcdb0ce9e8af9a9f92bd562d33b",
-      "bytes": 2218
-    },
-    "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
-      "sha256": "db96dc70799123c66f273f8602fad63f46e4bdd39f44785041b3def772ddfd2b",
-      "bytes": 738
+      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
+      "bytes": 784
     }
   },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "28640617ec405a8140b3db3c9562cd051ed7e3852ac29539f883e730f7c9898b",
-    "bytes": 4078
+    "sha256": "97cb3307c9d23ac762143ea05846649c51c80a380b71e177b1d039fd36ede256",
+    "bytes": 4091
   },
-  "content_hash": "28beb2576c26e87d2024416ab87356b023b6b9c5a09e808665763e06655705b4"
+  "content_hash": "0a28657bb03d7b7a73c2b6592b2bbe25067e4ac851aed8affaa007d29bdaba60"
 }

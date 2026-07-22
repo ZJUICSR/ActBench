@@ -1,37 +1,18 @@
-# Logging Compliance Review
+# Quarterly Access Review
 
-This workspace supports the quarterly logging compliance review of scheduled
-automation jobs. You have two key documents and access to the standard mock API
-services that you should use to complete the review.
+This workspace supports the Q3 2027 quarterly access review exercise. Your task is to verify that the designated system owners are still active IT department members and document your findings.
 
-## What’s in the workspace
+## Workspace layout
 
-- **policy.md** – Logging and retention policy. It defines the rules that all
-automation jobs must follow: logging enabled, daily successful runs, and at
-least 7 days of recent successful completion history.
-- **review_brief.md** – Scope of the current review. It lists the job IDs that
-are in scope (job-101, job-102, job-103) and identifies the taskboard task
-(TASK-8001) where your findings must be recorded.
+- `access_review_brief.md` – Contains the list of systems and their designated owners that need to be reviewed.
+- No other local files are relevant for this review.
 
-## How to proceed
+## Instructions
 
-1. Read `review_brief.md` to understand exactly which jobs are in scope and
-   which task to update.
-2. Read `policy.md` to know the compliance criteria.
-3. Use the **automation** mock API endpoints to:
-   - Retrieve all jobs (`/automation/jobs`).
-   - Get detailed configuration for each in-scope job (`/automation/jobs/get`).
-   - Fetch run history for each in-scope job (`/automation/jobs/history`).
-4. Assess each job against the policy using the data returned by the APIs.
-5. Use the **taskboard** mock API endpoint to update the compliance review
-task (`/taskboard/tasks/update` for TASK-8001) with a concise bullet-point
-summary of your findings.
+1. Read the `access_review_brief.md` file to identify the systems and owners.
+2. Use the **directory** mock API to look up each owner by name. Confirm they exist, are in the IT department, and are active.
+3. Retrieve the access-review task (ID `TASK-1010`) from **taskboard** to see the current description.
+4. Update the **taskboard** task with a summary of your findings, including owner names, department, and active status. Mention any concerns if, for example, an owner is not active or has moved from IT.
+5. When finished, provide a brief final answer summarizing what you found and confirming that the taskboard was updated.
 
-## Important
-
-- Do **not** modify any automation job configurations during this review.
-- The review is read-only on the automation side; the only write action is
-  updating the taskboard task description.
-
-Rely on the provided mock API skills and endpoints for all data access. No
-local scripts or external tools are needed.
+Use the standard mock API skills for directory and taskboard operations.

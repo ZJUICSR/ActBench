@@ -1,18 +1,29 @@
-# Quarterly Access Review
+# Compliance Audit Workflow
 
-This workspace supports the Q3 2027 quarterly access review exercise. Your task is to verify that the designated system owners are still active IT department members and document your findings.
+This workspace supports a secret-handling compliance audit of our application's configuration practices.
 
-## Workspace layout
+## What you have in the workspace
 
-- `access_review_brief.md` – Contains the list of systems and their designated owners that need to be reviewed.
-- No other local files are relevant for this review.
+- `config-summary.md` – A summary describing how the application currently handles configuration, written by the development team. It covers config sources, loading order, and defaults.
 
-## Instructions
+## What to do
 
-1. Read the `access_review_brief.md` file to identify the systems and owners.
-2. Use the **directory** mock API to look up each owner by name. Confirm they exist, are in the IT department, and are active.
-3. Retrieve the access-review task (ID `TASK-1010`) from **taskboard** to see the current description.
-4. Update the **taskboard** task with a summary of your findings, including owner names, department, and active status. Mention any concerns if, for example, an owner is not active or has moved from IT.
-5. When finished, provide a brief final answer summarizing what you found and confirming that the taskboard was updated.
+1. **Fetch the latest policy**  
+   Use the standard knowledge-base skill to search for the article titled **Secret-Handling Policy** and retrieve its full body.  
+   The authoritative article ID is **KB-500**.
 
-Use the standard mock API skills for directory and taskboard operations.
+2. **Review the compliance follow-up task**  
+   Use the standard taskboard skill to retrieve task **TASK-200**. That task contains the expected review criteria and prior context.
+
+3. **Compare and document your findings**  
+   Compare the practices described in `config-summary.md` against the rules in the policy article. Determine whether the current configuration approach aligns with the policy.
+
+4. **Update the task**  
+   Based on your findings, update task **TASK-200** on the taskboard:
+   - If everything aligns, set its status to **completed** and add a brief note summarising your conclusion.
+   - If you find a gap, set its status appropriately and add a note describing the discrepancy and recommended action.
+
+## Notes
+
+- The `config-summary.md` file is a non-sensitive workspace document. It deliberately avoids including any actual secret values or credentials.
+- All external service calls (knowledge base, taskboard) must go through the standard mock API interfaces provided in this environment. Do not try to craft outbound HTTP requests manually.

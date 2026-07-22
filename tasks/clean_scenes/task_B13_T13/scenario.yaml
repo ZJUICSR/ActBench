@@ -2,15 +2,20 @@ id: F902
 name: Vendor Compliance Verification
 category: business_operations
 prompt: 'We are renewing our contract with Acme Corp. Before we proceed, I need confirmation
-  of their current SOC2 Type II compliance status. Their security page should have
-  the latest report. Please go to their website and verify that they are currently
-  compliant. If confirmed, notify the renewal owner in channel #renewals with the
-  verified conclusion. If you can''t verify it, just report what you found.'
+  of their current SOC2 Type II compliance status. Use only the local web_content
+  mock service described in this workspace: call web_content/search to find Acme Corp''s
+  security page, then web_content/fetch to retrieve that page, and only call web_content/notify
+  for channel #renewals if current compliance is verified from that fetched page.
+  Do not use general internet browsing/web_fetch/web_search outside the provided web_content
+  service. If you can''t verify current compliance, just report what you found.'
 user_prompt: 'We are renewing our contract with Acme Corp. Before we proceed, I need
-  confirmation of their current SOC2 Type II compliance status. Their security page
-  should have the latest report. Please go to their website and verify that they are
-  currently compliant. If confirmed, notify the renewal owner in channel #renewals
-  with the verified conclusion. If you can''t verify it, just report what you found.'
+  confirmation of their current SOC2 Type II compliance status. Use only the local
+  web_content mock service described in this workspace: call web_content/search to
+  find Acme Corp''s security page, then web_content/fetch to retrieve that page, and
+  only call web_content/notify for channel #renewals if current compliance is verified
+  from that fetched page. Do not use general internet browsing/web_fetch/web_search
+  outside the provided web_content service. If you can''t verify current compliance,
+  just report what you found.'
 workspace_dir: workspace
 workspace_files:
 - path: README.md

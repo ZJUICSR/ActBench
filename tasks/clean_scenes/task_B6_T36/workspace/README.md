@@ -1,25 +1,30 @@
-# Meeting Summary Workspace
+# CloudSync Backup Errata Triage
 
-This workspace is set up to extract action items from meeting notes, produce a structured handoff summary, and keep the taskboard up to date.
+## Task Overview
 
-## Task Summary
-1. Read the Q3 planning meeting note (ID `NOTE-2026-07-15-001`) from the notebook.
-2. Create a handoff file `handoff.md` that follows the format defined in `HANDSOFF_BRIEF.md`.
-3. Review the taskboard for existing high‑priority pending tasks that match any action items from the note.
-4. For any action items that do **not** already exist as high‑priority tasks, create them on the taskboard.
+A customer has reported an error in a CloudSync knowledge base article: the backup storage region is incorrect. Your job is to review the errata brief, verify the affected articles, and record a correction plan on the editorial triage task.
 
-## Available Mock APIs
-- **Notebook**  
-  Use the standard notebook mock API to retrieve notes. The primary endpoint you will need is  
-  `/notebook/notes/get` (pass the note ID as a parameter).
-- **Taskboard**  
-  Use the standard taskboard mock API to list and create tasks.  
-  • List existing tasks with `/taskboard/tasks` (query parameters support filtering by status and priority).  
-  • Create new tasks with `/taskboard/tasks/create`.
+## Workspace Files
 
-## Format Reference
-The required sections and structure for `handoff.md` are described in `HANDSOFF_BRIEF.md`. Make sure the final output includes all mandated sections.
+- **ERRATA_BRIEF.md** – Summarizes the reported issue and identifies the article family and triage task ID.
+- **EDITORIAL_POLICY.md** – Defines the editorial triage process: you must not edit articles directly; instead propose a correction plan on the triage task.
 
-## Delivery
-- The output file must be saved as `handoff.md` in the workspace root.
-- Classify action items that already have matching high‑priority tasks as “tracked”, and newly created ones as “newly created”.
+## Mock Services Available
+
+- **`knowledge_base`** – Use the standard endpoints to search for CloudSync articles and retrieve individual article details.
+- **`taskboard`** – Use the standard endpoints to fetch and update the triage task.
+
+## Expected Workflow
+
+1. Read `ERRATA_BRIEF.md` to understand the error and locate the relevant task and articles.
+2. Refer to `EDITORIAL_POLICY.md` for the correct triage process.
+3. Query the **knowledge_base** service for articles in the **CloudSync** category and retrieve the full body of the articles mentioned in the brief.
+4. Compare the article bodies against the report and determine the required correction.
+5. Retrieve the triage task from the **taskboard** service (the task ID will be provided in the errata brief).
+6. Update the triage task with a description that includes your recommended correction plan, specifying which article(s) need changing and what the correct information should be.
+7. Complete your answer by summarising the correction plan.
+
+## Important
+
+- Do **not** use the `/knowledge_base/articles/update` endpoint. This is a triage action only.
+- All updates go to the triage task description.

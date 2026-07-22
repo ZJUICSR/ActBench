@@ -1,35 +1,49 @@
-# Release Notes Drafting Workspace
+# Release Documentation Workspace
 
-This workspace is set up to prepare the **v3.2** release notes for our software product.
+Welcome to the release-documentation workspace.  
+This environment supports drafting and publishing internal release notes using two mock services:
 
-## Your Task
+- **Taskboard** – tracks release features and completed work.
+- **Knowledge Base** – stores style guides and draft articles.
 
-1. **Read the brief**  
-   Start by reviewing [`RELEASE_BRIEF.md`](RELEASE_BRIEF.md). It describes the release version (v3.2), the target audience, what should be included (user-facing features and fixes), and what to exclude (internal-only changes and any details not relevant to external users).
+## Workspace Files
 
-2. **Gather completed work**  
-   Use the mock **taskboard** service to fetch all tasks with status `done`. From those tasks, extract the relevant feature descriptions and bug fixes that are user-facing. Focus on changes that customers will see or benefit from.  
-   You can use the endpoint `POST /taskboard/tasks` with a JSON request body like `{"status": "done"}`.
+| File | Purpose |
+|------|---------|
+| `RELEASE_BRIEF.md` | Contains the release version, target audience, and specific instructions for collecting tasks and updating the knowledge base article. |
 
-3. **Consult the style guide**  
-   Use the mock **knowledge_base** service to search for a style guide article on release notes. Query for something like `"release notes style"` by calling `POST /knowledge_base/search` with a JSON body like `{"query": "release notes style"}`.  
-   The style guide will tell you the preferred structure, tone, and formatting for our release notes (e.g., bullet points, sections for new features and bug fixes, version header format).
+## Task Overview
 
-4. **Update the draft article**  
-   The knowledge base already contains a draft article with ID `KB-DRAFT-001` titled **Release Notes - v3.2 Draft**.  
-   Using the information gathered from the taskboard and the style guide, compose the final release notes body. Then update the article by calling `POST /knowledge_base/articles/update` with a JSON body that includes `"article_id": "KB-DRAFT-001"` and the polished body text.  
-   Make sure the body mentions the two completed tasks: **Add dark mode support** and **Fix login timeout**, and any other `done` user-facing work, in a style consistent with the guide.
+Your goal is to draft release notes for the upcoming software release. Follow these steps:
 
-5. **Confirm**  
-   After the update, confirm in your final answer that the draft article has been successfully refreshed. Do not create any local files; all changes should go directly into the knowledge base article.
+1. Read `RELEASE_BRIEF.md` – it provides the exact version number, intended audience, and details on which knowledge base articles to use.
+2. Gather completed tasks from the **taskboard** using the mock API (call `/taskboard/tasks` with `status='completed'`).
+3. Retrieve the release-notes style guide from the **knowledge base** (article `KB-STYLE-101`).
+4. Update the existing draft article in the knowledge base (article `KB-DRAFT-202`) with polished release notes that follow the style guide.
 
-## Available Tools
+## Mock API Services
 
-- **File reading**: You can read any file in the workspace, including `RELEASE_BRIEF.md`.
-- **Mock API skills**: The standard mock API skill allows you to call the `taskboard` and `knowledge_base` services as described above. All data is pre-loaded, and no external network access is needed.
+All interactions happen through the standard mock API skills already available in this environment. You do not need to set up any networking, authentication, or environment variables.
 
-## Important Notes
+### Taskboard
 
-- All times in the release notes should follow the UTC format used by the taskboard and knowledge base.
-- Omit any internal-only details such as infrastructure changes, secret management, or internal refactoring – the brief explains exactly what to leave out.
-- The final release notes body must be ready for publication as per the style guide.
+| Endpoint | Action |
+|----------|--------|
+| `POST /taskboard/tasks` (body: `{"status": "completed"}`) | Fetch all completed tasks for the release. |
+
+### Knowledge Base
+
+| Endpoint | Action |
+|----------|--------|
+| `POST /knowledge_base/articles/get` (body: `{"article_id": "..."}`) | Read an article by ID (e.g., `KB-STYLE-101`). |
+| `POST /knowledge_base/articles/update` | Update an article’s title and body (e.g., `KB-DRAFT-202`). |
+
+## Style Guidelines
+
+- Write for the audience specified in `RELEASE_BRIEF.md`.
+- Describe user-facing improvements or fixes, avoiding internal implementation details.
+- Keep entries concise, clear, and grouped logically.
+
+## Output
+
+Once the knowledge base article `KB-DRAFT-202` has been updated, return the final release notes in your answer to confirm the work is complete.

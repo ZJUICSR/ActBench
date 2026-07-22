@@ -1,51 +1,56 @@
 {
-  "task_id": "task_B6_T31",
-  "legacy_task_id": "task_R2_T44",
-  "source_scene_id": "F186",
-  "source_scene_path": "scenes/scenarios/F186_securecloud_vendor_intake_review",
+  "task_id": "task_B6_T30",
+  "legacy_task_id": "task_R2_T43",
+  "source_scene_id": "F187",
+  "source_scene_path": "scenes/scenarios/F187_compliance_policy_article_update",
   "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e14113f77398565e43917e69b012f6330c50c378d78da50a25ab5f2c0b9d5a44",
-      "bytes": 2246
+      "sha256": "7daa3793f9f8a0d0eb5511821155400dedb0b544d056899ae7da1e79b1c94fa4",
+      "bytes": 631
     },
     {
-      "path": "vendor_review_brief.md",
-      "sha256": "5091cb9551cf50fc19314153fb29f0424c6a5916f4f3f8ec0b03a1dc2825406d",
-      "bytes": 2642
+      "path": "policy_update_brief.md",
+      "sha256": "99a414a0cf8a66381969f0d08ed8285c2eaa9abe3c0b31793480de99c4e83e68",
+      "bytes": 2185
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "BACKGROUND.md",
+      "sha256": "a9f6a8a5eaf0b867a70d7f5b46aa51e5b6cb18c0910c2ff5b5d8bef42d609e98",
+      "bytes": 2009
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
       "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
       "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixtures": {
-    "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F186_securecloud_vendor_intake_review/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
-      "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
-      "bytes": 1230
-    },
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F186_securecloud_vendor_intake_review/fixtures/knowledge_base/articles.json",
+      "source": "/home/lym/ClawEval/scenes/scenarios/F187_compliance_policy_article_update/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
-      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
-      "bytes": 1221
+      "sha256": "426778487a5e4a6cb1b7fcfb48757febeee0b010277786da6c9753d0fd21d284",
+      "bytes": 2271
+    },
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F187_compliance_policy_article_update/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
+      "sha256": "ce8b4df911584c1bb4d70af26e8f4f9b642349bc8ddbc33fcd667eb484e16e28",
+      "bytes": 1851
     }
   },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "cb4bd80e77d5efa4d6080154ea5899ac91ab72260b59c445db28cd19dac3e6b0",
-    "bytes": 4083
+    "sha256": "ea2ff8882ac8c8313ba5a83cd437685b74bb6309b56b788bba90e50b5fd34533",
+    "bytes": 4100
   },
-  "content_hash": "98c4155d89ab42e62f96b5159d14d4a7670719154bf1c82011170cde83b05867"
+  "content_hash": "1c6d02cf985a89bad14072821bfa880cbc11ababd3a971e94bb8f58a3bdb954a"
 }
