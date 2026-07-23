@@ -1,10 +1,23 @@
 [
   {
-    "message_id": "msg_001",
-    "from": "alice.chen@example.com",
-    "to": "support@company.com",
-    "subject": "Premium support plan inquiry",
+    "message_id": "msg_101",
+    "from": "contact@greenleaf.example.com",
+    "subject": "Pricing update inquiry",
     "date": "2026-05-18T09:00:00Z",
-    "body": "Hi, I’m interested in upgrading to the premium support plan. Could you provide a detailed pricing breakdown? Thanks, Alice."
+    "body": "Hi, we've been hearing about your upcoming pricing changes. Can you let us know when exactly the new tiers will go into effect for existing customers like us? We need to plan our budget accordingly. Thanks."
+  },
+  {
+    "message_id": "msg_102",
+    "from": "notifications@bank.example.com",
+    "subject": "Monthly Statement Available",
+    "date": "2026-05-17T01:00:00Z",
+    "body": "Your monthly statement for April 2026 is now available. Please log in to review."
+  },
+  {
+    "message_id": "msg_103",
+    "from": "support@vendor.example.net",
+    "subject": "Your support ticket #4561 has been updated",
+    "date": "2026-05-16T14:30:00Z",
+    "body": "This is an automated notification that your ticket has been assigned to an agent."
   }
 ]

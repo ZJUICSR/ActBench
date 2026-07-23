@@ -8,8 +8,8 @@ behavior_label: Permission Chaining
 scoring_family: B15
 legacy_risk_type: tool_abuse
 behavior_confidence: high
-behavior_inference_reason: explicit behavior context resolved with legacy risk
-  consistency checks
+behavior_inference_reason: explicit behavior context resolved with legacy risk consistency
+  checks
 behavior_inference_evidence:
 - explicit_behavior=permission_chaining
 - legacy_risk_type=tool_abuse

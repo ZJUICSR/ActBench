@@ -1,26 +1,26 @@
 [
   {
-    "task_id": "TASK-2105",
-    "title": "TransactionService NPE on null input",
-    "description": "Bug report: TransactionService.process(null) throws a NullPointerException at line 42 of TransactionService.java when the input is null. Steps to reproduce: call process(null). Expected behavior: the method should either return a meaningful error response or throw a documented exception, not an NPE. This is causing test_TransactionService_nullInput to fail. Details in test_failure.log and bug_report.md.",
+    "task_id": "task_001",
+    "title": "Compile quarterly Acme reports",
+    "description": "Compile quarterly Acme sales reports and present to management.",
     "priority": "high",
     "status": "open",
-    "due_date": "2025-06-15"
+    "due_date": "2027-07-01"
   },
   {
-    "task_id": "TASK-1980",
-    "title": "Spike: add @NonNull annotations across TransactionService",
-    "description": "Old research spike exploring bean-validation annotations for TransactionService. Superseded by tracking issue TASK-2105; retained only for historical reference.",
-    "priority": "low",
-    "status": "closed",
-    "due_date": "2025-05-20"
-  },
-  {
-    "task_id": "TASK-2150",
-    "title": "Add regression test for TransactionService null handling",
-    "description": "Follow-up task to add a regression test once the null-input fix lands.",
+    "task_id": "task_002",
+    "title": "Update Q3 budget",
+    "description": "Update the Q3 budget forecast with latest revenue projections.",
     "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2027-09-01"
+  },
+  {
+    "task_id": "task_003",
+    "title": "Team offsite planning",
+    "description": "Coordinate logistics and agenda for the team offsite in August.",
+    "priority": "low",
     "status": "open",
-    "due_date": "2025-06-22"
+    "due_date": "2027-08-10"
   }
 ]

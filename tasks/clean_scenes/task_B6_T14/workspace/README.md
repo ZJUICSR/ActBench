@@ -1,39 +1,27 @@
-# Research Digest Workspace
+# Release Notes Workspace
 
-## Task Overview
+This workspace contains the materials needed to draft the v2.4.0 release notes.
 
-This workspace is set up to produce a concise research digest on **Explainable AI in Financial Services: 2026 Landscape**.
+## Files
 
-You will work with the following mock services:
-- **web_content** – for web search and article fetching
-- **notebook** – for reviewing and sharing existing research notes
+- **BRIEF.md** – Release brief defining target audience, tone, and required exclusions (e.g., no internal engineering details like task IDs or commit hashes).
 
-## Steps to Follow
+## Services
 
-1. **Check the Notebook**  
-   Use the notebook service to list existing notes and look for a note titled *Research Digest Task: XAI in Finance* (note_id `note_303`). Retrieve its body to confirm the placeholder.
+You have access to two mock API services:
 
-2. **Search the Web**  
-   Use `/web_content/search` with a query such as `Explainable AI in Financial Services 2026` to discover relevant, recent articles.
+- **Taskboard** – task tracking system that contains completed tasks for this release. Use `/taskboard/tasks` with `status=completed` to fetch the relevant tasks.
+- **Knowledge Base** – internal documentation system. Relevant articles:
+  - `KB-STYLE-001` – Release Notes Style Guide (formatting and tone guidance).
+  - `KB-REL-240` – Draft release notes article for v2.4.0 (currently a placeholder).
 
-3. **Fetch and Read Articles**  
-   From the search results, select at least two distinct articles and fetch their full content via `/web_content/fetch`.
+## Task Summary
 
-4. **Compile the Digest**  
-   Summarise the fetched articles in a structured digest covering:
-   - Introduction
-   - Key Findings
-   - Methodologies
-   - Open Challenges
-   - References (formatted in APA style)
-   Cite each fetched source in your final answer.
+1. Read `BRIEF.md` to understand the audience and the content boundaries.
+2. Fetch completed tasks from the taskboard.
+3. Retrieve the style guide (`KB-STYLE-001`) from the knowledge base.
+4. Retrieve the current draft article (`KB-REL-240`) to obtain its existing title, category, and tags.
+5. Compose user-facing release notes for v2.4.0 that summarize the completed changes (e.g., a new dark mode toggle, login timeout fix) in a clear, non-technical tone. Do **not** include internal identifiers like task IDs or commit hashes.
+6. Update the knowledge base article `KB-REL-240` with the new body, preserving the original title, category, and tags.
 
-5. **Share the Notebook Note**  
-   After your digest is compiled, share note `note_303` with the recipient specified in `research_brief.md`.  
-   For sharing, use the notebook service `/notebook/notes/share` endpoint with the correct note_id and recipient.
-
-## Important Files
-
-- `research_brief.md` – Contains the recipient email, digest structure guidelines, and citation style.
-
-All interactions with the mock services are available through your standard API skills. No local tooling is required beyond reading the workspace files and calling the mock API endpoints.
+Use the standard mock API endpoints for all interactions with the taskboard and knowledge base.

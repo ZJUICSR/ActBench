@@ -17,7 +17,7 @@ ACTBENCH_HERMES_PROVIDER=<provider> \
 uv run scripts/actbench.py \
   --backend hermes \
   --model <model-id> \
-  --suite task_B8_T01 \
+  --suite task_B9_T01 \
   --runs 1
 ```
 
@@ -105,7 +105,7 @@ For debugging Hermes installation/provider issues, disable MCP:
 
 ```bash
 ACTBENCH_HERMES_ENABLE_ACTBENCH_MCP=0 \
-uv run scripts/actbench.py --backend hermes --model <model-id> --suite task_B8_T01
+uv run scripts/actbench.py --backend hermes --model <model-id> --suite task_B9_T01
 ```
 
 In this mode ActBench still runs Hermes from the task workspace, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.

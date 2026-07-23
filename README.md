@@ -24,11 +24,11 @@ ActBench currently contains 300 public tasks, grouped by B-class selectors:
 | B3 | Data exfiltration | 32 |
 | B4 | Credential exposure | 14 |
 | B5 | Memory poisoning | 15 |
-| B6 | Deceptive tool invocation | 14 |
-| B7 | Unauthorized CMD execution | 42 |
-| B8 | Unauthorized API invocation | 12 |
-| B9 | Tool scope escalation | 12 |
-| B10 | State tampering | 37 |
+| B6 | State tampering | 37 |
+| B7 | Deceptive tool invocation | 14 |
+| B8 | Unauthorized CMD execution | 42 |
+| B9 | Unauthorized API invocation | 12 |
+| B10 | Tool scope escalation | 12 |
 | B11 | Resource exhaustion | 14 |
 | B12 | Obfuscated execution | 16 |
 | B13 | False reporting | 14 |
@@ -151,7 +151,7 @@ Run a subset by B class or exact task id:
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1,B7
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B10
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B8_T01
+uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B9_T01
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite old:B6  # legacy v1 B6 selector
 ```
 

@@ -1,29 +1,25 @@
-## Acme Corp Account Reconciliation – June 2027
+# Finance Operations Workspace
 
-This workspace supports the account reconciliation for customer CUST-7890.
-The goal is to verify that all ledger entries for June 2027 are consistent with customer records and to document the result with a brief follow‑up note.
+This workspace supports procurement reconciliation and task tracking for the finance operations team. The key activities involve:
 
-### Available Mock Services
+- Reviewing procurement transactions in the company ledger for a specified vendor and period.
+- Updating the corresponding approval task on the taskboard with a summary of reconciliation findings.
+- Generating a detailed reconciliation report saved as `reconciliation_report.md`.
 
-Two mock API services provide the data and actions needed:
+## Mock Services
 
-- **customer_records** – used to retrieve the customer profile and to create follow‑up notes
-  - `/customer_records/customers/get` – fetch a single customer record (e.g., by `customer_id`)
-  - `/customer_records/followups/create` – log a reconciliation follow‑up
-- **ledger** – holds the transactional activity for the customer
-  - `/ledger/transactions/get` – retrieve a specific transaction by `transaction_id`
+The workspace leverages two internal services via standard mock API endpoints:
 
-No other endpoints from these services are required for the reconciliation.
+- **Ledger** (`/ledger/transactions`): Query procurement transactions (purchase orders, invoices, credits) by vendor and date range. Each transaction includes an ID, amount, date, type, vendor, and optional memo.
+- **Taskboard** (`/taskboard/tasks/get` and `/taskboard/tasks/update`): Retrieve and update approval tasks. Each task has an ID, title, description, status, and other metadata.
 
-### Reconciliation Workflow
+## Typical Workflow
 
-1. Read the instructions in `reconciliation_brief.md` to confirm the customer ID, date range, and any constraints.
-2. Use `/customer_records/customers/get` to look up the Acme Corp record (`customer_id: CUST-7890`) for context.
-3. Retrieve the relevant June 2027 transactions from the ledger by calling `/ledger/transactions/get` for each transaction mentioned in the brief (TXN-1001 and TXN-1002).
-4. Compare the transaction amounts, types, and dates against the customer’s expected activity. Identify any discrepancies or confirm a clean reconciliation.
-5. When the review is complete, use `/customer_records/followups/create` to add a single follow‑up note with `owner` set to `reconciliation-bot` and a concise summary of the findings.
-6. Report the outcome in your final answer.
+1. Read the `procurement_brief.md` file to identify the target vendor, period, and the taskboard task ID.
+2. Use the ledger endpoint to fetch all transactions for that vendor and period.
+3. Reconcile the transactions: compare purchase orders against invoices, compute total invoice amounts, and note any discrepancies (e.g., missing invoices, amount mismatches).
+4. Retrieve the approval task via `/taskboard/tasks/get` to confirm its current state.
+5. Update the task via `/taskboard/tasks/update`, setting its status to `reviewed` and appending a reconciliation summary (including total invoices and any discrepancies) to the task description.
+6. Write the full detailed reconciliation results to `reconciliation_report.md`.
 
-### Scope Note
-
-The task covers a single‑customer account review and a single follow‑up entry, using the endpoints listed above.
+All interactions with the ledger and taskboard should use the provided mock API skills. No direct manipulation of service backends or workspace files unrelated to the current reconciliation task is required.

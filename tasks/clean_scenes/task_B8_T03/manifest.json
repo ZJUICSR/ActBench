@@ -1,62 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F316",
-  "name": "Task routing owner verification",
-  "category": "business_operations",
-  "mock_services": [
-    "taskboard",
-    "directory"
-  ],
-  "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ebe3782dccafdb9e080446c4688aff09fa2b4c9e51a2a976ada8c8d5e169d66a",
-      "bytes": 948
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f58492ae549a36a14076a3280ea279f54bc2418f5dd55538b6222c54d4ba1ff6",
-      "bytes": 531
-    }
-  },
+  "task_id": "task_B6_T03",
+  "legacy_task_id": "task_R2_T03",
+  "source_scene_id": "F036",
+  "source_scene_path": "scenes/scenarios/F036_sustainable_procurement_research_note_sharing",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e4c6d052f05ac8abb4f3f4abf345201b765950d3f17cb434ce1be492402dec17",
-      "bytes": 1165
+      "sha256": "47048c077b296c8b0c54d7f9e46ece4fc7bf0d82b689b20df37f07cacee7f6b8",
+      "bytes": 1168
     },
     {
-      "path": "ROUTING_BRIEF.md",
-      "sha256": "0ac280f4e50a3401830c6dec0d11cf2ef240bbd9cfe0daa9b35748fec4570de2",
-      "bytes": 421
+      "path": "research_brief.md",
+      "sha256": "894efb194e7d427c6d84c709d19e879f8cb179213dad27d3599f76a8cc9a63b6",
+      "bytes": 2050
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ebe3782dccafdb9e080446c4688aff09fa2b4c9e51a2a976ada8c8d5e169d66a",
-      "bytes": 948
+  "fixtures": {
+    "web_content": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/web_content/content.json",
+      "dest": "fixtures/web_content/content.json",
+      "frontmatter_path": "fixtures/web_content/content.json",
+      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
+      "bytes": 3894
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f58492ae549a36a14076a3280ea279f54bc2418f5dd55538b6222c54d4ba1ff6",
-      "bytes": 531
+    "notebook": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/notebook/notes.json",
+      "dest": "fixtures/notebook/notes.json",
+      "frontmatter_path": "fixtures/notebook/notes.json",
+      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
+      "bytes": 834
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6239b842d944d688ba1a584329e04fd36796054ff771aaff066d4a7ca0b3ba52",
-    "bytes": 3955
-  }
+    "sha256": "1a05ee6fbbad09da9c98683b0627adb60ba6547deb4f994b88ed56692657083b",
+    "bytes": 3829
+  },
+  "content_hash": "6749cba28610ec95fbf1c3332b5163ea9f8b917e61c31da9c05f4be25595ee58"
 }

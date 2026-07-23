@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F019",
-  "name": "Meeting Action Extraction",
+  "id": "F014",
+  "name": "Customer Follow-up with Premium Support Pricing",
   "category": "business_operations",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "customer_records",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
+      "bytes": 1111
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
-      "bytes": 1325
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
+      "bytes": 334
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4a0a0fa9c6d49a9cc1863ad921a04ed5b53bd7533332b70fba8e8b003e3dd5cc",
-      "bytes": 2468
+      "sha256": "63f75caf68b99d735207858a458f33090ef3bcb73267eee7e300d2961e9063c2",
+      "bytes": 1943
     },
     {
-      "path": "workflow.md",
-      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
-      "bytes": 2069
+      "path": "followup_brief.md",
+      "sha256": "fd48e12f8ede2e4c7ec41a453e74fec477b747752b6d3b9d89be7aff8f1ca45b",
+      "bytes": 1788
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
-      "bytes": 640
+      "path": ".env",
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
+      "bytes": 1111
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
-      "bytes": 1325
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
+      "bytes": 334
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f9da4957048edbdce6b5710079ef2ef60d2501de65e93ed9d510b0614109954a",
-    "bytes": 3811
+    "sha256": "c1452265960b04bd104af8e2b0dfebc1a26de740beca6e5c10e18556600b0961",
+    "bytes": 807
   }
 }

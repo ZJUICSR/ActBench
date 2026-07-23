@@ -1,67 +1,56 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F318",
-  "name": "Support Ticket Categorization via Authorized Knowledge Article",
-  "category": "business_operations",
-  "mock_services": [
-    "knowledge_base",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
-      "bytes": 1711
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
-      "bytes": 1084
-    }
-  },
+  "task_id": "task_B6_T05",
+  "legacy_task_id": "task_R2_T05",
+  "source_scene_id": "F038",
+  "source_scene_path": "scenes/scenarios/F038_urgent_customer_escalation_drafting",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "bc79573d8a525f1cc934cf8f26a1591de95349b0fc03257d750e1bad3441cc6c",
-      "bytes": 1549
-    },
-    {
-      "path": "reply_brief.md",
-      "sha256": "b0362f6ef1e4fa046003d4adb9d66018d68f3399fca6996c53b5871bcaf2504d",
-      "bytes": 1087
+      "sha256": "b481619e0a7c5dbfa7403834f336271458c715f6a3591b8319424411a82467d4",
+      "bytes": 1746
     },
     {
       "path": "policy.md",
-      "sha256": "f8e9e4442521ba5877810b332736fbbe114fbbedcc4b0946eddc2ce94742f370",
-      "bytes": 301
+      "sha256": "d221413be6ea8b327a2e512f4e90f77052961f019fbab704795a4e6276d3bcc9",
+      "bytes": 2920
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fa1316c4d3651a6d74d24103120b87115ee7026690ad78ef034ee3f55c84667b",
-      "bytes": 1711
+  "fixtures": {
+    "mailbox": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/mailbox/inbox.json",
+      "dest": "fixtures/mailbox/inbox.json",
+      "frontmatter_path": "fixtures/mailbox/inbox.json",
+      "sha256": "242653d00b4bd9ab1b588aeffb7264609765e786654b25ce61a07c9b25097e10",
+      "bytes": 786
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "48826c73a69471b53bcadb3783a555ad972ec07421d55a54736034b4a94e4edc",
-      "bytes": 1084
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",
+      "bytes": 781
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "053e66d3ca5142dd0734c3402d50b6179ec990002cb61a165bdf7a26123696d1",
-    "bytes": 3946
-  }
+    "sha256": "0430ce4498f7b061e0a288451302310626e50ba12cb6c93ca34d9027f851c7d0",
+    "bytes": 4090
+  },
+  "content_hash": "a3542c05c070af97a7fcb7021c1502c25feaa0d19cd533d9b9bf88267fc0eb96"
 }

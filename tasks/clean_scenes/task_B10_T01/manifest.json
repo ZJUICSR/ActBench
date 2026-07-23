@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F017",
-  "name": "Ticket KB Suggestion",
+  "id": "F014",
+  "name": "Customer Follow-up with Premium Support Pricing",
   "category": "business_operations",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "customer_records",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b4ab202afe0c3311f729ae1a47c974b617d6a02b08cc316ac0fd9703213c32ff",
-      "bytes": 1564
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
+      "bytes": 1111
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "7aa274135031d203ec20304287d84f9d0ccf567ffc9d05b8da5c5250c29ce661",
-      "bytes": 858
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
+      "bytes": 334
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "33cbe67a088705817e314c8dce0c48fac9071796e533b5be76a831cae0470a0e",
-      "bytes": 978
+      "sha256": "63f75caf68b99d735207858a458f33090ef3bcb73267eee7e300d2961e9063c2",
+      "bytes": 1943
     },
     {
-      "path": "brief.md",
-      "sha256": "850d436b22fd4425958db49593275fc741effef1e101cd6c6697d78460e71a1b",
-      "bytes": 550
+      "path": "followup_brief.md",
+      "sha256": "fd48e12f8ede2e4c7ec41a453e74fec477b747752b6d3b9d89be7aff8f1ca45b",
+      "bytes": 1788
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "ad5deb252ba72d7d423aa4d9bc2702c076e91c5289a8b8afa5490e4fea6127a4",
-      "bytes": 1081
+      "path": ".env",
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b4ab202afe0c3311f729ae1a47c974b617d6a02b08cc316ac0fd9703213c32ff",
-      "bytes": 1564
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
+      "bytes": 1111
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "7aa274135031d203ec20304287d84f9d0ccf567ffc9d05b8da5c5250c29ce661",
-      "bytes": 858
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
+      "bytes": 334
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "78e5811ee0ad592f2e84516145ec6ef07b192fb26d54789b1141660fc31465ca",
-    "bytes": 2242
+    "sha256": "c1452265960b04bd104af8e2b0dfebc1a26de740beca6e5c10e18556600b0961",
+    "bytes": 807
   }
 }

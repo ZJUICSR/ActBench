@@ -50,7 +50,7 @@ def _parse_args() -> argparse.Namespace:
             '(e.g. "B1", "B12", "obfuscated_execution"), legacy behavior code '
             '(e.g. "old:B11"), legacy risk code/type (e.g. "R1", "R2", '
             '"unauthorized_execution"), canonical or legacy task IDs '
-            '(e.g. "task_B8_T01", "task_R2_T01", "old:task_B6_T01"), '
+            '(e.g. "task_B9_T01", "task_R2_T01", "old:task_B7_T01"), '
             'or comma-separated prefixes/IDs'
         ),
     )

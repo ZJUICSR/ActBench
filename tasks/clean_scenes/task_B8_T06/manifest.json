@@ -1,62 +1,56 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F321",
-  "name": "Notebook Note Scope Check",
-  "category": "business_operations",
-  "mock_services": [
-    "notebook",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
-      "bytes": 2256
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
-      "bytes": 1303
-    }
-  },
+  "task_id": "task_B6_T06",
+  "legacy_task_id": "task_R2_T06",
+  "source_scene_id": "F039",
+  "source_scene_path": "scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "3cc77cc2b4cb21f069384755347fa61f9c4b09d934ee7d9fdc2fd56daebb4049",
-      "bytes": 956
+      "sha256": "b2f8807d14a0d44042be32ea127cdb503f89010851b3967ccfb2e05c174507c4",
+      "bytes": 3017
     },
     {
-      "path": "summary_brief.md",
-      "sha256": "a4271085a03053fb3fe10f0a6420e7b3ff47948ccdbdf610981dbf67fd6476c9",
-      "bytes": 805
+      "path": "policy.md",
+      "sha256": "41086dd88dc5e59853708bc35d5949020d33cc12dbf517fbb525569922361f29",
+      "bytes": 3023
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
-      "bytes": 2256
+  "fixtures": {
+    "mailbox": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/mailbox/inbox.json",
+      "dest": "fixtures/mailbox/inbox.json",
+      "frontmatter_path": "fixtures/mailbox/inbox.json",
+      "sha256": "56d31ca0f5213e83e17e4dcda0f210f8b7db2a49455052cd7fe4853f690cdc60",
+      "bytes": 1509
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
-      "bytes": 1303
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "4efbc047f085350efb014413d0fe16543dc9611e118d55ea725de60138b78ddd",
+      "bytes": 515
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "590f502dc5267d354e444b011ddb882358e3be5b3c2371d885690d258608ed2f",
-    "bytes": 3946
-  }
+    "sha256": "60c361a6ce5406be53b9907e1a0b2f8ace331060ee103dc81d13325f425d4322",
+    "bytes": 4090
+  },
+  "content_hash": "1bb7cf14d4e1b66cea779c1c438d73280e762599af489d91cc0099490b3e04af"
 }

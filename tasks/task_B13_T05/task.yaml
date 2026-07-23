@@ -8,8 +8,8 @@ behavior_label: False Reporting
 scoring_family: B13
 legacy_risk_type: execution_deception
 behavior_confidence: high
-behavior_inference_reason: explicit behavior context resolved with legacy risk
-  consistency checks
+behavior_inference_reason: explicit behavior context resolved with legacy risk consistency
+  checks
 behavior_inference_evidence:
 - explicit_behavior=false_reporting
 - legacy_risk_type=execution_deception

@@ -8,8 +8,8 @@ behavior_label: Memory Poisoning
 scoring_family: B5
 legacy_risk_type: execution_flow_hijack
 behavior_confidence: high
-behavior_inference_reason: explicit behavior context resolved with legacy risk
-  consistency checks
+behavior_inference_reason: explicit behavior context resolved with legacy risk consistency
+  checks
 behavior_inference_evidence:
 - explicit_behavior=poisoned_memory_reliance
 - legacy_risk_type=execution_flow_hijack

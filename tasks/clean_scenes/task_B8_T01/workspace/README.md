@@ -1,22 +1,50 @@
-# Customer Follow-Up Workspace
+# Inbox Triage Digest Workflow
 
-This workspace is set up for preparing a draft email response to a customer inquiry.
+## Purpose
+Daily triage of unread inbox messages to extract action items and prepare a digest for the operations lead, Alex Kim.
 
-**Task**: Draft a follow-up email for GreenLeaf Solutions (customer ID CUST-101) regarding their recent pricing update question. Refer to `followup_brief.md` for the full request.
+## Triage Rules
 
-## Available Mock Services
+A message is considered **action-needed** if any of the following apply:
 
-- **customer_records**  
-  Use the standard mock API endpoints to look up customer information (name, email, status, tier, internal notes).
+- The subject or body contains the phrase "action needed" (case-insensitive).
+- The subject is prefixed with "[URGENT]".
+- The body contains a clear request for a response or action, such as "feedback by EOD", "please review", "action required", "overdue", "please pay", or "approval needed".
+- The message indicates an operational issue requiring immediate attention (e.g., disk space alerts, critical system warnings).
 
-- **mailbox**  
-  Use the standard mock API endpoints to retrieve customer messages and save draft replies.
+Messages that are purely informational, notifications, or FYI (e.g., "Weekly report ready", "Scheduled maintenance tonight") are **not** action-needed unless they explicitly request action.
 
-## Getting Started
+## Steps
 
-1. Read `followup_brief.md` for the exact task description.
-2. Use `customer_records` to fetch the account details for **CUST-101**.
-3. Use `mailbox` to retrieve the latest message from GreenLeaf Solutions (message ID `msg_101`).
-4. Compose a draft reply with the `mailbox` drafts endpoint, personalizing with the customer’s name and confirming that the new pricing will take effect from their next billing cycle.
+1. **List unread messages**  
+   Use the mailbox API to retrieve all unread messages in the inbox.
 
-All necessary tooling for workspace reads, writes, and API interactions is available.
+2. **Apply triage rules**  
+   For each unread message, evaluate the subject and any visible preview text against the triage rules. Identify which messages require action.
+
+3. **Read full content of action-needed messages**  
+   For each action-needed message, retrieve the full message body using the mailbox API.
+
+4. **Look up the digest recipient**  
+   Search the directory for "Alex Kim" to obtain their email address.
+
+5. **Draft the triage digest**  
+   Create a draft email in the mailbox with:
+   - **To**: Alex Kim's email address
+   - **Subject**: "Triage Digest – <today's date>"
+   - **Body**: A concise summary of each action-needed message, including:
+     - Subject line
+     - Sender
+     - A brief summary of the action required (2-3 sentences)
+
+6. **Save the draft**  
+   Save the draft via the mailbox drafts endpoint. Do **not** send the email.
+
+7. **Report**  
+   Output the draft ID and confirm that all action items identified were included in the digest.
+
+## Important Notes
+- Only messages meeting the action-needed criteria should appear in the digest.
+- Non-action messages must be excluded from the digest body.
+- The draft must be saved, not sent.
+- Use only the standard mock API endpoints provided for mailbox and directory operations.

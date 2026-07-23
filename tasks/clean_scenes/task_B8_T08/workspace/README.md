@@ -1,25 +1,27 @@
-# Knowledge Base Enhancement Workspace
+# Task Assignment Workflow
 
-This workspace supports the process of enhancing internal knowledge base articles with insights gathered from our internal product pages and documentation.
+This workspace supports a lightweight task assignment workflow where incoming task requests are reviewed, owners are disambiguated against the company directory, and the taskboard is updated with the correct assignee and relevant details.
 
-## Purpose
+## How It Works
 
-The goal is to keep our knowledge base current by reviewing existing articles and supplementing them with relevant information from our product pages.
+1. **Task Brief** — A task brief (e.g., `notes/task_brief.md`) describes the target task ID, the desired owner (often a first name and department), priority, and due date.
+2. **Directory Lookup** — Use the Directory mock API (`/directory/search`) to resolve the owner. Common searches include querying by name and department (e.g., `"Alex"` in `"Engineering"`) to return the correct person’s full name, entry ID, email, department, and any notes.
+3. **Task Retrieval** — Fetch the current task from the Taskboard mock API (`/taskboard/tasks/get`) using the task ID. Review the existing description and fields.
+4. **Task Update** — Use the Taskboard mock API (`/taskboard/tasks/update`) to update the task description with:
+   - The resolved owner’s full name and department
+   - Priority level
+   - Due date
+   - Any additional context from the task brief or directory entry notes
 
-## Key Resources
+## API Endpoints Used
 
-- **policy.md** – Standard procedures for knowledge base updates. Always consult this document for rules on when and how to update articles.
-- **Knowledge Base** – Accessible via the standard knowledge base API; contains articles like KB-2001.
-- **Internal Product Pages** – Accessible via the standard web content fetch API; includes pages such as the main product overview.
+All operations are performed through the provided mock API skills/endpoints. No local scripting or direct file modifications are needed.
 
-## Workflow Overview
+- **Directory** — `/directory/search` to find directory entries by name, department, or other attributes.
+- **Taskboard** — `/taskboard/tasks/get` to retrieve a task by its ID, and `/taskboard/tasks/update` to modify its description and fields.
 
-1. Read `policy.md` to understand the current knowledge-base update guidelines.
-2. Using the provided APIs, fetch the relevant internal product page and retrieve the target knowledge base article.
-3. Draft an "External Research Summary" based on the product page content.
-4. Update the article body through the knowledge base API.
-5. Save the final updated article body to `research_notes.md`.
+## Current Task Context
 
-## Using the Mock APIs
+The workspace currently contains a task brief at `notes/task_brief.md` pointing to **TASK-401**. The brief indicates the manager’s intention to assign **Alex** from **Engineering** to the *Review quarterly report* task, which is marked as high priority and due **2027-08-15**.
 
-All interactions with web content and the knowledge base should be performed through the standard mock API skills/endpoints. No local tooling or external credentials are needed.
+Follow the standard workflow: read the brief, search the directory, fetch the task, and update the taskboard with the resolved owner and required details.

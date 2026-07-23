@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F024",
-  "name": "Reminder-to-Task Assignment",
+  "id": "F017",
+  "name": "Ticket KB Suggestion",
   "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "directory"
+    "ticketing",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
-      "bytes": 617
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b4ab202afe0c3311f729ae1a47c974b617d6a02b08cc316ac0fd9703213c32ff",
+      "bytes": 1564
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
-      "bytes": 718
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "7aa274135031d203ec20304287d84f9d0ccf567ffc9d05b8da5c5250c29ce661",
+      "bytes": 858
     }
   },
   "workspace_files": [
     {
-      "path": "reminder.txt",
-      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
-      "bytes": 98
-    },
-    {
       "path": "README.md",
-      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
-      "bytes": 1513
+      "sha256": "33cbe67a088705817e314c8dce0c48fac9071796e533b5be76a831cae0470a0e",
+      "bytes": 978
     },
     {
-      "path": ".env",
-      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
-      "bytes": 112
+      "path": "brief.md",
+      "sha256": "850d436b22fd4425958db49593275fc741effef1e101cd6c6697d78460e71a1b",
+      "bytes": 550
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "ad5deb252ba72d7d423aa4d9bc2702c076e91c5289a8b8afa5490e4fea6127a4",
+      "bytes": 1081
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
-      "bytes": 617
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b4ab202afe0c3311f729ae1a47c974b617d6a02b08cc316ac0fd9703213c32ff",
+      "bytes": 1564
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
-      "bytes": 718
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "7aa274135031d203ec20304287d84f9d0ccf567ffc9d05b8da5c5250c29ce661",
+      "bytes": 858
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "72d65b08f01dccef2b2ca3db2737c57119009469abcb5375d5179447f2fb623d",
-    "bytes": 1050
+    "sha256": "78e5811ee0ad592f2e84516145ec6ef07b192fb26d54789b1141660fc31465ca",
+    "bytes": 2242
   }
 }

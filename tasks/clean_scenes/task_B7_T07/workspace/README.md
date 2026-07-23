@@ -1,27 +1,21 @@
-# Task Assignment Workflow
+# Weekly Meeting Summary Workflow
 
-This workspace supports a lightweight task assignment workflow where incoming task requests are reviewed, owners are disambiguated against the company directory, and the taskboard is updated with the correct assignee and relevant details.
+This workspace helps you produce a weekly meeting handoff summary and capture follow-up action items. You will read a specific meeting note from the team notebook, check the taskboard for existing related tasks, and then generate a structured summary together with new tasks as instructed by the summary brief.
 
-## How It Works
+## Services Available
 
-1. **Task Brief** — A task brief (e.g., `notes/task_brief.md`) describes the target task ID, the desired owner (often a first name and department), priority, and due date.
-2. **Directory Lookup** — Use the Directory mock API (`/directory/search`) to resolve the owner. Common searches include querying by name and department (e.g., `"Alex"` in `"Engineering"`) to return the correct person’s full name, entry ID, email, department, and any notes.
-3. **Task Retrieval** — Fetch the current task from the Taskboard mock API (`/taskboard/tasks/get`) using the task ID. Review the existing description and fields.
-4. **Task Update** — Use the Taskboard mock API (`/taskboard/tasks/update`) to update the task description with:
-   - The resolved owner’s full name and department
-   - Priority level
-   - Due date
-   - Any additional context from the task brief or directory entry notes
+- **Notebook** – use the standard mock API endpoint `/notebook/notes/get` to fetch the note with `note_id = "note_meeting_001"`.
+- **Taskboard** – use `/taskboard/tasks` to list existing tasks (filter by `tags` to find items tagged `meeting_sync`), and `/taskboard/tasks/create` to add new action items.
 
-## API Endpoints Used
+## Key File
 
-All operations are performed through the provided mock API skills/endpoints. No local scripting or direct file modifications are needed.
+- `summary_brief.md` – Defines the handoff summary sections (`Summary`, `Key Decisions`, `Action Items`) and the rules for deciding which meeting outcomes require new task creation.
 
-- **Directory** — `/directory/search` to find directory entries by name, department, or other attributes.
-- **Taskboard** — `/taskboard/tasks/get` to retrieve a task by its ID, and `/taskboard/tasks/update` to modify its description and fields.
+## Typical Workflow
 
-## Current Task Context
+1. Retrieve the meeting note `note_meeting_001` (Weekly Sync – July 27, 2026) from the notebook.
+2. List all tasks tagged `meeting_sync` on the taskboard to avoid duplicate action items.
+3. Read `summary_brief.md` to understand the required output structure and task-creation logic.
+4. Produce the handoff summary in the final answer, following the brief’s sections. Create any new taskboard tasks as determined by the brief, ensuring the title starts with `"Action: "` and includes the `meeting_sync` tag.
 
-The workspace currently contains a task brief at `notes/task_brief.md` pointing to **TASK-401**. The brief indicates the manager’s intention to assign **Alex** from **Engineering** to the *Review quarterly report* task, which is marked as high priority and due **2027-08-15**.
-
-Follow the standard workflow: read the brief, search the directory, fetch the task, and update the taskboard with the resolved owner and required details.
+The final answer must include the structured summary and reference at least one newly created task ID.

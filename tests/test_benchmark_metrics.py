@@ -64,11 +64,11 @@ def test_taxonomy_v2_behavior_ids_and_legacy_id_mapping() -> None:
         "B2": "B3",
         "B3": "B4",
         "B4": "B5",
-        "B5": "B6",
-        "B6": "B7",
-        "B7": "B8",
-        "B8": "B9",
-        "B9": "B10",
+        "B5": "B7",
+        "B6": "B8",
+        "B7": "B9",
+        "B8": "B10",
+        "B9": "B6",
         "B10": "B11",
         "B11": "B12",
         "B12": "B2",
@@ -121,7 +121,7 @@ def test_build_attack_summary_marks_reproduced_and_attack_passes() -> None:
     blocked = 0.1
     assert reproduced >= ATTACK_SUCCESS_THRESHOLD > blocked
     attack_eval = {
-        "task_B7_T05": {
+        "task_B8_T05": {
             "runs": [_run(reproduced, py=1.0, llm=0.8), _run(reproduced, py=1.0, llm=0.8)],
             "pass_count": 2,
         },
@@ -138,9 +138,9 @@ def test_build_attack_summary_marks_reproduced_and_attack_passes() -> None:
     assert summary["asr"] == 0.5
     by_id = {t["task_id"]: t for t in summary["tasks"]}
 
-    rep = by_id["task_B7_T05"]
+    rep = by_id["task_B8_T05"]
     assert rep["attack_reproduced"] is True
-    assert rep["display"] == "B7_T05"
+    assert rep["display"] == "B8_T05"
     assert rep["attack_runs"] == 2
     assert rep["pass_count"] == 2
     assert rep["pass@k1"] is True
@@ -206,14 +206,14 @@ def test_select_task_ids_accepts_behavior_suite_tokens_and_legacy_prefixes() -> 
             },
         ),
         _task(
-            "task_B7_T01",
+            "task_B8_T01",
             {
                 "legacy_task_id": "task_R2_T01",
                 "risk_type": "unauthorized_execution",
             },
         ),
         _task(
-            "task_B8_T01",
+            "task_B9_T01",
             {
                 "legacy_task_id": "task_R3_T01",
                 "risk_type": "tool_abuse",
@@ -221,7 +221,7 @@ def test_select_task_ids_accepts_behavior_suite_tokens_and_legacy_prefixes() -> 
             },
         ),
         _task(
-            "task_B10_T01",
+            "task_B6_T01",
             {
                 "legacy_task_id": "task_R3_T02",
                 "risk_type": "tool_abuse",
@@ -247,19 +247,19 @@ def test_select_task_ids_accepts_behavior_suite_tokens_and_legacy_prefixes() -> 
     ]
 
     assert _select_task_ids(tasks, "B1") == ["task_B1_T01"]
-    assert _select_task_ids(tasks, "B7") == ["task_B7_T01"]
-    assert _select_task_ids(tasks, "old:B6") == ["task_B7_T01"]
+    assert _select_task_ids(tasks, "B8") == ["task_B8_T01"]
+    assert _select_task_ids(tasks, "old:B6") == ["task_B8_T01"]
     assert _select_task_ids(tasks, "obfuscated_execution") == ["task_B12_T02"]
-    assert _select_task_ids(tasks, "R2") == ["task_B12_T02", "task_B7_T01"]
-    assert _select_task_ids(tasks, "unauthorized_execution") == ["task_B12_T02", "task_B7_T01"]
-    assert _select_task_ids(tasks, "tool_abuse") == ["task_B8_T01", "task_B10_T01"]
+    assert _select_task_ids(tasks, "R2") == ["task_B12_T02", "task_B8_T01"]
+    assert _select_task_ids(tasks, "unauthorized_execution") == ["task_B12_T02", "task_B8_T01"]
+    assert _select_task_ids(tasks, "tool_abuse") == ["task_B9_T01", "task_B6_T01"]
     assert _select_task_ids(tasks, "privacy_leak") == ["task_B3_T01", "task_B4_T01"]
-    assert _select_task_ids(tasks, "task_R2_T01") == ["task_B7_T01"]
-    assert _select_task_ids(tasks, "task_R2") == ["task_B12_T02", "task_B7_T01"]
-    assert _select_task_ids(tasks, "task_b7") == ["task_B7_T01"]
-    assert _select_task_ids(tasks, "task_b7_t01") == ["task_B7_T01"]
-    assert _select_task_ids(tasks, "old:task_b6") == ["task_B7_T01"]
-    assert _select_task_ids(tasks, "old:task_b6_t01") == ["task_B7_T01"]
+    assert _select_task_ids(tasks, "task_R2_T01") == ["task_B8_T01"]
+    assert _select_task_ids(tasks, "task_R2") == ["task_B12_T02", "task_B8_T01"]
+    assert _select_task_ids(tasks, "task_b8") == ["task_B8_T01"]
+    assert _select_task_ids(tasks, "task_b8_t01") == ["task_B8_T01"]
+    assert _select_task_ids(tasks, "old:task_b6") == ["task_B8_T01"]
+    assert _select_task_ids(tasks, "old:task_b6_t01") == ["task_B8_T01"]
 
 
 def test_select_task_ids_warns_and_keeps_first_duplicate_legacy_alias(caplog) -> None:
@@ -277,7 +277,7 @@ def test_select_task_ids_warns_and_keeps_first_duplicate_legacy_alias(caplog) ->
 def test_select_task_files_for_suite_uses_yaml_index_without_loading_workspaces(tmp_path) -> None:
     tasks_dir = tmp_path / "tasks"
     b1 = tasks_dir / "task_B1_T01"
-    b7 = tasks_dir / "task_B8_T01"
+    b7 = tasks_dir / "task_B9_T01"
     b1.mkdir(parents=True)
     b7.mkdir(parents=True)
     # No workspace/ or grader files are created here. Suite resolution should only
@@ -290,7 +290,7 @@ def test_select_task_files_for_suite_uses_yaml_index_without_loading_workspaces(
         encoding="utf-8",
     )
     (b7 / "task.yaml").write_text(
-        "id: task_B8_T01\n"
+        "id: task_B9_T01\n"
         "legacy_task_id: task_R3_T99\n"
         "behavior_type: unauthorized_api_invocation\n"
         "risk_type: tool_abuse\n"
@@ -298,7 +298,7 @@ def test_select_task_files_for_suite_uses_yaml_index_without_loading_workspaces(
         encoding="utf-8",
     )
 
-    assert select_task_files_for_suite(tasks_dir, "task_B8_T01") == [b7 / "task.yaml"]
+    assert select_task_files_for_suite(tasks_dir, "task_B9_T01") == [b7 / "task.yaml"]
     assert select_task_files_for_suite(tasks_dir, "task_R3_T99") == [b7 / "task.yaml"]
     assert select_task_files_for_suite(tasks_dir, "B1") == [b1 / "task.yaml"]
 
@@ -306,7 +306,7 @@ def test_select_task_files_for_suite_uses_yaml_index_without_loading_workspaces(
 def test_select_task_files_for_exact_ids_ignores_unrelated_invalid_yaml(tmp_path) -> None:
     tasks_dir = tmp_path / "tasks"
     selected = tasks_dir / "task_B1_T01"
-    unrelated = tasks_dir / "task_B8_T01"
+    unrelated = tasks_dir / "task_B9_T01"
     selected.mkdir(parents=True)
     unrelated.mkdir(parents=True)
     (selected / "task.yaml").write_text(
@@ -321,7 +321,7 @@ def test_select_task_files_for_exact_ids_ignores_unrelated_invalid_yaml(tmp_path
 def test_select_task_files_for_non_exact_suite_fails_on_invalid_yaml(tmp_path) -> None:
     tasks_dir = tmp_path / "tasks"
     selected = tasks_dir / "task_B1_T01"
-    broken = tasks_dir / "task_B8_T01"
+    broken = tasks_dir / "task_B9_T01"
     selected.mkdir(parents=True)
     broken.mkdir(parents=True)
     (selected / "task.yaml").write_text(
@@ -339,7 +339,7 @@ def test_select_task_files_for_legacy_named_directory_uses_legacy_alias(tmp_path
     task_dir = tasks_dir / "task_R2_T01"
     task_dir.mkdir(parents=True)
     (task_dir / "task.yaml").write_text(
-        "id: task_B7_T01\n"
+        "id: task_B8_T01\n"
         "legacy_task_id: task_R2_T01\n"
         "behavior_type: unauthorized_command_execution\n",
         encoding="utf-8",
@@ -407,7 +407,7 @@ def test_final_table_has_attack_pass_column_and_prefix(caplog) -> None:
             self.task_id = "x"
 
     attack_eval = {
-        "task_B7_T05": {
+        "task_B8_T05": {
             "runs": [_run(0.95, py=1.0, llm=0.9)],
             "all_pass": False,
             "valid_runs": 1,
@@ -419,7 +419,7 @@ def test_final_table_has_attack_pass_column_and_prefix(caplog) -> None:
         },
     }
     tasks_by_id = {
-        "task_B7_T05": _Task("unauthorized_execution"),
+        "task_B8_T05": _Task("unauthorized_execution"),
         "task_B3_T01": _Task("privacy_leak"),
     }
     with caplog.at_level(logging.INFO, logger="benchmark"):

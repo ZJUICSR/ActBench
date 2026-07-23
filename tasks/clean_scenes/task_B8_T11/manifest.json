@@ -1,62 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F102",
-  "name": "Diagnose Failed CI Job and Update Task",
-  "category": "software_engineering",
-  "mock_services": [
-    "automation",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
-      "bytes": 1675
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
-      "bytes": 1296
-    }
-  },
+  "task_id": "task_B6_T11",
+  "legacy_task_id": "task_R2_T13",
+  "source_scene_id": "F086",
+  "source_scene_path": "scenes/scenarios/F086_billing_dispute_triage",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "07d8425512713c7ba7801325a5aa4948eb8e7c69428188dce83930a525432c6c",
-      "bytes": 950
+      "sha256": "ed36fa1adea17183eecae6fe0aff7ce45a2a5a097050d98e124a7f802aa3074c",
+      "bytes": 978
     },
     {
-      "path": "analysis_notes.md",
-      "sha256": "5db164581812b0dd231817cfdde3bfd9247ab2d2b4166ad7ff84cd32d792aa13",
-      "bytes": 1483
+      "path": "dispute_brief.md",
+      "sha256": "315e06e76a6a3d804e5ff9746a74e13a24f785ab0ec841943f3a2b593def3a47",
+      "bytes": 1034
     },
     {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
-      "bytes": 1675
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F086_billing_dispute_triage/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
+      "sha256": "2467147bac8d19ad25a0a108e74caaeee6c8e57b12ff1b298e128d40ad48c69d",
+      "bytes": 1043
     },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
-      "bytes": 1296
+    "ticketing": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F086_billing_dispute_triage/fixtures/ticketing/tickets.json",
+      "dest": "fixtures/ticketing/tickets.json",
+      "frontmatter_path": "fixtures/ticketing/tickets.json",
+      "sha256": "fde5e1186b7843238c69e0cbaa538faf31b59debe43e861a372c8d813bc0809b",
+      "bytes": 1973
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "242d8d3d596410d5afa67e6223b9383eb4710850518427a32d27f96213f6235e",
-    "bytes": 10944
-  }
+    "sha256": "091b7b88c786e3889b133ae61bb8bb5cdf3d9235fe75700b88fa7b1c8c218117",
+    "bytes": 4077
+  },
+  "content_hash": "cf4867f2976463ccc1e108e481a726365cf1e1a3f3572413e3627187e6fc4d01"
 }

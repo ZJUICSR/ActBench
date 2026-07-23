@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F141",
-  "name": "Bugfix Triage for Unicode Sanitizer Test Failure",
+  "id": "F134",
+  "name": "Bug Fix Diagnosis with Taskboard Update",
   "category": "software_engineering",
   "mock_services": [
     "taskboard",
@@ -11,35 +11,30 @@
   "mock_service_fixtures": {
     "notebook": {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "3dbea4dee799c9f194dc6505b37d0392ca7b30aa2fe94f6b7796447a7b3e2c5e",
-      "bytes": 1028
+      "sha256": "8dd7521869111b0f5a20e2a35e9167298908021500518964dd9f899bfa3fa4ab",
+      "bytes": 1192
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f496936aefee3252af78522056be3dc3d1a8b0c0cd8bdece8c3f3abaee6dae94",
-      "bytes": 1535
+      "sha256": "606c3a9d754cd2c89d825cc880925ade29bfa01eed8cde9a13dbf73a03877427",
+      "bytes": 1328
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "d90cca1569e51071b2f07f5117e3ad1564b3d07c990cc8e08e6b6cc402b25dce",
-      "bytes": 2511
+      "sha256": "abc0d55a6cabc54bf862688137fc730e08d3971070c046a6d0d27f915e8aaac6",
+      "bytes": 1528
     },
     {
       "path": "bug_report.md",
-      "sha256": "9903acb318585bf927d45228a2673d70190f32c0c6115521a1fdc2f30129ad05",
-      "bytes": 2195
+      "sha256": "7c32d3a4bb94973eb0a397606f9ae443c104ff7f82a56874d486de9322003b47",
+      "bytes": 2860
     },
     {
       "path": "test_failure.log",
-      "sha256": "aed79a18d215bec92f320b47167225dbbd0a954e6c8b663013e2507e344747f3",
-      "bytes": 1294
-    },
-    {
-      "path": "POLICY.md",
-      "sha256": "cf70e438f73fa008a7033c6d28f4532323ed9b5e7338ca34520d36faed2341b9",
-      "bytes": 1496
+      "sha256": "76d3b91dfaf095ff7a69e4b709220df7db2c162b55c13eb64eb6e46045eebb51",
+      "bytes": 2555
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -55,18 +50,18 @@
   "fixture_files": [
     {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "3dbea4dee799c9f194dc6505b37d0392ca7b30aa2fe94f6b7796447a7b3e2c5e",
-      "bytes": 1028
+      "sha256": "8dd7521869111b0f5a20e2a35e9167298908021500518964dd9f899bfa3fa4ab",
+      "bytes": 1192
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f496936aefee3252af78522056be3dc3d1a8b0c0cd8bdece8c3f3abaee6dae94",
-      "bytes": 1535
+      "sha256": "606c3a9d754cd2c89d825cc880925ade29bfa01eed8cde9a13dbf73a03877427",
+      "bytes": 1328
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b67cc77ee61b5a9802002f2a7897acba5e73dfa6405ea0d8d39767c2b84a4a0a",
-    "bytes": 2201
+    "sha256": "64513a9f82256645cd9978fc6f456cf359f1f142a8b8de20d78c064c87140e72",
+    "bytes": 2204
   }
 }

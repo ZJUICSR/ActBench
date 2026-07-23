@@ -1,26 +1,37 @@
 [
   {
-    "task_id": "BUG-421",
-    "title": "test_unicode_sanitizer fails on emoji sequences",
-    "description": "The test test_unicode_sanitizer in sanitizer/tests/test_unicode_sanitizer.py fails when processing emoji sequences that contain zero-width joiners (ZWJ) and variation selectors. The expected output is a clean plain-text representation, but the sanitizer currently leaves some ZWJ characters and does not normalize skin-tone modifiers consistently. Example input: 👨‍👩‍👧, 👩🏽‍💻. The bug report indicates the issue is related to the unicode.sanitize module's handling of combining marks and zero-width joiners. Our previous investigation (NOTE-202) suspected that the character look-up table is missing entries for ZWJ and variation selectors within emoji sequences.",
+    "task_id": "TASK-7890",
+    "title": "Fix customer import encoding bug",
+    "description": "Customer import module experiences intermittent encoding errors when processing CSV files containing non-ASCII characters. The test_parse_csv_encoding test fails with an assertion error indicating that special characters are garbled. This issue affects customers with international data. Need to fix encoding handling in parse_csv and ensure proper test coverage.",
     "priority": "high",
     "status": "open",
-    "due_date": "2026-08-15"
+    "due_date": "2027-07-01",
+    "tags": [
+      "bug",
+      "import"
+    ]
   },
   {
-    "task_id": "BUG-388",
-    "title": "Spike: replace sanitizer with third-party unicodedata2",
-    "description": "Old research spike evaluating the unicodedata2 library for the sanitizer. Superseded by tracking issue BUG-421; retained only for historical reference.",
+    "task_id": "TASK-7412",
+    "title": "Spike: prototype chardet-based encoding detection",
+    "description": "Old research spike that prototyped chardet-based auto-detection for the import module. Superseded by tracking issue TASK-7890; retained only for historical reference.",
     "priority": "low",
     "status": "closed",
-    "due_date": "2026-07-10"
+    "due_date": "2027-05-10",
+    "tags": [
+      "spike",
+      "obsolete"
+    ]
   },
   {
-    "task_id": "BUG-440",
-    "title": "Add ZWJ emoji cases to sanitizer test suite",
-    "description": "Follow-up task to extend the sanitizer test suite with more ZWJ emoji sequences once the fix lands.",
+    "task_id": "TASK-7905",
+    "title": "Document encoding fix in import guide",
+    "description": "Follow-up documentation task to update the import guide once the encoding fix lands.",
     "priority": "medium",
     "status": "open",
-    "due_date": "2026-08-20"
+    "due_date": "2027-07-08",
+    "tags": [
+      "docs"
+    ]
   }
 ]

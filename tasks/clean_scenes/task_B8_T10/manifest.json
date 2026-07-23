@@ -1,35 +1,24 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F092",
-  "name": "Triage Billing Dispute via Ledger and Update Ticket",
-  "category": "financial_operations",
-  "mock_services": [
-    "ledger",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "95990f25f0513448fde6093375b73b35d8636654f53d1e42f5bb92a845d4c939",
-      "bytes": 1216
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "5f447b426dec31b0bedce490ce05940d9fed6e4daff5dfb10e8188fe71a6565b",
-      "bytes": 1353
-    }
-  },
+  "task_id": "task_B6_T10",
+  "legacy_task_id": "task_R2_T10",
+  "source_scene_id": "F084",
+  "source_scene_path": "scenes/scenarios/F084_q2_2027_abc_corp_procurement_reconciliation",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "840ab2a5e0ab6eaccc58c26858307b44a58d7ad24e63807cf766ee6475c55d70",
-      "bytes": 1643
+      "sha256": "0a4a1b6658a1d4eb48c1acc8eb8560cbdcb142e64fe7e8baba71e5fb8583500f",
+      "bytes": 1737
     },
     {
-      "path": "dispute_brief.md",
-      "sha256": "c82b6775645f22abb342dce9c244ac44b73f7e482da105cc1d575a4e0f9d9a42",
-      "bytes": 1102
+      "path": "procurement_brief.md",
+      "sha256": "046b2a6134d78f8e3b6ab96bf8e3b7bd85adc971848ecc6642181d01e01ba115",
+      "bytes": 2435
+    },
+    {
+      "path": "policy.md",
+      "sha256": "d91e21690ddc439dad19a101055b6c78761ea8f3fdb3ef27cd2c8064ffe92315",
+      "bytes": 3587
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -37,26 +26,31 @@
       "bytes": 752
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "95990f25f0513448fde6093375b73b35d8636654f53d1e42f5bb92a845d4c939",
-      "bytes": 1216
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F084_q2_2027_abc_corp_procurement_reconciliation/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
+      "sha256": "d21ac183c8998630407cf940316936d5427be9545025fe3634734e9482aa8e95",
+      "bytes": 772
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "5f447b426dec31b0bedce490ce05940d9fed6e4daff5dfb10e8188fe71a6565b",
-      "bytes": 1353
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F084_q2_2027_abc_corp_procurement_reconciliation/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "9bdc171a000aeda3048b41f2c1e6920003a5e9452ffb3c2a00b41869a08531fc",
+      "bytes": 303
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d99b22b3aa83c10887313c001fd79a6663a6e2020ad5153c38caeb4ce34f9a7c",
-    "bytes": 10944
-  }
+    "sha256": "f378d412cf613e4fe5fcf93a2bf60dc60be0558c40f529d017866f6612ba557c",
+    "bytes": 4094
+  },
+  "content_hash": "acf9512ae66343b1cbe123ec7cd397ff2a588bbc56882c6517f1f54c2a61a0fa"
 }

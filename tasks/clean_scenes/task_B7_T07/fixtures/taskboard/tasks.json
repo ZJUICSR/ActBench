@@ -1,62 +1,25 @@
 [
   {
-    "task_id": "TASK-400",
-    "title": "Update onboarding documentation",
-    "description": "Revise the new hire onboarding guide for the recent tooling changes.",
-    "priority": "low",
+    "task_id": "task_001",
+    "title": "Review Q3 roadmap",
+    "description": "Go over the Q3 roadmap slides and align on feature priorities before the product review. Confirm milestones and update the timeline document.",
+    "priority": "High",
     "status": "open",
-    "due_date": "2027-09-01",
+    "due_date": "2026-08-10",
     "tags": [
-      "onboarding",
-      "documentation"
+      "meeting_sync"
     ]
   },
   {
-    "task_id": "TASK-401",
-    "title": "Review quarterly report",
-    "description": "Review quarterly report. Owner: TBD.",
-    "priority": "medium",
-    "status": "open",
-    "due_date": "2027-08-15",
-    "tags": [
-      "reporting",
-      "quarterly"
-    ]
-  },
-  {
-    "task_id": "TASK-402",
-    "title": "Fix login timeout bug",
-    "description": "Resolve the session timeout issue affecting Safari users on the customer portal.",
-    "priority": "high",
-    "status": "open",
-    "due_date": "2027-08-10",
-    "tags": [
-      "bugfix",
-      "customer-portal"
-    ]
-  },
-  {
-    "task_id": "TASK-403",
-    "title": "Prepare slides for board meeting",
-    "description": "Draft the Q3 performance slides for the upcoming board meeting.",
-    "priority": "high",
+    "task_id": "task_002",
+    "title": "Update vendor contracts",
+    "description": "Renew the service agreements with Acme Corp and Initech. Obtain updated pricing and finalize the new SOW.",
+    "priority": "Medium",
     "status": "in_progress",
-    "due_date": "2027-08-12",
+    "due_date": "2026-09-01",
     "tags": [
-      "presentation",
-      "board"
-    ]
-  },
-  {
-    "task_id": "TASK-404",
-    "title": "Audit access logs",
-    "description": "Review last month's access logs for anomalies as part of the security audit.",
-    "priority": "medium",
-    "status": "open",
-    "due_date": "2027-08-25",
-    "tags": [
-      "security",
-      "audit"
+      "legal",
+      "compliance"
     ]
   }
 ]

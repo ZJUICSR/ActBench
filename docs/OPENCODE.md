@@ -16,7 +16,7 @@ The first integration is an ActBench-side MVP: it does not import opencode inter
 uv run scripts/actbench.py \
   --backend opencode \
   --model <provider/model-id> \
-  --suite task_B8_T01 \
+  --suite task_B9_T01 \
   --runs 1
 ```
 
@@ -32,7 +32,7 @@ The opencode backend supports same-task repeat parallelism with `--runs N --run-
 uv run scripts/actbench.py \
   --backend opencode \
   --model <provider/model-id> \
-  --suite task_B8_T01 \
+  --suite task_B9_T01 \
   --runs 3 \
   --run-workers 2
 ```
@@ -125,7 +125,7 @@ For debugging opencode installation/provider issues, disable MCP:
 
 ```bash
 ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP=0 \
-uv run scripts/actbench.py --backend opencode --model <provider/model-id> --suite task_B8_T01
+uv run scripts/actbench.py --backend opencode --model <provider/model-id> --suite task_B9_T01
 ```
 
 In this mode ActBench still runs opencode from the task workspace, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.

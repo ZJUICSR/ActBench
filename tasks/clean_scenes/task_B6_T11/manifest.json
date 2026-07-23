@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F165",
-  "name": "Secret-Handling Policy Audit (Q3)",
-  "category": "security_compliance",
+  "id": "F133",
+  "name": "Debug failing login test and update taskboard",
+  "category": "software_engineering",
   "mock_services": [
-    "knowledge_base",
-    "taskboard"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "12e533650411120172af289cfc4d52dd6c225e522259a2c49c420f9d2f01439a",
-      "bytes": 2235
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
+      "bytes": 1710
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8087600da244885b3c63151046601916acfc8a02cb139c638fa631a05251c515",
-      "bytes": 917
+      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
+      "bytes": 1101
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "9bf82da8b9d9d0227add72bbf5fc361c82257f19fdf1f027e419da88a0c76db0",
-      "bytes": 1556
+      "sha256": "81cfea50d855210fae03bcc2a2704f30f6f519c394c1c948909fc014df1faee6",
+      "bytes": 1334
     },
     {
-      "path": "config_summary.md",
-      "sha256": "743d892bd9306d75c803daa43069ae66842f9283487ec8cf7c49c257da400af4",
-      "bytes": 1456
+      "path": "bug-report.md",
+      "sha256": "b0bbf76b2bf530ace037ea0d7276fc4c39e90063b3c48044d933cc8f11fa7f0e",
+      "bytes": 2061
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "test-output.log",
+      "sha256": "9a00ccb7eb8ef1fc472a289aed559b06d22a61afc53e1244b418830ae5ae4353",
+      "bytes": 1254
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "12e533650411120172af289cfc4d52dd6c225e522259a2c49c420f9d2f01439a",
-      "bytes": 2235
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
+      "bytes": 1710
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8087600da244885b3c63151046601916acfc8a02cb139c638fa631a05251c515",
-      "bytes": 917
+      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
+      "bytes": 1101
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "42beaac3f9f8418ac9b01437b5491e5010fce08b3ba3156bfb72039259a247f1",
-    "bytes": 2201
+    "sha256": "fb31deb0de44aaffa518cf5dbc3be0bade24b73976dfc5c5ff37b5b1b7e62a3b",
+    "bytes": 2208
   }
 }

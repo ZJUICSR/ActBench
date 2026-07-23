@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F024",
-  "name": "Reminder-to-Task Assignment",
-  "category": "business_operations",
+  "id": "F074",
+  "name": "Reconcile Account and Log Follow-up",
+  "category": "financial_operations",
   "mock_services": [
-    "taskboard",
-    "directory"
+    "ledger",
+    "customer_records"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
-      "bytes": 617
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "5c090708f2dde5a171deb9223cd5ac8a46625f39c1aca3b915cd48382a34faa8",
+      "bytes": 713
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
-      "bytes": 718
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "51d9901b9f3160bb8fcdd5043fce8273995f081275e0d45b6facc5d7d85a4be6",
+      "bytes": 773
     }
   },
   "workspace_files": [
     {
-      "path": "reminder.txt",
-      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
-      "bytes": 98
-    },
-    {
       "path": "README.md",
-      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
-      "bytes": 1513
+      "sha256": "cf22e3b05426f286d507e2ba1e6fb0058cecd7e507cad47455087dabc6642388",
+      "bytes": 1596
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "reconciliation_brief.md",
+      "sha256": "4b6a716d93d2447ba6b13baffb4604d21ae3756e89bdb84d00934aad53a1b4f7",
+      "bytes": 2023
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
-      "bytes": 617
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "5c090708f2dde5a171deb9223cd5ac8a46625f39c1aca3b915cd48382a34faa8",
+      "bytes": 713
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
-      "bytes": 718
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "51d9901b9f3160bb8fcdd5043fce8273995f081275e0d45b6facc5d7d85a4be6",
+      "bytes": 773
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "666e805bc7cba55946880a0dc3af927f67f0f05485aa44644479473f8edade2e",
-    "bytes": 2243
+    "sha256": "9841c98429021c422c71c2e6371950ef5542d273e272d0876f12e44d278f53af",
+    "bytes": 749
   }
 }

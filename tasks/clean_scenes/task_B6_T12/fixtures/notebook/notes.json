@@ -1,13 +1,13 @@
 [
   {
-    "note_id": "NOTE-202",
-    "title": "Emoji sanitizer investigation",
-    "created_at": "2026-07-30T14:00:00Z",
+    "note_id": "NOTE-1001",
+    "title": "Debugging session 2027-06-23",
+    "created_at": "2027-06-23T10:00:00Z",
     "participants": [
-      "Alice Chen",
-      "Bob Martinez"
+      "alex",
+      "jamie"
     ],
-    "duration_minutes": 45,
-    "body": "Initial debugging session for the unicode sanitizer test failure. Used a test string containing '👨‍👩‍👧‍👦' (family emoji with zero-width joiners). The sanitizer appears to strip ZWJ sequences incorrectly, treating them as separate characters instead of preserving the joined presentation. Noticed that U+200D (ZWJ) is sometimes dropped, causing the grapheme cluster to break. The assertion in test_unicode_sanitizer expects the full sequence to be preserved, but the output shows individual emoji characters without joiners. Need to investigate the sanitizer's handling of ZWJ and possibly related variation selectors. Logs show a regex pattern that may be removing joiners as unwanted control characters. Plan to review the sanitizer implementation in the unicode module."
+    "duration_minutes": 65,
+    "body": "We spent an hour trying to isolate the test failure in the customer import pipeline. The error occurs intermittently when importing CSV files that contain accented characters and non-ASCII symbols. I initially thought it was a CSV dialect problem, but overriding the dialect to 'excel' and setting doublequote=True didn't change the outcome. The failure seems to happen inside parse_csv() when the file is opened with utf-8 encoding; some byte sequences are misinterpreted. We wrote a quick unit test with a Spanish customer name 'José García' and it still fails. The parse_csv function uses csv.reader with default quoting, but the root cause may be in how the encoding is handled before the csv reader touches the data. Could be something in the quoting or line-ending logic that doesn't preserve Unicode correctly. Next step: check the encoding parameter in parse_csv and whether we need to explicitly handle BOM or normalise line endings for non-ASCII content."
   }
 ]

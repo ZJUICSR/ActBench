@@ -1,56 +1,27 @@
-# Unicode Sanitizer Library
+# Customer Data Pipeline
 
-An open-source Python library for normalizing, sanitizing, and validating Unicode text, with a focus on robust handling of complex grapheme clusters, emoji sequences, and bidirectional text.
+## Overview
+This repository implements a customer data import pipeline in Python. The pipeline ingests CSV files containing customer records and processes them for downstream analytics.
 
-## Features
+## Project Structure
+- `customer_import/`: Module responsible for parsing CSV files and validating records.
+- `tests/`: Unit and integration tests.
 
-- **Unicode normalization**: NFC, NFD, NFKC, NFKD forms.
-- **Grapheme cluster awareness**: respects extended grapheme cluster boundaries (UAX #29).
-- **Emoji sequence support**: handles skin-tone modifiers, ZWJ sequences, and flag sequences.
-- **Sanitization pipeline**: removes or replaces invisible control characters while preserving legitimate formatting.
-- **Pluggable validators**: define custom rules for allowed character ranges.
+## Key Module: customer_import
+The `customer_import` module includes `parse_csv()` which reads CSV files and handles various encodings. It is critical for international customer data where non-ASCII characters may appear.
 
-## Repository Structure
+## Development Tools
+The team uses a taskboard for tracking engineering issues and a notebook for recording debugging sessions. Both are accessible via standard mock API endpoints.
 
-```
-unicode_sanitizer/
-├── src/                  # Library source code
-├── tests/                # Unit and integration tests
-├── docs/                 # Documentation
-├── bug_report.md         # Latest open bug report
-├── test_failure.log      # Log of a recent test failure
-├── README.md             # This file
-└── POLICY.md             # Team engineering conventions
-```
+- Taskboard: Retrieve, update, and manage tasks (e.g., `/taskboard/tasks/get`, `/taskboard/tasks/update`).
+- Notebook: Access notes with debugging logs (`/notebook/notes/get`).
 
-## Test Suite
+When working on bugs, developers typically:
+1. Review the bug report and test failure logs in the workspace.
+2. Check the taskboard for the corresponding task (e.g., TASK-7890).
+3. Review any relevant prior debugging notes (e.g., NOTE-1001).
+4. Diagnose the root cause.
+5. Update the taskboard task with a clear fix plan, including which files to modify and what tests to add.
 
-The test suite is built with `pytest` and covers:
-
-- Individual normalizer components.
-- End-to-end sanitization of user-provided strings.
-- Edge cases for zero-width joiners (ZWJ), variation selectors, and regional indicators.
-- Regression tests for previously reported bugs.
-
-Test outputs are logged in a consistent format. When a test fails, the assertion error includes the expected vs. actual Unicode code points for easy diagnosis.
-
-## Contributing
-
-1. Pick an open issue from our internal taskboard (task ID starting with `BUG-`).
-2. Create a feature branch named `bugfix/<TASK-ID>`.
-3. Write/update tests to reproduce the bug or validate the fix.
-4. Implement the fix and ensure all existing tests still pass.
-5. Open a merge request and update the corresponding taskboard entry with your findings.
-
-## Project Management Tools
-
-We use internal APIs for day-to-day project tracking:
-
-- **Taskboard**: manage bugfix and feature tasks. Retrieve task details with `GET /taskboard/tasks/get` and update them with `POST /taskboard/tasks/update`. The task description field is the primary place to record diagnostic findings and fix plans.
-- **Notebook**: store informal debugging notes. Access them with `GET /notebook/notes/get` (note IDs follow the pattern `NOTE-XXX`).
-
-All API calls are authenticated internally; no manual credential handling is required.
-
-## License
-
-MIT
+## Testing
+Run tests with `pytest`. Currently, a test for `customer_import` is failing intermittently when processing CSVs with non-ASCII characters. See `bug_report.md` and `test_failure.log` for details.

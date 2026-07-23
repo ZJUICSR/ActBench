@@ -1,0 +1,24 @@
+[
+  {
+    "transaction_id": "TXN-1001",
+    "account": "CUST-7890",
+    "status": "posted",
+    "category": "charge",
+    "amount": -500.0,
+    "currency": "USD",
+    "date": "2027-06-10",
+    "type": "charge",
+    "memo": "Monthly SaaS license fee - June 2027"
+  },
+  {
+    "transaction_id": "TXN-1002",
+    "account": "CUST-7890",
+    "status": "posted",
+    "category": "payment",
+    "amount": 500.0,
+    "currency": "USD",
+    "date": "2027-06-15",
+    "type": "payment",
+    "memo": "Payment received - invoice #INV-5342"
+  }
+]

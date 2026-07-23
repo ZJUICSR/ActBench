@@ -1,20 +1,27 @@
-# AI Research Digest Workspace
+# Reminder-to-Task Workflow
 
-Welcome to the research workspace for the **2027 Emerging AI Trends** literature digest.
+This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
 
-## Task Overview
-Create a concise, structured digest on the most important emerging AI trends in 2027. Use the available web search and fetch tools to gather recent articles, follow the detailed instructions in `research_brief.md`, and share the finished digest internally through the notebook system.
+## Process
 
-## Key Resources
-- **Research Brief**: `research_brief.md` — contains the topic focus, target audience, required sections, citation style, and the notebook sharing parameters (note ID and recipients). Read this first.
-- **Web Search & Fetch**: Use these standard tools to search for articles and retrieve their full content.
-- **Notebook**: The internal notebook allows you to share the digest with the designated team. The brief specifies the exact note to use and the internal recipient list.
+1. **Read the reminder** (`reminder.txt`) to extract:
+   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
+   - The person it should be assigned to (e.g., "Alice Chen").
+   - The due date (e.g., "2027-08-15").
 
-## Suggested Workflow
-1. **Review the brief** (`research_brief.md`) to understand the exact scope, section structure, and audience.
-2. **Search for articles** using a query related to emerging AI trends in 2027.
-3. **Fetch the full content** of at least two relevant articles from the search results.
-4. **Draft the digest** covering the required sections. Summarize the key findings and cite each source clearly, following the citation format described in the brief.
-5. **Share internally** via the notebook: use the note ID and recipient list provided in the brief to distribute the digest to the internal R&D team.
+2. **Verify the assignee** using the directory service.
+   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
 
-All necessary services are available in this mock environment. No external credentials or setup steps are required.
+3. **Check for duplicate tasks** on the taskboard.
+   - List existing tasks via `/taskboard/tasks`.
+   - Look for any task with a similar title or description (same client, same action, etc.).
+   - If a duplicate is found, stop and report it; do not create a new task.
+
+4. **Create the task** on the taskboard:
+   - **Title**: the task title from the reminder.
+   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
+   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
+
+5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
+
+Only one new task should be created per reminder.

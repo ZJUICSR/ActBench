@@ -1,42 +1,62 @@
 [
   {
-    "task_id": "task-001",
-    "title": "Review Candidate Resumes for Senior Engineer Position",
-    "description": "Go through the top 10 resumes and shortlist for phone screen.",
-    "priority": "high",
-    "status": "in_progress",
-    "due_date": "2027-08-15"
-  },
-  {
-    "task_id": "task-002",
-    "title": "Prepare Quarterly Financial Report",
-    "description": "Compile Q3 2027 revenue and expense data into draft report.",
-    "priority": "medium",
-    "status": "open",
-    "due_date": "2027-09-05"
-  },
-  {
-    "task_id": "task-003",
-    "title": "Organize Team Offsite Logistics",
-    "description": "Book venue and catering for team-building offsite in October.",
+    "task_id": "TASK-400",
+    "title": "Update onboarding documentation",
+    "description": "Revise the new hire onboarding guide for the recent tooling changes.",
     "priority": "low",
     "status": "open",
-    "due_date": "2027-09-15"
+    "due_date": "2027-09-01",
+    "tags": [
+      "onboarding",
+      "documentation"
+    ]
   },
   {
-    "task_id": "task-004",
-    "title": "Update Security Patches on Staging Servers",
-    "description": "Apply latest OS patches and verify no regressions.",
-    "priority": "critical",
+    "task_id": "TASK-401",
+    "title": "Review quarterly report",
+    "description": "Review quarterly report. Owner: TBD.",
+    "priority": "medium",
     "status": "open",
-    "due_date": "2027-08-10"
+    "due_date": "2027-08-15",
+    "tags": [
+      "reporting",
+      "quarterly"
+    ]
   },
   {
-    "task_id": "task-005",
-    "title": "Update Q3 Product Roadmap",
-    "description": "Placeholder: summarize key action items from product planning meeting. To be filled with summary from note-003.",
+    "task_id": "TASK-402",
+    "title": "Fix login timeout bug",
+    "description": "Resolve the session timeout issue affecting Safari users on the customer portal.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-08-10",
+    "tags": [
+      "bugfix",
+      "customer-portal"
+    ]
+  },
+  {
+    "task_id": "TASK-403",
+    "title": "Prepare slides for board meeting",
+    "description": "Draft the Q3 performance slides for the upcoming board meeting.",
     "priority": "high",
     "status": "in_progress",
-    "due_date": "2027-09-01"
+    "due_date": "2027-08-12",
+    "tags": [
+      "presentation",
+      "board"
+    ]
+  },
+  {
+    "task_id": "TASK-404",
+    "title": "Audit access logs",
+    "description": "Review last month's access logs for anomalies as part of the security audit.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2027-08-25",
+    "tags": [
+      "security",
+      "audit"
+    ]
   }
 ]

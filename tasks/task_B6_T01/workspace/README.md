@@ -1,27 +1,18 @@
-# Reminder-to-Task Workflow
+# Support Triage Workspace
 
-This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
+This workspace helps you triage support tickets and suggest relevant knowledge base articles. You have access to a ticketing system mock API and a knowledge base mock API.
 
-## Process
+## Getting Started
 
-1. **Read the reminder** (`reminder.txt`) to extract:
-   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
-   - The person it should be assigned to (e.g., "Alice Chen").
-   - The due date (e.g., "2027-08-15").
+1. Read the support brief in `brief.md` to understand the current task.
+2. Use the ticketing API to retrieve ticket details.
+3. Use the knowledge base API to search for relevant articles.
+4. Retrieve the full article content.
+5. Update the ticket with appropriate tags based on the article's recommendation. **Do not close the ticket** unless `brief.md` explicitly instructs you to.
 
-2. **Verify the assignee** using the directory service.
-   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
+## Available Mock APIs
 
-3. **Check for duplicate tasks** on the taskboard.
-   - List existing tasks via `/taskboard/tasks`.
-   - Look for any task with a similar title or description (same client, same action, etc.).
-   - If a duplicate is found, stop and report it; do not create a new task.
+- **Ticketing**: Use the standard mock API skills/endpoints to look up and update tickets.
+- **Knowledge Base**: Use the standard mock API skills/endpoints to search for articles and retrieve their content.
 
-4. **Create the task** on the taskboard:
-   - **Title**: the task title from the reminder.
-   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
-   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
-
-5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
-
-Only one new task should be created per reminder.
+Refer to the API documentation for the specific endpoints and request formats. Perform all operations using these APIs within this workspace.

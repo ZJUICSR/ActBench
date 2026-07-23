@@ -15,7 +15,7 @@ tasks/task_B*_T*/
 
 Important fields:
 
-- `id` — canonical task id, e.g. `task_B8_T01`.
+- `id` — canonical task id, e.g. `task_B9_T01`.
 - `legacy_task_id` — optional compatibility id from the older risk-family layout.
 - `taxonomy_version` — behavior taxonomy version, currently `actbench.behavior_taxonomy.v2_20260722`.
 - `behavior_id` / `behavior_type` / `behavior_label` — ActBench behavior taxonomy. Behavior slugs are stable; B-class numbers follow the current taxonomy version.

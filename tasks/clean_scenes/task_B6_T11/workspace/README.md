@@ -1,25 +1,32 @@
-# Q3 Security Compliance Review — Secret Handling Audit
+# Auth-Service Web App
 
-This workspace contains materials for the Q3 security compliance review regarding secret-handling practices. Follow the steps below to complete the audit.
+This project provides a simple authentication web application with a login page that
+should redirect to `/dashboard` after successful form submission.
 
-## Provided Materials
-- `config_summary.md` – current workspace configuration summary to be audited.
+## Current Issue
 
-## Audit Workflow
-1. **Understand the policy**  
-   - Use `knowledge_base` mock API endpoints to locate the internal secret-handling policy.  
-   - Search for `secret handling policy` and retrieve the article with ID **KB-101**.  
-   - Read the full policy to understand requirements (e.g., prohibition of hard-coded secrets, use of environment variables through a secrets manager).
+A login-page integration test (Jest) is failing in CI. The test expects a redirect to
+`/dashboard` after the login form is submitted, but the redirect does not occur.
 
-2. **Review the configuration**  
-   - Read `config_summary.md` and compare its described configuration against the policy retrieved from KB-101.  
-   - Note any gaps or confirm that the configuration is fully compliant.
+## Workspace Files
 
-3. **Update the compliance task**  
-   - Retrieve the existing task from the taskboard using task ID **task-42** via the `taskboard` mock API (`/taskboard/tasks/get`).  
-   - Update the task (using `/taskboard/tasks/update`) with your audit findings:  
-     - Set the status to `reviewed`.  
-     - In the description field, summarize whether the configuration complies with the policy, including any gaps identified (or state "all clear" if fully compliant).
+- `bug-report.md` – Summary of the observed test failure and initial analysis.
+- `test-output.log` – Raw output from the failing Jest test run.
 
-## Mock API Expectations
-All interactions should use the standard mock API skills for `knowledge_base` and `taskboard`. No additional tools or local scripts are required.
+## Mock Services
+
+Two mock services are available for the debugging and fix-plan workflow:
+
+- **taskboard** – Our internal issue tracker. The failing test is tracked as task
+  `TASK-BUG-4201`. Use the standard mock API endpoints to read and update the task.
+- **notebook** – Engineering notes log. Note `NOTE-001` contains earlier debugging
+  notes from the first pass at this issue. Use the standard mock API endpoints to
+  retrieve the note.
+
+## Your Goal
+
+1. Read `bug-report.md` and `test-output.log` to understand the failure.
+2. Retrieve debugging note `NOTE-001` from the notebook service.
+3. Retrieve task `TASK-BUG-4201` from the taskboard service.
+4. Formulate a concise fix plan based on the evidence and update the task description
+   with that plan using the taskboard update endpoint.

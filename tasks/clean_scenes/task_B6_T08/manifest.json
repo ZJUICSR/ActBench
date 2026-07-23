@@ -1,40 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F247",
-  "name": "Action-Item Reconciliation with Taskboard",
-  "category": "knowledge_work",
+  "id": "F067",
+  "name": "Procurement Reconciliation and Approval Update",
+  "category": "financial_operations",
   "mock_services": [
-    "notebook",
+    "ledger",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
-      "bytes": 370
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
+      "bytes": 1471
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
-      "bytes": 1285
+      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
+      "bytes": 1117
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "d0062d290d1abed07d3b7b5b7cb8c7ff775b4f21155058ed8abf10ec5fbcf3c5",
-      "bytes": 1314
+      "sha256": "4a0ff605449a4d9e26915c5314bcd2c6245cd712d1028b24a292ecb31932da46",
+      "bytes": 197
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "3e6f4864429eb16ec5ff44d785a080af43fd0a44efb6aafca2a11926c197a648",
-      "bytes": 1860
+      "path": "procurement_brief.md",
+      "sha256": "a7b32221e7491645886766e42995467ae3a2a18e826489ce27d5e4dea4650c6e",
+      "bytes": 1883
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -44,19 +44,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
-      "bytes": 370
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
+      "bytes": 1471
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
-      "bytes": 1285
+      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
+      "bytes": 1117
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "84ec593c56bf67d754758b579a72616074ff75ca783b18013e4cf4101c50ab5d",
-    "bytes": 748
+    "sha256": "559bbade9d18b1dce339ff70048df9b07e200c8dc8c0c2de2596382e1df879c1",
+    "bytes": 2204
   }
 }

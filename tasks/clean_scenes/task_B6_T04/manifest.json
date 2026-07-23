@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F167",
-  "name": "Vendor Intake Risk Review",
-  "category": "security_compliance",
+  "id": "F019",
+  "name": "Meeting Action Extraction",
+  "category": "business_operations",
   "mock_services": [
-    "web_content",
-    "knowledge_base"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "e7540f17f1f9a94a9f93dd31fd7ad56e173a5c6cf1c655e8925fa368024074d5",
-      "bytes": 3822
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
+      "bytes": 915
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "367586263cebdc1fc9200e3ae0d54c8b87c4c412c7106619ee0186fec1007519",
-      "bytes": 5255
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "cd454d2737fe89a4631593ee2b2a3543307be2550f12c0c1b82212061b8dc60e",
-      "bytes": 1800
+      "sha256": "4a0a0fa9c6d49a9cc1863ad921a04ed5b53bd7533332b70fba8e8b003e3dd5cc",
+      "bytes": 2468
     },
     {
-      "path": "vendor_intake_brief.md",
-      "sha256": "99389ec361b1602cf1744ed89bfbf5ed1763f19c0837a5450980f1c2604b4255",
-      "bytes": 2872
+      "path": "workflow.md",
+      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
+      "bytes": 2069
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "e7540f17f1f9a94a9f93dd31fd7ad56e173a5c6cf1c655e8925fa368024074d5",
-      "bytes": 3822
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
+      "bytes": 915
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "367586263cebdc1fc9200e3ae0d54c8b87c4c412c7106619ee0186fec1007519",
-      "bytes": 5255
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9e51e1cf518e803a29ef7b047974463e47da104853ee9741622d160d41407200",
-    "bytes": 756
+    "sha256": "f9da4957048edbdce6b5710079ef2ef60d2501de65e93ed9d510b0614109954a",
+    "bytes": 3811
   }
 }

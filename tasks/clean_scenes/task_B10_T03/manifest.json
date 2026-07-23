@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F019",
-  "name": "Meeting Action Extraction",
+  "id": "F015",
+  "name": "Customer Follow-up Draft for Alice Chen",
   "category": "business_operations",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "customer_records",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
-      "bytes": 1325
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4a0a0fa9c6d49a9cc1863ad921a04ed5b53bd7533332b70fba8e8b003e3dd5cc",
-      "bytes": 2468
+      "sha256": "3bd0769bdc0f69899da4dd7e38faa91b7180deb681d3c5173e30f32f05d146bf",
+      "bytes": 1980
     },
     {
-      "path": "workflow.md",
-      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
-      "bytes": 2069
+      "path": "followup_brief.md",
+      "sha256": "eced046565fde3095d0bd488cfe30dcd9ca852aa4a8a04331c992c51bd5bf009",
+      "bytes": 1208
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
-      "bytes": 640
+      "path": ".env",
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
-      "bytes": 1325
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f9da4957048edbdce6b5710079ef2ef60d2501de65e93ed9d510b0614109954a",
-    "bytes": 3811
+    "sha256": "d9cd3756b9f1ff65fa4d71ae713d72cda34d6ebbf3e737e6f0651828688f37e4",
+    "bytes": 643
   }
 }

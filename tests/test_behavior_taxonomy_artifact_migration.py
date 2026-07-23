@@ -158,45 +158,45 @@ def test_artifact_migration_writes_derived_copy_without_touching_source(tmp_path
     assert trajectory_path.read_text(encoding="utf-8") == original_trajectory
 
     migrated_summary = _read_json(output / "legacy_results" / "actbench_summary_0001_model.json")
-    assert migrated_summary["suite"] == "task_B8_T01"
-    assert list(migrated_summary["by_behavior"]) == ["B8_unauthorized_api_invocation"]
-    assert migrated_summary["by_behavior"]["B8_unauthorized_api_invocation"]["taxonomy_version"] == TAXONOMY_VERSION_CURRENT
+    assert migrated_summary["suite"] == "task_B9_T01"
+    assert list(migrated_summary["by_behavior"]) == ["B9_unauthorized_api_invocation"]
+    assert migrated_summary["by_behavior"]["B9_unauthorized_api_invocation"]["taxonomy_version"] == TAXONOMY_VERSION_CURRENT
     row = migrated_summary["tasks"][0]
-    assert row["task_id"] == "task_B8_T01"
-    assert row["behavior_id"] == "B8"
-    assert row["scoring_family"] == "B8"
+    assert row["task_id"] == "task_B9_T01"
+    assert row["behavior_id"] == "B9"
+    assert row["scoring_family"] == "B9"
     assert row["legacy_risk_type"] == "tool_abuse"
     assert row["legacy_behavior_id"] == "B7"
     assert migrated_summary["taxonomy_migration"]["policy"]["mode"] == "derived_copy"
 
     migrated_manifest = _read_json(output / "legacy_results" / "raw_pack" / "manifest.json")
-    assert migrated_manifest["suite_counts"] == {"B7": 1}
+    assert migrated_manifest["suite_counts"] == {"B8": 1}
     assert migrated_manifest["taxonomy_migration"]["source_relative_path"] == "raw_pack/manifest.json"
 
-    migrated_trajectory_path = output / "legacy_results" / "raw_pack" / "B7" / "task_B7_T01" / "run_1" / "trajectory.json"
+    migrated_trajectory_path = output / "legacy_results" / "raw_pack" / "B8" / "task_B8_T01" / "run_1" / "trajectory.json"
     migrated_trajectory = _read_json(migrated_trajectory_path)
-    assert migrated_trajectory["trajectory_id"] == "task_B7_T01_attempt"
-    assert migrated_trajectory["canonical"]["suite"] == "B7"
-    assert migrated_trajectory["canonical"]["task_id"] == "task_B7_T01"
-    assert migrated_trajectory["canonical"]["slot_id"] == "B7/task_B7_T01/run_1"
-    assert migrated_trajectory["task"]["task_id"] == "task_B7_T01"
+    assert migrated_trajectory["trajectory_id"] == "task_B8_T01_attempt"
+    assert migrated_trajectory["canonical"]["suite"] == "B8"
+    assert migrated_trajectory["canonical"]["task_id"] == "task_B8_T01"
+    assert migrated_trajectory["canonical"]["slot_id"] == "B8/task_B8_T01/run_1"
+    assert migrated_trajectory["task"]["task_id"] == "task_B8_T01"
     assert migrated_trajectory["task"]["frontmatter"]["taxonomy_version"] == TAXONOMY_VERSION_CURRENT
-    assert migrated_trajectory["task"]["frontmatter"]["behavior_id"] == "B7"
-    assert migrated_trajectory["task"]["frontmatter"]["scoring_family"] == "B7"
+    assert migrated_trajectory["task"]["frontmatter"]["behavior_id"] == "B8"
+    assert migrated_trajectory["task"]["frontmatter"]["scoring_family"] == "B8"
     assert migrated_trajectory["task"]["frontmatter"]["legacy_risk_type"] == "unauthorized_execution"
     assert migrated_trajectory["task"]["frontmatter"]["legacy_behavior_id"] == "B6"
-    assert migrated_trajectory["scoring_inputs"]["behavior"]["behavior_id"] == "B7"
-    assert migrated_trajectory["scoring_inputs"]["behavior"]["scoring_family"] == "B7"
+    assert migrated_trajectory["scoring_inputs"]["behavior"]["behavior_id"] == "B8"
+    assert migrated_trajectory["scoring_inputs"]["behavior"]["scoring_family"] == "B8"
     assert migrated_trajectory["transcript"]["entries"][0]["message"]["content"][0]["text"] == "Evidence text mentions task_B6_T01 and must stay byte-for-byte meaningful."
-    assert migrated_trajectory["artifacts"]["canonical_trajectory"] == "raw_pack/B7/task_B7_T01/run_1/trajectory.json"
+    assert migrated_trajectory["artifacts"]["canonical_trajectory"] == "raw_pack/B8/task_B8_T01/run_1/trajectory.json"
     assert migrated_trajectory["artifacts"]["canonical_trajectory_absolute"] == str(migrated_trajectory_path)
 
-    migrated_source_paths = _read_json(output / "legacy_results" / "raw_pack" / "B7" / "task_B7_T01" / "run_1" / "source_paths.json")
-    assert migrated_source_paths["suite"] == "B7"
-    assert migrated_source_paths["task_id"] == "task_B7_T01"
+    migrated_source_paths = _read_json(output / "legacy_results" / "raw_pack" / "B8" / "task_B8_T01" / "run_1" / "source_paths.json")
+    assert migrated_source_paths["suite"] == "B8"
+    assert migrated_source_paths["task_id"] == "task_B8_T01"
     assert migrated_source_paths["legacy_trajectory"] == str(migrated_trajectory_path)
 
-    migrated_api_audit = _read_json(output / "legacy_results" / "raw_pack" / "B7" / "task_B7_T01" / "run_1" / "api" / "audit.json")
+    migrated_api_audit = _read_json(output / "legacy_results" / "raw_pack" / "B8" / "task_B8_T01" / "run_1" / "api" / "audit.json")
     assert migrated_api_audit == {"B6": "task_B6_T01", "evidence": True}
 
 

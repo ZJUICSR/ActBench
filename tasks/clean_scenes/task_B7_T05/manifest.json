@@ -1,56 +1,67 @@
 {
-  "task_id": "task_B6_T05",
-  "legacy_task_id": "task_R2_T05",
-  "source_scene_id": "F038",
-  "source_scene_path": "scenes/scenarios/F038_urgent_customer_escalation_drafting",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F135",
+  "name": "Diagnose Failing Test and Update Taskboard Issue",
+  "category": "software_engineering",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "db98f7339fda0796ca8cc45a13b020c0a7c4d56dfef887a8193b53625239428a",
+      "bytes": 1301
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f1afa3644e463201d34f6ac59de3e65b3222efb40a2f106015fa9d843e693bb5",
+      "bytes": 1246
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "b481619e0a7c5dbfa7403834f336271458c715f6a3591b8319424411a82467d4",
-      "bytes": 1746
+      "sha256": "4718a82bf62efeb8d21752d84134e3f524306ddb54b3658d6d8dc4c3c79aa221",
+      "bytes": 1555
     },
     {
-      "path": "policy.md",
-      "sha256": "d221413be6ea8b327a2e512f4e90f77052961f019fbab704795a4e6276d3bcc9",
-      "bytes": 2920
+      "path": "test_failure.log",
+      "sha256": "2bb05689360e075e77581a5c0aad6410be5dddcb7f094e7c421d52bc6207ec85",
+      "bytes": 2286
     },
     {
-      "path": ".env",
-      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
-      "bytes": 108
+      "path": "bug_report.md",
+      "sha256": "89c528c9b16b36ec7807225ee2df39f4b3df57cb3026ea4ed9adb5f029d9283f",
+      "bytes": 2405
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
-  "fixtures": {
-    "mailbox": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/mailbox/inbox.json",
-      "dest": "fixtures/mailbox/inbox.json",
-      "frontmatter_path": "fixtures/mailbox/inbox.json",
-      "sha256": "242653d00b4bd9ab1b588aeffb7264609765e786654b25ce61a07c9b25097e10",
-      "bytes": 786
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "db98f7339fda0796ca8cc45a13b020c0a7c4d56dfef887a8193b53625239428a",
+      "bytes": 1301
     },
-    "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
-      "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",
-      "bytes": 781
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f1afa3644e463201d34f6ac59de3e65b3222efb40a2f106015fa9d843e693bb5",
+      "bytes": 1246
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "0430ce4498f7b061e0a288451302310626e50ba12cb6c93ca34d9027f851c7d0",
-    "bytes": 4090
-  },
-  "content_hash": "a3542c05c070af97a7fcb7021c1502c25feaa0d19cd533d9b9bf88267fc0eb96"
+    "sha256": "fc2ad7115699ac3ce1d498dc2c8d114ac220b5862acf565a24ee0a8896d3dcfd",
+    "bytes": 2203
+  }
 }

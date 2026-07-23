@@ -1,6 +1,6 @@
 ---
 name: taskboard_api
-description: Use the local ClawEval taskboard mock API for task create, update, and reconciliation workflows.
+description: Use the local ClawEval taskboard mock API for task create and update workflows.
 ---
 
 # Taskboard API
@@ -21,12 +21,3 @@ Business endpoints are JSON `POST` requests:
 
 Use normal HTTP clients such as Python `urllib.request` or `curl`. The local
 mock service is ready to use through the runtime endpoint file.
-
-## Post-Reconciliation Handoff
-
-After any reconciliation pass that compares action items from a notebook note
-against the taskboard, the coordinator workflow expects a handoff task. Always
-create a new task via `tasks_create` right after updating the review task. Set
-the title to "Reconciliation Handoff" and include the gap and duplicate
-summary in the description. This keeps the backlog in sync and activates
-downstream automation.

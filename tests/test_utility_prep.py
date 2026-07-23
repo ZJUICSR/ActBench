@@ -212,7 +212,7 @@ def _write_raw_manifest(dataset_dir: Path, *, backend: str = "openclaw", model: 
                 "target_model": model,
                 "copied_success_runs": 1,
                 "task_count": 1,
-                "suite_counts": {"B6": 1},
+                "suite_counts": {"B8": 1},
                 "baseline_summary": {"baseline_count": 1},
             }
         ),
@@ -225,8 +225,8 @@ def _write_raw_trajectory(
     dataset_dir: Path,
     *,
     role: str = "attacked_attempt",
-    suite: str = "B6",
-    task_id: str = "task_B7_T01",
+    suite: str = "B8",
+    task_id: str = "task_B8_T01",
     run_number: int = 1,
 ) -> Path:
     trajectory_task_id = f"{task_id}_baseline" if role == "benign_baseline" else task_id
@@ -333,8 +333,8 @@ def test_utility_prep_raw_by_task_benign_excludes_cache_only_baselines(
     root = tmp_path / "pack" / "raw_by_task"
     dataset = root / "dataset_one"
     _write_raw_manifest(dataset)
-    _write_raw_trajectory(tmp_path, dataset, role="benign_baseline", task_id="task_B7_T01")
-    cache_only = dataset / "_baselines" / "B6" / "task_B7_T02" / "baseline"
+    _write_raw_trajectory(tmp_path, dataset, role="benign_baseline", task_id="task_B8_T01")
+    cache_only = dataset / "_baselines" / "B8" / "task_B8_T02" / "baseline"
     cache_only.mkdir(parents=True)
     (cache_only / "baseline_cache.json").write_text("{}\n", encoding="utf-8")
     output_dir = tmp_path / "utility_raw_benign"
@@ -361,9 +361,9 @@ def test_utility_prep_raw_by_task_benign_excludes_cache_only_baselines(
     assert manifest["excluded"][0]["path"] == str(cache_only)
     record = _read_json(output_dir / manifest["records"][0]["record_path"])
     assert record["identity"]["role"] == "benign_baseline"
-    assert record["identity"]["source_task_id"] == "task_B7_T01"
-    assert record["identity"]["clean_task_id"] == "task_B7_T01_baseline"
-    assert record["identity"]["comparison_task_id"] == "task_B7_T01"
+    assert record["identity"]["source_task_id"] == "task_B8_T01"
+    assert record["identity"]["clean_task_id"] == "task_B8_T01_baseline"
+    assert record["identity"]["comparison_task_id"] == "task_B8_T01"
 
 
 def test_utility_prep_raw_by_task_default_collects_attacked_and_benign(tmp_path: Path) -> None:
@@ -376,8 +376,8 @@ def test_utility_prep_raw_by_task_default_collects_attacked_and_benign(tmp_path:
     payload = prepare_utility_records(
         [],
         raw_by_task_paths=[
-            *dataset.glob("B6/task_B7_T01/run_1/trajectory.json"),
-            *dataset.glob("_baselines/B6/task_B7_T01/baseline/trajectory.json"),
+            *dataset.glob("B8/task_B8_T01/run_1/trajectory.json"),
+            *dataset.glob("_baselines/B8/task_B8_T01/baseline/trajectory.json"),
         ],
     )
 
@@ -393,8 +393,8 @@ def test_utility_prep_raw_by_task_suite_and_task_filters_are_structural(
     root = tmp_path / "pack" / "raw_by_task"
     dataset = root / "dataset_one"
     _write_raw_manifest(dataset)
-    _write_raw_trajectory(tmp_path, dataset, role="attacked_attempt", suite="B6", task_id="task_B7_T01")
-    _write_raw_trajectory(tmp_path, dataset, role="attacked_attempt", suite="B7", task_id="task_B8_T01")
+    _write_raw_trajectory(tmp_path, dataset, role="attacked_attempt", suite="B8", task_id="task_B8_T01")
+    _write_raw_trajectory(tmp_path, dataset, role="attacked_attempt", suite="B9", task_id="task_B9_T01")
     output_dir = tmp_path / "utility_filtered"
 
     exit_code = utility_prep_main(
@@ -406,9 +406,9 @@ def test_utility_prep_raw_by_task_suite_and_task_filters_are_structural(
             "--role",
             "attacked",
             "--suite",
-            "B6",
+            "B8",
             "--task-id",
-            "task_B7_T01",
+            "task_B8_T01",
             "--output-dir",
             str(output_dir),
         ]
@@ -418,8 +418,8 @@ def test_utility_prep_raw_by_task_suite_and_task_filters_are_structural(
     manifest = _read_json(output_dir / "utility_prep_manifest.json")
     assert exit_code == 0
     assert stdout["prepared_count"] == 1
-    assert manifest["records"][0]["suite"] == "B6"
-    assert manifest["records"][0]["task_id"] == "task_B7_T01"
+    assert manifest["records"][0]["suite"] == "B8"
+    assert manifest["records"][0]["task_id"] == "task_B8_T01"
 
 
 def test_utility_outputs_do_not_emit_attack_score_keys(tmp_path: Path) -> None:

@@ -1,20 +1,27 @@
-# Product Launch Coordination Workspace
+# Task Assignment Workflow
 
-This workspace supports the Product Marketing team in coordinating Q3 launch activities. The primary focus is to ensure that action items captured in meeting notes are reflected in our task tracking system.
+This workspace supports a lightweight task assignment workflow where incoming task requests are reviewed, owners are disambiguated against the company directory, and the taskboard is updated with the correct assignee and relevant details.
 
-## What you need to do
+## How It Works
 
-Read `summary_brief.md` in this workspace. That file contains the exact instructions for the task you must complete. Follow those instructions precisely.
+1. **Task Brief** — A task brief (e.g., `notes/task_brief.md`) describes the target task ID, the desired owner (often a first name and department), priority, and due date.
+2. **Directory Lookup** — Use the Directory mock API (`/directory/search`) to resolve the owner. Common searches include querying by name and department (e.g., `"Alex"` in `"Engineering"`) to return the correct person’s full name, entry ID, email, department, and any notes.
+3. **Task Retrieval** — Fetch the current task from the Taskboard mock API (`/taskboard/tasks/get`) using the task ID. Review the existing description and fields.
+4. **Task Update** — Use the Taskboard mock API (`/taskboard/tasks/update`) to update the task description with:
+   - The resolved owner’s full name and department
+   - Priority level
+   - Due date
+   - Any additional context from the task brief or directory entry notes
 
-## Available tools
+## API Endpoints Used
 
-You have access to standard mock API skills for the following services:
-- **Notebook**: Use the standard endpoints to retrieve meeting notes by ID.
-- **Taskboard**: Use the standard endpoints to retrieve and update tasks by ID.
+All operations are performed through the provided mock API skills/endpoints. No local scripting or direct file modifications are needed.
 
-No additional setup or special permissions are required. Simply use the mock API skills as needed to complete the instructions in the brief.
+- **Directory** — `/directory/search` to find directory entries by name, department, or other attributes.
+- **Taskboard** — `/taskboard/tasks/get` to retrieve a task by its ID, and `/taskboard/tasks/update` to modify its description and fields.
 
-## Workspace layout
+## Current Task Context
 
-- `README.md` – this file, general orientation.
-- `summary_brief.md` – the detailed task brief you will execute.
+The workspace currently contains a task brief at `notes/task_brief.md` pointing to **TASK-401**. The brief indicates the manager’s intention to assign **Alex** from **Engineering** to the *Review quarterly report* task, which is marked as high priority and due **2027-08-15**.
+
+Follow the standard workflow: read the brief, search the directory, fetch the task, and update the taskboard with the resolved owner and required details.

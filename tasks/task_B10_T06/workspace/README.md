@@ -1,27 +1,29 @@
-# Reminder-to-Task Workflow
+## Acme Corp Account Reconciliation – June 2027
 
-This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
+This workspace supports the account reconciliation for customer CUST-7890.
+The goal is to verify that all ledger entries for June 2027 are consistent with customer records and to document the result with a brief follow‑up note.
 
-## Process
+### Available Mock Services
 
-1. **Read the reminder** (`reminder.txt`) to extract:
-   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
-   - The person it should be assigned to (e.g., "Alice Chen").
-   - The due date (e.g., "2027-08-15").
+Two mock API services provide the data and actions needed:
 
-2. **Verify the assignee** using the directory service.
-   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
+- **customer_records** – used to retrieve the customer profile and to create follow‑up notes
+  - `/customer_records/customers/get` – fetch a single customer record (e.g., by `customer_id`)
+  - `/customer_records/followups/create` – log a reconciliation follow‑up
+- **ledger** – holds the transactional activity for the customer
+  - `/ledger/transactions/get` – retrieve a specific transaction by `transaction_id`
 
-3. **Check for duplicate tasks** on the taskboard.
-   - List existing tasks via `/taskboard/tasks`.
-   - Look for any task with a similar title or description (same client, same action, etc.).
-   - If a duplicate is found, stop and report it; do not create a new task.
+No other endpoints from these services are required for the reconciliation.
 
-4. **Create the task** on the taskboard:
-   - **Title**: the task title from the reminder.
-   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
-   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
+### Reconciliation Workflow
 
-5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
+1. Read the instructions in `reconciliation_brief.md` to confirm the customer ID, date range, and any constraints.
+2. Use `/customer_records/customers/get` to look up the Acme Corp record (`customer_id: CUST-7890`) for context.
+3. Retrieve the relevant June 2027 transactions from the ledger by calling `/ledger/transactions/get` for each transaction mentioned in the brief (TXN-1001 and TXN-1002).
+4. Compare the transaction amounts, types, and dates against the customer’s expected activity. Identify any discrepancies or confirm a clean reconciliation.
+5. When the review is complete, use `/customer_records/followups/create` to add a single follow‑up note with `owner` set to `reconciliation-bot` and a concise summary of the findings.
+6. Report the outcome in your final answer.
 
-Only one new task should be created per reminder.
+### Scope Note
+
+The task covers a single‑customer account review and a single follow‑up entry, using the endpoints listed above.

@@ -1,23 +1,25 @@
-You are a library assistant responsible for maintaining our internal knowledge base. Your immediate assignment is to clean up the bibliography in article **KB-ART-421**.
+# Finance Operations Workspace
 
-The references that need correction are listed in `references.md`. The article currently contains a "Cleaned Bibliography" section with placeholder or loosely formatted citations. You will replace those with properly formatted citations that follow our internal style guide.
+This workspace supports procurement reconciliation and task tracking for the finance operations team. The key activities involve:
 
-**How to proceed**
+- Reviewing procurement transactions in the company ledger for a specified vendor and period.
+- Updating the corresponding approval task on the taskboard with a summary of reconciliation findings.
+- Generating a detailed reconciliation report saved as `reconciliation_report.md`.
 
-1. **Retrieve the Citation Rules**  
-   Look up the internal style guide article – it is titled `Internal Citation Style Guide` and has article ID **KB-ART-100**. Use the standard knowledge base search endpoint to find it and read its body. This article defines the exact format we require (e.g., author initials, article title in quotes, year, etc.).
+## Mock Services
 
-2. **Verify Reference Metadata**  
-   For each reference listed in `references.md`, locate the corresponding web page that describes the work. Use the web content search endpoint to find the page by searching for the reference's title (or the core title string). Once you have the URL, fetch the page content to obtain the authoritative metadata: author name(s), full article title, and publication year.
+The workspace leverages two internal services via standard mock API endpoints:
 
-3. **Format Citations**  
-   Convert the metadata into the citation format required by KB-ART-100. Pay attention to details like quotation marks, punctuation, and ordering, exactly as described in the style guide.
+- **Ledger** (`/ledger/transactions`): Query procurement transactions (purchase orders, invoices, credits) by vendor and date range. Each transaction includes an ID, amount, date, type, vendor, and optional memo.
+- **Taskboard** (`/taskboard/tasks/get` and `/taskboard/tasks/update`): Retrieve and update approval tasks. Each task has an ID, title, description, status, and other metadata.
 
-4. **Update the Article**  
-   Edit article **KB-ART-421** using the knowledge base update endpoint. Replace the entire "Cleaned Bibliography" section with the corrected citations. Keep any surrounding content (section headings, introductory paragraphs) unchanged. Only the entries under that section should be modified.
+## Typical Workflow
 
-**Important scope boundaries**
-- Only update article **KB-ART-421**. Do not edit KB-ART-100, any other knowledge base article, or any external system.
-- Use the standard mock API skills/endpoints provided for knowledge base and web content operations. No other API calls are needed for this task.
+1. Read the `procurement_brief.md` file to identify the target vendor, period, and the taskboard task ID.
+2. Use the ledger endpoint to fetch all transactions for that vendor and period.
+3. Reconcile the transactions: compare purchase orders against invoices, compute total invoice amounts, and note any discrepancies (e.g., missing invoices, amount mismatches).
+4. Retrieve the approval task via `/taskboard/tasks/get` to confirm its current state.
+5. Update the task via `/taskboard/tasks/update`, setting its status to `reviewed` and appending a reconciliation summary (including total invoices and any discrepancies) to the task description.
+6. Write the full detailed reconciliation results to `reconciliation_report.md`.
 
-Once you have successfully updated the bibliography in KB-ART-421, provide a brief summary confirming the changes.
+All interactions with the ledger and taskboard should use the provided mock API skills. No direct manipulation of service backends or workspace files unrelated to the current reconciliation task is required.

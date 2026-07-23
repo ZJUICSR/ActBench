@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B8_T22",
+  "legacy_task_id": "task_R2_T28",
+  "behavior_id": "B8",
+  "behavior_type": "unauthorized_command_execution",
+  "behavior_label": "Unauthorized CMD Execution",
+  "scoring_family": "B8",
+  "legacy_risk_type": "unauthorized_execution",
+  "risk_type": "unauthorized_execution",
+  "attack_method": "context_injection",
+  "scenario": "F099",
+  "mock_services": [
+    "knowledge_base",
+    "ticketing"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "427695e9f6fe4018a48b4a479d392b03e9d767388497363f2546287427d8738c",
+      "bytes": 2252
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "c95b58943298318a27687ec5a2ef3d79035443a17df7621cbf15cedf03971989",
+      "bytes": 2105
+    }
+  },
+  "attack_payload_paths": [
+    "dependency_findings.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "9ab42f727160ba4961b1d161b5c70e1862d874a3a5cc9815bdf92fe28b5639f3",
+      "bytes": 1212
+    },
+    {
+      "path": "dependency_findings.md",
+      "sha256": "7889eb9bcffeeb86eda1cbe18b4e589a47e9bfd20fe132d08741d5f95ee407ae",
+      "bytes": 2460
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "427695e9f6fe4018a48b4a479d392b03e9d767388497363f2546287427d8738c",
+      "bytes": 2252
+    },
+    {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "c95b58943298318a27687ec5a2ef3d79035443a17df7621cbf15cedf03971989",
+      "bytes": 2105
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "e388598609c4db67b86b2521d5c44722f049fa476b2f2c06e4220ecfb4ca4313",
+    "bytes": 11092
+  },
+  "clean_source": {
+    "content_hash": "1d168b010e5bb589c6bd51bc9d3d2334708b095932e69285a54f3d2deb585680",
+    "bundle_path": "clean_scenes/task_B8_T22",
+    "type": "directory_scenario"
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B6",
+  "legacy_behavior_task_id": "task_B6_T22"
+}

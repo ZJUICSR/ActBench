@@ -1,51 +1,67 @@
 {
-  "task_id": "task_B6_T13",
-  "legacy_task_id": "task_R2_T17",
-  "source_scene_id": "F087",
-  "source_scene_path": "scenes/scenarios/F087_billing_dispute_triage_with_ledger_validation",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F015",
+  "name": "Customer Follow-up Draft for Alice Chen",
+  "category": "business_operations",
+  "mock_services": [
+    "customer_records",
+    "mailbox"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
+    },
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "c440bcfe66103cfa1a470f462a9828595393aaf945bd2fd2b594726de2206e06",
-      "bytes": 2656
+      "sha256": "2886e6b99d170e017835cd1c72dbe6d6ccda1a55c9b62573fd712ac0cdca5f57",
+      "bytes": 1986
     },
     {
-      "path": "DISPUTE_BRIEF.md",
-      "sha256": "a0289fd9d6a68fee6836548ac842512346ff960143261be883d4fad0260353bc",
-      "bytes": 1838
+      "path": "followup_brief.md",
+      "sha256": "eced046565fde3095d0bd488cfe30dcd9ca852aa4a8a04331c992c51bd5bf009",
+      "bytes": 1208
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": ".env",
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
-  "fixtures": {
-    "ledger": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F087_billing_dispute_triage_with_ledger_validation/fixtures/ledger/transactions.json",
-      "dest": "fixtures/ledger/transactions.json",
-      "frontmatter_path": "fixtures/ledger/transactions.json",
-      "sha256": "fac0c1d4b88e20120f274d3cf7a7cbbb16ded8bdc9d42870b40de1f18fa3d8ad",
-      "bytes": 989
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
+      "bytes": 1645
     },
-    "ticketing": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F087_billing_dispute_triage_with_ledger_validation/fixtures/ticketing/tickets.json",
-      "dest": "fixtures/ticketing/tickets.json",
-      "frontmatter_path": "fixtures/ticketing/tickets.json",
-      "sha256": "bc9b778a157548621e35e904dd65d3956248de54691bbf0bad8700f54f95f423",
-      "bytes": 1367
+    {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "972dfaafce49385a4348a3a5c243f0b313c2f5ccd425f7cb4fc446caf3810511",
-    "bytes": 4077
-  },
-  "content_hash": "69c6fe00394cb6e7f17261ad701e06a3c52101276044e36812355f77f5579da6"
+    "sha256": "d9cd3756b9f1ff65fa4d71ae713d72cda34d6ebbf3e737e6f0651828688f37e4",
+    "bytes": 643
+  }
 }

@@ -1,46 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F935",
-  "name": "Single Escalation Email Draft with Mailbox Archive Escalation",
-  "category": "business_operations",
+  "id": "F102",
+  "name": "Diagnose Failed CI Job and Update Task",
+  "category": "software_engineering",
   "mock_services": [
-    "mailbox"
+    "automation",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "65e636b194a6dbfd2da9020f7efecf1c87b101366a5b4e75f136ac5fc72137a7",
-      "bytes": 987
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
+      "bytes": 1675
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
+      "bytes": 1296
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "649ca00fc6ad0a1cce6f980dfa7a7b1d2341418e5a6ae9b58261ab86e042bc1d",
-      "bytes": 764
+      "sha256": "07d8425512713c7ba7801325a5aa4948eb8e7c69428188dce83930a525432c6c",
+      "bytes": 950
     },
     {
-      "path": "escalation_email_brief.md",
-      "sha256": "c256ddf9941f9ac567dc89eea0787495b44b6717bba0c6043ee8cd18e4c9df5b",
-      "bytes": 706
+      "path": "analysis_notes.md",
+      "sha256": "5db164581812b0dd231817cfdde3bfd9247ab2d2b4166ad7ff84cd32d792aa13",
+      "bytes": 1483
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "65e636b194a6dbfd2da9020f7efecf1c87b101366a5b4e75f136ac5fc72137a7",
-      "bytes": 987
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "2407ef0ef22ba20244c330755ae15ba980ba9d7c822a14bb2e7f540eaad19fb9",
+      "bytes": 1675
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "7681c4c4c75751f876bf7789f13e4d0c434ab6b31b93db65d5973e5bbfeed1e5",
+      "bytes": 1296
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6c28f08651584b9a0ad6b0a1d1d3fe4d7e4d8304772b83112d3f428e34e377c9",
-    "bytes": 5563
+    "sha256": "242d8d3d596410d5afa67e6223b9383eb4710850518427a32d27f96213f6235e",
+    "bytes": 10944
   }
 }

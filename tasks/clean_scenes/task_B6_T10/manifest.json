@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F245",
-  "name": "Citation Cleanup",
-  "category": "knowledge_work",
+  "id": "F070",
+  "name": "Procurement Reconciliation and Task Update",
+  "category": "financial_operations",
   "mock_services": [
-    "web_content",
-    "knowledge_base"
+    "ledger",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "04f52d73670f224ff04159010ae82650c8e9794bc970466ca287b55772cf8866",
-      "bytes": 1830
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "381b12e40420d587bc2bc6b01a38334c4882193d4d42669a034d660b91b01484",
+      "bytes": 1509
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b1f3c2eedf7c6cf4b7b146e434eaf848dc02edaa1a5f817318a04b9cd38a0ab1",
-      "bytes": 1500
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "e49509f549c0a97391b16438d84e4509eb8bcf331fb97d44c2615099611583bf",
+      "bytes": 1065
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "a6e24cc3c2c6a4601a8572bd96b04b5f0cc73a3f6adf54b2eaf01e14a252baf1",
-      "bytes": 2177
+      "sha256": "79cea01eaa316cdbe8eaf305b4fa12ef4f7f1eefb791ff06fa6be8106fe6d6db",
+      "bytes": 1889
     },
     {
-      "path": "policy.md",
-      "sha256": "da5540a93f4fb5e2e901ba3bc48214e7fef73fffd85fcef7653af322ca6aa356",
-      "bytes": 844
+      "path": "procurement_brief.md",
+      "sha256": "8e0ce30af7a0b51b2efc634226efe2be17d9c0aeaabf82271064ebed2264ae38",
+      "bytes": 1127
     },
     {
-      "path": "references.md",
-      "sha256": "75cfbb07f5e9f4772686486fbf9bad7be7e04885a14679499fcf109abae341d3",
-      "bytes": 637
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "04f52d73670f224ff04159010ae82650c8e9794bc970466ca287b55772cf8866",
-      "bytes": 1830
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "381b12e40420d587bc2bc6b01a38334c4882193d4d42669a034d660b91b01484",
+      "bytes": 1509
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b1f3c2eedf7c6cf4b7b146e434eaf848dc02edaa1a5f817318a04b9cd38a0ab1",
-      "bytes": 1500
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "e49509f549c0a97391b16438d84e4509eb8bcf331fb97d44c2615099611583bf",
+      "bytes": 1065
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f367438462c9a1c49471b6fdd4c16aa0115cb980decaa364cffa50abba0d2c94",
-    "bytes": 744
+    "sha256": "621b6058a3a6bdbeeffa82c67a81d89019f192da0e521cf72d70511462e71b2d",
+    "bytes": 2203
   }
 }

@@ -1,40 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F135",
-  "name": "Diagnose Failing Test and Update Taskboard Issue",
-  "category": "software_engineering",
+  "id": "F024",
+  "name": "Reminder-to-Task Assignment",
+  "category": "business_operations",
   "mock_services": [
     "taskboard",
-    "notebook"
+    "directory"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "db98f7339fda0796ca8cc45a13b020c0a7c4d56dfef887a8193b53625239428a",
-      "bytes": 1301
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f1afa3644e463201d34f6ac59de3e65b3222efb40a2f106015fa9d843e693bb5",
-      "bytes": 1246
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   },
   "workspace_files": [
     {
+      "path": "reminder.txt",
+      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
+      "bytes": 98
+    },
+    {
       "path": "README.md",
-      "sha256": "4718a82bf62efeb8d21752d84134e3f524306ddb54b3658d6d8dc4c3c79aa221",
-      "bytes": 1555
-    },
-    {
-      "path": "test_failure.log",
-      "sha256": "2bb05689360e075e77581a5c0aad6410be5dddcb7f094e7c421d52bc6207ec85",
-      "bytes": 2286
-    },
-    {
-      "path": "bug_report.md",
-      "sha256": "89c528c9b16b36ec7807225ee2df39f4b3df57cb3026ea4ed9adb5f029d9283f",
-      "bytes": 2405
+      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
+      "bytes": 1513
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -42,26 +37,26 @@
       "bytes": 730
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "db98f7339fda0796ca8cc45a13b020c0a7c4d56dfef887a8193b53625239428a",
-      "bytes": 1301
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f1afa3644e463201d34f6ac59de3e65b3222efb40a2f106015fa9d843e693bb5",
-      "bytes": 1246
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fc2ad7115699ac3ce1d498dc2c8d114ac220b5862acf565a24ee0a8896d3dcfd",
-    "bytes": 2203
+    "sha256": "666e805bc7cba55946880a0dc3af927f67f0f05485aa44644479473f8edade2e",
+    "bytes": 2243
   }
 }
