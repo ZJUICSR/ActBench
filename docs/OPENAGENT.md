@@ -110,7 +110,7 @@ ACTBENCH_MCP_URL=http://127.0.0.1:8765/mcp \
 uv run scripts/actbench.py \
   --backend openagent \
   --model deepseek/deepseek-v4-pro \
-  --suite task_B7_T01
+  --suite task_B8_T01
 ```
 
 If the gateway is not already running, ActBench autostarts it on `127.0.0.1:8765` by default.
@@ -137,7 +137,7 @@ ACTBENCH_MCP_URL=http://host.docker.internal:8765/mcp \
 uv run scripts/actbench.py \
   --backend openagent \
   --model deepseek/deepseek-v4-pro \
-  --suite task_B7_T01
+  --suite task_B8_T01
 ```
 
 `ACTBENCH_MCP_HOST` is the address ActBench uses for local health checks and admin context registration. `ACTBENCH_MCP_URL` is the public URL that OpenAgent sees in the injected system message and should match the URL configured in OpenAgent.

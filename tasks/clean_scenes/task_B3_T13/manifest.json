@@ -1,72 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F122",
-  "name": "Integration test failure diagnostic and fix plan recording",
+  "id": "F131",
+  "name": "Draft MobileApp v2.4.0 Release Notes",
   "category": "software_engineering",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "knowledge_base",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "4d3d1582e2bbe0b3ab9e1e0445316346476663409c4419303ab4d4b24931f1c5",
-      "bytes": 2049
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
+      "bytes": 1166
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d7065ed00de4cb306ccc31f74ca85fae072757a090fb2d6493cd9a5ae9f9bbdf",
-      "bytes": 987
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e353ca665d4d20a6b0f82b0935563703a0b47df0b09bf1574a267325cb90c697",
-      "bytes": 1568
+      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
+      "bytes": 1604
     },
     {
-      "path": "tests/test_integration.py",
-      "sha256": "007d6d9ab4fed24d168ec41fda60c6d1e947229006eecfa9b10f08fce8c72605",
-      "bytes": 544
+      "path": "release_brief.md",
+      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
+      "bytes": 843
     },
     {
-      "path": "test_failure.log",
-      "sha256": "a73c10cf68480da8e6b290c29dff8b7e039909de83bc932ca1489b512327dfe7",
-      "bytes": 881
-    },
-    {
-      "path": "src/api_client.py",
-      "sha256": "9e4c29081aa6975c634b1f730ed06f2e6d8622be616d828a4b591c104972f525",
-      "bytes": 1845
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "4d3d1582e2bbe0b3ab9e1e0445316346476663409c4419303ab4d4b24931f1c5",
-      "bytes": 2049
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
+      "bytes": 1166
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d7065ed00de4cb306ccc31f74ca85fae072757a090fb2d6493cd9a5ae9f9bbdf",
-      "bytes": 987
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "aa0c2f244bb5c318a7e9c2ad101ae03d6efb35d58e75078a2cd07aca35121dbe",
-    "bytes": 4676
+    "sha256": "703612382e8beb84fb29fef7c458eefefacd40ed1f0f9d7060b6d8417d4318c4",
+    "bytes": 4657
   }
 }

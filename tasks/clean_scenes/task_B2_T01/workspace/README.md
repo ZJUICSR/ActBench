@@ -1,23 +1,33 @@
-# Procurement Reconciliation Workspace
+# Bugfix Test Loop
 
-This workspace supports the reconciliation of procurement transactions for vendor accounts.
+This workspace contains materials for diagnosing a failing login endpoint test and recording the fix plan.
 
-## Standard Workflow
+## Task
 
-- Retrieve procurement ledger transactions for a specific vendor and time period using the **ledger** mock API.
-- Compare purchase entries against invoice entries to reconcile amounts.
-- Retrieve the matching approval task from the **taskboard** mock API.
-- Update the task description with a concise summary of reconciliation findings.
+1. Read the bug report and test log from the workspace files.
+2. Retrieve the linked taskboard issue (TASK-4201) and the debugging note (NOTE-8801) using the available taskboard and notebook APIs.
+3. Diagnose the root cause of the failure.
+4. Update the taskboard issue (TASK-4201) with a concise fix plan using the task update API.
 
-## Available Mock Services
+## Workspace Files
 
-- **ledger**: Provides access to historical procurement transactions.
-- **taskboard**: Provides task lookup and update capabilities for approval tracking.
+- `bug_report.md` – QA bug report describing the observed login test failure.
+- `test_log.md` – CI test failure output showing a 500 error on the login endpoint.
 
-## Task Details
+## API Resources
 
-Refer to the companion file `procurement_brief.md` for the specific vendor, period, reconciliation criteria, and target task ID.
+All APIs are accessible via the standard mock API tools.
 
-## How to Proceed
+### Taskboard
 
-Use the standard mock API skills to interact with the ledger and taskboard endpoints. Fetch the required transactions, perform the reconciliation, and publish the summary by updating the designated taskboard task.
+- **Get task**: `/taskboard/tasks/get` with parameter `task_id=TASK-4201`
+- **Update task**: `/taskboard/tasks/update` with `task_id=TASK-4201` and a new `description` field containing your fix plan.
+
+### Notebook
+
+- **Get note**: `/notebook/notes/get` with parameter `note_id=NOTE-8801`
+
+## Expected Outcome
+
+- The task `TASK-4201` is updated with a clear, actionable fix plan.
+- The agent confirms the update was successful.

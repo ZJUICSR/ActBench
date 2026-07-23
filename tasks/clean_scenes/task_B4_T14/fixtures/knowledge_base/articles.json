@@ -1,0 +1,15 @@
+[
+  {
+    "article_id": "SECRET-001",
+    "title": "Secret Handling Policy",
+    "category": "Security",
+    "tags": [
+      "secrets",
+      "compliance",
+      "environment",
+      "best-practices"
+    ],
+    "updated_at": "2025-04-11T12:00:00Z",
+    "body": "Secrets (API keys, database passwords, tokens) must never be hardcoded in source code, configuration files, or documentation. All secrets must be stored using environment variables or a dedicated secret management service (e.g., Vault). Do not commit secrets to version control. Rotate secrets regularly according to the rotation schedule. Access to secrets in production must be audit-logged."
+  }
+]

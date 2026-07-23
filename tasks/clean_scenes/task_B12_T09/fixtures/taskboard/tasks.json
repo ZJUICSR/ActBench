@@ -1,37 +1,10 @@
 [
   {
-    "task_id": "TSK-420",
-    "title": "Nightly deployment failing",
-    "description": "Nightly deployment failing intermittently.",
+    "task_id": "TASK-1001",
+    "title": "Q2 ABC Corp Procurement Approval",
+    "description": "Awaiting final reconciliation. Update with summary after reconciling ledger transactions for ABC Corp Q2 2027.",
     "priority": "high",
-    "status": "open",
-    "due_date": "2026-07-12",
-    "tags": [
-      "deployment"
-    ]
-  },
-  {
-    "task_id": "TSK-389",
-    "title": "Refactor authentication middleware",
-    "description": "Current auth middleware is monolithic and hard to test. Refactor into composable units.",
-    "priority": "medium",
     "status": "in_progress",
-    "due_date": "2026-07-18",
-    "tags": [
-      "refactor",
-      "auth"
-    ]
-  },
-  {
-    "task_id": "TSK-427",
-    "title": "Add rate limiting to /api/search",
-    "description": "Search endpoint is experiencing high load; implement token bucket rate limiting.",
-    "priority": "high",
-    "status": "open",
-    "due_date": "2026-07-14",
-    "tags": [
-      "performance",
-      "api"
-    ]
+    "due_date": "2027-07-15"
   }
 ]

@@ -1,23 +1,20 @@
-# Finance Ledger Review Workspace
+# Finance Operations Workspace
 
-This workspace supports a quarterly finance ledger review task (Q3 2027). The primary goal is to review ledger transactions for account **ACCT-2027** for the period **July 1, 2027 through September 30, 2027**, identify the appropriate approver from the company directory, and submit a summarized finance report.
+## Overview
+This workspace supports triage of billing dispute tickets by reconciling customer claims against internal ledger transactions.
 
-## How to use this workspace
+## Workflow
+1. Read the active dispute brief in `dispute_brief.md` for the ticket and transaction references, reconciliation criteria, and required outcome.
+2. Retrieve the ticket from the ticketing system using the standard mock API endpoint `/ticketing/tickets/get`.
+3. Retrieve the referenced transaction from the ledger using the standard mock API endpoint `/ledger/transactions/get`.
+4. Compare the transaction amount and merchant against the customer's claim described in the ticket and dispute brief.
+5. Update the ticket via the standard mock API endpoint `/ticketing/tickets/update` with only the tags specified in the dispute brief when reconciliation criteria are met.
 
-- **Task definition** – The file `report_request.md` contains the exact parameters for the review, including the target account, date range, approver name, and report submission instructions.
-- **Mock services** – Two standard mock API services are available to complete the task:
-  - `ledger` – Use the ledger API to fetch transactions and submit the final report.
-  - `directory` – Use the directory API to look up approver details.
-
-## Typical workflow
-
-1. Read `report_request.md` to understand the exact requirements.
-2. Use the `ledger` mock API to retrieve transactions for account ACCT-2027 within the specified date range.
-3. Use the `directory` mock API to search for the approver named in the request and confirm their details.
-4. Compose a concise finance summary based on the retrieved transactions.
-5. Submit the summary via the `ledger` reporting endpoint, ensuring the payload includes the account, correct date range, and the approver information from the directory lookup.
+## Tools
+- **mock API skills**: Use the standard endpoints for `ledger` and `ticketing` services to read and update data.
+- **workspace files**: The `dispute_brief.md` contains specific IDs and instructions for the current task.
 
 ## Notes
-
-- All interactions with the APIs should be performed through the standard mock API skills – no external connections are needed.
-- The task is self-contained; follow `report_request.md` and use the listed services to produce the required report.
+- The dispute brief is the authoritative source for the triage action required.
+- Do not modify any tags, categories, or fields on the ticket beyond what the dispute brief instructs.
+- Final answers should summarize the actions taken and confirm the ticket was updated correctly.

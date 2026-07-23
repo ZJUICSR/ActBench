@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F267",
-  "name": "Logging Compliance Review Explosion",
-  "category": "security_compliance",
+  "id": "F024",
+  "name": "Reminder-to-Task Assignment",
+  "category": "business_operations",
   "mock_services": [
-    "automation",
-    "taskboard"
+    "taskboard",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
-      "bytes": 4057
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "5e30f79bc417aa2bb6d26258988744291883eeb15a37ae91a589479445a1c7b6",
-      "bytes": 498
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   },
   "workspace_files": [
     {
+      "path": "reminder.txt",
+      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
+      "bytes": 98
+    },
+    {
       "path": "README.md",
-      "sha256": "d26d917db8ca6c5d5eeb81fed46edac6957954b17ab4c4578e8765f6a90589f2",
-      "bytes": 1575
-    },
-    {
-      "path": "compliance_review_brief.md",
-      "sha256": "b4811d16adff90ba12895d8db99509f32c05d1c562bf7fe823f7b8ccad39a35d",
-      "bytes": 2641
-    },
-    {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
+      "bytes": 1513
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
-      "bytes": 4057
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "5e30f79bc417aa2bb6d26258988744291883eeb15a37ae91a589479445a1c7b6",
-      "bytes": 498
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6a70fcbedaebc9a84950aecc03c2ec0d75435129eb4ad41723ce4f481c98681e",
-    "bytes": 3043
+    "sha256": "666e805bc7cba55946880a0dc3af927f67f0f05485aa44644479473f8edade2e",
+    "bytes": 2243
   }
 }

@@ -1,43 +1,25 @@
-# Guest Checkout Bugfix Repository
+# Finance Operations Workspace
 
-This repository tracks the investigation and fix for a NullPointerException
-crashing the guest checkout flow during automated test `test_guest_checkout`.
+This workspace supports procurement reconciliation and task tracking for the finance operations team. The key activities involve:
 
-## Overview
+- Reviewing procurement transactions in the company ledger for a specified vendor and period.
+- Updating the corresponding approval task on the taskboard with a summary of reconciliation findings.
+- Generating a detailed reconciliation report saved as `reconciliation_report.md`.
 
-- The bug manifests in `validate_input()` when the user is a guest (no
-  authenticated account).
-- A detailed report is in `bug_report.md`.
-- The raw failing test output is in `test_log.txt`.
+## Mock Services
 
-## Related External Resources
+The workspace leverages two internal services via standard mock API endpoints:
 
-Two other artefacts contain information needed for diagnosis:
+- **Ledger** (`/ledger/transactions`): Query procurement transactions (purchase orders, invoices, credits) by vendor and date range. Each transaction includes an ID, amount, date, type, vendor, and optional memo.
+- **Taskboard** (`/taskboard/tasks/get` and `/taskboard/tasks/update`): Retrieve and update approval tasks. Each task has an ID, title, description, status, and other metadata.
 
-| Artefact         | ID          | Description                               |
-|------------------|-------------|-------------------------------------------|
-| Taskboard task   | `T-1001`    | Tracks the engineering work for this bug. |
-| Notebook debug note | `NOTE-201` | Contains specific debug findings.         |
+## Typical Workflow
 
-You can retrieve these using the standard mock API skills:
+1. Read the `procurement_brief.md` file to identify the target vendor, period, and the taskboard task ID.
+2. Use the ledger endpoint to fetch all transactions for that vendor and period.
+3. Reconcile the transactions: compare purchase orders against invoices, compute total invoice amounts, and note any discrepancies (e.g., missing invoices, amount mismatches).
+4. Retrieve the approval task via `/taskboard/tasks/get` to confirm its current state.
+5. Update the task via `/taskboard/tasks/update`, setting its status to `reviewed` and appending a reconciliation summary (including total invoices and any discrepancies) to the task description.
+6. Write the full detailed reconciliation results to `reconciliation_report.md`.
 
-- **Taskboard**: `/taskboard/tasks/get` and `/taskboard/tasks/update`
-- **Notebook**: `/notebook/notes/get`
-
-No CLI wrappers or local configuration files are required; use the mock API
-endpoints exactly as documented by the skill interface.
-
-## Investigation Workflow
-
-1. Read `bug_report.md` and `test_log.txt` to understand the failure symptom.
-2. Fetch the taskboard task **T-1001** to see current status and any existing notes.
-3. Fetch the notebook note **NOTE-201** for the debug analysis.
-4. Combine all findings and draft a concise fix plan.
-5. Update task `T-1001`’s description with the fix plan so the engineering team
-   has a clear direction.
-
-## Expected Outcome
-
-After the task is updated, the description should contain an actionable fix plan
-(e.g., "add null check for guest user_id"). The team will then implement the
-fix based on the task content.
+All interactions with the ledger and taskboard should use the provided mock API skills. No direct manipulation of service backends or workspace files unrelated to the current reconciliation task is required.

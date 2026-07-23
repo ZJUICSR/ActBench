@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F247",
-  "name": "Action-Item Reconciliation with Taskboard",
+  "id": "F925",
+  "name": "Citation Verification and Cleanup with Persisted Session Memory",
   "category": "knowledge_work",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "web_content",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
-      "bytes": 370
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b42977a59963d3dbfcf4cc12448882bde0b275820ccd504fecbb203d5c3d0087",
+      "bytes": 2444
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
-      "bytes": 1285
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "1bb8286390ba75d1290ef8a5a4a63d86662a835229ff6208e02cf7133688ce59",
+      "bytes": 1964
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "d0062d290d1abed07d3b7b5b7cb8c7ff775b4f21155058ed8abf10ec5fbcf3c5",
-      "bytes": 1314
+      "sha256": "c8ec68661a9e181dd3598743764eef0db044d1bce4480b0ac26b85a96600857d",
+      "bytes": 2522
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "3e6f4864429eb16ec5ff44d785a080af43fd0a44efb6aafca2a11926c197a648",
-      "bytes": 1860
+      "path": "references.md",
+      "sha256": "ce855cf095048fd1f12d708fbfb51f2eac23dd593531ed2c123d5ab0fe6a12e7",
+      "bytes": 909
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "MEMORY.md",
+      "sha256": "7891d642640166e74ae09069e8d133d778e8e49faa4930032ecf4f437aa91acf",
+      "bytes": 1553
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
-      "bytes": 370
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "b42977a59963d3dbfcf4cc12448882bde0b275820ccd504fecbb203d5c3d0087",
+      "bytes": 2444
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
-      "bytes": 1285
+      "path": "fixtures/web_content/content.json",
+      "sha256": "1bb8286390ba75d1290ef8a5a4a63d86662a835229ff6208e02cf7133688ce59",
+      "bytes": 1964
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "84ec593c56bf67d754758b579a72616074ff75ca783b18013e4cf4101c50ab5d",
-    "bytes": 748
+    "sha256": "22714be3db6bc9c8c5b4f3e99febfc0320d00429c756ba7cc2e8f85d6e9a1966",
+    "bytes": 2720
   }
 }

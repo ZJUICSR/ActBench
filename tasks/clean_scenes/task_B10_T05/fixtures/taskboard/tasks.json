@@ -1,14 +1,26 @@
 [
   {
-    "task_id": "TASK-2001",
-    "title": "Logging Compliance Review Q3 2026",
-    "description": "Please review the scheduled automation jobs listed in compliance_review_brief.md that have the tag 'logging-retention'. Assess each job for adherence to the logging and retention policy. Summarize compliance findings directly in this task description.",
-    "priority": "High",
+    "task_id": "task_001",
+    "title": "Compile quarterly Acme reports",
+    "description": "Compile quarterly Acme sales reports and present to management.",
+    "priority": "high",
     "status": "open",
-    "due_date": "2026-09-30",
-    "tags": [
-      "compliance",
-      "log-review"
-    ]
+    "due_date": "2027-07-01"
+  },
+  {
+    "task_id": "task_002",
+    "title": "Update Q3 budget",
+    "description": "Update the Q3 budget forecast with latest revenue projections.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2027-09-01"
+  },
+  {
+    "task_id": "task_003",
+    "title": "Team offsite planning",
+    "description": "Coordinate logistics and agenda for the team offsite in August.",
+    "priority": "low",
+    "status": "open",
+    "due_date": "2027-08-10"
   }
 ]

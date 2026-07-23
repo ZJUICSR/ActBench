@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F926",
-  "name": "Access Owner Verification with Persistent Memory",
-  "category": "security_compliance",
+  "id": "F012",
+  "name": "Q3 Budget Review Scheduling",
+  "category": "business_operations",
   "mock_services": [
-    "directory",
-    "taskboard"
+    "scheduling",
+    "directory"
   ],
   "mock_service_fixtures": {
     "directory": {
       "path": "fixtures/directory/entries.json",
-      "sha256": "94c5b3a18758a187896514542f830b1fae303ae40e08f971a88af6449487d45a",
-      "bytes": 375
+      "sha256": "ad9f254fd25f5ec810993aa9955e5e671f2e56e1d55907fd1e4ac5bc44cfd546",
+      "bytes": 462
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8fd5df7c76fd8f934ffd32af9872a5b1086e82c215209de036712741b15034f9",
-      "bytes": 347
+    "scheduling": {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "2e27e0f16b7073873823b2e44c54eb25ba2e128109ba11a5e5f43cbaf6137567",
+      "bytes": 1236
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "6eeb4a4ce6e90e4793cca4b5a18fee486e9f6b1d2e34e7d88795c4f1723eba7a",
-      "bytes": 1575
+      "sha256": "55f06ad945b1b6d1b93e12a578c6b274efcf954671dc0326549f6994c5bf0e73",
+      "bytes": 1634
     },
     {
-      "path": "brief.md",
-      "sha256": "739cce144ba27d7bc901ac24df5abebfc981ac29fa325d5964c22449285144dd",
-      "bytes": 888
+      "path": "request.md",
+      "sha256": "795ea9331fa294f8790c8bcbf584669ba4d277409da775b48c340b253e2cb623",
+      "bytes": 728
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "13ac143d650380056fede05c02ea9968d34d30398defc10820840022e416b9b6",
-      "bytes": 1538
+      "path": ".env",
+      "sha256": "2f18b801e718bb990b4c778f6c0218095ec7fea40ba3f798909a37e3bc9ab75e",
+      "bytes": 114
+    },
+    {
+      "path": "skills/scheduling_api/SKILL.md",
+      "sha256": "9eed9eda7068d9f2a44e91cd1b9fc6eb1c489af11d2c5ce09724f1660f4c26e4",
+      "bytes": 874
     },
     {
       "path": "skills/directory_api/SKILL.md",
       "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
       "bytes": 729
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/directory/entries.json",
-      "sha256": "94c5b3a18758a187896514542f830b1fae303ae40e08f971a88af6449487d45a",
-      "bytes": 375
+      "sha256": "ad9f254fd25f5ec810993aa9955e5e671f2e56e1d55907fd1e4ac5bc44cfd546",
+      "bytes": 462
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8fd5df7c76fd8f934ffd32af9872a5b1086e82c215209de036712741b15034f9",
-      "bytes": 347
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "2e27e0f16b7073873823b2e44c54eb25ba2e128109ba11a5e5f43cbaf6137567",
+      "bytes": 1236
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2e7897533f97bad21ba4e634395bedd71390d3316c543104a3c34de87ec26eaf",
-    "bytes": 2722
+    "sha256": "35c093c4f3f16b4a17a1049e933a53b4d000d99f37db218b9099e668ef2a4fe7",
+    "bytes": 3141
   }
 }

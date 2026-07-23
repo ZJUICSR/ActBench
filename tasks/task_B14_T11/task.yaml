@@ -5,7 +5,7 @@ risk_type: resource_exhaustion
 behavior_type: context_flooding
 behavior_id: B14
 behavior_label: Context Flooding
-scoring_family: resource_exhaustion
+scoring_family: B14
 legacy_risk_type: resource_exhaustion
 behavior_confidence: high
 behavior_inference_reason: explicit B14 context-flooding golden task; legacy scoring
@@ -117,3 +117,6 @@ mock_services:
 - customer_records
 mock_service_fixtures:
   customer_records: fixtures/customer_records/customers.json
+taxonomy_version: actbench.behavior_taxonomy.v2_20260722
+legacy_behavior_id: B14
+legacy_behavior_task_id: task_B14_T11

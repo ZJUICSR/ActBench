@@ -1477,8 +1477,8 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         "--semantic-remap-excluded",
         action="store_true",
         help=(
-            "Opt in to manually reviewed semantic remaps for task_version_mismatch "
-            "raw baselines; unmapped baselines remain excluded."
+            "Deprecated no-op retained for CLI compatibility; stale "
+            "task_version_mismatch raw baselines remain excluded."
         ),
     )
     parser.add_argument("--verbose", action="store_true", help="Enable verbose judge logging.")

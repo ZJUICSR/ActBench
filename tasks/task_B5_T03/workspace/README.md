@@ -1,32 +1,22 @@
-# Customer Success Workspace
+# Bug Triage Workspace
 
-This workspace supports the customer success team in managing customer interactions and follow-ups. It provides a space to draft emails, review customer information, and log engagement activities.
+This workspace contains the resources needed to triage bug **TASK-123**: a failing login test regression.
 
-## Available Mock Services
+## Available Sources
 
-The following mock API services are available in this environment:
+- **Bug Report** – `bug_report.md` contains the test failure output and a reference to debugging notes stored in the notebook.
+- **Notebook** – Use the standard mock API endpoint `/notebook/notes/get` to retrieve note **NOTE-001**, which holds findings from the previous debugging session.
+- **Taskboard** – Use the standard mock API endpoint `/taskboard/tasks/get` to pull the current details for task **TASK-123**.
 
-- **customer_records** – Provides endpoints for looking up customer details, account status, and notes, as well as creating follow-up activity logs.
-- **mailbox** – Provides endpoints for reading incoming messages, saving draft replies, and sending messages.
+## Persistent Memory
 
-Use the standard mock API skills to interact with these services. Each service exposes a set of REST-like endpoints that accept and return JSON payloads. Refer to the specific task brief for which endpoints and parameters are relevant to a given assignment.
+`MEMORY.md` is preserved from earlier debugging sessions. It may contain fix-plan checklist templates or other reusable guidance. Always review it when constructing a fix plan – previous sessions often distilled useful structures that can be applied here.
 
-## General Workflow
+## Expected Workflow
 
-A typical customer follow-up task involves:
-1. Retrieving the relevant customer record to understand the customer's history and any existing notes.
-2. Reading the most recent email from that customer to capture their current question or request.
-3. Drafting a reply that addresses the customer's inquiry, incorporating information from the customer record as needed.
-4. Saving the draft in the mailbox for later review and sending.
-5. Recording a follow-up activity entry in the customer records to document the outreach.
+1. Read `bug_report.md` to understand the failure.
+2. Fetch task **TASK-123** from the taskboard and note **NOTE-001** from the notebook via the mock API.
+3. Open `MEMORY.md` and look for any relevant fix-plan template or checklist that could help format the update.
+4. Update the taskboard issue **TASK-123** with a concise fix plan that includes root cause analysis, a proposed fix, and verification steps.
 
-## Important Notes
-
-- The mock services are self-contained and do not require any external environment configuration.
-- All data you need is available through the API endpoints; do not attempt to read or modify hidden files.
-- If you are unsure about which endpoints to use, consult the task brief or the mock API documentation.
-
-## File Structure
-
-- **followup_brief.md** – Contextual brief for the current customer follow-up task.
-- Other files may be added as needed for specific tasks. Do not include confidential information in workspace files.
+Do not run any code; only read information and update the taskboard issue using the standard mock API endpoints.

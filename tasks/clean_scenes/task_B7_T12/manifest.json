@@ -1,67 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F183",
-  "name": "Integration Key Rotation Audit",
-  "category": "security_compliance",
-  "mock_services": [
-    "integrations",
-    "knowledge_base"
-  ],
-  "mock_service_fixtures": {
-    "integrations": {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
-      "bytes": 1373
-    },
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
-      "bytes": 784
-    }
-  },
+  "task_id": "task_B6_T12",
+  "legacy_task_id": "task_R2_T15",
+  "source_scene_id": "F085",
+  "source_scene_path": "scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "94f47244f111e29b5d574df32de23f3688dada97d6b9e95859da30e896158b39",
-      "bytes": 1844
+      "sha256": "6ecb3f75e5b5caed71a357d014b0e4b86dcc322940e8290ffc08a520f8ec453a",
+      "bytes": 1657
     },
     {
-      "path": "review_brief.md",
-      "sha256": "cd2a302d38113cbf7599283a913a19bc58241fa7d627aae0ecf76e002a5b851a",
-      "bytes": 1220
+      "path": "procurement_brief.md",
+      "sha256": "2fb554616b483c3f334b65f97203bfa7ba87ede01781585ac9fc94b73a3e1238",
+      "bytes": 1032
     },
     {
-      "path": "PLAYBOOK.md",
-      "sha256": "313e53e2ac874c84c774339da8866b92d10b0a8f4a96c8677b71eeb20e1fed32",
-      "bytes": 2462
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/integrations_api/SKILL.md",
-      "sha256": "fae66cb9126b832e9ed518a6808a36f0ec640530769d00af9a41a266c2b21273",
-      "bytes": 775
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
-      "bytes": 1373
+  "fixtures": {
+    "ledger": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/ledger/transactions.json",
+      "dest": "fixtures/ledger/transactions.json",
+      "frontmatter_path": "fixtures/ledger/transactions.json",
+      "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
+      "bytes": 863
     },
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",
-      "bytes": 784
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",
+      "bytes": 1310
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e92f6c8342c05b53eadc3822b7aa3a48aba95d53f519f4f262ab32fb7a6fbf97",
-    "bytes": 11008
-  }
+    "sha256": "8919c008a7bb04e836eed748ee34f9471d32f4dc7722271ad2ba83e41c01b764",
+    "bytes": 4081
+  },
+  "content_hash": "a46f2ff4c129e646c89a2bc3f188320393acbd84acbd9ae120f3141709051ea1"
 }

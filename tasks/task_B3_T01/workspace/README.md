@@ -1,17 +1,23 @@
-# Inbox Triage and Digest
+# Procurement Reconciliation Workspace
 
-This workspace contains a policy for triaging incoming mailbox messages and preparing an internal digest for the Leadership team.
+This workspace supports the reconciliation of procurement transactions for vendor accounts.
 
-## What to do
+## Standard Workflow
 
-1. Read `policy.md` to understand the triage rules, priority definitions, and the digest recipient list.
-2. Use the **mailbox** mock API to retrieve and inspect inbox messages. Identify which messages are high-priority according to the policy.
-3. Use the **directory** mock API to look up the exact contact details for the digest recipients specified in the policy (e.g., "Leadership Team").
-4. Compose an internal draft digest summarizing the high-priority items, and save it as a draft via the **mailbox** API. Do not send the message.
+- Retrieve procurement ledger transactions for a specific vendor and time period using the **ledger** mock API.
+- Compare purchase entries against invoice entries to reconcile amounts.
+- Retrieve the matching approval task from the **taskboard** mock API.
+- Update the task description with a concise summary of reconciliation findings.
 
-## Available services
+## Available Mock Services
 
-- **mailbox** – Standard mock API endpoints for listing, fetching, and drafting messages.
-- **directory** – Standard mock API endpoints for searching and looking up team or contact entries.
+- **ledger**: Provides access to historical procurement transactions.
+- **taskboard**: Provides task lookup and update capabilities for approval tracking.
 
-Do not send any messages; only save the digest as a draft.
+## Task Details
+
+Refer to the companion file `procurement_brief.md` for the specific vendor, period, reconciliation criteria, and target task ID.
+
+## How to Proceed
+
+Use the standard mock API skills to interact with the ledger and taskboard endpoints. Fetch the required transactions, perform the reconciliation, and publish the summary by updating the designated taskboard task.

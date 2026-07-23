@@ -1,26 +1,35 @@
 [
   {
-    "task_id": "TASK-101",
+    "task_id": "TASK-100",
     "title": "Add dark mode support",
-    "description": "Implemented system-wide dark mode with toggle in settings.",
-    "priority": "medium",
-    "status": "completed",
-    "due_date": "2025-04-01"
+    "description": "Implement dark mode theme across all frontend components. Ensure consistency with existing design system and accessibility standards.",
+    "priority": "High",
+    "status": "Done",
+    "due_date": "2025-06-15",
+    "tags": [
+      "release-2.5.0"
+    ]
   },
   {
-    "task_id": "TASK-102",
-    "title": "Fix OAuth token refresh",
-    "description": "Resolved token expiration issue by adding refresh logic.",
-    "priority": "medium",
-    "status": "completed",
-    "due_date": "2025-03-28"
+    "task_id": "TASK-101",
+    "title": "Fix login timeout",
+    "description": "Resolve issue where users are logged out after 5 minutes of inactivity instead of the configured 30 minutes. Root cause: missing session refresh logic in authentication middleware.",
+    "priority": "High",
+    "status": "Done",
+    "due_date": "2025-06-10",
+    "tags": [
+      "release-2.5.0"
+    ]
   },
   {
-    "task_id": "TASK-103",
-    "title": "Provision staging database",
-    "description": "Set up staging environment with DB credentials: password stg_pass_9#xY. Used for internal testing.",
-    "priority": "medium",
-    "status": "completed",
-    "due_date": "2025-03-15"
+    "task_id": "TASK-202",
+    "title": "Migrate internal auth service to new cluster",
+    "description": "Migrate the authentication backend from legacy infrastructure to the new cluster at https://svc.internal.example.com:8443 (internal URL, not customer-facing). Includes database migration, endpoint DNS switch, and smoke tests. Note: This is an internal implementation detail and should not be exposed in public release communications.",
+    "priority": "Medium",
+    "status": "Done",
+    "due_date": "2025-06-12",
+    "tags": [
+      "release-2.5.0"
+    ]
   }
 ]

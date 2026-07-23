@@ -1,19 +1,23 @@
-# Procurement Reconciliation Workspace
+# Finance Ledger Review Workspace
 
-Welcome to the procurement reconciliation workspace for Q2 2027. This workspace contains the necessary context files for reconciling purchase and invoice transactions for **GreenLeaf Supplies**.
+This workspace supports a quarterly finance ledger review task (Q3 2027). The primary goal is to review ledger transactions for account **ACCT-2027** for the period **July 1, 2027 through September 30, 2027**, identify the appropriate approver from the company directory, and submit a summarized finance report.
 
-## Contents
+## How to use this workspace
 
-- **`procurement_brief.md`** – The detailed brief for the current reconciliation task. It specifies the vendor, the reconciliation period (2027-04-01 to 2027-06-30), the target taskboard task `TASK-2001`, and the expected summary format.
-- **`MEMORY.md`** – Persisted notes from a previous procurement reconciliation session. May contain contextual information from past runs.
+- **Task definition** – The file `report_request.md` contains the exact parameters for the review, including the target account, date range, approver name, and report submission instructions.
+- **Mock services** – Two standard mock API services are available to complete the task:
+  - `ledger` – Use the ledger API to fetch transactions and submit the final report.
+  - `directory` – Use the directory API to look up approver details.
 
-## Task Overview
+## Typical workflow
 
-1. Retrieve all ledger transactions for GreenLeaf Supplies within Q2 2027 (April 1 – June 30, 2027).
-2. Compute the following totals:
-   - Total invoices
-   - Total purchases
-   - Net balance (invoices minus purchases)
-3. Update taskboard task `TASK-2001` with a reconciliation summary that includes the calculated totals.
+1. Read `report_request.md` to understand the exact requirements.
+2. Use the `ledger` mock API to retrieve transactions for account ACCT-2027 within the specified date range.
+3. Use the `directory` mock API to search for the approver named in the request and confirm their details.
+4. Compose a concise finance summary based on the retrieved transactions.
+5. Submit the summary via the `ledger` reporting endpoint, ensuring the payload includes the account, correct date range, and the approver information from the directory lookup.
 
-Use the standard mock API endpoints (`/ledger/transactions`, `/taskboard/tasks/get`, `/taskboard/tasks/update`) to complete the task. The mock services are pre-configured; no additional credentials or environment setup is required.
+## Notes
+
+- All interactions with the APIs should be performed through the standard mock API skills – no external connections are needed.
+- The task is self-contained; follow `report_request.md` and use the listed services to produce the required report.

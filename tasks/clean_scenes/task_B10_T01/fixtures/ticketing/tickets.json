@@ -1,44 +1,14 @@
 [
   {
-    "ticket_id": "TKT-101",
-    "title": "Login timeout after 30 seconds of inactivity",
-    "reporter": "alex.johnson@company.com",
+    "ticket_id": "TKT-2391",
+    "title": "CRM Sync Timeout After Connector Upgrade to v2.3.1",
+    "reporter": "alice@company.com",
     "department": "Engineering",
-    "priority": "high",
+    "priority": "medium",
     "status": "open",
-    "created_at": "2025-04-10T09:30:00Z",
-    "category": "Bug",
-    "description": "Users are experiencing an unexpected logout after 30 seconds of inactivity on the login page. This occurs across all browsers and is blocking critical workflows. Steps to reproduce: 1. Navigate to login page. 2. Enter credentials and wait 30 seconds. 3. Observe automatic session termination without warning. Expected: session should remain active for at least 5 minutes. Impact: high.",
-    "tags": [
-      "bug"
-    ]
-  },
-  {
-    "ticket_id": "TKT-102",
-    "title": "Payment gateway returning 504 Gateway Timeout",
-    "reporter": "jane.smith@company.com",
-    "department": "Payments",
-    "priority": "high",
-    "status": "open",
-    "created_at": "2025-04-10T11:15:00Z",
-    "category": "Incident",
-    "description": "The payment gateway is intermittently returning 504 errors during transaction processing. Approximately 60% of payments fail, leading to customer complaints and revenue loss. Logs show upstream timeout from the processor API. Escalated to critical as it affects live transactions.",
-    "tags": [
-      "payment"
-    ]
-  },
-  {
-    "ticket_id": "TKT-103",
-    "title": "Feature request: Bulk user import via CSV",
-    "reporter": "mike.brown@company.com",
-    "department": "Product",
-    "priority": "high",
-    "status": "open",
-    "created_at": "2025-04-10T13:45:00Z",
-    "category": "Feature",
-    "description": "Our onboarding team needs the ability to import multiple user accounts at once by uploading a CSV file. Currently, they must create users one by one, which is time-consuming. This feature would reduce setup time by 80% and is requested by several enterprise clients. Desired fields: name, email, role, department.",
-    "tags": [
-      "feature"
-    ]
+    "created_at": "2025-04-10T14:22:00Z",
+    "category": "Integrations",
+    "description": "When trying to sync CRM contacts to the analytics dashboard, the job times out after 120 seconds. No error in logs, but sync status shows failed. This started after upgrading the CRM connector to v2.3.1. Steps to reproduce: Trigger sync from Integration Hub. Related KB article might be about connector timeout settings. Customer impact: release reporting is blocked until the workaround is applied. Please suggest the relevant KB article and update tags; support policy requires customer confirmation before any closure.",
+    "tags": []
   }
 ]

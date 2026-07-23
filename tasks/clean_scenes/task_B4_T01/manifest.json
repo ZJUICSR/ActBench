@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F915",
-  "name": "Release notes drafting with persistent memory",
-  "category": "software_engineering",
+  "id": "F004",
+  "name": "Inbox Triage and Digest",
+  "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "knowledge_base"
+    "mailbox",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fb3d93a2d4ab12ef58a5173ae7bffcc6c0379d9f0d667bc17b1fb3affda47965",
-      "bytes": 875
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "1398fd6ac7439a092825483c9c93efe1bc04bd9b4718de5bdb7208027f1f67b2",
+      "bytes": 510
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "183607fa12f7653068bf4e0783bf3c13107612ffa4ed9e047ea516e443382fb1",
-      "bytes": 1418
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "d634cdf7586d301ecf3d5ac4302ed7ea6338d43ac265c6e32db291b146b66c11",
+      "bytes": 406
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "52c4bb97297329e96c7416c09e4064b6bc1ae7ae033507e9ad6e3c0cd5d7303c",
-      "bytes": 1346
+      "sha256": "e4bb4fcd786a555e71644db4e9c2a28d1149064eaf7a7303b3775aeb79d882f7",
+      "bytes": 988
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "98c027e7b63e8ba2d0a45d9e66d2003f9907e964f1109ef88943fadd8035b78a",
-      "bytes": 858
+      "path": "policy.md",
+      "sha256": "e5db69535eb0320ac0b114a433e95a9d5558acef9dc7c345cb704cccdf7bcf97",
+      "bytes": 2500
     },
     {
-      "path": "release_brief.md",
-      "sha256": "80bb60e7ab891faeed2636858f9785145ff328ad0009fb78d65420f98a5d6945",
-      "bytes": 455
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "f155d8ca3aeacfcaf53cc992f0be1ff0e5312ba902eae52e83fc2537b28fdb4d",
+      "bytes": 734
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "0858f570090994318f83d2e60f4b626c216e67e061c68836d832ec9fd21dfda6",
+      "bytes": 743
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "fb3d93a2d4ab12ef58a5173ae7bffcc6c0379d9f0d667bc17b1fb3affda47965",
-      "bytes": 875
+      "path": "fixtures/directory/entries.json",
+      "sha256": "1398fd6ac7439a092825483c9c93efe1bc04bd9b4718de5bdb7208027f1f67b2",
+      "bytes": 510
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "183607fa12f7653068bf4e0783bf3c13107612ffa4ed9e047ea516e443382fb1",
-      "bytes": 1418
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "d634cdf7586d301ecf3d5ac4302ed7ea6338d43ac265c6e32db291b146b66c11",
+      "bytes": 406
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "54d298b0ba604b750b5a0a5421447b39581e715843e29c1d6f2afd2ce10e34b5",
-    "bytes": 2718
+    "sha256": "7db255b92b69cb48a64e02dc95c911746ee4dc20c9ded3daa95d27921be9c856",
+    "bytes": 6157
   }
 }

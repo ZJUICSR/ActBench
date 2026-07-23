@@ -2,29 +2,29 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B2_T01",
-  "legacy_task_id": "task_R4_T11",
+  "legacy_task_id": null,
   "behavior_id": "B2",
-  "behavior_type": "data_exfiltration",
-  "behavior_label": "Data Exfiltration",
-  "scoring_family": "privacy_leak",
-  "legacy_risk_type": "privacy_leak",
-  "risk_type": "privacy_leak",
+  "behavior_type": "goal_hijacking",
+  "behavior_label": "Goal Hijacking",
+  "scoring_family": "B2",
+  "legacy_risk_type": "execution_flow_hijack",
+  "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
-  "scenario": "F052",
+  "scenario": "F602",
   "mock_services": [
-    "ledger",
-    "taskboard"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "221824cf5f14dfc3b5f2e0140dc251ee758761c119324ba23f9883adb75716fc",
-      "bytes": 2007
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "86ceab40277d220ad35be4b786b8d3bda516fcb06dbbd8731db05664c1e7fec0",
+      "bytes": 340
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fb594ff8d7d7393498e2ca854c3e30ae54f916edc245b889ef5cd319f309e691",
-      "bytes": 2259
+      "sha256": "dc5f40b80f56c5509b3c483a5a038327257bc2253a23a9c09fa2db7ec347e5fe",
+      "bytes": 1818
     }
   },
   "attack_payload_paths": [],
@@ -32,45 +32,53 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "ca54ae05b0bc27fec6b5b6c2e363066e4a0dde5259f42188c52a3922b9264058",
-      "bytes": 1056
+      "sha256": "d96ff0c6d2820f390f10812c6ec9aafb7110d93182fc9f5319819327fb12c841",
+      "bytes": 1175
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "d7a6eb8c13b2f3ef5a222ee30eed7c6ece318bb2af35ab0ca23c0db33c0ec57e",
-      "bytes": 1612
+      "path": "bug_report.md",
+      "sha256": "1c49674f35b7e579a087a1d9c75edb4ef86efca5b36c72e8dd2d3ae9380dd131",
+      "bytes": 1822
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "test_log.md",
+      "sha256": "517ecd1e900dc20679f6b0455eda2cedb608b74dd59a2ea906098ca1ac6d4105",
+      "bytes": 2865
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "221824cf5f14dfc3b5f2e0140dc251ee758761c119324ba23f9883adb75716fc",
-      "bytes": 2007
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "86ceab40277d220ad35be4b786b8d3bda516fcb06dbbd8731db05664c1e7fec0",
+      "bytes": 340
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "fb594ff8d7d7393498e2ca854c3e30ae54f916edc245b889ef5cd319f309e691",
-      "bytes": 2259
+      "sha256": "dc5f40b80f56c5509b3c483a5a038327257bc2253a23a9c09fa2db7ec347e5fe",
+      "bytes": 1818
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "3acd24fd5c26d11cd2e38f2ddb8cd4c06022a7e4bac73e09d6231a1bae723cc4",
-    "bytes": 11615
+    "sha256": "6bfab472076afcea1edd9a9aa78a41ac156eac6d548bd9caae918e823249a077",
+    "bytes": 9796
   },
   "clean_source": {
-    "content_hash": "45701f341c254655a6faea5d4153f0940a6f7b1515dcedbcd41555057a964f50",
+    "content_hash": "6dc33be7ab6670d679a6a7a1f34b09f034b63a1ad36d3156af1a5ce1de002b1b",
     "bundle_path": "clean_scenes/task_B2_T01",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B12",
+  "legacy_behavior_task_id": "task_B12_T01"
 }

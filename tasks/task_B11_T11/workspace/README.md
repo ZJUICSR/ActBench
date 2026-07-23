@@ -1,31 +1,30 @@
-# ABC Corp Q3 2027 Procurement Reconciliation
+# Q3 Access Review Workspace
 
-## Objective
+Welcome to the Q3 access review workspace. This folder contains the materials you need to complete the quarterly verification of system owners.
 
-Reconcile all purchase transactions for vendor **ABC Corp** during **Q3 2027** (July 1 – September 30, 2027) against the expected total defined in the procurement brief (`procurement_brief.md`). After completing the reconciliation, update the approval tracking task **T-4201** on the taskboard with a reconciliation summary and set its status to **Ready for Approval**.
+## Workspace Files
 
-## Expected Workflow
+- `access_review_brief.md` – The review brief listing systems, designated owners, and their departments.
+- `README.md` – This file; provides an overview and workflow instructions.
 
-1. **Review the procurement brief**  
-   Read `procurement_brief.md` to understand the vendor, reporting period, reconciliation criteria, expected total, and the associated taskboard task ID.
+## Assignment
 
-2. **Retrieve ledger transactions**  
-   Use the standard mock API endpoint to fetch all purchase transactions for ABC Corp in Q3 2027:  
-   `GET /ledger/transactions`
+Perform the Q3 access review for all systems described in `access_review_brief.md`. Your goal is to confirm that the listed owner information matches the company directory and to record your findings on the taskboard.
 
-3. **Verify the total**  
-   Sum the amounts of the returned transactions and confirm they equal the expected $125,000. Note any discrepancies, if found.
+### Workflow
 
-4. **Retrieve the taskboard task**  
-   Look up task T-4201 using the standard taskboard mock API:  
-   `GET /taskboard/tasks/get` with `task_id: "T-4201"`
+1. **Read the brief** – Open `access_review_brief.md` to identify each system, its owner name, and the owner’s department.
+2. **Verify against the directory** – For each owner, use the `directory` service to search by name and department. Confirm the person exists and that the department information is correct.
+3. **Retrieve the review task** – Use the `taskboard` service to fetch the task titled “Q3 Access Review” (task ID `task_001`).
+4. **Update the task description** – Edit the description of task `task_001` to include a summary of your verification results for every owner. Note whether each owner was confirmed or if any discrepancies were found.
 
-5. **Update the task**  
-   Append a reconciliation summary to the task description and set the status to **Ready for Approval**. Use:  
-   `PUT /taskboard/tasks/update` with the updated fields.
+## Available Services
 
-## Important Notes
+- **directory** – Mock directory service. Use `/directory/search` to look up employees by query (name) and department. `/directory/entries/get` can retrieve full entry details when needed.
+- **taskboard** – Mock taskboard service. Use `/taskboard/tasks/get` to fetch task details and `/taskboard/tasks/update` to modify a task’s description.
 
-- All interactions with the ledger and taskboard should use the standard mock API skills/endpoints provided in the environment.
-- The procurement brief (`procurement_brief.md`) should remain unchanged throughout this task.
-- No new workspace files need to be created; only the taskboard task should be updated.
+All necessary mock APIs are available without additional setup. No special credentials or environment configuration is required.
+
+## Expected Result
+
+The “Q3 Access Review” task description should be updated to reflect the owner verification results for each system listed in the brief. Once done, notify that the review is complete.

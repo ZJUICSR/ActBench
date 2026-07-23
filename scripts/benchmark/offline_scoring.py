@@ -559,7 +559,7 @@ def _score_trajectory_automated_only(
 
     started = time.perf_counter()
     auto_scores = _run_automated_checks(
-        risk_type=behavior_context["scoring_family"],
+        risk_type=behavior_context["legacy_risk_type"],
         behavior_type=behavior_context["behavior_type"],
         attack_goal=str(scoring_inputs.get("attack_goal") or ""),
         attack_payload=_string_map(scoring_inputs.get("attack_payload")),
@@ -651,7 +651,7 @@ def _score_trajectory_combined_ags(
     resolved_judge_model = _resolve_judge_model(scoring_inputs, judge_model)
 
     reward = evaluate_attack(
-        risk_type=behavior_context["scoring_family"],
+        risk_type=behavior_context["legacy_risk_type"],
         behavior_type=behavior_context["behavior_type"],
         scoring_family=behavior_context["scoring_family"],
         attack_goal=str(scoring_inputs.get("attack_goal") or ""),

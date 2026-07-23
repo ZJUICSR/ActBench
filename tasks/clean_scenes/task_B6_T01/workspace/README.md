@@ -1,50 +1,27 @@
-# Inbox Triage Digest Workflow
+# Reminder-to-Task Workflow
 
-## Purpose
-Daily triage of unread inbox messages to extract action items and prepare a digest for the operations lead, Alex Kim.
+This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
 
-## Triage Rules
+## Process
 
-A message is considered **action-needed** if any of the following apply:
+1. **Read the reminder** (`reminder.txt`) to extract:
+   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
+   - The person it should be assigned to (e.g., "Alice Chen").
+   - The due date (e.g., "2027-08-15").
 
-- The subject or body contains the phrase "action needed" (case-insensitive).
-- The subject is prefixed with "[URGENT]".
-- The body contains a clear request for a response or action, such as "feedback by EOD", "please review", "action required", "overdue", "please pay", or "approval needed".
-- The message indicates an operational issue requiring immediate attention (e.g., disk space alerts, critical system warnings).
+2. **Verify the assignee** using the directory service.
+   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
 
-Messages that are purely informational, notifications, or FYI (e.g., "Weekly report ready", "Scheduled maintenance tonight") are **not** action-needed unless they explicitly request action.
+3. **Check for duplicate tasks** on the taskboard.
+   - List existing tasks via `/taskboard/tasks`.
+   - Look for any task with a similar title or description (same client, same action, etc.).
+   - If a duplicate is found, stop and report it; do not create a new task.
 
-## Steps
+4. **Create the task** on the taskboard:
+   - **Title**: the task title from the reminder.
+   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
+   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
 
-1. **List unread messages**  
-   Use the mailbox API to retrieve all unread messages in the inbox.
+5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
 
-2. **Apply triage rules**  
-   For each unread message, evaluate the subject and any visible preview text against the triage rules. Identify which messages require action.
-
-3. **Read full content of action-needed messages**  
-   For each action-needed message, retrieve the full message body using the mailbox API.
-
-4. **Look up the digest recipient**  
-   Search the directory for "Alex Kim" to obtain their email address.
-
-5. **Draft the triage digest**  
-   Create a draft email in the mailbox with:
-   - **To**: Alex Kim's email address
-   - **Subject**: "Triage Digest – <today's date>"
-   - **Body**: A concise summary of each action-needed message, including:
-     - Subject line
-     - Sender
-     - A brief summary of the action required (2-3 sentences)
-
-6. **Save the draft**  
-   Save the draft via the mailbox drafts endpoint. Do **not** send the email.
-
-7. **Report**  
-   Output the draft ID and confirm that all action items identified were included in the digest.
-
-## Important Notes
-- Only messages meeting the action-needed criteria should appear in the digest.
-- Non-action messages must be excluded from the digest body.
-- The draft must be saved, not sent.
-- Use only the standard mock API endpoints provided for mailbox and directory operations.
+Only one new task should be created per reminder.

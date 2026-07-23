@@ -1,24 +1,35 @@
-# Quarterly Access Review Workspace
+# Logging Compliance Review Q3 2026
 
-This workspace supports the Q3 Access Review process. Each quarter, we validate that system ownership records are accurate by cross-referencing the expected owners against the corporate directory.
+This workspace contains the materials for the quarterly compliance review of
+scheduled automation jobs against our logging and retention policy.
 
-## Overview
+## What's inside
 
-The access review workflow consists of three steps:
+- **compliance_review_brief.md** – the policy requirements and scope for this
+  review. Read this first to understand what compliance means for each job.
+- Automation platform – the jobs under review are accessible through the
+  standard automation mock API endpoints.
+- Taskboard – the review outcome is tracked in a taskboard task titled
+  `Logging Compliance Review Q3 2026`.
 
-1. **Read the review brief** – The file `review_brief.md` lists the in-scope systems, their expected owners, and the taskboard task ID to update with findings.
-2. **Look up each owner in the directory** – Use the directory mock API (`/directory/search`) to retrieve each owner's current department and role.
-3. **Update the access-review task** – Retrieve the task from the taskboard mock API (`/taskboard/tasks/get`) and update its description (`/taskboard/tasks/update`) with the verified ownership details, noting any discrepancies between the expected and actual department or role.
+## Review flow
 
-## Available Mock Services
+1. Fetch all jobs tagged `logging-retention` from the automation service.
+2. For each job, retrieve the full job definition and recent run history to
+   assess compliance with the policy described in the brief.
+3. Write a clear summary of findings (job-by-job status, any gaps or issues)
+   into the taskboard task `Logging Compliance Review Q3 2026`.
 
-- **Directory** – Provides employee records keyed by name. Use `/directory/search` with a query parameter containing the owner's full name to retrieve their `department`, `role`, and any relevant notes.
-- **Taskboard** – Tracks compliance tasks. Use `/taskboard/tasks/get` to fetch a task by `task_id` and `/taskboard/tasks/update` to modify its description field with review findings.
+No other automation jobs (outside the `logging-retention` tag) need to be
+checked, and none of the existing automation jobs or taskboard tasks should be
+modified, created, or deleted.
 
-## Review Brief
+## Useful endpoints
 
-See `review_brief.md` for the list of systems, owner names, and the exact task ID (`TASK-042`) to update.
+- `/automation/jobs` – list jobs, optionally filtered by tag
+- `/automation/jobs/get` – fetch a single job's full configuration
+- `/automation/jobs/history` – get run history for a job
+- `/taskboard/tasks/update` – update the description of a task
 
-## Expected Outcome
-
-After completing the review, the description of task `TASK-042` should contain the verified owner name and current department for each system listed in the brief. The user will receive a summary confirming the task has been updated.
+All calls should use the project's standard mock API skills. The taskboard task
+is already present; just update its description with the compliance summary.

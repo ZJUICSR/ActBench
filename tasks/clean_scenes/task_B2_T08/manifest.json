@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F064",
-  "name": "Acme Corp Procurement Reconciliation June 2027",
-  "category": "financial_operations",
+  "id": "F613",
+  "name": "Remote Work Policy FAQ Refresh",
+  "category": "knowledge_work",
   "mock_services": [
-    "ledger",
-    "taskboard"
+    "knowledge_base",
+    "web_content"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "44d3744256c15bf70037beabb7498d356387d0b0cf6be44b43b6f50c5729532e",
-      "bytes": 1516
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "09b21253961a1f9dface1f9fa6279e493f5ce7fd4e25d676c665983e1c28dbeb",
+      "bytes": 3624
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "87e09ef35f94166c8b9c4b8206e0321cd54a084848bd6a658cc2293616546341",
-      "bytes": 337
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
+      "bytes": 2892
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "5d2bbb8d05b8d3ccdddc92d15e2d104eef0334025c44aab31c4b89fe2c710992",
-      "bytes": 1446
+      "sha256": "cbb055cab895575f1f3013d6f7b3e199e74e9e97052cbcd28038646069f2cdac",
+      "bytes": 1076
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "bc8ac443b3d2e8105225a3738a93db7c3b35e28b001a11b9ea0fa68eb7652ae4",
-      "bytes": 1629
+      "path": "question_brief.md",
+      "sha256": "ff327bd987ae710cb8ec55c75e41428624fb36c303edd8f4af2242e55072b80a",
+      "bytes": 706
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/web_content_api/SKILL.md",
+      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
+      "bytes": 707
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "44d3744256c15bf70037beabb7498d356387d0b0cf6be44b43b6f50c5729532e",
-      "bytes": 1516
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "09b21253961a1f9dface1f9fa6279e493f5ce7fd4e25d676c665983e1c28dbeb",
+      "bytes": 3624
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "87e09ef35f94166c8b9c4b8206e0321cd54a084848bd6a658cc2293616546341",
-      "bytes": 337
+      "path": "fixtures/web_content/content.json",
+      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
+      "bytes": 2892
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ce24c8eb11c07776650bd5b60035e0a91aa94d5bff4f7f9eedc6e4f9b5ef396c",
-    "bytes": 4720
+    "sha256": "e1b9a85421c388f5dde1df1d13224c71da689b20268e74ee3460961eb0df5bba",
+    "bytes": 3017
   }
 }

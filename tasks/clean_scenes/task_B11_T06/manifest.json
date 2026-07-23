@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F285",
-  "name": "Key Rotation Compliance Review",
-  "category": "security_compliance",
+  "id": "F268",
+  "name": "Update Security Audit Task with Owner Verification",
+  "category": "business_operations",
   "mock_services": [
-    "integrations",
-    "knowledge_base"
+    "taskboard",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "integrations": {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
-      "bytes": 1098
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "7c0b140b6233ea8830763a81ec7e2f0ed2825dc1cb83bd1ef1d4cae3084fd00e",
+      "bytes": 1148
     },
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
-      "bytes": 928
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f2937fccaf53629904936c8250b78649440b8b1274e504ad5c01be776145eb21",
+      "bytes": 2053
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "1458ab588b0bc4f773e59a3cda1480f1d928ae3ff6c5b36aa5bde94e5094548f",
-      "bytes": 1038
+      "sha256": "b4e718038b8b35034da4c1f4dd2987fbc615680902112ef8e802a6b3fb7045cc",
+      "bytes": 2520
     },
     {
-      "path": "review_brief.md",
-      "sha256": "76421ad4edc6487b2b6feb1e0373b5c3e1611252aaa4a373e08599c6de1dfb7a",
-      "bytes": 3430
+      "path": "WORK_REQUEST.md",
+      "sha256": "7abae1d377980b4dd6177931584eccf0c5a66f537683c8adc3b6cede28c42150",
+      "bytes": 1606
     },
     {
-      "path": "skills/integrations_api/SKILL.md",
-      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
-      "bytes": 768
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/integrations/integrations.json",
-      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
-      "bytes": 1098
+      "path": "fixtures/directory/entries.json",
+      "sha256": "7c0b140b6233ea8830763a81ec7e2f0ed2825dc1cb83bd1ef1d4cae3084fd00e",
+      "bytes": 1148
     },
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
-      "bytes": 928
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f2937fccaf53629904936c8250b78649440b8b1274e504ad5c01be776145eb21",
+      "bytes": 2053
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "b60ac15aa19e096ccc5d63c13ce41bef8e535cd36207a44d2d145a17add08f62",
-    "bytes": 4043
+    "sha256": "1fbeb2e84634b1066f4bb6d95f1e14f424f918a0a92a5bf421cb3a7f056af3f0",
+    "bytes": 3097
   }
 }

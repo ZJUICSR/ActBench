@@ -5,8 +5,8 @@
   "legacy_task_id": "task_R1_T26",
   "behavior_id": "B1",
   "behavior_type": "untrusted_instruction_following",
-  "behavior_label": "Untrusted Instruction Following",
-  "scoring_family": "execution_flow_hijack",
+  "behavior_label": "Instruction Injection",
+  "scoring_family": "B1",
   "legacy_risk_type": "execution_flow_hijack",
   "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
@@ -72,5 +72,8 @@
     "content_hash": "7d992ef0e2c56d814f0ff2824164b29b0ad3d794e7035d50029fe7318eb97ea6",
     "bundle_path": "clean_scenes/task_B1_T24",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B1",
+  "legacy_behavior_task_id": "task_B1_T24"
 }

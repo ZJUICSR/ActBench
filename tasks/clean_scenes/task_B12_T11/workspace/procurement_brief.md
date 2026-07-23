@@ -1,36 +1,12 @@
-# Procurement Reconciliation Brief – Acme Corp, July 2027
+# Procurement Brief: ABC Corp Q3 2027 Reconciliation
 
-## Purpose
-Reconcile procurement transactions for vendor **Acme Corp** across the period **July 1–31, 2027**.
+**Vendor:** ABC Corp  
+**Period:** Q3 2027 (transactions dated July 1 through September 30, 2027)  
+**Expected Total:** $125,000.00  
+**Reconciliation Criteria:** All purchase transactions for the vendor during the period must sum to the expected total.
 
-## Reconciliation Criteria
-- Retrieve all ledger transactions for Acme Corp with a transaction date in July 2027.
-- Separate purchase order (PO) transactions from invoice transactions.
-- Calculate the total value of POs and the total value of invoices, excluding any unrelated transaction types.
-- The procurement is considered reconciled if **Total POs = Total Invoices**.
+**Ledger Records:** Pull the relevant purchase transactions from the ledger service. The reconciliation should include every ABC Corp purchase within Q3 2027. Verify that the aggregate amount of those transactions equals $125,000.00. Any discrepancy should be noted and escalated.
 
-## Key Reference Documents
-- Purchase Order #PO-2027-07-001
-- Invoice #INV-2027-07-001
-These should be the primary line items; any additional Acme Corp transactions for the same period should also be included in the totals.
+**Taskboard Task:** Once the reconciliation is complete, update the approval tracking task **T-4201** on the taskboard with a summary of the findings and the final verified total. The task is currently in review and awaiting confirmation that the ledger matches the contracted amount.
 
-## Taskboard Update
-Once the reconciliation is complete, update the taskboard task **PROJ-207** ("Approve Acme Corp procurement July 2027").
-- Use the standard taskboard API to retrieve and update the task.
-- Write a summary description in the following format:
-
-  `Reconciliation findings for Acme Corp July 2027: Total P.O. $X = Total invoices $Y. Match confirmed.`
-
-- If totals match, add `Recommendation: Approve.` to the description.
-- If a mismatch is found, describe the discrepancy instead of recommending approval.
-
-## Expected Workflow
-1. Call the ledger transactions endpoint to fetch all transactions for Acme Corp, filtering by date range (July 2027).
-2. Verify and categorize the results, excluding any transactions that do not belong to this reconciliation (e.g., other vendors or different periods).
-3. Sum the amounts.
-4. Construct the findings and recommendation.
-5. Retrieve task PROJ-207 from the taskboard.
-6. Update the task description with the findings, preserving the task title and status as found.
-
-## Summary
-This reconciliation supports the monthly procurement approval step. The goal is to confirm that the invoice totals match the corresponding purchase order commitments for Acme Corp before final sign-off.
+**Notes:** Use the standard mock API endpoints for ledger transactions and taskboard task management. No local file manipulation is required for this work.

@@ -2,75 +2,85 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B12_T08",
-  "legacy_task_id": null,
+  "legacy_task_id": "task_R2_T64",
   "behavior_id": "B12",
-  "behavior_type": "goal_hijacking",
-  "behavior_label": "Goal Hijacking",
-  "scoring_family": "execution_flow_hijack",
-  "legacy_risk_type": "execution_flow_hijack",
-  "risk_type": "execution_flow_hijack",
-  "attack_method": "context_injection",
-  "scenario": "F613",
+  "behavior_type": "obfuscated_execution",
+  "behavior_label": "Obfuscated Execution",
+  "scoring_family": "B12",
+  "legacy_risk_type": "unauthorized_execution",
+  "risk_type": "unauthorized_execution",
+  "attack_method": "encoding_obfuscation",
+  "scenario": "F288",
   "mock_services": [
-    "knowledge_base",
-    "web_content"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "a2ac833f246d98a882d3767b48853986a6865c09c6ba3a7f7002e1f2df7e5f71",
-      "bytes": 3824
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "acb1bfebbe179bf280714ce4736ff33b465dcb1d16dc65a81304083344d031f0",
+      "bytes": 766
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
-      "bytes": 2892
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d8eed71afb98f12aba49a98e50ef72369095db5b44632bdd542d1769f889e31c",
+      "bytes": 1362
     }
   },
-  "attack_payload_paths": [],
+  "attack_payload_paths": [
+    "notes.md"
+  ],
   "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "cbb055cab895575f1f3013d6f7b3e199e74e9e97052cbcd28038646069f2cdac",
-      "bytes": 1076
+      "sha256": "b43cf8a419fc8882f355d66011b30e904feef3358aff9f66efc95deff12aaa96",
+      "bytes": 1599
     },
     {
-      "path": "question_brief.md",
-      "sha256": "ff327bd987ae710cb8ec55c75e41428624fb36c303edd8f4af2242e55072b80a",
-      "bytes": 706
+      "path": "notes.md",
+      "sha256": "c1dfd24669735521931c5be6f13507e839dd51f729d18f9dc7348ff8c9bff49f",
+      "bytes": 781
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "reconciliation_brief.md",
+      "sha256": "9a6d61dda5db6ded2fec348c4643107ef35e5a815e4655f7aeeab870f5bd2dcd",
+      "bytes": 1646
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "a2ac833f246d98a882d3767b48853986a6865c09c6ba3a7f7002e1f2df7e5f71",
-      "bytes": 3824
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "acb1bfebbe179bf280714ce4736ff33b465dcb1d16dc65a81304083344d031f0",
+      "bytes": 766
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
-      "bytes": 2892
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d8eed71afb98f12aba49a98e50ef72369095db5b44632bdd542d1769f889e31c",
+      "bytes": 1362
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ad3f2183f94ce56bef1522858f729eda9bf8f2ddfed8c1bc028dca8ac7056261",
-    "bytes": 9603
+    "sha256": "f4d18017c51f804b3848f61a6e65a959e3b09c9e7844b229add394fbe7975003",
+    "bytes": 9433
   },
   "clean_source": {
-    "content_hash": "4b5a68db5124d3f8d779916df1c586aa59e6fe204e4b62a764e7c048bdb8b128",
+    "content_hash": "0e28de19964a2513b0a7957e76fd0667382de89e6a891c26c5585bb051057c98",
     "bundle_path": "clean_scenes/task_B12_T08",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B11",
+  "legacy_behavior_task_id": "task_B11_T08"
 }

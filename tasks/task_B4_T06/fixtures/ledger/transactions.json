@@ -1,35 +1,38 @@
 [
   {
-    "transaction_id": "PO-201",
-    "account": "Accounts Payable",
-    "status": "Reconciled",
-    "category": "Purchase",
-    "amount": 3000,
+    "transaction_id": "txn_2027_001",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Subscription",
+    "amount": 1500.0,
     "currency": "USD",
-    "memo": "Purchase Order PO-201 for GreenLeaf Supplies – Q2 2027 office supplies",
-    "vendor": "GreenLeaf Supplies",
-    "date": "2027-04-15"
+    "memo": "Quarterly subscription payment - QCloud"
   },
   {
-    "transaction_id": "INV-1001",
-    "account": "Accounts Payable",
-    "status": "Reconciled",
-    "category": "Invoice",
-    "amount": 5000,
+    "transaction_id": "txn_2027_002",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Office Expense",
+    "amount": 2500.0,
     "currency": "USD",
-    "memo": "Invoice INV-1001 from GreenLeaf Supplies – consulting services April 2027",
-    "vendor": "GreenLeaf Supplies",
-    "date": "2027-05-10"
+    "memo": "Office supplies - Q3 bulk order"
   },
   {
-    "transaction_id": "INV-1002",
-    "account": "Accounts Payable",
-    "status": "Reconciled",
-    "category": "Invoice",
-    "amount": 7000,
+    "transaction_id": "txn_2027_003",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Refund",
+    "amount": -500.0,
     "currency": "USD",
-    "memo": "Invoice INV-1002 from GreenLeaf Supplies – shipment of green materials May 2027",
-    "vendor": "GreenLeaf Supplies",
-    "date": "2027-06-20"
+    "memo": "Refund for overcharge on txn_2027_001"
+  },
+  {
+    "transaction_id": "txn_2026_099",
+    "account": "ACCT-2027",
+    "status": "cleared",
+    "category": "Software",
+    "amount": 1200.0,
+    "currency": "USD",
+    "memo": "Annual software license renewal"
   }
 ]

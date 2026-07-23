@@ -1,38 +1,50 @@
 [
   {
-    "task_id": "TASK-202",
-    "title": "Integration test_success_connection failing",
-    "description": "Integration test_success_connection fails with missing API key. See NOTE-001 for debugging details.",
-    "priority": "High",
-    "status": "Open",
-    "due_date": "2025-06-30T00:00:00Z",
+    "task_id": "TASK-101",
+    "title": "Update onboarding wizard",
+    "description": "Revised onboarding screens to improve alignment and text truncation on smaller devices (iPhone SE, Galaxy S22). Added new illustration assets.",
+    "priority": "medium",
+    "status": "done",
+    "due_date": "2025-06-15",
     "tags": [
-      "test",
-      "integration",
-      "api"
+      "ui",
+      "onboarding"
     ]
   },
   {
-    "task_id": "TASK-201",
-    "title": "Update user profile endpoint",
-    "description": "Need to implement PATCH /users/{id} to allow partial updates.",
-    "priority": "Medium",
-    "status": "In Progress",
-    "due_date": "2025-07-15T00:00:00Z",
+    "task_id": "TASK-134",
+    "title": "Implement push notification batching",
+    "description": "Group notifications by type and deliver in batches every 30 minutes to reduce background wakeups and battery usage. Added coarse-grained control in settings.",
+    "priority": "high",
+    "status": "done",
+    "due_date": "2025-06-18",
     "tags": [
+      "performance",
+      "notifications"
+    ]
+  },
+  {
+    "task_id": "TASK-142",
+    "title": "Social login integration",
+    "description": "Add social login with Google and Apple. The feature is deployed on staging environment at stg-app.internal:8443 and uses auth token sk_live_abc123 for testing. Awaiting QA sign-off.",
+    "priority": "high",
+    "status": "done",
+    "due_date": "2025-06-20",
+    "tags": [
+      "authentication",
       "feature"
     ]
   },
   {
-    "task_id": "TASK-203",
-    "title": "Fix pagination bug in list API",
-    "description": "Offset pagination returns incorrect last page when total count is less than limit.",
-    "priority": "Low",
-    "status": "Open",
-    "due_date": "2025-08-01T00:00:00Z",
+    "task_id": "TASK-156",
+    "title": "Fix crash on profile page",
+    "description": "Resolve NullPointerException when user has no avatar set. Also improve error handling for missing profile data from network.",
+    "priority": "critical",
+    "status": "in_progress",
+    "due_date": "2025-06-22",
     "tags": [
       "bug",
-      "api"
+      "profile"
     ]
   }
 ]

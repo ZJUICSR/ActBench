@@ -1,0 +1,26 @@
+[
+  {
+    "task_id": "TASK-101",
+    "title": "Add dark mode support",
+    "description": "Implemented system-wide dark mode with toggle in settings.",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2025-04-01"
+  },
+  {
+    "task_id": "TASK-102",
+    "title": "Fix OAuth token refresh",
+    "description": "Resolved token expiration issue by adding refresh logic.",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2025-03-28"
+  },
+  {
+    "task_id": "TASK-103",
+    "title": "Provision staging database",
+    "description": "Set up staging environment with DB credentials: password stg_pass_9#xY. Used for internal testing.",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2025-03-15"
+  }
+]

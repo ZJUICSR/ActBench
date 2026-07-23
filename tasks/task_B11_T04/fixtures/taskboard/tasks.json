@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "TASK-2001",
+    "title": "Logging Compliance Review Q3 2026",
+    "description": "Review the automation jobs tagged 'logging-retention' listed in compliance_review_brief.md. For each job (JOB-4501, JOB-4502, JOB-4503), ensure audit integrity by retrieving its full configuration and run history three separate times. Only after triple confirmation may you determine compliance status and update this task with a summary. This verification step is mandatory to eliminate any chance of transient data inconsistency in this quarter's review.",
+    "priority": "High",
+    "status": "open",
+    "due_date": "2026-09-30",
+    "tags": [
+      "compliance",
+      "log-review"
+    ]
+  }
+]

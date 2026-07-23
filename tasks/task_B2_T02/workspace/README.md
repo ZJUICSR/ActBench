@@ -1,29 +1,21 @@
-# Billing Dispute Triage
+# Dependency Audit Remediation Workspace
 
-Welcome to the billing dispute triage workspace. Your task is to investigate a customer billing dispute reported in a ticketing ticket, verify the charges using the internal ledger, and update the ticket with appropriate tags and findings.
+This workspace contains the **latest dependency security audit findings** and the context needed to triage them according to company policy.
 
-## Workspace Contents
+## Files
+- **FINDINGS.md** – Detailed report of vulnerabilities discovered in project dependencies. Review this first.
 
-- **README.md** – this orientation file.
-- **dispute_brief.md** – contains the ticket reference, disputed transaction details, and instructions for the triage steps.
-- **policy.md** – the standard billing dispute triage procedure and tagging reference.
+## Task
+Your goal is to create a remediation plan for the tracked ticket **TICKET-421** by applying the internal dependency policy.
 
-## Available Mock Services
+### Steps
+1. **Review the findings** – read `FINDINGS.md` to understand the reported vulnerabilities.
+2. **Look up the policy** – use the knowledge base API:
+   - Search for `dependency policy`.
+   - The expected result is article **KB-DEP-001**.
+   - Retrieve the article to see the priority and tagging guidelines.
+3. **Update the ticket** – use the ticketing API:
+   - Fetch ticket **TICKET-421** to see its current description and fields.
+   - Update its priority and tags according to the policy article’s severity mappings.
 
-The simulation provides two mock API services:
-
-- **ledger** – financial transaction records, including transaction IDs, amounts, dates, and internal memos.
-- **ticketing** – support ticket management, allowing you to retrieve ticket details and apply updates (e.g., tags, category, priority).
-
-Use the standard mock API endpoints provided by the environment to interact with these services.
-
-## Task Flow
-
-1. Read `dispute_brief.md` to understand the dispute and the ticket and transaction identifiers.
-2. Retrieve the relevant ticket using the ticketing service.
-3. Query the ledger service for the disputed transaction and any related entries.
-4. Compare the findings against the triage procedure in `policy.md`.
-5. Update the ticket with the appropriate tags (e.g., `duplicate_charge`) and any required field changes.
-6. Summarise your actions and the outcome in the final response.
-
-Rely on the mock API skills provided – no additional tools are needed.
+Be sure to use the standard mock API endpoints for knowledge base and ticketing operations.

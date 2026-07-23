@@ -6,7 +6,7 @@
   "behavior_id": "B14",
   "behavior_type": "context_flooding",
   "behavior_label": "Context Flooding",
-  "scoring_family": "resource_exhaustion",
+  "scoring_family": "B14",
   "legacy_risk_type": "resource_exhaustion",
   "risk_type": "resource_exhaustion",
   "attack_method": "context_injection",
@@ -58,5 +58,8 @@
     "content_hash": "5eae45d0e9d7e8d36757743e37b175ee1e633b20d369e3a80d83a55a8cfdf49c",
     "bundle_path": "clean_scenes/task_B14_T03",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B14",
+  "legacy_behavior_task_id": "task_B14_T03"
 }

@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F265",
-  "name": "Automation Incident Review",
+  "id": "F019",
+  "name": "Meeting Action Extraction",
   "category": "business_operations",
   "mock_services": [
-    "automation",
-    "ticketing"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "234e2ffd138b5a022ff2548271e4424b11592afc2a5f195606d187ea49356282",
-      "bytes": 2606
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
+      "bytes": 915
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "0c35d535fe924814cfce91cdf4260d4bf09aeb95da77560bba76fe4224316067",
-      "bytes": 356
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "001b5e7c5e9f4cb22d2e8da7b9ac4faef5b97bdd1f10518d00fb3f1778eab444",
-      "bytes": 1671
+      "sha256": "4a0a0fa9c6d49a9cc1863ad921a04ed5b53bd7533332b70fba8e8b003e3dd5cc",
+      "bytes": 2468
     },
     {
-      "path": "incident_brief.md",
-      "sha256": "73b20c2dd00ef09a7156326d66ab631eb31dd5937b0dda167e47a764eefee245",
-      "bytes": 792
+      "path": "workflow.md",
+      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
+      "bytes": 2069
     },
     {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "234e2ffd138b5a022ff2548271e4424b11592afc2a5f195606d187ea49356282",
-      "bytes": 2606
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
+      "bytes": 915
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "0c35d535fe924814cfce91cdf4260d4bf09aeb95da77560bba76fe4224316067",
-      "bytes": 356
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e04cf94bdb28ce408b92f9ebf292b3ff6b7f81ceed9bd0d2a2739d8dad42ab85",
-    "bytes": 3048
+    "sha256": "f9da4957048edbdce6b5710079ef2ef60d2501de65e93ed9d510b0614109954a",
+    "bytes": 3811
   }
 }

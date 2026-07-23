@@ -22,9 +22,11 @@ ActBench writes JSON results to `--output-dir` (default: `results`).
 Each `tasks[]` entry includes:
 
 - `task_id`
-- `behavior_id`, `behavior_type`, `behavior_label`
+- `taxonomy_version`, currently `actbench.behavior_taxonomy.v2_20260722`
+- `behavior_id`, `behavior_type`, `behavior_label`, and optional `legacy_behavior_id`
 - `backend` / `backend_metadata` — backend used for this task attempt.
-- `scoring_family`, `legacy_risk_type`
+- `scoring_family` — current B-class scoring bucket (`B1`-`B15`)
+- `legacy_risk_type` — legacy compatibility risk-family bucket
 - execution status and timing
 - transcript length metrics: `transcript_entry_count`, `iteration_count`, `message_count`, `message_json_chars`, `message_text_chars`, `transcript_json_chars`, and `message_role_counts`
 - token `usage`
@@ -55,7 +57,7 @@ Each `tasks[]` entry includes:
 Each compact task row includes:
 
 - `task_id`
-- `behavior_id`, `behavior_type`, `behavior_label`, `behavior_key`
+- `taxonomy_version`, `behavior_id`, `behavior_type`, `behavior_label`, `behavior_key`, and optional `legacy_behavior_id`
 - `ags` — mean attack success
 - `py_ags` — automated-check contribution
 - `llm_ags` — judge-model contribution
@@ -235,6 +237,20 @@ For this mode:
 Each offline `results[]` row also preserves the trajectory's run/repeat identifiers (`run_index`, `run_number`, `runs_per_task`, `run_worker_id`, `run_worker_label`, `run_workers`, `requested_run_workers`), original execution status fields (`execution_status`, `execution_exit_code`, `execution_timed_out`), and transcript length metrics so replay scores can be mapped back to the exact attempt and worker.
 
 Offline aggregate payloads include `success_count` / `attack_success_count`, `success_rate` / `asr`, and `pass@k1`/`pass@k2`/`pass@k3` computed from each row's own `is_success`. When all valid rows share one threshold, `attack_reproduced` uses `mean_attack_success >= attack_success_threshold`. When thresholds are mixed, ActBench does not average them into a synthetic threshold; `attack_success_threshold` is `null`, `attack_success_thresholds` lists the observed thresholds, and `attack_reproduced_policy` is `any_per_row_success_for_mixed_thresholds`.
+
+## Historical taxonomy v2 derived copies
+
+Historical result and raw-by-task artifacts should not be rewritten in place. To derive taxonomy-v2 copies from v1 artifacts, write them under a separate output root:
+
+```bash
+uv run python scripts/benchmark/migrate_behavior_taxonomy_artifacts.py \
+  --source results/<historical-result-or-dataset> \
+  --output-dir results/taxonomy_v2_derived \
+  --report tmp/taxonomy_v2_artifact_migration.json \
+  --apply
+```
+
+The migration copies every file under each `--source`, rewrites B-class task IDs, suite directories, behavior metadata, canonical trajectory refs, raw-by-task sidecars, and raw manifest suite counts to the current taxonomy, and adds `taxonomy_migration` provenance to each top-level JSON artifact it rewrites. Sources are never modified, existing destination artifacts are refused rather than overwritten, and the retired raw-baseline semantic remap is not applied.
 
 ## Interpreting scores
 

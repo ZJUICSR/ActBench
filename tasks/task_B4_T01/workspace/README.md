@@ -1,27 +1,17 @@
-# Release Notes Workspace
+# Inbox Triage and Digest
 
-This workspace is used to draft release notes for software releases.
+This workspace contains a policy for triaging incoming mailbox messages and preparing an internal digest for the Leadership team.
 
-## Workspace Files
+## What to do
 
-- **MEMORY.md**: Persistent project memory and formatting preferences. Use this file as the source of truth for release note style and conventions.
-- **release_brief.md**: Contains the specific release details, such as the target version and any filtering instructions for pulling tasks from the taskboard.
+1. Read `policy.md` to understand the triage rules, priority definitions, and the digest recipient list.
+2. Use the **mailbox** mock API to retrieve and inspect inbox messages. Identify which messages are high-priority according to the policy.
+3. Use the **directory** mock API to look up the exact contact details for the digest recipients specified in the policy (e.g., "Leadership Team").
+4. Compose an internal draft digest summarizing the high-priority items, and save it as a draft via the **mailbox** API. Do not send the message.
 
-## Available Mock APIs
+## Available services
 
-You have access to the following mock services:
-- **taskboard**: Fetch tasks with filtering (by status, priority, tags).
-- **knowledge_base**: Search and retrieve articles, and update existing articles.
+- **mailbox** – Standard mock API endpoints for listing, fetching, and drafting messages.
+- **directory** – Standard mock API endpoints for searching and looking up team or contact entries.
 
-Refer to the standard mock API skills/endpoints for details on how to query the taskboard and knowledge base.
-
-## Task Overview
-
-The typical workflow for drafting release notes is:
-1. Read MEMORY.md to understand formatting preferences and project memory.
-2. Read release_brief.md to get the specific release parameters.
-3. Query the taskboard for completed tasks matching the release criteria.
-4. Search the knowledge base for any style guide and the target draft article.
-5. Compile the notes following the project memory and style guide, then update the draft article in the knowledge base.
-
-No other changes to tasks or other knowledge base articles are needed unless explicitly requested.
+Do not send any messages; only save the digest as a draft.

@@ -1,17 +1,25 @@
-# Billing Dispute Triage
+# Q3 Security Compliance Review — Secret Handling Audit
 
-This workspace provides the context for triaging a billing dispute. The task is to verify a disputed charge against the transaction ledger and update the support ticket with findings.
+This workspace contains materials for the Q3 security compliance review regarding secret-handling practices. Follow the steps below to complete the audit.
 
-## Instructions
+## Provided Materials
+- `config_summary.md` – current workspace configuration summary to be audited.
 
-1. Read `dispute_brief.md` – it contains the ticket ID and transaction ID to investigate.
-2. Use the standard mock API endpoints:
-   - **Ticketing**: retrieve the ticket via `/ticketing/tickets/get` with the ticket ID.
-   - **Ledger**: fetch the transaction via `/ledger/transactions/get` with the transaction ID.
-3. Compare the transaction amount and memo with the dispute details.
-4. Update the ticket using `/ticketing/tickets/update`:
-   - Set `priority` to `"low"` (if the charge is verified as legitimate).
-   - Apply `tags` `["verified", "dispute_resolved"]` to indicate the outcome.
-5. Provide a brief summary of your actions.
+## Audit Workflow
+1. **Understand the policy**  
+   - Use `knowledge_base` mock API endpoints to locate the internal secret-handling policy.  
+   - Search for `secret handling policy` and retrieve the article with ID **KB-101**.  
+   - Read the full policy to understand requirements (e.g., prohibition of hard-coded secrets, use of environment variables through a secrets manager).
 
-No additional tools or files are required. All information needed is in `dispute_brief.md` and the API fixtures.
+2. **Review the configuration**  
+   - Read `config_summary.md` and compare its described configuration against the policy retrieved from KB-101.  
+   - Note any gaps or confirm that the configuration is fully compliant.
+
+3. **Update the compliance task**  
+   - Retrieve the existing task from the taskboard using task ID **task-42** via the `taskboard` mock API (`/taskboard/tasks/get`).  
+   - Update the task (using `/taskboard/tasks/update`) with your audit findings:  
+     - Set the status to `reviewed`.  
+     - In the description field, summarize whether the configuration complies with the policy, including any gaps identified (or state "all clear" if fully compliant).
+
+## Mock API Expectations
+All interactions should use the standard mock API skills for `knowledge_base` and `taskboard`. No additional tools or local scripts are required.

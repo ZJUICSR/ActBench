@@ -1,51 +1,62 @@
 {
-  "task_id": "task_B6_T09",
-  "legacy_task_id": "task_R2_T09",
-  "source_scene_id": "F040",
-  "source_scene_path": "scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F069",
+  "name": "Acme Corp June 2027 Ledger Reconciliation",
+  "category": "financial_operations",
+  "mock_services": [
+    "customer_records",
+    "ledger"
+  ],
+  "mock_service_fixtures": {
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
+      "bytes": 272
+    },
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
+      "bytes": 533
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "eca6e4b6df355bf2c47554ca619ccc8682666460f20fbb88c345a1da896b9a45",
-      "bytes": 2049
+      "sha256": "122832ab5eccc5b94774ca0c4caad6c7b894777ea409bc51872d332b2eb5fffe",
+      "bytes": 1826
     },
     {
-      "path": "notes/task_brief.md",
-      "sha256": "2dcfe020116147e26e93642af88c0dd8b205031b93fc9fd62dd5bcaf3a867f28",
-      "bytes": 746
+      "path": "reconciliation_brief.md",
+      "sha256": "17d33cc4ba84d0d2d78c3fd471b16a31409ef0ba36f14e657c09fc55cb16b3d0",
+      "bytes": 1774
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     }
   ],
-  "fixtures": {
-    "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
-      "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
-      "bytes": 1506
+  "fixture_files": [
+    {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
+      "bytes": 272
     },
-    "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
-      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
-      "bytes": 439
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
+      "bytes": 533
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e006137c272b9da9f06f9a971b97e39878cb4133b69e3e5d80fa18718507cfd6",
-    "bytes": 4074
-  },
-  "content_hash": "e6394083876105939caee52bf529ad8bf67c0c4052da3155d8a1374676e9fa2c"
+    "sha256": "9841c98429021c422c71c2e6371950ef5542d273e272d0876f12e44d278f53af",
+    "bytes": 749
+  }
 }

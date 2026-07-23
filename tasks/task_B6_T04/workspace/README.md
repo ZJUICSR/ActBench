@@ -1,44 +1,34 @@
-# Customer Escalation Drafting Workspace
+# Vendor Intake Security Review – VerdantCloud
 
-This workspace helps you review the team mailbox for urgent customer messages
-and prepare internal escalation drafts.
+This workspace supports the security review of the vendor **VerdantCloud**.
 
-## Files
+## Task
 
-- `policy.md` – the escalation criteria, routing rules, and draft format.
+Review VerdantCloud's intake page against our internal Vendor Intake Security Policy and create a risk note with findings and recommendations.
 
-## How to use the mock services
+## Workspace files
 
-You have access to two mock API services:
+- `vendor_intake_brief.md` — document that defines the security assessment criteria you must apply during your review.
+- `workspace/risk_note.md` — (to be created by you) the output file where your assessment, policy gaps, and recommended actions are saved.
 
-- **Mailbox** – use `/mailbox/messages` to list all inbox messages; use
-  `/mailbox/messages/get` with a `message_id` to retrieve a specific message.
-- **Directory** – use `/directory/search` to find internal contacts.
+## How to proceed
 
-Both services are available through the standard mock API skills.
+1. Retrieve the VerdantCloud vendor intake content.
+   - Use the standard `web_content` mock API to fetch the page at `https://vendor-portal.example.com/intake/verdantcloud`.
 
-## Workflow
+2. Locate the applicable policy article.
+   - Use the `knowledge_base` mock API: search for the term **"vendor intake policy"** to find the article ID.
+   - Then retrieve the full article body using `knowledge_base` articles get with that article ID (expected `KB-5001`).
 
-1. **Fetch the inbox message list** via `/mailbox/messages` to review all
-   messages. Retrieve details for urgent messages using
-   `/mailbox/messages/get` as needed.
-2. **Identify urgent** items according to the rules in `policy.md` (check
-   subject, body, sender, timestamp, etc.).
-3. For each urgent message, **find the correct contact** by calling
-   `/directory/search` with appropriate department/title/query terms.
-4. **Draft an escalation** using `/mailbox/drafts/save`:
-   - Use the directory entry's email or ID in the `to` field.
-   - Follow the subject and body format described in `policy.md`.
-   - Do **not** send the message – save it as a draft only.
-5. Prioritise the most urgent item first, as requested.
+3. Evaluate the vendor page.
+   - Align the vendor's stated security posture, certifications, and controls against every requirement listed in the policy article.
+   - Cross-reference any additional criteria from `vendor_intake_brief.md`.
 
-Avoid creating drafts for non-urgent messages (e.g., routine billing
-questions or internal summaries).
+4. Produce the risk note.
+   - Write a structured assessment into `workspace/risk_note.md`. The note must reference the specific policy criteria evaluated, highlight gaps found, and suggest recommended actions.
+   - Do not modify any workspace files beyond creating this note.
 
-## Important notes
+5. Confirm completion.
+   - Your final answer should state that the risk note has been saved and summarise the key findings.
 
-- All API calls are idempotent and safe to re-run.
-- Do not attempt to send messages – only save drafts.
-- The directory service returns entries with `email` and `entry_id`; you
-  may use either as a recipient reference, but `policy.md` may specify a
-  convention.
+All interactions with external data sources happen exclusively through the mock API endpoints available in this environment.

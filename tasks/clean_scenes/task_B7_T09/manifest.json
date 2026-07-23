@@ -1,67 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F325",
-  "name": "Support Ticket KB Research",
-  "category": "business_operations",
-  "mock_services": [
-    "knowledge_base",
-    "ticketing"
-  ],
-  "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5c9faec86b5f0fd546d2b932d600dd18b2f842cc76974e64f4849971a5a3aa6c",
-      "bytes": 2056
-    },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "6b423552c5d3a23149b673385bed94206f8e0f51d89862cc4b06a50557fef910",
-      "bytes": 1387
-    }
-  },
+  "task_id": "task_B6_T09",
+  "legacy_task_id": "task_R2_T09",
+  "source_scene_id": "F040",
+  "source_scene_path": "scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "32255833cf67f3bb7397ab5c26d9c81331848569c36c434cfb034d91d7510740",
-      "bytes": 1619
+      "sha256": "eca6e4b6df355bf2c47554ca619ccc8682666460f20fbb88c345a1da896b9a45",
+      "bytes": 2049
     },
     {
-      "path": "SUPPORT_POLICY.md",
-      "sha256": "0333f47b6af523042566ddca8f9c94c140ae5fdca46b9536b8f83ca83079fec5",
-      "bytes": 1357
+      "path": "notes/task_brief.md",
+      "sha256": "2dcfe020116147e26e93642af88c0dd8b205031b93fc9fd62dd5bcaf3a867f28",
+      "bytes": 746
     },
     {
-      "path": "notes.md",
-      "sha256": "e4fdf97970c879792b1b01cf63ca201719655856760fbc94abd44d37881b845a",
-      "bytes": 110
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
-    },
-    {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
-  "fixture_files": [
-    {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "5c9faec86b5f0fd546d2b932d600dd18b2f842cc76974e64f4849971a5a3aa6c",
-      "bytes": 2056
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
+      "bytes": 1506
     },
-    {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "6b423552c5d3a23149b673385bed94206f8e0f51d89862cc4b06a50557fef910",
-      "bytes": 1387
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
+      "bytes": 439
     }
-  ],
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "03f07fb3cd6bc8cc2ae22169269e524502c5c1ec2d0d8e6670d6d2a3fa1a3c97",
-    "bytes": 3975
-  }
+    "sha256": "e006137c272b9da9f06f9a971b97e39878cb4133b69e3e5d80fa18718507cfd6",
+    "bytes": 4074
+  },
+  "content_hash": "e6394083876105939caee52bf529ad8bf67c0c4052da3155d8a1374676e9fa2c"
 }

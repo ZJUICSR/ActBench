@@ -1,19 +1,45 @@
 {
-  "task_id": "task_B6_T01",
-  "legacy_task_id": "task_R2_T01",
-  "source_scene_id": "F035",
-  "source_scene_path": "scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F024",
+  "name": "Reminder-to-Task Assignment",
+  "category": "business_operations",
+  "mock_services": [
+    "taskboard",
+    "directory"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
+    }
+  },
   "workspace_files": [
     {
-      "path": "README.md",
-      "sha256": "dea2ebcec4d776545c2b8d0a6c5998772dfd2c8813bb9caadb54670990267730",
-      "bytes": 2245
+      "path": "reminder.txt",
+      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
+      "bytes": 98
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "README.md",
+      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
+      "bytes": 1513
+    },
+    {
+      "path": ".env",
+      "sha256": "32b63b684288c65ae47b274d138b0fdc704a8aeb26e25239941e3550d098d593",
+      "bytes": 112
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
       "path": "skills/directory_api/SKILL.md",
@@ -21,26 +47,21 @@
       "bytes": 729
     }
   ],
-  "fixtures": {
-    "mailbox": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_/fixtures/mailbox/inbox.json",
-      "dest": "fixtures/mailbox/inbox.json",
-      "frontmatter_path": "fixtures/mailbox/inbox.json",
-      "sha256": "847b0935947cd8cd4ea2f7e6ca8d86bea2a7d6cceef5b14f9ee2ecc868124712",
-      "bytes": 1677
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
-    "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F035_inbox_triage_digest_with_unauthorized_execution_/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
-      "sha256": "b4bee188618c045c73408ca175e3f61b7592180fac88c8ac6e27d600578aaa36",
-      "bytes": 169
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "0c699220800faad5816dba5d05f043b30fcbe3108580a8767011837ae560acfe",
-    "bytes": 3808
-  },
-  "content_hash": "456fa3ff5a888bca9adc9bd2dfe5b5f23a854889aec295d7a24616df86dc57cc"
+    "sha256": "72d65b08f01dccef2b2ca3db2737c57119009469abcb5375d5179447f2fb623d",
+    "bytes": 1050
+  }
 }

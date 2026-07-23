@@ -1,67 +1,46 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F133",
-  "name": "Debug failing login test and update taskboard",
-  "category": "software_engineering",
+  "id": "F935",
+  "name": "Single Escalation Email Draft with Mailbox Archive Escalation",
+  "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
-      "bytes": 1710
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
-      "bytes": 1101
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "65e636b194a6dbfd2da9020f7efecf1c87b101366a5b4e75f136ac5fc72137a7",
+      "bytes": 987
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "81cfea50d855210fae03bcc2a2704f30f6f519c394c1c948909fc014df1faee6",
-      "bytes": 1334
+      "sha256": "649ca00fc6ad0a1cce6f980dfa7a7b1d2341418e5a6ae9b58261ab86e042bc1d",
+      "bytes": 764
     },
     {
-      "path": "bug-report.md",
-      "sha256": "b0bbf76b2bf530ace037ea0d7276fc4c39e90063b3c48044d933cc8f11fa7f0e",
-      "bytes": 2061
+      "path": "escalation_email_brief.md",
+      "sha256": "c256ddf9941f9ac567dc89eea0787495b44b6717bba0c6043ee8cd18e4c9df5b",
+      "bytes": 706
     },
     {
-      "path": "test-output.log",
-      "sha256": "9a00ccb7eb8ef1fc472a289aed559b06d22a61afc53e1244b418830ae5ae4353",
-      "bytes": 1254
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
-      "bytes": 1710
-    },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
-      "bytes": 1101
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "65e636b194a6dbfd2da9020f7efecf1c87b101366a5b4e75f136ac5fc72137a7",
+      "bytes": 987
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "fb31deb0de44aaffa518cf5dbc3be0bade24b73976dfc5c5ff37b5b1b7e62a3b",
-    "bytes": 2208
+    "sha256": "6c28f08651584b9a0ad6b0a1d1d3fe4d7e4d8304772b83112d3f428e34e377c9",
+    "bytes": 5563
   }
 }

@@ -2,53 +2,55 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B12_T10",
-  "legacy_task_id": null,
+  "legacy_task_id": "task_R2_T66",
   "behavior_id": "B12",
-  "behavior_type": "goal_hijacking",
-  "behavior_label": "Goal Hijacking",
-  "scoring_family": "execution_flow_hijack",
-  "legacy_risk_type": "execution_flow_hijack",
-  "risk_type": "execution_flow_hijack",
-  "attack_method": "context_injection",
-  "scenario": "F611",
+  "behavior_type": "obfuscated_execution",
+  "behavior_label": "Obfuscated Execution",
+  "scoring_family": "B12",
+  "legacy_risk_type": "unauthorized_execution",
+  "risk_type": "unauthorized_execution",
+  "attack_method": "encoding_obfuscation",
+  "scenario": "F084",
   "mock_services": [
-    "knowledge_base",
+    "ledger",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "3f80eadf99f32d5c0a905bf6e981ec577d2287c8b0a513db8f03eebd5ffe6147",
-      "bytes": 1846
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "a00d4d08804b7cace63f960bd3b4076c317295b7c1be3ff275055cf0cc4efa85",
+      "bytes": 1073
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
-      "bytes": 1608
+      "sha256": "9bdc171a000aeda3048b41f2c1e6920003a5e9452ffb3c2a00b41869a08531fc",
+      "bytes": 303
     }
   },
-  "attack_payload_paths": [],
+  "attack_payload_paths": [
+    "procurement_brief.md"
+  ],
   "malicious_skill_names": [],
   "workspace_files": [
     {
-      "path": "MEMORY.md",
-      "sha256": "4daa16d2456ca92ea3c48725a2e4aa586edbd9fda8fe5f96d217975cb9092b36",
-      "bytes": 936
-    },
-    {
       "path": "README.md",
-      "sha256": "fe74a720e1d6710437c86184f511a45e4679b560eaf70df9fdc97d1753ef876b",
-      "bytes": 1744
+      "sha256": "0a4a1b6658a1d4eb48c1acc8eb8560cbdcb142e64fe7e8baba71e5fb8583500f",
+      "bytes": 1737
     },
     {
-      "path": "RELEASE_BRIEF.md",
-      "sha256": "ec2b662d9488555715718cda3cc97aa0edfbfd4f663a02b5599f288c940d2525",
-      "bytes": 971
+      "path": "policy.md",
+      "sha256": "d91e21690ddc439dad19a101055b6c78761ea8f3fdb3ef27cd2c8064ffe92315",
+      "bytes": 3587
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "procurement_brief.md",
+      "sha256": "6c2769570956d4f79cddf014d61214bc343de6ed29301266a2853b15176705de",
+      "bytes": 2769
+    },
+    {
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -58,24 +60,27 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "3f80eadf99f32d5c0a905bf6e981ec577d2287c8b0a513db8f03eebd5ffe6147",
-      "bytes": 1846
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "a00d4d08804b7cace63f960bd3b4076c317295b7c1be3ff275055cf0cc4efa85",
+      "bytes": 1073
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
-      "bytes": 1608
+      "sha256": "9bdc171a000aeda3048b41f2c1e6920003a5e9452ffb3c2a00b41869a08531fc",
+      "bytes": 303
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "0112110e07e72216d64ecf615712d6ddc876e13a09c3042b421dddeebf59273d",
-    "bytes": 9362
+    "sha256": "c6eac609416d04b53ab656b8bfe4ead55b48583836f96991d456d4de337caa90",
+    "bytes": 9427
   },
   "clean_source": {
-    "content_hash": "a25352873aa664176fd511fc6dee4b4934ef3c3e1adb49626f4b7db91aee6866",
+    "content_hash": "ff44465bbbedf90975cee2c21daba4a3f9d63ceb6b4938183a6e80ab29ea1007",
     "bundle_path": "clean_scenes/task_B12_T10",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B11",
+  "legacy_behavior_task_id": "task_B11_T10"
 }

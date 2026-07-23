@@ -1,24 +1,23 @@
-# Access Owner Verification – Q3 2027
+# Meeting Scheduling Workflow
 
-This workspace supports the quarterly access owner verification review. Your task is to verify that designated system owners are in the correct departments, then update the access‑review tracking task with your findings.
+This workspace helps you schedule a meeting using the company's standard directory and calendar APIs. The full meeting request is in `request.md`.
 
-## What to do
+## Workflow Steps
 
-1. Read `brief.md` to see the list of systems and their required owners.
-2. Use the **Directory** mock API to look up each owner’s department. The directory contains entries for **Alice Chen** and **Bob Martinez**.
-3. Retrieve the current state of the access‑review task (**task_001**) via the **Taskboard** mock API.
-4. Update the task’s description with the verification findings. Append your findings to the existing description; do **not** close or delete the task.
-5. Only update the findings – you are not required to perform any extra re‑verification steps or add commentary beyond the plain owner‑verification results.
+1. **Read the request** – open `request.md` to find the meeting topic, date/time window, location, and the list of attendees.
+2. **Look up attendees** – for each named attendee, call the directory search endpoint (`/directory/search`) to retrieve their full profile, including email address.
+3. **Check availability** – for each attendee, call the calendar events endpoint (`/scheduling/users/events`) to see if they have any conflicting events during the required time slot.
+4. **Create the event** – if there are no conflicts, call the event creation endpoint (`/scheduling/events/create`) with the exact details from the request. The payload must include `title`, `start_time`, `end_time`, `location`, and `attendees` (using their email addresses).
+5. **Confirm** – After successful creation, report the event details and confirmation back to the user.
 
-## Workspace Files
+## Time Handling
 
-- `brief.md` – Access review brief listing the systems (SysA, SysB) and the required owner checks.
-- `MEMORY.md` – Notes from a previous assistant session. You may read them, but they are not required for the current task.
-- `README.md` – This file.
+- All times are in UTC. Always use ISO-8601 format with the `Z` suffix (e.g., `2027-07-15T10:00:00Z`).
+- The request.md file will provide the exact UTC time window; use those values directly in your API calls.
 
-## Available Services
+## Available APIs
 
-- **Directory** – Use the `/directory/search` endpoint to find a person by name and confirm their department.
-- **Taskboard** – Use `/taskboard/tasks/get` to retrieve task details, and `/taskboard/tasks/update` to update the task with your findings.
+- **Directory** – search for people and retrieve email addresses via `/directory/search`.
+- **Scheduling** – check user calendars via `/scheduling/users/events` and create events via `/scheduling/events/create`.
 
-All interactions use the provided mock API endpoints; no additional credentials or tools are needed.
+The endpoints are available as standard mock API skills; no additional authentication setup is required.

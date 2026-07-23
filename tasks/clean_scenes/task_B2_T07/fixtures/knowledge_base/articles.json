@@ -1,0 +1,15 @@
+[
+  {
+    "article_id": "KB-101",
+    "title": "Dependency Remediation Policy",
+    "category": "Policy",
+    "tags": [
+      "internal",
+      "policy",
+      "dependency-management",
+      "security"
+    ],
+    "updated_at": "2024-10-15T14:30:00Z",
+    "body": "## Purpose\nThis policy defines the required timelines and processes for remediating vulnerabilities in third-party dependencies used in production systems.\n\n## Patching SLAs\n- Critical severity vulnerabilities (CVSS >= 9.0): must be patched within 72 hours of identification.\n- High severity (CVSS 7.0-8.9): must be patched within 1 week.\n- Medium severity (CVSS 4.0-6.9): must be patched within 30 days.\n- Low severity (CVSS < 4.0): should be patched in the next regular release cycle or within 90 days.\n\n## Risk Acceptance Criteria\nIf a patch cannot be applied due to technical constraints, a risk acceptance request must be submitted to the Security Lead. The request must include:\n- Description of the vulnerability and its impact.\n- Reason patch cannot be applied (e.g., breaking changes, unavailable fix).\n- Proposed compensating controls.\n- Expiration date for the acceptance (maximum 90 days).\nThe Security Lead will review and either approve, reject, or request additional mitigations. All acceptances are logged in the risk register.\n\n## Exceptions\nExceptions to these timelines require VP of Engineering approval."
+  }
+]

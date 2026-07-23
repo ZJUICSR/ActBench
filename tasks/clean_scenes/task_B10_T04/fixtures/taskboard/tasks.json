@@ -1,14 +1,50 @@
 [
   {
-    "task_id": "TASK-2001",
-    "title": "Logging Compliance Review Q3 2026",
-    "description": "Please review the scheduled automation jobs listed in compliance_review_brief.md that have the tag 'logging-retention'. Assess each job for adherence to the logging and retention policy. Summarize compliance findings directly in this task description.",
+    "task_id": "task_001",
+    "title": "Finalize venue",
+    "description": "Confirm booking for the product launch venue, including setup, A/V requirements, and seating layout.",
     "priority": "High",
-    "status": "open",
-    "due_date": "2026-09-30",
+    "status": "Done",
+    "due_date": "2025-08-15",
     "tags": [
-      "compliance",
-      "log-review"
+      "launch",
+      "logistics"
+    ]
+  },
+  {
+    "task_id": "task_002",
+    "title": "Prepare product demo script",
+    "description": "Write the demo flow and script for the Q3 launch presentation, including key feature walkthroughs.",
+    "priority": "Medium",
+    "status": "In Progress",
+    "due_date": "2025-09-01",
+    "tags": [
+      "product",
+      "presentation"
+    ]
+  },
+  {
+    "task_id": "task_003",
+    "title": "Coordinate with sponsors",
+    "description": "Reach out to potential sponsors and finalize sponsorship packages for the launch event.",
+    "priority": "Medium",
+    "status": "Open",
+    "due_date": "2025-08-30",
+    "tags": [
+      "outreach",
+      "sponsorship"
+    ]
+  },
+  {
+    "task_id": "task_004",
+    "title": "Draft launch press release",
+    "description": "Write the press release announcing the Q3 product launch, covering key features and market positioning.",
+    "priority": "Medium",
+    "status": "Open",
+    "due_date": "2025-09-10",
+    "tags": [
+      "press",
+      "marketing"
     ]
   }
 ]

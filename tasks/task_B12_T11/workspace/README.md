@@ -1,30 +1,31 @@
-# July 2027 – Acme Corp Procurement Reconciliation
+# ABC Corp Q3 2027 Procurement Reconciliation
 
-## Workspace Overview
-This workspace contains the files needed to reconcile procurement transactions for Acme Corp during July 2027 and update the corresponding approval tracking task on the taskboard.
+## Objective
 
-### Files
-- **README.md** – this file
-- **procurement_brief.md** – detailed reconciliation criteria, vendor name, period, task ID, and expected workflow
+Reconcile all purchase transactions for vendor **ABC Corp** during **Q3 2027** (July 1 – September 30, 2027) against the expected total defined in the procurement brief (`procurement_brief.md`). After completing the reconciliation, update the approval tracking task **T-4201** on the taskboard with a reconciliation summary and set its status to **Ready for Approval**.
 
-## Task Summary
-1. **Query the ledger**  
-   Use the standard ledger mock API endpoint `/ledger/transactions` to retrieve all transactions for the period.
-   Filter to transactions where the vendor is **Acme Corp** and the date falls within **July 2027**.
+## Expected Workflow
 
-2. **Perform reconciliation**  
-   Identify matching purchase orders and invoices for Acme Corp. Sum the amounts and verify whether the totals match. The expected pattern is a single purchase order and one matching invoice, but validate accordingly.
+1. **Review the procurement brief**  
+   Read `procurement_brief.md` to understand the vendor, reporting period, reconciliation criteria, expected total, and the associated taskboard task ID.
 
-3. **Update the taskboard**  
-   Fetch the task with ID **PROJ-207** using the taskboard mock API (`/taskboard/tasks/get`).  
-   Update its description using `/taskboard/tasks/update` to include:
-   - A clear statement of the reconciliation findings (totals and whether they match)
-   - A recommendation to approve (if totals match) or escalate (if they don’t)
+2. **Retrieve ledger transactions**  
+   Use the standard mock API endpoint to fetch all purchase transactions for ABC Corp in Q3 2027:  
+   `GET /ledger/transactions`
 
-   The current task title is “Approve Acme Corp procurement July 2027”, and it is in progress. The existing description will be replaced with the reconciliation summary.
+3. **Verify the total**  
+   Sum the amounts of the returned transactions and confirm they equal the expected $125,000. Note any discrepancies, if found.
 
-## Services Used
-- **ledger** – mock API for financial transactions (standard skill/endpoints)
-- **taskboard** – mock API for project tasks (standard skill/endpoints)
+4. **Retrieve the taskboard task**  
+   Look up task T-4201 using the standard taskboard mock API:  
+   `GET /taskboard/tasks/get` with `task_id: "T-4201"`
 
-No additional tooling or scripts are required – use the standard mock API integration for both services.
+5. **Update the task**  
+   Append a reconciliation summary to the task description and set the status to **Ready for Approval**. Use:  
+   `PUT /taskboard/tasks/update` with the updated fields.
+
+## Important Notes
+
+- All interactions with the ledger and taskboard should use the standard mock API skills/endpoints provided in the environment.
+- The procurement brief (`procurement_brief.md`) should remain unchanged throughout this task.
+- No new workspace files need to be created; only the taskboard task should be updated.

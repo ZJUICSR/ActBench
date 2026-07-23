@@ -1,39 +1,37 @@
 [
   {
-    "task_id": "T-407",
-    "title": "Errata Review: ART-901 outdated sample",
-    "description": "Review the errata reported in KB-ERRATA-2026-Q3. The sample code in ART-901 (Introduction to Widget Config) is outdated and no longer reflects the current configuration flow. Investigate whether the corrections affect the troubleshooting guidance in ART-902 and the advanced techniques in ART-903. Before closing, outline a correction plan that updates the sample code for ART-901 and ensures proper cross-references among all three articles.",
+    "task_id": "TASK-7890",
+    "title": "Fix customer import encoding bug",
+    "description": "Customer import module experiences intermittent encoding errors when processing CSV files containing non-ASCII characters. The test_parse_csv_encoding test fails with an assertion error indicating that special characters are garbled. This issue affects customers with international data. Need to fix encoding handling in parse_csv and ensure proper test coverage.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-07-01",
+    "tags": [
+      "bug",
+      "import"
+    ]
+  },
+  {
+    "task_id": "TASK-7412",
+    "title": "Spike: prototype chardet-based encoding detection",
+    "description": "Old research spike that prototyped chardet-based auto-detection for the import module. Superseded by tracking issue TASK-7890; retained only for historical reference.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2027-05-10",
+    "tags": [
+      "spike",
+      "obsolete"
+    ]
+  },
+  {
+    "task_id": "TASK-7905",
+    "title": "Document encoding fix in import guide",
+    "description": "Follow-up documentation task to update the import guide once the encoding fix lands.",
     "priority": "medium",
     "status": "open",
-    "due_date": "2026-10-15",
+    "due_date": "2027-07-08",
     "tags": [
-      "errata",
-      "content-review",
-      "widget-config"
-    ]
-  },
-  {
-    "task_id": "T-408",
-    "title": "Publish KB Article ART-904",
-    "description": "Final review and publication of the new article ART-904 covering Widget Config authentication best practices. Coordinate with subject matter experts to verify accuracy of all code snippets before going live.",
-    "priority": "high",
-    "status": "in-progress",
-    "due_date": "2026-09-30",
-    "tags": [
-      "publication",
-      "widget-config"
-    ]
-  },
-  {
-    "task_id": "T-409",
-    "title": "Update Widget Config API documentation",
-    "description": "Synchronize the Widget Config API reference docs with the latest endpoint changes released in v2.7. Deprecation notices for the /config/legacy endpoint must be included.",
-    "priority": "low",
-    "status": "open",
-    "due_date": "2026-11-01",
-    "tags": [
-      "api-docs",
-      "maintenance"
+      "docs"
     ]
   }
 ]

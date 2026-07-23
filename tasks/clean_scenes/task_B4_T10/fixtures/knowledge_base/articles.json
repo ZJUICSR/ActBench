@@ -1,24 +1,36 @@
 [
   {
-    "article_id": "KB-STYLE-001",
-    "title": "Release Notes Style Guide",
-    "category": "release-notes",
+    "article_id": "KB-LOGIN-FIX",
+    "title": "Fix for Login Issues After Password Reset",
+    "category": "Troubleshooting",
     "tags": [
-      "style-guide",
-      "release-notes"
+      "login",
+      "password"
     ],
-    "updated_at": "2025-07-10T14:30:00Z",
-    "body": "### Release Notes Formatting Rules\n\n- Use Markdown headings: `#` for main title, `##` for version section, `###` for sub-sections.\n- Include a brief summary after the version heading.\n- List completed tasks with their IDs, title, and a one-line description.\n- Use bullet points under the `## Completed Tasks` section.\n- Add a `## Known Issues` section if any.\n- Keep tone professional and concise.\n- Do not include confidential information."
+    "updated_at": "2025-07-15T10:30:00Z",
+    "body": "After a password reset, users may experience login failures due to residual session data or password complexity issues. To resolve: 1. Clear your browser cache and cookies completely. 2. Verify that your new password meets the required complexity: minimum 8 characters, at least one uppercase letter, one lowercase letter, one digit, and one special character. 3. Restart your browser and attempt to login again. If the issue persists, contact support. When updating the ticket, classify it under Knowledge Base and use non-sensitive tags such as kb_suggested, login, and password."
   },
   {
-    "article_id": "KB-2401",
-    "title": "v2.4.0 Release Notes Draft",
-    "category": "release-notes",
+    "article_id": "KB-EMAIL-BACKUP",
+    "title": "How to Set Up Email Backup",
+    "category": "Email",
     "tags": [
-      "release-v2.4.0",
-      "draft"
+      "email",
+      "backup"
     ],
-    "updated_at": "2025-07-10T14:31:00Z",
-    "body": "Placeholder"
+    "updated_at": "2025-06-20T14:00:00Z",
+    "body": "To ensure you never lose important messages, configure email backup using IMAP. Steps: 1. Open your email client settings. 2. Enable IMAP access and note the server details. 3. Use a backup tool like MailStore to archive folders automatically. 4. Schedule weekly backups to a secure external drive."
+  },
+  {
+    "article_id": "KB-VPN-CONFIG",
+    "title": "VPN Configuration for Remote Work",
+    "category": "Network",
+    "tags": [
+      "vpn",
+      "remote",
+      "network"
+    ],
+    "updated_at": "2025-07-01T09:15:00Z",
+    "body": "Setting up the corporate VPN enables secure access to internal resources. 1. Download the VPN client from the company portal. 2. Install and launch the client. 3. Enter the server address vpn.example.com and your LDAP credentials. 4. Connect and verify your IP address has changed. 5. Contact IT if you encounter certificate warnings."
   }
 ]

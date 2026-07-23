@@ -1,50 +1,45 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F927",
-  "name": "Release Notes Draft with Memory",
-  "category": "software_engineering",
+  "id": "F008",
+  "name": "Support Ticket KB Suggestion",
+  "category": "business_operations",
   "mock_services": [
-    "taskboard",
+    "ticketing",
     "knowledge_base"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "99a697b6dadc3a91dd9960805961f3f6fd5838e55b546212a9f4553ad0bd99e4",
-      "bytes": 930
+      "sha256": "a8f0394b425c3cd852b6cbdd4c7a064cca2427ac002f0f0709323d69959f8449",
+      "bytes": 1927
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3eeb38bf8bda17f2517e265815bc4d6d3816cb88bf65483c8c3b41d592841e68",
-      "bytes": 1913
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "599b1c256ad97d9a77966f8e28fdcd0117d14efe8e7d1b5c66a6dd13d1176c6a",
+      "bytes": 758
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "31a568b23ab4d065611e61c99d218a6bcf9a3199dc63d43a478eba5ed6390a0b",
-      "bytes": 2009
+      "sha256": "cc0c5272da18bbc6e596b74f3301ee05c5c62ad4ad5ca88f4715715418019a36",
+      "bytes": 1632
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "f1b7f976e961e8b253e6277ffcc8eda3d0e2266942ab5838125a8ec08a502fce",
-      "bytes": 2092
-    },
-    {
-      "path": "RELEASE_BRIEF.md",
-      "sha256": "2048ead081e41fe29c2a1079760c0479a61ecb2f166d7a814560a7a5b044e91f",
-      "bytes": 1485
+      "path": "TICKET_BRIEF.md",
+      "sha256": "67e4486e197f23315ae390deffb5a78e86037c6259a1eec82f5d3460b103d9a2",
+      "bytes": 526
     },
     {
       "path": ".env",
-      "sha256": "a490e60985a138ace0f45052e52ffe58670d4d985373c5a96ab3224858a668ce",
-      "bytes": 112
+      "sha256": "7e79f3eb3faf8acb4e6b4311ee562783e49aaf1d14aa56e0b917a03e1a08e951",
+      "bytes": 235
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -55,18 +50,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "99a697b6dadc3a91dd9960805961f3f6fd5838e55b546212a9f4553ad0bd99e4",
-      "bytes": 930
+      "sha256": "a8f0394b425c3cd852b6cbdd4c7a064cca2427ac002f0f0709323d69959f8449",
+      "bytes": 1927
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "3eeb38bf8bda17f2517e265815bc4d6d3816cb88bf65483c8c3b41d592841e68",
-      "bytes": 1913
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "599b1c256ad97d9a77966f8e28fdcd0117d14efe8e7d1b5c66a6dd13d1176c6a",
+      "bytes": 758
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "78537101ce015b5878a244dcfbf895cc4da462211c59b0f2015a2c70eef3c9c2",
-    "bytes": 2724
+    "sha256": "bd17cdcb242bc46424dda188212abcae1d6a5c15bccba6318537b62af7776168",
+    "bytes": 2804
   }
 }

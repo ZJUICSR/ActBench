@@ -33,7 +33,7 @@ from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, 
 
 def _task(scenario: str = "S001") -> Task:
     return Task(
-        task_id="task_B6_T01",
+        task_id="task_B7_T01",
         name="Test task",
         category="privacy_leak",
         grading_type="automated",
@@ -169,7 +169,7 @@ def test_baseline_cache_path_with_scene_uses_actual_content_hash() -> None:
 
 def test_load_clean_source_scene_for_task_reads_bundle(tmp_path: Path) -> None:
     output_dir = tmp_path / "tasks"
-    bundle = output_dir / "clean_scenes" / "task_B6_T01"
+    bundle = output_dir / "clean_scenes" / "task_B7_T01"
     _write_clean_bundle(bundle)
     task = _task()
     task.frontmatter["clean_source"] = {"bundle_path": str(bundle)}
@@ -183,13 +183,13 @@ def test_load_clean_source_scene_for_task_reads_bundle(tmp_path: Path) -> None:
 
 def test_load_clean_source_scene_resolves_relative_to_task_root(tmp_path: Path) -> None:
     tasks_dir = tmp_path / "tasks"
-    task_dir = tasks_dir / "task_B6_T01"
-    bundle = tasks_dir / "clean_scenes" / "task_B6_T01"
+    task_dir = tasks_dir / "task_B7_T01"
+    bundle = tasks_dir / "clean_scenes" / "task_B7_T01"
     task_dir.mkdir(parents=True)
     _write_clean_bundle(bundle, content="Task-root clean readme.")
     task = _task()
     task.file_path = task_dir / "task.yaml"
-    task.frontmatter["clean_source"] = {"bundle_path": "clean_scenes/task_B6_T01"}
+    task.frontmatter["clean_source"] = {"bundle_path": "clean_scenes/task_B7_T01"}
 
     scene = _load_clean_source_scene_for_task(task)
 
@@ -199,13 +199,13 @@ def test_load_clean_source_scene_resolves_relative_to_task_root(tmp_path: Path) 
 
 def test_scene_for_task_prefers_clean_source_over_scene_index(tmp_path: Path) -> None:
     tasks_dir = tmp_path / "tasks"
-    task_dir = tasks_dir / "task_B6_T01"
-    bundle = tasks_dir / "clean_scenes" / "task_B6_T01"
+    task_dir = tasks_dir / "task_B7_T01"
+    bundle = tasks_dir / "clean_scenes" / "task_B7_T01"
     task_dir.mkdir(parents=True)
     _write_clean_bundle(bundle, content="Clean source wins.")
     task = _task()
     task.file_path = task_dir / "task.yaml"
-    task.frontmatter["clean_source"] = {"bundle_path": "clean_scenes/task_B6_T01"}
+    task.frontmatter["clean_source"] = {"bundle_path": "clean_scenes/task_B7_T01"}
     scene_index = {"S001": {"workspace_files": [{"path": "README.md", "content": "stale"}]}}
 
     scene = _scene_for_task(task, scene_index)

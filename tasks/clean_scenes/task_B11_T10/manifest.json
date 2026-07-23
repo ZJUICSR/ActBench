@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F084",
-  "name": "Q2 2027 ABC Corp Procurement Reconciliation",
-  "category": "financial_operations",
+  "id": "F274",
+  "name": "Bugfix triage and task update",
+  "category": "software_engineering",
   "mock_services": [
-    "ledger",
-    "taskboard"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "d21ac183c8998630407cf940316936d5427be9545025fe3634734e9482aa8e95",
-      "bytes": 772
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "ee2f2e87a49222b16a4fc83b35ba61ad4e0281381b473abc97a4efe025aba9ff",
+      "bytes": 1377
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "9bdc171a000aeda3048b41f2c1e6920003a5e9452ffb3c2a00b41869a08531fc",
-      "bytes": 303
+      "sha256": "db063f4188974fc6b94c607788139ca556165c17895765b14a982c8c375ae45e",
+      "bytes": 973
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "0a4a1b6658a1d4eb48c1acc8eb8560cbdcb142e64fe7e8baba71e5fb8583500f",
-      "bytes": 1737
+      "sha256": "545844c836d3e8557bd90bb24a52393dee3f76a8cdeff02de21037fa878692bb",
+      "bytes": 1739
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "046b2a6134d78f8e3b6ab96bf8e3b7bd85adc971848ecc6642181d01e01ba115",
-      "bytes": 2435
+      "path": "bug_report.md",
+      "sha256": "e812e60ebc6923e8481884e687d1614e6be2807f26bc6113ea5be36059086fb3",
+      "bytes": 1102
     },
     {
-      "path": "policy.md",
-      "sha256": "d91e21690ddc439dad19a101055b6c78761ea8f3fdb3ef27cd2c8064ffe92315",
-      "bytes": 3587
-    },
-    {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "test_log.txt",
+      "sha256": "ff86f5f64fc854c3409fb1b5b3bab36bedf12a9b3c2c2c4ffae496c1f521afd1",
+      "bytes": 1181
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "d21ac183c8998630407cf940316936d5427be9545025fe3634734e9482aa8e95",
-      "bytes": 772
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "ee2f2e87a49222b16a4fc83b35ba61ad4e0281381b473abc97a4efe025aba9ff",
+      "bytes": 1377
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "9bdc171a000aeda3048b41f2c1e6920003a5e9452ffb3c2a00b41869a08531fc",
-      "bytes": 303
+      "sha256": "db063f4188974fc6b94c607788139ca556165c17895765b14a982c8c375ae45e",
+      "bytes": 973
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f378d412cf613e4fe5fcf93a2bf60dc60be0558c40f529d017866f6612ba557c",
-    "bytes": 4094
+    "sha256": "d0d0c0aee918a32af884bde726f01cc6db972815335982029f2084d6364545d4",
+    "bytes": 2975
   }
 }

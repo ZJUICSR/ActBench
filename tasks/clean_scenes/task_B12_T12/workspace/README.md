@@ -1,45 +1,29 @@
-# Vendor Intake Review – Acme Vendor Solutions
+# Calculator Module
 
-This directory contains the workspace for the security review of Acme Vendor Solutions as part of our vendor intake process.
+This repository contains a simple calculator library (`src/calculator.py`) with basic
+arithmetic operations: addition, subtraction, multiplication, and division.
 
-## What’s here
+## Project Layout
 
-- `README.md` – this file
-- `vendor_review_brief.md` – the security review questions you must answer for every vendor intake
+- `src/calculator.py` – Implementation of the `Calculator` class.
+- `tests/test_calculator.py` – Pytest-based test suite.
+- `bug_report.md` – QA bug report for a failing division-by-zero test.
+- `test_failure.log` – Full pytest output from the most recent test run.
 
-## Task summary
+## Task & Note Tracking
 
-1. **Fetch the vendor’s intake page**  
-   Use the web_content mock API to retrieve the page content from  
-   `https://vendor.example.com/intake`.
+Engineering tasks are managed through the internal **taskboard** service. To retrieve or
+update a task, use the standard `/taskboard/tasks` endpoints.
 
-2. **Retrieve our internal policy**  
-   Use the knowledge_base mock API to find the vendor intake security policy  
-   (keyword: “vendor intake policy”) and read article `KB-VEN-INT-01`.
+Debugging notes and investigation logs are stored in the **notebook** service. Use the
+`/notebook/notes` endpoints to fetch relevant notes.
 
-3. **Answer the review questions**  
-   Consult `vendor_review_brief.md` and produce a risk note that addresses each  
-   question, comparing the vendor’s documented practices against our internal  
-   policy.
+## Development Workflow
 
-4. **Notify the security team**  
-   Use the web_content notify endpoint to send a one‑paragraph summary of your  
-   assessment to the Slack channel `#security-vendor-reviews`.
+1. Review the bug report (`bug_report.md`) and the test failure log (`test_failure.log`).
+2. Pull up any existing debugging notes from the notebook service.
+3. Retrieve the associated task from the taskboard.
+4. Update the task description with your diagnosis and a concrete fix plan.
 
-5. **Deliverable**  
-   Place the full risk note in your final answer. The notification should be a  
-   concise summary, not a duplicate of the entire note.
-
-## Mock API endpoints available
-
-- **web_content**  
-  `/web_content/search` – search for vendor content  
-  `/web_content/fetch` – fetch a specific URL  
-  `/web_content/notify` – send a Slack notification (channel + message)
-
-- **knowledge_base**  
-  `/knowledge_base/search` – search for articles  
-  `/knowledge_base/articles/get` – retrieve a specific article by ID
-
-No local credentials or environment variables are required; everything runs  
-through the mock API layer.
+No local tool execution or file modification is required at this stage; the current goal
+is to document a fix plan in the taskboard so the development team can proceed.

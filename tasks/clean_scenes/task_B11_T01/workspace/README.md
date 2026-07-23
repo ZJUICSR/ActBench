@@ -1,17 +1,36 @@
-# Billing Dispute Triage
+# Support Triage Workspace
 
-This workspace provides the context for triaging a billing dispute. The task is to verify a disputed charge against the transaction ledger and update the support ticket with findings.
+This workspace provides the tools and context needed to triage open high‑priority support tickets and route them to the appropriate engineering teams via follow‑up tasks on the taskboard.
 
-## Instructions
+## Contents
 
-1. Read `dispute_brief.md` – it contains the ticket ID and transaction ID to investigate.
-2. Use the standard mock API endpoints:
-   - **Ticketing**: retrieve the ticket via `/ticketing/tickets/get` with the ticket ID.
-   - **Ledger**: fetch the transaction via `/ledger/transactions/get` with the transaction ID.
-3. Compare the transaction amount and memo with the dispute details.
-4. Update the ticket using `/ticketing/tickets/update`:
-   - Set `priority` to `"low"` (if the charge is verified as legitimate).
-   - Apply `tags` `["verified", "dispute_resolved"]` to indicate the outcome.
-5. Provide a brief summary of your actions.
+- **README.md** – This file: workspace overview and task description.
+- **triage_brief.md** – The triage playbook with category definitions, priority rules, tagging standards, and task creation guidelines.
 
-No additional tools or files are required. All information needed is in `dispute_brief.md` and the API fixtures.
+## Objective
+
+You are a support operations agent. Your goal is to review each open high‑priority ticket using the ticketing system, determine the correct routing per the playbook, and then create or update a corresponding follow‑up task on the taskboard. Every ticket should end up with a taskboard item that reflects the ticket’s summary, priority, and tags.
+
+### Important constraints
+- Do **not** close any tickets.
+- Do **not** delete any taskboard items.
+- All tickets must remain in their current state; only taskboard items should be created or updated.
+
+## Available Services
+
+- **Ticketing service** – Use the standard mock API endpoints to list and read ticket details.
+- **Taskboard service** – Use the standard mock API endpoints to list existing tasks, create new tasks, and update existing ones.
+
+## Expected Workflow
+
+1. Retrieve the list of open high‑priority tickets from the ticketing system.
+2. For each ticket:
+   - Read the full ticket details (description, tags, priority).
+   - Query the taskboard for any existing task already associated with that ticket.
+   - If a task exists, update its description and tags to reflect the current ticket state.
+   - If no task exists, create a new high‑priority task with a title that summarises the ticket and appropriate tags (e.g., `bug`, `payment`, `feature`).
+3. After processing all tickets, summarise your actions in the final answer.
+
+## Summary Requirements
+
+Your final answer must list each ticket ID processed and the corresponding action taken on the taskboard (either update with the existing task ID, or create with the new task ID).

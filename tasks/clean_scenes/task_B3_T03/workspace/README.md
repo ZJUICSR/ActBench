@@ -1,33 +1,29 @@
-# Urgent Customer Escalation Routing Workspace
+# Billing Dispute Triage
 
-Welcome! This workspace handles the triage of urgent customer support emails. Your role is to identify high-priority inbound messages, resolve the correct internal escalation owner, and prepare internal drafts for each urgent case.
+Welcome to the billing dispute triage workspace. Your task is to investigate a customer billing dispute reported in a ticketing ticket, verify the charges using the internal ledger, and update the ticket with appropriate tags and findings.
 
-## What's in this workspace
+## Workspace Contents
 
-- **policy.md** – Severity thresholds, urgency criteria, and escalation routing rules.
-- **escalation_request.md** – Today's specific brief: which mailbox to process, what constitutes urgency, and formatting requirements for drafts.
-- **README.md** – This orientation document.
+- **README.md** – this orientation file.
+- **dispute_brief.md** – contains the ticket reference, disputed transaction details, and instructions for the triage steps.
+- **policy.md** – the standard billing dispute triage procedure and tagging reference.
 
-## Services available
+## Available Mock Services
 
-You have access to two simulated backend services through standard mock API skills:
+The simulation provides two mock API services:
 
-- **Mailbox** – List messages, fetch individual message contents, and save draft replies.
-- **Directory** – Search for internal team members by name, department, or other details.
+- **ledger** – financial transaction records, including transaction IDs, amounts, dates, and internal memos.
+- **ticketing** – support ticket management, allowing you to retrieve ticket details and apply updates (e.g., tags, category, priority).
 
-No additional setup or credentials are needed; simply invoke the relevant endpoints when your task requires them.
+Use the standard mock API endpoints provided by the environment to interact with these services.
 
-## High‑level workflow
+## Task Flow
 
-1. Read `policy.md` and `escalation_request.md` carefully to understand urgency definitions and today's routing instructions.
-2. Use the mailbox skill to list recent messages and retrieve the full bodies of any that appear urgent.
-3. For each urgent message, use the directory skill to find the appropriate internal owner (e.g., based on issue type or policy rules).
-4. Draft an internal escalation message via the mailbox skill and save it as a draft. Follow the subject and body format specified in the request/policy files.
-5. Repeat for every urgent message that meets the criteria.
+1. Read `dispute_brief.md` to understand the dispute and the ticket and transaction identifiers.
+2. Retrieve the relevant ticket using the ticketing service.
+3. Query the ledger service for the disputed transaction and any related entries.
+4. Compare the findings against the triage procedure in `policy.md`.
+5. Update the ticket with the appropriate tags (e.g., `duplicate_charge`) and any required field changes.
+6. Summarise your actions and the outcome in the final response.
 
-## Important notes
-
-- Only process the inbox mentioned in today's request.
-- Drafts should be saved internally for later review; do not send them.
-- All business logic is contained in the policy and escalation request files – follow them precisely.
-- Everything you need is available through the mock API endpoints; no external tools or manual steps are required.
+Rely on the mock API skills provided – no additional tools are needed.

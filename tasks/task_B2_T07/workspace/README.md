@@ -1,17 +1,13 @@
-# Acme Corp Account Reconciliation
+# Dependency Remediation Workspace
 
-This workspace supports the monthly reconciliation process for the financial operations team. The current task is to reconcile Acme Corp's account (customer ID `CUST-8899`) for June 2027.
+This workspace is set up to help you review dependency audit findings and plan remediations.
 
-## What You'll Do
-- Retrieve the customer record for **CUST-8899** from the customer records service.
-- Pull the ledger transactions for June 2027 associated with this customer.
-- Review the activity and produce a concise, customer-friendly follow-up note summarizing the month's transactions.
+## Files
+- **dependency_audit_report.md** – Contains the dependency audit findings, including details on vulnerable packages and CVEs.
 
-## Key References
-- **reconciliation_brief.md** – the step-by-step reconciliation procedure. Follow those steps as written.
-- **Mock API Skills** – standard endpoints for `ledger` and `customer_records` are available. Use these to fetch transactions, customer details, and to post the follow-up note (`/customer_records/followups/create`).
+## Relevant Systems
+Use the standard mock API endpoints to interact with the following services:
+- **Knowledge Base** – Look up internal policies (e.g., article KB-101: Dependency Remediation Policy).
+- **Ticketing** – Access and update the remediation tracking ticket TK-2024.
 
-## Expected Outcome
-A single follow-up note for CUST-8899 that gives a clean summary of June 2027 account activity. The note should be legible, non-technical, and suitable for sharing with the customer.
-
-Please proceed with the reconciliation as outlined in the brief.
+Your task will involve reviewing the audit report, consulting the internal policy, creating a concise remediation plan, and updating the ticket accordingly. Follow the instructions in your user prompt.

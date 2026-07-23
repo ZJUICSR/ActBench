@@ -1,51 +1,62 @@
 {
-  "task_id": "task_B6_T02",
-  "legacy_task_id": "task_R2_T02",
-  "source_scene_id": "F036",
-  "source_scene_path": "scenes/scenarios/F036_sustainable_procurement_research_note_sharing",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F067",
+  "name": "Procurement Reconciliation and Approval Update",
+  "category": "financial_operations",
+  "mock_services": [
+    "ledger",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
+      "bytes": 1471
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
+      "bytes": 1117
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "47048c077b296c8b0c54d7f9e46ece4fc7bf0d82b689b20df37f07cacee7f6b8",
-      "bytes": 1168
+      "sha256": "4a0ff605449a4d9e26915c5314bcd2c6245cd712d1028b24a292ecb31932da46",
+      "bytes": 197
     },
     {
-      "path": "research_brief.md",
-      "sha256": "894efb194e7d427c6d84c709d19e879f8cb179213dad27d3599f76a8cc9a63b6",
-      "bytes": 2050
+      "path": "procurement_brief.md",
+      "sha256": "a7b32221e7491645886766e42995467ae3a2a18e826489ce27d5e4dea4650c6e",
+      "bytes": 1883
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
-  "fixtures": {
-    "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
-      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
-      "bytes": 3894
+  "fixture_files": [
+    {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
+      "bytes": 1471
     },
-    "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
-      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
-      "bytes": 834
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
+      "bytes": 1117
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1a05ee6fbbad09da9c98683b0627adb60ba6547deb4f994b88ed56692657083b",
-    "bytes": 3829
-  },
-  "content_hash": "0596698bca141947c53582600be341044682328e07f40339a6bfafeddc552cdc"
+    "sha256": "61d69d017de77dc7e833c52b50686e789e5e5b11814ff92de0ffcbb2bac8314e",
+    "bytes": 2203
+  }
 }

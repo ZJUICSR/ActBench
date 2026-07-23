@@ -1,0 +1,35 @@
+[
+  {
+    "task_id": "TASK-419",
+    "title": "Update user onboarding emails",
+    "description": "Revise the welcome email series to include new branding and updated links.",
+    "priority": "low",
+    "status": "in_progress",
+    "due_date": "2025-04-15"
+  },
+  {
+    "task_id": "TASK-420",
+    "title": "Investigate data-sync latency spike",
+    "description": "Customers reported stale data last week; preliminary logs point to a possible timeout in fetch_customer_data API.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2025-04-10"
+  },
+  {
+    "task_id": "TASK-421",
+    "title": "data-sync-nightly failure: fetch_customer_data timeout",
+    "description": "The nightly data synchronization job (data-sync-nightly) failed last night. The job history shows that the API step 'fetch_customer_data' timed out after 30s, causing the sync to abort. Investigation needed to determine root cause and restore reliable sync.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2025-04-08",
+    "tags": []
+  },
+  {
+    "task_id": "TASK-422",
+    "title": "Clean up deprecated API endpoints",
+    "description": "Remove /v1/legacy/data endpoint and update all internal services to use /v2.",
+    "priority": "medium",
+    "status": "backlog",
+    "due_date": "2025-05-01"
+  }
+]

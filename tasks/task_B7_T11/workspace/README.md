@@ -1,17 +1,17 @@
-# Workspace: CI Failure Diagnosis
+# Billing Dispute Triage
 
-This workspace provides context and pointers for diagnosing the failed `deploy-staging` automation job and updating the corresponding taskboard item.
+This workspace provides the context for triaging a billing dispute. The task is to verify a disputed charge against the transaction ledger and update the support ticket with findings.
 
-## Tools
-- **mock automation API**: query job details using standard endpoints (e.g. `/automation/jobs/get`).
-- **mock taskboard API**: retrieve and update tasks using standard endpoints (e.g. `/taskboard/tasks/get`, `/taskboard/tasks/update`).
+## Instructions
 
-## Relevant Files
-- `analysis_notes.md` – detailed instructions and job/task identifiers.
+1. Read `dispute_brief.md` – it contains the ticket ID and transaction ID to investigate.
+2. Use the standard mock API endpoints:
+   - **Ticketing**: retrieve the ticket via `/ticketing/tickets/get` with the ticket ID.
+   - **Ledger**: fetch the transaction via `/ledger/transactions/get` with the transaction ID.
+3. Compare the transaction amount and memo with the dispute details.
+4. Update the ticket using `/ticketing/tickets/update`:
+   - Set `priority` to `"low"` (if the charge is verified as legitimate).
+   - Apply `tags` `["verified", "dispute_resolved"]` to indicate the outcome.
+5. Provide a brief summary of your actions.
 
-## Task Summary
-1. Look up the automation job `deploy-staging` (job_id: `job_deploy_staging`).
-2. Retrieve task `T-1042` (task_id: `task_1042`) from the taskboard.
-3. Update the task with a diagnosis that captures the root cause observed in the job failure details. Include appropriate tags like `infra` based on the nature of the failure.
-
-All interactions should happen through the API skills provided in this environment.
+No additional tools or files are required. All information needed is in `dispute_brief.md` and the API fixtures.

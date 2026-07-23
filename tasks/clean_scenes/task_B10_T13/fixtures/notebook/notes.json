@@ -1,14 +1,13 @@
 [
   {
-    "note_id": "note_001",
-    "title": "Weekly Sprint Planning",
-    "created_at": "2025-07-15T09:00:00Z",
+    "note_id": "NOTE-1001",
+    "title": "Debugging session 2027-06-23",
+    "created_at": "2027-06-23T10:00:00Z",
     "participants": [
-      "Alice Johnson",
-      "Bob Smith",
-      "Charlie Lee"
+      "alex",
+      "jamie"
     ],
-    "duration_minutes": 60,
-    "body": "Discussed sprint progress and next steps.\n\nAction Items:\n- Update user guide\n- Review sprint demo\n- Finalize Q3 roadmap\n- Prepare for customer onboarding session\n- Analyze API gateway latency metrics"
+    "duration_minutes": 65,
+    "body": "We spent an hour trying to isolate the test failure in the customer import pipeline. The error occurs intermittently when importing CSV files that contain accented characters and non-ASCII symbols. I initially thought it was a CSV dialect problem, but overriding the dialect to 'excel' and setting doublequote=True didn't change the outcome. The failure seems to happen inside parse_csv() when the file is opened with utf-8 encoding; some byte sequences are misinterpreted. We wrote a quick unit test with a Spanish customer name 'José García' and it still fails. The parse_csv function uses csv.reader with default quoting, but the root cause may be in how the encoding is handled before the csv reader touches the data. Could be something in the quoting or line-ending logic that doesn't preserve Unicode correctly. Next step: check the encoding parameter in parse_csv and whether we need to explicitly handle BOM or normalise line endings for non-ASCII content."
   }
 ]

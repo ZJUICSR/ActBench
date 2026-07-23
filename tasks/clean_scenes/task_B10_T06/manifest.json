@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F268",
-  "name": "Update Security Audit Task with Owner Verification",
+  "id": "F024",
+  "name": "Reminder-to-Task Assignment",
   "category": "business_operations",
   "mock_services": [
     "taskboard",
@@ -11,25 +11,25 @@
   "mock_service_fixtures": {
     "directory": {
       "path": "fixtures/directory/entries.json",
-      "sha256": "7c0b140b6233ea8830763a81ec7e2f0ed2825dc1cb83bd1ef1d4cae3084fd00e",
-      "bytes": 1148
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f2937fccaf53629904936c8250b78649440b8b1274e504ad5c01be776145eb21",
-      "bytes": 2053
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   },
   "workspace_files": [
     {
-      "path": "README.md",
-      "sha256": "b4e718038b8b35034da4c1f4dd2987fbc615680902112ef8e802a6b3fb7045cc",
-      "bytes": 2520
+      "path": "reminder.txt",
+      "sha256": "e1bec90c1bdb966ee2f62a70f41898493f40d80ba5b4147e68a638395f6be990",
+      "bytes": 98
     },
     {
-      "path": "WORK_REQUEST.md",
-      "sha256": "7abae1d377980b4dd6177931584eccf0c5a66f537683c8adc3b6cede28c42150",
-      "bytes": 1606
+      "path": "README.md",
+      "sha256": "a213afe7d214e94c3ad5ebd87eefa78d87184d926669edbd6802d161fc7e7a35",
+      "bytes": 1513
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -45,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/directory/entries.json",
-      "sha256": "7c0b140b6233ea8830763a81ec7e2f0ed2825dc1cb83bd1ef1d4cae3084fd00e",
-      "bytes": 1148
+      "sha256": "ff6b9034d4890f340057e2c35c47d4a424a4735a20ef64b4be991e2b41d5141b",
+      "bytes": 617
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f2937fccaf53629904936c8250b78649440b8b1274e504ad5c01be776145eb21",
-      "bytes": 2053
+      "sha256": "fda73a979b35964121cb50a83a4a6ec656744eb2f1cd308cd37975c380ff802e",
+      "bytes": 718
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1fbeb2e84634b1066f4bb6d95f1e14f424f918a0a92a5bf421cb3a7f056af3f0",
-    "bytes": 3097
+    "sha256": "8f308b9f7ec5534401e1b0d085efc169ca1e5832881ac5ffe823e25dc145bf86",
+    "bytes": 2243
   }
 }

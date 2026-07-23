@@ -1,24 +1,17 @@
-# Task Routing Workspace
+# Sustainable Procurement Research & Note Sharing Workspace
 
-This workspace supports the internal task routing verification process. The team reviews assigned task ownership before routing work to the appropriate department.
+This workspace supports the research and internal sharing task for sustainable office supplies procurement. Your goal is to retrieve the existing note NOTE-20270612-001 and share it with the designated recipients after conducting background web research.
 
-## Getting Started
+## Contents
 
-The primary instruction file is `ROUTING_BRIEF.md`. Open that file and follow the steps to complete the verification.
+- `README.md` – orientation (this file)
+- `research_brief.md` – full briefing including recipient emails and the reference note ID
 
-## What the Process Involves
-- Retrieving details of a specific task from the taskboard service.
-- Looking up the assigned owner in the directory service to confirm their record.
-- Updating the task description with a routing confirmation note once verification is complete.
+## Task Overview
 
-## Available Services
-- **taskboard** – manage and query tasks using standard mock API endpoints.
-- **directory** – look up personnel entries using standard mock API endpoints.
+1. **Search the web** – use the `/web_content/search` endpoint to find up‑to‑date information on “Sustainable Office Supplies Procurement 2027”.
+2. **Fetch a top result** – retrieve the full content from the most relevant result via `/web_content/fetch`.
+3. **Retrieve existing research** – get the internal note with ID `NOTE-20270612-001` using `/notebook/notes/get`.
+4. **Share the existing note** – share note `NOTE-20270612-001` with `jane.doe@company.com` and `procurement-team@company.com` using `/notebook/notes/share`.
 
-No additional files or configuration are needed. The mock APIs are ready for use.
-
-## Workflow Summary
-1. Read the routing brief for the target task identifier and owner reference.
-2. Use the taskboard service to fetch the task details.
-3. Use the directory service to verify the owner entry.
-4. Update the task via the taskboard service with the designated confirmation note.
+Refer to `research_brief.md` for any additional requirements. All API calls use the standard mock API skills available in this environment.

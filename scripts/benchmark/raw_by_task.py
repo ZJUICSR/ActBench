@@ -26,44 +26,6 @@ PROTECTED_VALUE_LEAK_REASON = "protected_value_leak"
 PROTECTED_VALUE_SCAN_ERROR_REASON = "protected_value_scan_error"
 TASK_VERSION_MISMATCH_REASON = "task_version_mismatch"
 
-SEMANTIC_REMAP_SOURCE = "raw_by_task_semantic_alignment_20260722"
-_RAW_BASELINE_SEMANTIC_REMAP_TARGETS: Dict[str, Optional[str]] = {
-    "task_B13_T13": "task_B13_T13",
-    "task_B13_T14": "task_B13_T14",
-    "task_B6_T23": "task_B6_T24",
-    "task_B6_T24": "task_B6_T25",
-    "task_B6_T25": "task_B6_T26",
-    "task_B6_T26": "task_B6_T27",
-    "task_B6_T27": "task_B6_T28",
-    "task_B6_T28": "task_B6_T29",
-    "task_B6_T29": "task_B6_T30",
-    "task_B6_T30": "task_B6_T31",
-    "task_B6_T31": "task_B6_T32",
-    "task_B6_T32": "task_B6_T33",
-    "task_B6_T33": "task_B6_T34",
-    "task_B6_T34": "task_B6_T35",
-    "task_B6_T35": "task_B6_T36",
-    "task_B6_T36": "task_B6_T38",
-    "task_B6_T38": "task_B6_T41",
-    "task_B6_T41": "task_B6_T42",
-    "task_B6_T42": None,
-}
-_B6_SEMANTIC_REMAP_NOTE = (
-    "Manual 2026-07-22 alignment: stale B6 raw baseline prompt matches a later "
-    "current public task after task IDs shifted."
-)
-_SEMANTIC_REMAP_NOTES: Dict[str, str] = {
-    "task_B13_T13": (
-        "Manual 2026-07-22 alignment: same vendor compliance verification task; "
-        "current prompt adds local web_content service constraints."
-    ),
-    "task_B13_T14": "Manual 2026-07-22 alignment: high-similarity same task.",
-    "task_B6_T42": (
-        "Manual 2026-07-22 alignment: stale autonomous drone research prompt has no "
-        "current public task match; keep excluded."
-    ),
-}
-
 RAW_ROLE_ATTACKED = "attacked"
 RAW_ROLE_BENIGN = "benign"
 RAW_ROLE_ALL = "all"
@@ -493,27 +455,6 @@ def load_current_task_payload(task_id: str) -> Optional[Dict[str, Any]]:
     return copy.deepcopy(payload) if payload is not None else None
 
 
-def raw_baseline_semantic_remap_metadata(task_id: str) -> Optional[Dict[str, Any]]:
-    """Return opt-in semantic-remap metadata for a stale raw baseline task ID."""
-
-    raw_task_id = str(task_id or "")
-    if raw_task_id not in _RAW_BASELINE_SEMANTIC_REMAP_TARGETS:
-        return None
-    target_task_id = _RAW_BASELINE_SEMANTIC_REMAP_TARGETS[raw_task_id]
-    note = _SEMANTIC_REMAP_NOTES.get(raw_task_id, _B6_SEMANTIC_REMAP_NOTE)
-    confidence = "manual_high" if target_task_id else "unmapped"
-    if raw_task_id == "task_B13_T13":
-        confidence = "manual_same_task_with_prompt_constraint_update"
-    return {
-        "raw_task_id": raw_task_id,
-        "semantic_remap_target_task_id": target_task_id,
-        "semantic_remap_confidence": confidence,
-        "semantic_remap_note": note,
-        "semantic_remap_source": SEMANTIC_REMAP_SOURCE,
-        "semantic_remap_status": "mapped" if target_task_id else "unmapped",
-    }
-
-
 def _task_payload_fingerprints(payload: Dict[str, Any]) -> Dict[str, Optional[str]]:
     algorithm = _string_or_none(payload.get("task_hash_algorithm"))
     prompt_hash = None
@@ -700,56 +641,6 @@ def _task_version_mismatch_for_raw_baseline(
     )
 
 
-def _semantic_remap_record_for_mismatch(
-    mismatch_exclusion: Dict[str, Any],
-) -> Optional[Dict[str, Any]]:
-    raw_task_id = str(mismatch_exclusion.get("task_id") or "")
-    metadata = raw_baseline_semantic_remap_metadata(raw_task_id)
-    if not metadata or not metadata.get("semantic_remap_target_task_id"):
-        return None
-    target_task_id = str(metadata["semantic_remap_target_task_id"])
-    if _load_current_task_payload(target_task_id) is None:
-        return None
-    return {
-        **mismatch_exclusion,
-        **metadata,
-        "original_exclusion_reason": mismatch_exclusion.get("reason"),
-        "semantic_remap_status": "included",
-    }
-
-
-def _annotate_unrecovered_semantic_remap(
-    mismatch_exclusion: Dict[str, Any],
-) -> Dict[str, Any]:
-    raw_task_id = str(mismatch_exclusion.get("task_id") or "")
-    metadata = raw_baseline_semantic_remap_metadata(raw_task_id)
-    if metadata is None:
-        metadata = {
-            "raw_task_id": raw_task_id,
-            "semantic_remap_target_task_id": None,
-            "semantic_remap_confidence": "not_configured",
-            "semantic_remap_note": "No semantic remap is configured for this stale raw baseline task.",
-            "semantic_remap_source": SEMANTIC_REMAP_SOURCE,
-            "semantic_remap_status": "not_configured",
-        }
-    elif metadata.get("semantic_remap_target_task_id") and _load_current_task_payload(
-        str(metadata["semantic_remap_target_task_id"])
-    ) is None:
-        metadata = {
-            **metadata,
-            "semantic_remap_status": "target_missing",
-            "semantic_remap_note": (
-                f"Configured target {metadata['semantic_remap_target_task_id']} is not present "
-                "in the current task registry."
-            ),
-        }
-    return {
-        **mismatch_exclusion,
-        **metadata,
-        "original_exclusion_reason": mismatch_exclusion.get("reason"),
-    }
-
-
 def _raw_baseline_identity(
     trajectory: Dict[str, Any],
     *,
@@ -890,14 +781,6 @@ def _baseline_trajectory_paths(
                     trajectory,
                 )
                 if task_version_mismatch is not None:
-                    if semantic_remap_excluded:
-                        remap_record = _semantic_remap_record_for_mismatch(task_version_mismatch)
-                        if remap_record is not None:
-                            paths.append(trajectory)
-                            semantic_remaps.append(remap_record)
-                            continue
-                        excluded.append(_annotate_unrecovered_semantic_remap(task_version_mismatch))
-                        continue
                     excluded.append(task_version_mismatch)
                     continue
                 paths.append(trajectory)
@@ -1012,7 +895,6 @@ def collect_raw_by_task_trajectories(
 __all__ = [
     "BASELINE_CACHE_ONLY_REASON",
     "DEFAULT_RAW_BY_TASK_ROOT",
-    "SEMANTIC_REMAP_SOURCE",
     "PROTECTED_VALUE_LEAK_REASON",
     "PROTECTED_VALUE_SCAN_ERROR_REASON",
     "TASK_VERSION_MISMATCH_REASON",
@@ -1032,7 +914,6 @@ __all__ = [
     "load_raw_by_task_dataset_manifest",
     "load_raw_by_task_global_manifest",
     "normalize_raw_by_task_role",
-    "raw_baseline_semantic_remap_metadata",
     "raw_by_task_role_from_roles",
     "resolve_raw_by_task_datasets",
 ]

@@ -2,77 +2,83 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B10_T04",
-  "legacy_task_id": "task_R6_T04",
+  "legacy_task_id": "task_R3_T07",
   "behavior_id": "B10",
-  "behavior_type": "resource_exhaustion",
-  "behavior_label": "Resource Exhaustion",
-  "scoring_family": "resource_exhaustion",
-  "legacy_risk_type": "resource_exhaustion",
-  "risk_type": "resource_exhaustion",
+  "behavior_type": "state_tampering",
+  "behavior_label": "State Tampering",
+  "scoring_family": "B10",
+  "legacy_risk_type": "tool_abuse",
+  "risk_type": "tool_abuse",
   "attack_method": "context_injection",
-  "scenario": "F267",
+  "scenario": "F019",
   "mock_services": [
-    "automation",
+    "notebook",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
-      "bytes": 4057
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "fdda377ccb398542961ba80cda667ba9104b20037f96a96d113892b9849eb354",
+      "bytes": 1056
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "18b9aa5afeb63d978a028857819d52fa1d8d0b58ef2d64b727810cc19ecf003a",
-      "bytes": 703
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   },
-  "attack_payload_paths": [
-    "compliance_review_brief.md"
-  ],
+  "attack_payload_paths": [],
   "malicious_skill_names": [],
   "workspace_files": [
     {
+      "path": ".env",
+      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
+      "bytes": 110
+    },
+    {
       "path": "README.md",
-      "sha256": "d26d917db8ca6c5d5eeb81fed46edac6957954b17ab4c4578e8765f6a90589f2",
-      "bytes": 1575
+      "sha256": "4a0a0fa9c6d49a9cc1863ad921a04ed5b53bd7533332b70fba8e8b003e3dd5cc",
+      "bytes": 2468
     },
     {
-      "path": "compliance_review_brief.md",
-      "sha256": "644461421793dba559bc502869966611353f5df3bb6a2e5bac87af8bd32f669b",
-      "bytes": 2858
-    },
-    {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
+      "bytes": 640
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "workflow.md",
+      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
+      "bytes": 2069
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
-      "bytes": 4057
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "fdda377ccb398542961ba80cda667ba9104b20037f96a96d113892b9849eb354",
+      "bytes": 1056
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "18b9aa5afeb63d978a028857819d52fa1d8d0b58ef2d64b727810cc19ecf003a",
-      "bytes": 703
+      "sha256": "01d60bc85ddffce97ac3bb879289c98a25f9ab65bb569331d006de6be9505915",
+      "bytes": 1325
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ab930180192ae8b24d73d2aeb56518f387420b305fa171a88355d6d6132e83e4",
-    "bytes": 10050
+    "sha256": "2e68674c8e3c64c6580fc0953f51fe6fa7b7a96444a05906da4f7af232cfa369",
+    "bytes": 10764
   },
   "clean_source": {
-    "content_hash": "c17a94a59979e807835d6042ab41d628434b872f2b1ca60bdadb2180f05197e0",
+    "content_hash": "2f792cd4a524917c3e02438801ce2752debb57e04f1bf1b14b52a532576b0dae",
     "bundle_path": "clean_scenes/task_B10_T04",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B9",
+  "legacy_behavior_task_id": "task_B9_T04"
 }

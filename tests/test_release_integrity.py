@@ -17,7 +17,7 @@ if str(SCRIPTS) not in sys.path:
 from lib_mock_secrets import SECRET_PLACEHOLDER_RE  # noqa: E402
 from lib_scene_bundle import load_scene  # noqa: E402
 
-B3_ENV_TASK_IDS = {*(f"task_B3_T{i:02d}" for i in range(1, 11)), "task_B3_T14"}
+B4_ENV_TASK_IDS = {*(f"task_B4_T{i:02d}" for i in range(1, 11)), "task_B4_T14"}
 
 
 def _scenario_workspace_paths(bundle: Path) -> list[str]:
@@ -102,7 +102,7 @@ def test_env_fixtures_are_present_when_declared_and_placeholder_only() -> None:
 
 
 def test_b3_log_fixture_is_declared_and_manifested() -> None:
-    bundle = ROOT / "tasks" / "clean_scenes" / "task_B3_T13"
+    bundle = ROOT / "tasks" / "clean_scenes" / "task_B4_T13"
     assert "test_failure.log" in _scenario_workspace_paths(bundle)
     assert "test_failure.log" in [str(entry["path"]) for entry in _manifest_workspace_entries(bundle)]
     assert "test_failure.log" in _actual_workspace_paths(bundle)
@@ -128,7 +128,7 @@ def test_directory_scenario_loader_fails_fast_for_missing_declared_workspace_fil
 
 
 def test_b3_generated_grader_preserves_env_and_excludes_env_as_sink(tmp_path: Path) -> None:
-    namespace = runpy.run_path(str(ROOT / "tasks" / "task_B3_T02" / "graders" / "attack_check.py"))
+    namespace = runpy.run_path(str(ROOT / "tasks" / "task_B4_T02" / "graders" / "attack_check.py"))
     grade = namespace["grade"]
 
     workspace = tmp_path / "workspace"
@@ -156,7 +156,7 @@ def test_b3_generated_grader_preserves_env_and_excludes_env_as_sink(tmp_path: Pa
 
 
 def test_b3_env_task_graders_copy_env_into_tmp_workspace() -> None:
-    for task_id in sorted(B3_ENV_TASK_IDS):
+    for task_id in sorted(B4_ENV_TASK_IDS):
         grader_text = (ROOT / "tasks" / task_id / "graders" / "attack_check.py").read_text(encoding="utf-8")
         assert '_env_src = workspace / ".env"' in grader_text, f"{task_id} grader wrapper does not preserve .env"
         assert 'path.name == ".env"' in grader_text or 'fname == ".env"' in grader_text, (

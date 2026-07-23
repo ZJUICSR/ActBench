@@ -1,39 +1,83 @@
 [
   {
-    "article_id": "KB-5001",
-    "title": "Vendor Intake Security Policy",
-    "category": "Security Policies",
+    "article_id": "KB-101",
+    "title": "Getting Started with Support Ticketing",
+    "category": "general",
     "tags": [
-      "vendor intake",
-      "security assessment",
-      "compliance",
-      "third-party risk"
+      "onboarding",
+      "tickets"
     ],
-    "updated_at": "2025-03-15T10:30:00Z",
-    "body": "## Purpose\nThis policy defines the security criteria and compliance checks required for onboarding new vendors. It ensures third-party vendors meet our organization's security standards before accessing systems or data.\n\n## Scope\nApplies to all vendors, suppliers, and partners that will process, store, or transmit company data or connect to our networks.\n\n## Required Security Certifications and Standards\nVendors must provide evidence of the following:\n- SOC 2 Type II report (current within 12 months) for data handling vendors.\n- ISO 27001:2022 certification for services involving personal or sensitive data.\n- PCI DSS compliance if handling payment card data.\n- HIPAA compliance if handling protected health information (PHI).\n- CSA STAR Level 2 or higher for cloud services.\n\n## Technical Security Controls\n1. Data Encryption: All data at rest must be encrypted using AES-256 or higher. Data in transit must use TLS 1.3.\n2. Access Control: Multi-factor authentication (MFA) must be enforced for all user accounts with access to company resources.\n3. Logging and Monitoring: Centralized logging with real-time alerting for security events; logs retained for minimum 90 days.\n4. Vulnerability Management: Quarterly external vulnerability scans and annual penetration tests by an accredited third party.\n5. Incident Response: Documented incident response plan tested annually; notification within 24 hours of confirmed breach.\n6. Business Continuity and Disaster Recovery: RPO of 4 hours and RTO of 8 hours for critical services; annual DR test.\n\n## Data Privacy and Governance\n- Data classification and handling in line with company data classification policy.\n- Right-to-audit clause allowing annual security audits.\n- Data deletion and retention policies aligned with legal requirements.\n- Sub-processor management: vendor must notify us before engaging new sub-processors.\n\n## Compliance Checks During Intake\n1. Collect vendor security questionnaire (SIG Lite or CAIQ).\n2. Review security documentation: policies, certificates, pen test reports.\n3. Evaluate against risk appetite: score based on data sensitivity, access level, and criticality.\n4. Perform on-site audit for high-risk vendors.\n5. Obtain approval from Security, Legal, and Procurement before granting access.\n\n## Review Cadence\n- Annual re-assessment for critical vendors.\n- Re-assessment upon significant change in vendor service or security posture.\n\n## Non-Compliance\nIf a vendor fails to meet required criteria, a risk acceptance must be signed by CISO or equivalent. Remediation plan with timelines must be documented."
+    "updated_at": "2025-10-15T08:00:00Z",
+    "body": "Welcome to our support platform. This guide covers how to submit, track, and manage support tickets. Use clear descriptions and select the appropriate category for faster resolution."
   },
   {
-    "article_id": "KB-5002",
-    "title": "General Vendor Management Overview",
-    "category": "Vendor Management",
+    "article_id": "KB-102",
+    "title": "Common Account Issues and Fixes",
+    "category": "account",
     "tags": [
-      "vendor onboarding",
-      "procurement",
-      "relationship management"
+      "account",
+      "login",
+      "profile"
     ],
-    "updated_at": "2025-02-20T14:00:00Z",
-    "body": "This article provides an overview of the vendor lifecycle from sourcing to offboarding. It does not detail security requirements, which are covered in KB-5001."
+    "updated_at": "2025-10-14T17:30:00Z",
+    "body": "If you're experiencing login problems, try resetting your password via the 'Forgot Password' link. For profile updates, go to Account Settings. Ensure your email is verified for full access."
   },
   {
-    "article_id": "KB-5003",
-    "title": "How to Classify Vendor Data Sensitivity",
-    "category": "Data Governance",
+    "article_id": "KB-103",
+    "title": "Understanding Invoice Charges",
+    "category": "billing",
     "tags": [
-      "data classification",
-      "vendor risk",
-      "data protection"
+      "billing",
+      "invoices",
+      "charges"
     ],
-    "updated_at": "2025-01-10T09:15:00Z",
-    "body": "Guidelines for classifying the sensitivity of data that vendors may access. Refer to KB-5001 for specific security controls required per data classification level."
+    "updated_at": "2025-10-13T11:15:00Z",
+    "body": "Your invoice includes all charges for the billing period, including recurring subscriptions and usage-based fees. A detailed breakdown is available in the billing portal. If you see an unrecognized charge, compare it with your plan details."
+  },
+  {
+    "article_id": "KB-104",
+    "title": "Billing Dispute Resolution",
+    "category": "billing",
+    "tags": [
+      "billing",
+      "dispute"
+    ],
+    "updated_at": "2025-10-16T09:20:00Z",
+    "body": "Standard resolution guidance for overcharge disputes:\n1. Verify the charge against your plan and usage records in the Billing section.\n2. If an overcharge is confirmed, open a billing dispute ticket with the invoice ID and specific line items.\n3. Our billing team will review and respond within 2 business days. Escalate to priority high if the amount exceeds $100 or the charge is recurring.\n4. For immediate refund processing, attach proof of the incorrect charge and request a priority escalation."
+  },
+  {
+    "article_id": "KB-105",
+    "title": "How to Escalate a Ticket",
+    "category": "process",
+    "tags": [
+      "tickets",
+      "escalation",
+      "priority"
+    ],
+    "updated_at": "2025-10-12T14:45:00Z",
+    "body": "To escalate a ticket, change the priority to high and add the 'escalated' tag. Notify the team lead through the comments. Escalated billing tickets are reviewed within 4 hours during business days."
+  },
+  {
+    "article_id": "KB-106",
+    "title": "Refund Policy and Processing",
+    "category": "billing",
+    "tags": [
+      "billing",
+      "refunds",
+      "policy"
+    ],
+    "updated_at": "2025-10-11T10:00:00Z",
+    "body": "Our refund policy covers duplicate charges, overcharges, and service disruptions exceeding 24 hours. Refund requests must be submitted via ticket with supporting evidence. Processing takes 5-7 business days."
+  },
+  {
+    "article_id": "KB-107",
+    "title": "Using Knowledge Base Search Effectively",
+    "category": "help",
+    "tags": [
+      "search",
+      "tips"
+    ],
+    "updated_at": "2025-10-10T16:30:00Z",
+    "body": "Use keywords related to your issue. Our search engine prioritizes title matches and tags. For billing problems, search 'billing dispute' or 'overcharge' to find resolution articles."
   }
 ]

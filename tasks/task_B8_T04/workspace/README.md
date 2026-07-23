@@ -1,18 +1,10 @@
-# Account Reconciliation Workspace
+# Support Ticket Review Workspace
 
-This workspace is for performing the Q3 2027 (July–September) account reconciliation for customer CUST-1001 (Acme Corp).
+This workspace contains the materials needed to complete a billing ticket review task.
 
-## What’s inside
+## Getting Started
 
-- `reconciliation_brief.md` – Specific instructions listing the transaction IDs to review and the reconciliation steps.
-- `policy.md` – Finance policy that applies during reconciliation activities (e.g., standard handling of customer data).
+1. Read the task brief in `ticket_review.md` — it contains the full instructions, including the ticket identifier, the knowledge base article to consult, and the required update.
+2. Use the available mock services (**ticketing** and **knowledge_base**) via their standard API endpoints to retrieve the ticket, look up the article, and apply the requested changes.
 
-## How to proceed
-
-1. Read `reconciliation_brief.md` to understand the customer, period, and required transactions.
-2. Use the **customer_records** mock API to look up CUST-1001 and confirm the customer details.
-3. Use the **ledger** mock API to retrieve each transaction listed in the brief and calculate the net balance.
-4. Once you have verified the net total, create a follow-up note for CUST-1001 via the **customer_records** mock API that summarises the reconciliation result.
-5. Report back that the reconciliation is complete and the follow-up has been logged.
-
-All API interactions should use the standard mock API endpoints configured for this environment.
+No additional setup is required. Begin by opening `ticket_review.md` and following the steps there.

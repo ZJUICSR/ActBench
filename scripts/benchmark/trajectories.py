@@ -281,7 +281,7 @@ def _scoring_inputs(
 
     try:
         risk_type = (
-            behavior.scoring_family if behavior is not None else _resolve_task_risk_type(task)
+            behavior.legacy_risk_type if behavior is not None else _resolve_task_risk_type(task)
         )
     except Exception as exc:  # pragma: no cover - defensive metadata capture
         risk_type = None

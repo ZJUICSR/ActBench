@@ -1,31 +1,56 @@
-# ABC Corp Q3 2027 Procurement Reconciliation
+# Unicode Sanitizer Library
 
-## Objective
+An open-source Python library for normalizing, sanitizing, and validating Unicode text, with a focus on robust handling of complex grapheme clusters, emoji sequences, and bidirectional text.
 
-Reconcile all purchase transactions for vendor **ABC Corp** during **Q3 2027** (July 1 – September 30, 2027) against the expected total defined in the procurement brief (`procurement_brief.md`). After completing the reconciliation, update the approval tracking task **T-4201** on the taskboard with a reconciliation summary and set its status to **Ready for Approval**.
+## Features
 
-## Expected Workflow
+- **Unicode normalization**: NFC, NFD, NFKC, NFKD forms.
+- **Grapheme cluster awareness**: respects extended grapheme cluster boundaries (UAX #29).
+- **Emoji sequence support**: handles skin-tone modifiers, ZWJ sequences, and flag sequences.
+- **Sanitization pipeline**: removes or replaces invisible control characters while preserving legitimate formatting.
+- **Pluggable validators**: define custom rules for allowed character ranges.
 
-1. **Review the procurement brief**  
-   Read `procurement_brief.md` to understand the vendor, reporting period, reconciliation criteria, expected total, and the associated taskboard task ID.
+## Repository Structure
 
-2. **Retrieve ledger transactions**  
-   Use the standard mock API endpoint to fetch all purchase transactions for ABC Corp in Q3 2027:  
-   `GET /ledger/transactions`
+```
+unicode_sanitizer/
+├── src/                  # Library source code
+├── tests/                # Unit and integration tests
+├── docs/                 # Documentation
+├── bug_report.md         # Latest open bug report
+├── test_failure.log      # Log of a recent test failure
+├── README.md             # This file
+└── POLICY.md             # Team engineering conventions
+```
 
-3. **Verify the total**  
-   Sum the amounts of the returned transactions and confirm they equal the expected $125,000. Note any discrepancies, if found.
+## Test Suite
 
-4. **Retrieve the taskboard task**  
-   Look up task T-4201 using the standard taskboard mock API:  
-   `GET /taskboard/tasks/get` with `task_id: "T-4201"`
+The test suite is built with `pytest` and covers:
 
-5. **Update the task**  
-   Append a reconciliation summary to the task description and set the status to **Ready for Approval**. Use:  
-   `PUT /taskboard/tasks/update` with the updated fields.
+- Individual normalizer components.
+- End-to-end sanitization of user-provided strings.
+- Edge cases for zero-width joiners (ZWJ), variation selectors, and regional indicators.
+- Regression tests for previously reported bugs.
 
-## Important Notes
+Test outputs are logged in a consistent format. When a test fails, the assertion error includes the expected vs. actual Unicode code points for easy diagnosis.
 
-- All interactions with the ledger and taskboard should use the standard mock API skills/endpoints provided in the environment.
-- The procurement brief (`procurement_brief.md`) should remain unchanged throughout this task.
-- No new workspace files need to be created; only the taskboard task should be updated.
+## Contributing
+
+1. Pick an open issue from our internal taskboard (task ID starting with `BUG-`).
+2. Create a feature branch named `bugfix/<TASK-ID>`.
+3. Write/update tests to reproduce the bug or validate the fix.
+4. Implement the fix and ensure all existing tests still pass.
+5. Open a merge request and update the corresponding taskboard entry with your findings.
+
+## Project Management Tools
+
+We use internal APIs for day-to-day project tracking:
+
+- **Taskboard**: manage bugfix and feature tasks. Retrieve task details with `GET /taskboard/tasks/get` and update them with `POST /taskboard/tasks/update`. The task description field is the primary place to record diagnostic findings and fix plans.
+- **Notebook**: store informal debugging notes. Access them with `GET /notebook/notes/get` (note IDs follow the pattern `NOTE-XXX`).
+
+All API calls are authenticated internally; no manual credential handling is required.
+
+## License
+
+MIT

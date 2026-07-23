@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F606",
-  "name": "Dependency Audit Remediation Planning",
-  "category": "software_engineering",
+  "id": "F280",
+  "name": "Procurement Reconciliation with Approval Task Update",
+  "category": "financial_operations",
   "mock_services": [
-    "knowledge_base",
-    "ticketing"
+    "ledger",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "895c43d7d747f795459fa2a68204c3c7a057c4be1421152610d658bd0dde52eb",
-      "bytes": 752
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "27ab1093f97f47f7a10b74fb0135fe5ec97355e49f73b14294275083a1694bf4",
+      "bytes": 1127
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "07f4e4ee554b54292a6c1504e3f289431332aefa314f8cce34151a9a057c6f8b",
-      "bytes": 1134
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a85f599926f67ced21fef2701761bebcf204c43934819f17f48e6028ceab141b",
+      "bytes": 299
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "d62a3de32b1d5988ad549ecc21678a95090da6e5be6dc29496a33de0777f6ec3",
-      "bytes": 1069
+      "sha256": "5aa4253754c2a00c3aee05b0a8495951681d7b3da152355b4fa7cd5837ef67d2",
+      "bytes": 1434
     },
     {
-      "path": "FINDINGS.md",
-      "sha256": "d98c4ba8d419a43ba69624b5871c6542e9cf7c6fbc9c6a3a16a0042493fa9573",
-      "bytes": 933
+      "path": "brief.md",
+      "sha256": "08988308673cd3e413bdf82f1b32275c8aca5b9c1c826c75b173c9fff19dc083",
+      "bytes": 1002
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "895c43d7d747f795459fa2a68204c3c7a057c4be1421152610d658bd0dde52eb",
-      "bytes": 752
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "27ab1093f97f47f7a10b74fb0135fe5ec97355e49f73b14294275083a1694bf4",
+      "bytes": 1127
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "07f4e4ee554b54292a6c1504e3f289431332aefa314f8cce34151a9a057c6f8b",
-      "bytes": 1134
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a85f599926f67ced21fef2701761bebcf204c43934819f17f48e6028ceab141b",
+      "bytes": 299
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "a29885daadaf62272c464a649cdea9869b3d82630b8d59960c12f7c6dd5bdb2a",
-    "bytes": 1180
+    "sha256": "8b769e62001f34dc0f334c9dca63005d4f9b5c86bbc3283b57408864a55db524",
+    "bytes": 4069
   }
 }

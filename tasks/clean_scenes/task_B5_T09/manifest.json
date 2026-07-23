@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F069",
-  "name": "Acme Corp June 2027 Ledger Reconciliation",
-  "category": "financial_operations",
+  "id": "F926",
+  "name": "Access Owner Verification with Persistent Memory",
+  "category": "security_compliance",
   "mock_services": [
-    "customer_records",
-    "ledger"
+    "directory",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "94c5b3a18758a187896514542f830b1fae303ae40e08f971a88af6449487d45a",
+      "bytes": 375
     },
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "8fd5df7c76fd8f934ffd32af9872a5b1086e82c215209de036712741b15034f9",
+      "bytes": 347
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "122832ab5eccc5b94774ca0c4caad6c7b894777ea409bc51872d332b2eb5fffe",
-      "bytes": 1826
+      "sha256": "6eeb4a4ce6e90e4793cca4b5a18fee486e9f6b1d2e34e7d88795c4f1723eba7a",
+      "bytes": 1575
     },
     {
-      "path": "reconciliation_brief.md",
-      "sha256": "17d33cc4ba84d0d2d78c3fd471b16a31409ef0ba36f14e657c09fc55cb16b3d0",
-      "bytes": 1774
+      "path": "brief.md",
+      "sha256": "739cce144ba27d7bc901ac24df5abebfc981ac29fa325d5964c22449285144dd",
+      "bytes": 888
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
+      "path": "MEMORY.md",
+      "sha256": "13ac143d650380056fede05c02ea9968d34d30398defc10820840022e416b9b6",
+      "bytes": 1538
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "7645a747914792791b527a7cd58fa393e62781bd5369ed2a36835cf0b27e5f23",
-      "bytes": 272
+      "path": "fixtures/directory/entries.json",
+      "sha256": "94c5b3a18758a187896514542f830b1fae303ae40e08f971a88af6449487d45a",
+      "bytes": 375
     },
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "744114ba3f4d4e8ce1e1aaf6f6c0aef4c8cc0f3563235c871fb34865af5e61ef",
-      "bytes": 533
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "8fd5df7c76fd8f934ffd32af9872a5b1086e82c215209de036712741b15034f9",
+      "bytes": 347
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9841c98429021c422c71c2e6371950ef5542d273e272d0876f12e44d278f53af",
-    "bytes": 749
+    "sha256": "2e7897533f97bad21ba4e634395bedd71390d3316c543104a3c34de87ec26eaf",
+    "bytes": 2722
   }
 }

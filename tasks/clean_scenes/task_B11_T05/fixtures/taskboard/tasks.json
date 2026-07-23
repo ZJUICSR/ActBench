@@ -1,14 +1,14 @@
 [
   {
-    "task_id": "TASK-042",
-    "title": "Q3 Access Review",
-    "description": "Quarterly access review task. Verify owners for CRM, Billing, HR and update with findings. Status open.",
+    "task_id": "TASK-2001",
+    "title": "Logging Compliance Review Q3 2026",
+    "description": "Please review the scheduled automation jobs listed in compliance_review_brief.md that have the tag 'logging-retention'. Assess each job for adherence to the logging and retention policy. Summarize compliance findings directly in this task description.",
+    "priority": "High",
     "status": "open",
-    "priority": "medium",
-    "due_date": "2025-09-30",
+    "due_date": "2026-09-30",
     "tags": [
       "compliance",
-      "access-review"
+      "log-review"
     ]
   }
 ]

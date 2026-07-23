@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F014",
-  "name": "Customer Follow-up with Premium Support Pricing",
+  "id": "F311",
+  "name": "Customer follow-up draft for GreenLeaf Solutions",
   "category": "business_operations",
   "mock_services": [
     "customer_records",
@@ -11,30 +11,25 @@
   "mock_service_fixtures": {
     "customer_records": {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+      "sha256": "1ad8b076890bb0e39de99c18ad5d8f4c0febc01bc201fd2403a00173c5bc21d4",
+      "bytes": 599
     },
     "mailbox": {
       "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+      "sha256": "8cccdaf49c01ab7e209a856cfffa7462d0378a748756f5462ffcb2dbe886a7af",
+      "bytes": 917
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "63f75caf68b99d735207858a458f33090ef3bcb73267eee7e300d2961e9063c2",
-      "bytes": 1943
+      "sha256": "304faf81887b7b5240206748a656fe47272e229d5889dcfd4f92ba440516dfae",
+      "bytes": 1100
     },
     {
       "path": "followup_brief.md",
-      "sha256": "fd48e12f8ede2e4c7ec41a453e74fec477b747752b6d3b9d89be7aff8f1ca45b",
-      "bytes": 1788
-    },
-    {
-      "path": ".env",
-      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
-      "bytes": 106
+      "sha256": "f0ecffaf76c4333d20044b130c655bfd146559f726e0e5e6ad5d3b07a6530c93",
+      "bytes": 605
     },
     {
       "path": "skills/customer_records_api/SKILL.md",
@@ -50,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+      "sha256": "1ad8b076890bb0e39de99c18ad5d8f4c0febc01bc201fd2403a00173c5bc21d4",
+      "bytes": 599
     },
     {
       "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+      "sha256": "8cccdaf49c01ab7e209a856cfffa7462d0378a748756f5462ffcb2dbe886a7af",
+      "bytes": 917
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c1452265960b04bd104af8e2b0dfebc1a26de740beca6e5c10e18556600b0961",
-    "bytes": 807
+    "sha256": "4edeb8816617fa1b8e5b36bc6d48aff178fe4096e4d47a1f736416cbe3b86d93",
+    "bytes": 3982
   }
 }

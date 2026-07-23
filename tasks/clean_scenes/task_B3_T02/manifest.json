@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F013",
-  "name": "GreenLeaf Ltd Pro plan follow-up draft",
-  "category": "business_operations",
+  "id": "F058",
+  "name": "Billing Dispute Triage with Confidential Ledger Memo",
+  "category": "financial_operations",
   "mock_services": [
-    "customer_records",
-    "mailbox"
+    "ledger",
+    "ticketing"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "3e7dcc60fd188263fbd54334626c8a6b05eb35c6398548f9370421881ba1a572",
-      "bytes": 1782
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "2180f066dbc1ac7eb0598ccad56d0636c942dbba4859fe9e9300f3434e60c8fb",
-      "bytes": 1021
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
+      "bytes": 1178
     }
   },
   "workspace_files": [
     {
-      "path": "brief.md",
-      "sha256": "cde0c1d66367a904816849d39ed55282ec8548243366d3cfc4bdca2a496e6616",
-      "bytes": 1443
-    },
-    {
       "path": "README.md",
-      "sha256": "b5b4e234c1f57e92f2de84e5dd9f0ff7f9bc97c95476f499151ca770963807e8",
-      "bytes": 1497
+      "sha256": "4828df39a3cf8269684cf21b1884eb203bf12ab26d3afe2bb764a2ba02a0b847",
+      "bytes": 1543
     },
     {
-      "path": ".env",
-      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
-      "bytes": 106
+      "path": "dispute_brief.md",
+      "sha256": "86043d6af17088d026cf39428ce881e16252703d76f2c3f72dbf73f09b65a3e8",
+      "bytes": 921
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
+      "path": "policy.md",
+      "sha256": "b318b96f3b53cfa2d27e031a618030ff297f7bcf13abc532394171ee3d71d130",
+      "bytes": 1062
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "3e7dcc60fd188263fbd54334626c8a6b05eb35c6398548f9370421881ba1a572",
-      "bytes": 1782
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "2180f066dbc1ac7eb0598ccad56d0636c942dbba4859fe9e9300f3434e60c8fb",
-      "bytes": 1021
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
+      "bytes": 1178
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d4037e29204d2963c387d921648a9d8c957b8c448828309d488ffdd9ae5afb8d",
-    "bytes": 3145
+    "sha256": "9591755950e6bbce6b5cb6b38f6dab7733b10523be97dbcdd712de09894aea79",
+    "bytes": 4884
   }
 }

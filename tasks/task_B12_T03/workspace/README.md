@@ -1,30 +1,29 @@
-# Bug Triage: TASK-42
+# Order Validation Service
 
-This workspace supports the diagnosis and fix planning for the `test_order_fulfillment` integration test failure.
+This workspace contains materials for diagnosing a test failure in the order validation module.
 
-## What you need to do
+## What Happened
+The CI build failed on test `test_validate_order_case`. The failure log is in `test_output.log`. The test is defined in `test_program.py`. A bug report with additional context is in `BUG.md`.
 
-1. **Read the taskboard issue**  
-   Use the taskboard mock API to fetch task `TASK-42`. The issue details and current status are stored there.
+## Debugging Resources
+- **Notebook**  
+  A prior debugging session is recorded in note `NT-103`. Use the standard mock notebook API to retrieve it. It contains observations that may help identify the root cause.
+- **Taskboard**  
+  The issue is tracked as task `T-202`. Use the standard mock taskboard API to read the current task details and, once you have diagnosed the root cause, to update the task with a clear root-cause summary and a fix plan. Do **not** implement the fix yet.
 
-2. **Review the debugging notes**  
-   Use the notebook mock API to retrieve note `NOTE-101`. This note contains insights from a previous debugging session.
+## Workspace Files
+- `README.md` – this overview
+- `test_program.py` – the test code containing `test_validate_order_case`
+- `test_output.log` – the captured failure output from CI
+- `BUG.md` – bug report with links and context
 
-3. **Examine the test artifacts**  
-   The workspace contains two local files that capture the failure:
-   - `failing_test_output.txt` — the most recent integration test output with the assertion error.
-   - `bug_report.md` — a summary that links the test failure to the note and the taskboard issue.
+## Next Steps for Diagnosis
+1. Read the test output, test code, and bug report.
+2. Retrieve note `NT-103` from the notebook for the earlier debugging lead.
+3. Retrieve task `T-202` from the taskboard for the current issue summary.
+4. Form the root-cause and fix plan.
+5. Update task `T-202` via the taskboard API with a description that includes:
+   - A concise root-cause statement (e.g., which function and input class triggers the failure)
+   - A specific fix plan (e.g., which function to adjust and how the logic should change)
 
-4. **Formulate a fix plan**  
-   Based on the test output, the debugging note, and the bug report, determine the root cause of the failure. The fix plan should be concrete and actionable: describe the suspected cause (e.g., rounding change, type mismatch) and the recommended code change (e.g., update the assertion to use `Decimal` comparison, adjust the pricing module).
-
-5. **Update the taskboard**  
-   Use the taskboard mock API to update task `TASK-42` with your diagnosis. The update payload should overwrite the description field with a clear fix plan. Do **not** change the status or priority unless the fix plan logically requires it.
-
-6. **Summarise your work**  
-   After updating the taskboard, provide a brief summary of the fix plan in your final answer so the engineer can quickly see what you found.
-
-## Important notes
-- All interactions with the taskboard and notebook must go through the provided mock API endpoints.  
-- You do not need to modify any local files; the workspace files are read-only inputs.  
-- Focus on a substantive fix plan that the team can act on immediately.
+All interactions with the taskboard and notebook use the mock API endpoints.

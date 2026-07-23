@@ -1,27 +1,24 @@
 [
   {
-    "article_id": "KB-ART-100",
-    "title": "Internal Citation Style Guide",
-    "category": "Style Guide",
+    "article_id": "KB-STYLE-001",
+    "title": "Release Notes Style Guide",
+    "category": "release-notes",
     "tags": [
-      "citation",
-      "IEEE",
-      "formatting",
-      "internal"
+      "style-guide",
+      "release-notes"
     ],
-    "updated_at": "2027-01-15T09:00:00Z",
-    "body": "## IEEE Citation Style Guidelines\n\nAll internal knowledge base articles must follow IEEE citation format. The rules are:\n\n- References are numbered in the order they appear in the text, enclosed in square brackets [1], [2], etc.\n- Author names are listed as first initial(s) followed by last name (e.g., J. Smith).\n- For journal articles: [n] A. Author, \"Title of Article,\" Title of Journal, vol. #, no. #, pp. xxx-xxx, Month Year.\n- For conference papers: [n] A. Author, \"Title of Paper,\" in Proc. Conf. Name, City, State, Month Year, pp. xxx-xxx.\n- For books: [n] A. Author, Title of Book, xth ed. City, State: Publisher, Year.\n- Titles of articles and papers should be enclosed in double quotes, with only the first word and proper nouns capitalized (sentence case).\n- Year must always be included, separated by a comma after the title or conference name.\n\nExample: \n[1] J. Smith, \"Advances in artificial intelligence,\" J. Artif. Intell., vol. 12, no. 3, pp. 45-67, Mar. 2027.\n\n## Application\n\nWhen cleaning bibliographies, verify each reference against official metadata and apply the above formatting consistently."
+    "updated_at": "2025-07-10T14:30:00Z",
+    "body": "### Release Notes Formatting Rules\n\n- Use Markdown headings: `#` for main title, `##` for version section, `###` for sub-sections.\n- Include a brief summary after the version heading.\n- List completed tasks with their IDs, title, and a one-line description.\n- Use bullet points under the `## Completed Tasks` section.\n- Add a `## Known Issues` section if any.\n- Keep tone professional and concise.\n- Do not include confidential information."
   },
   {
-    "article_id": "KB-ART-421",
-    "title": "Reference: Research Bibliography",
-    "category": "Reference",
+    "article_id": "KB-2401",
+    "title": "v2.4.0 Release Notes Draft",
+    "category": "release-notes",
     "tags": [
-      "bibliography",
-      "research",
+      "release-v2.4.0",
       "draft"
     ],
-    "updated_at": "2027-03-20T14:00:00Z",
-    "body": "## Cleaned Bibliography\n\nThe references below require verification and formatting clean-up.\n\nJ. Smith, \"Advances in AI\", 2027\n\nK. Lee, Deep Learning for NLP, 2026"
+    "updated_at": "2025-07-10T14:31:00Z",
+    "body": "Placeholder"
   }
 ]

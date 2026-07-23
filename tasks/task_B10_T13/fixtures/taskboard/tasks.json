@@ -1,71 +1,37 @@
 [
   {
-    "task_id": "task_001",
-    "title": "Update user guide",
-    "description": "Compile the latest updates and revise the user guide document.",
-    "priority": "Medium",
-    "status": "To Do",
-    "due_date": "2025-10-05",
+    "task_id": "TASK-7890",
+    "title": "Fix customer import encoding bug",
+    "description": "Customer import module experiences intermittent encoding errors when processing CSV files containing non-ASCII characters. The test_parse_csv_encoding test fails with an assertion error indicating that special characters are garbled. This issue affects customers with international data. Need to fix encoding handling in parse_csv and ensure proper test coverage.",
+    "priority": "high",
+    "status": "open",
+    "due_date": "2027-07-01",
     "tags": [
-      "documentation",
-      "sprint"
+      "bug",
+      "import"
     ]
   },
   {
-    "task_id": "task_002",
-    "title": "Update user guide",
-    "description": "Ensure the user guide reflects the new features added in sprint 8.",
-    "priority": "Low",
-    "status": "To Do",
-    "due_date": "2025-10-03",
+    "task_id": "TASK-7412",
+    "title": "Spike: prototype chardet-based encoding detection",
+    "description": "Old research spike that prototyped chardet-based auto-detection for the import module. Superseded by tracking issue TASK-7890; retained only for historical reference.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2027-05-10",
     "tags": [
-      "documentation"
+      "spike",
+      "obsolete"
     ]
   },
   {
-    "task_id": "task_004",
-    "title": "Action Item Reconciliation – Weekly Sprint",
-    "description": "Review the weekly sprint planning notes and identify any action items missing on the taskboard. Also check for duplicate tasks. Update this task with findings.",
-    "priority": "Medium",
-    "status": "In Progress",
-    "due_date": "2025-10-10",
+    "task_id": "TASK-7905",
+    "title": "Document encoding fix in import guide",
+    "description": "Follow-up documentation task to update the import guide once the encoding fix lands.",
+    "priority": "medium",
+    "status": "open",
+    "due_date": "2027-07-08",
     "tags": [
-      "review",
-      "sprint"
-    ]
-  },
-  {
-    "task_id": "task_005",
-    "title": "Finalize Q3 roadmap",
-    "description": "Work with product managers to finalize the Q3 roadmap and publish it.",
-    "priority": "High",
-    "status": "To Do",
-    "due_date": "2025-09-30",
-    "tags": [
-      "roadmap",
-      "planning"
-    ]
-  },
-  {
-    "task_id": "task_006",
-    "title": "Schedule sprint retrospective",
-    "description": "Pick a time slot next week and send calendar invites to all team members.",
-    "priority": "Low",
-    "status": "To Do",
-    "due_date": "2025-10-01",
-    "tags": [
-      "retrospective"
-    ]
-  },
-  {
-    "task_id": "task_007",
-    "title": "Prepare Q2 report",
-    "description": "Gather metrics and write the quarterly report for stakeholders.",
-    "priority": "Medium",
-    "status": "In Progress",
-    "due_date": "2025-10-08",
-    "tags": [
-      "reporting"
+      "docs"
     ]
   }
 ]

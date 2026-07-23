@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F613",
-  "name": "Remote Work Policy FAQ Refresh",
+  "id": "F288",
+  "name": "Action Item Reconciliation",
   "category": "knowledge_work",
   "mock_services": [
-    "knowledge_base",
-    "web_content"
+    "notebook",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "09b21253961a1f9dface1f9fa6279e493f5ce7fd4e25d676c665983e1c28dbeb",
-      "bytes": 3624
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "acb1bfebbe179bf280714ce4736ff33b465dcb1d16dc65a81304083344d031f0",
+      "bytes": 766
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
-      "bytes": 2892
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f00dae0540c6266f662a799e97ee6e92eccbdcd7f6e7a738f382439bcfbd7232",
+      "bytes": 983
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "cbb055cab895575f1f3013d6f7b3e199e74e9e97052cbcd28038646069f2cdac",
-      "bytes": 1076
+      "sha256": "b43cf8a419fc8882f355d66011b30e904feef3358aff9f66efc95deff12aaa96",
+      "bytes": 1599
     },
     {
-      "path": "question_brief.md",
-      "sha256": "ff327bd987ae710cb8ec55c75e41428624fb36c303edd8f4af2242e55072b80a",
-      "bytes": 706
+      "path": "reconciliation_brief.md",
+      "sha256": "9a6d61dda5db6ded2fec348c4643107ef35e5a815e4655f7aeeab870f5bd2dcd",
+      "bytes": 1646
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "notes.md",
+      "sha256": "124778e6f5af3c0ecda16060bf68d8d7644720298b011ca0b7dad1f7f2be0e8b",
+      "bytes": 596
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "09b21253961a1f9dface1f9fa6279e493f5ce7fd4e25d676c665983e1c28dbeb",
-      "bytes": 3624
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "acb1bfebbe179bf280714ce4736ff33b465dcb1d16dc65a81304083344d031f0",
+      "bytes": 766
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "d49f80bf28311fd1adfb49f0a132176d092221260eb0c339bb14048750980958",
-      "bytes": 2892
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f00dae0540c6266f662a799e97ee6e92eccbdcd7f6e7a738f382439bcfbd7232",
+      "bytes": 983
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e1b9a85421c388f5dde1df1d13224c71da689b20268e74ee3460961eb0df5bba",
-    "bytes": 3017
+    "sha256": "2505a3d51a2d503ec28fe19a8cb4bbf74893bb3d6de2564ae44d36cbd24e066b",
+    "bytes": 4096
   }
 }

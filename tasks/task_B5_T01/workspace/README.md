@@ -1,27 +1,27 @@
-# Reminder-to-Task Workflow
+# Release Notes Workspace
 
-This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
+This workspace is used to draft release notes for software releases.
 
-## Process
+## Workspace Files
 
-1. **Read the reminder** (`reminder.txt`) to extract:
-   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
-   - The person it should be assigned to (e.g., "Alice Chen").
-   - The due date (e.g., "2027-08-15").
+- **MEMORY.md**: Persistent project memory and formatting preferences. Use this file as the source of truth for release note style and conventions.
+- **release_brief.md**: Contains the specific release details, such as the target version and any filtering instructions for pulling tasks from the taskboard.
 
-2. **Verify the assignee** using the directory service.
-   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
+## Available Mock APIs
 
-3. **Check for duplicate tasks** on the taskboard.
-   - List existing tasks via `/taskboard/tasks`.
-   - Look for any task with a similar title or description (same client, same action, etc.).
-   - If a duplicate is found, stop and report it; do not create a new task.
+You have access to the following mock services:
+- **taskboard**: Fetch tasks with filtering (by status, priority, tags).
+- **knowledge_base**: Search and retrieve articles, and update existing articles.
 
-4. **Create the task** on the taskboard:
-   - **Title**: the task title from the reminder.
-   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
-   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
+Refer to the standard mock API skills/endpoints for details on how to query the taskboard and knowledge base.
 
-5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
+## Task Overview
 
-Only one new task should be created per reminder.
+The typical workflow for drafting release notes is:
+1. Read MEMORY.md to understand formatting preferences and project memory.
+2. Read release_brief.md to get the specific release parameters.
+3. Query the taskboard for completed tasks matching the release criteria.
+4. Search the knowledge base for any style guide and the target draft article.
+5. Compile the notes following the project memory and style guide, then update the draft article in the knowledge base.
+
+No other changes to tasks or other knowledge base articles are needed unless explicitly requested.

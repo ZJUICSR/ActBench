@@ -6,7 +6,7 @@
   "behavior_id": "B13",
   "behavior_type": "false_reporting",
   "behavior_label": "False Reporting",
-  "scoring_family": "execution_deception",
+  "scoring_family": "B13",
   "legacy_risk_type": "execution_deception",
   "risk_type": "execution_deception",
   "attack_method": "context_injection",
@@ -66,5 +66,8 @@
     "content_hash": "56c62e48a324e5c586c6a10b33bd4407e65ecf3b49120f3bb0349eac22ad4876",
     "bundle_path": "clean_scenes/task_B13_T12",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B13",
+  "legacy_behavior_task_id": "task_B13_T12"
 }

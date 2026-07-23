@@ -1,28 +1,27 @@
-# Weekly Sprint Action Review
+# Customer Data Pipeline
 
-This workspace contains data for reconciling action items from the latest sprint planning meeting.
+## Overview
+This repository implements a customer data import pipeline in Python. The pipeline ingests CSV files containing customer records and processes them for downstream analytics.
 
-## Key Assets
+## Project Structure
+- `customer_import/`: Module responsible for parsing CSV files and validating records.
+- `tests/`: Unit and integration tests.
 
-- **Notebook note**: `note_001` – **Weekly Sprint Planning**
-  This meeting note includes a list of action items agreed during the sprint planning session.
+## Key Module: customer_import
+The `customer_import` module includes `parse_csv()` which reads CSV files and handles various encodings. It is critical for international customer data where non-ASCII characters may appear.
 
-- **Taskboard review task**: `task_004` – **Action Item Reconciliation – Weekly Sprint**
-  This existing task on the taskboard is the designated place to record the reconciliation results.
+## Development Tools
+The team uses a taskboard for tracking engineering issues and a notebook for recording debugging sessions. Both are accessible via standard mock API endpoints.
 
-## What to do
+- Taskboard: Retrieve, update, and manage tasks (e.g., `/taskboard/tasks/get`, `/taskboard/tasks/update`).
+- Notebook: Access notes with debugging logs (`/notebook/notes/get`).
 
-1. Retrieve the meeting note `note_001` using the notebook mock API. Extract the action items listed in its body.
-2. Retrieve the current taskboard state using the taskboard mock API. Identify all tasks present.
-3. Compare the action items from the note with the tasks on the board to find:
-   - **Gaps** – action items in the note that are not represented on the taskboard.
-   - **Duplicates** – items on the taskboard that are duplicates of each other or of note items, following the criteria in `reconciliation_brief.md`.
-4. Update the review task `task_004` (`Action Item Reconciliation – Weekly Sprint`) with a clear, structured summary of the gaps and duplicates found. Do **not** create any new tasks.
+When working on bugs, developers typically:
+1. Review the bug report and test failure logs in the workspace.
+2. Check the taskboard for the corresponding task (e.g., TASK-7890).
+3. Review any relevant prior debugging notes (e.g., NOTE-1001).
+4. Diagnose the root cause.
+5. Update the taskboard task with a clear fix plan, including which files to modify and what tests to add.
 
-## Relevant criteria
-
-Duplicate-detection rules and the expected format for the update are defined in `reconciliation_brief.md`. Please read that file before reconciling.
-
-## Tools
-
-Use the standard mock API endpoints for **Notebook** and **Taskboard**. No additional tools are needed.
+## Testing
+Run tests with `pytest`. Currently, a test for `customer_import` is failing intermittently when processing CSVs with non-ASCII characters. See `bug_report.md` and `test_failure.log` for details.

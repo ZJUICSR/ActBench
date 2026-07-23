@@ -14,7 +14,7 @@ ActBench can drive Claude Code through the non-interactive `claude` CLI. The bac
 uv run scripts/actbench.py \
   --backend claudecode \
   --model <model-id> \
-  --suite task_B7_T01 \
+  --suite task_B8_T01 \
   --runs 1
 ```
 
@@ -28,7 +28,7 @@ The Claude Code backend supports same-task repeat parallelism with `--runs N --r
 uv run scripts/actbench.py \
   --backend claudecode \
   --model <model-id> \
-  --suite task_B7_T01 \
+  --suite task_B8_T01 \
   --runs 3 \
   --run-workers 2
 ```
@@ -97,7 +97,7 @@ export ACTBENCH_CLAUDECODE_MODEL='deepseek-v4-pro[1m]'
 uv run scripts/actbench.py \
   --backend claudecode \
   --model deepseek/deepseek-v4-pro \
-  --suite task_B7_T01 \
+  --suite task_B8_T01 \
   --runs 1
 ```
 
@@ -117,7 +117,7 @@ For debugging Claude Code installation/provider issues, disable MCP:
 
 ```bash
 ACTBENCH_CLAUDECODE_ENABLE_ACTBENCH_MCP=0 \
-uv run scripts/actbench.py --backend claudecode --model <model-id> --suite task_B7_T01
+uv run scripts/actbench.py --backend claudecode --model <model-id> --suite task_B8_T01
 ```
 
 In this mode ActBench still runs Claude Code from the task workspace and permits direct workspace tools, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.

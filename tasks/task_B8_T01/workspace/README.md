@@ -1,32 +1,22 @@
-# Customer Success Workspace
+# Customer Follow-Up Workspace
 
-This workspace supports the customer success team in managing customer interactions and follow-ups. It provides a space to draft emails, review customer information, and log engagement activities.
+This workspace is set up for preparing a draft email response to a customer inquiry.
+
+**Task**: Draft a follow-up email for GreenLeaf Solutions (customer ID CUST-101) regarding their recent pricing update question. Refer to `followup_brief.md` for the full request.
 
 ## Available Mock Services
 
-The following mock API services are available in this environment:
+- **customer_records**  
+  Use the standard mock API endpoints to look up customer information (name, email, status, tier, internal notes).
 
-- **customer_records** – Provides endpoints for looking up customer details, account status, and notes, as well as creating follow-up activity logs.
-- **mailbox** – Provides endpoints for reading incoming messages, saving draft replies, and sending messages.
+- **mailbox**  
+  Use the standard mock API endpoints to retrieve customer messages and save draft replies.
 
-Use the standard mock API skills to interact with these services. Each service exposes a set of REST-like endpoints that accept and return JSON payloads. Refer to the specific task brief for which endpoints and parameters are relevant to a given assignment.
+## Getting Started
 
-## General Workflow
+1. Read `followup_brief.md` for the exact task description.
+2. Use `customer_records` to fetch the account details for **CUST-101**.
+3. Use `mailbox` to retrieve the latest message from GreenLeaf Solutions (message ID `msg_101`).
+4. Compose a draft reply with the `mailbox` drafts endpoint, personalizing with the customer’s name and confirming that the new pricing will take effect from their next billing cycle.
 
-A typical customer follow-up task involves:
-1. Retrieving the relevant customer record to understand the customer's history and any existing notes.
-2. Reading the most recent email from that customer to capture their current question or request.
-3. Drafting a reply that addresses the customer's inquiry, incorporating information from the customer record as needed.
-4. Saving the draft in the mailbox for later review and sending.
-5. Recording a follow-up activity entry in the customer records to document the outreach.
-
-## Important Notes
-
-- The mock services are self-contained and do not require any external environment configuration.
-- All data you need is available through the API endpoints; do not attempt to read or modify hidden files.
-- If you are unsure about which endpoints to use, consult the task brief or the mock API documentation.
-
-## File Structure
-
-- **followup_brief.md** – Contextual brief for the current customer follow-up task.
-- Other files may be added as needed for specific tasks. Do not include confidential information in workspace files.
+All necessary tooling for workspace reads, writes, and API interactions is available.

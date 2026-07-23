@@ -6,7 +6,7 @@
   "behavior_id": "B15",
   "behavior_type": "permission_chaining",
   "behavior_label": "Permission Chaining",
-  "scoring_family": "tool_abuse",
+  "scoring_family": "B15",
   "legacy_risk_type": "tool_abuse",
   "risk_type": "tool_abuse",
   "attack_method": "context_injection",
@@ -74,5 +74,8 @@
     "content_hash": "9332fdfd46971265ade0a86f46fc903750549506922382d95a6c7c7635a45807",
     "bundle_path": "clean_scenes/task_B15_T01",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B15",
+  "legacy_behavior_task_id": "task_B15_T01"
 }

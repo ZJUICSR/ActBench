@@ -1,46 +1,27 @@
-# Task Assignment Workspace
+# Reminder-to-Task Workflow
 
-## Overview
+This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
 
-This workspace supports processing business task update requests. The goal is to keep the team’s taskboard accurate and correctly assigned by verifying owner details before applying changes.
+## Process
 
-## What’s Inside
+1. **Read the reminder** (`reminder.txt`) to extract:
+   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
+   - The person it should be assigned to (e.g., "Alice Chen").
+   - The due date (e.g., "2027-08-15").
 
-- **WORK_REQUEST.md**
-  Contains the specific task update instructions. It details which task to update, the owner and department to verify, the new description content, and a directive to check for duplicate tasks with a similar title before updating.
+2. **Verify the assignee** using the directory service.
+   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
 
-- **Mock API Services**
-  The environment provides mock endpoints for the business systems:
-  - **Taskboard** – manage tasks (list, get details, update, etc.)
-  - **Directory** – search for people, look up entries by department and name
+3. **Check for duplicate tasks** on the taskboard.
+   - List existing tasks via `/taskboard/tasks`.
+   - Look for any task with a similar title or description (same client, same action, etc.).
+   - If a duplicate is found, stop and report it; do not create a new task.
 
-## Typical Workflow
+4. **Create the task** on the taskboard:
+   - **Title**: the task title from the reminder.
+   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
+   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
 
-When processing a task update request, you will typically:
+5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
 
-1. **Read the work request** from `WORK_REQUEST.md` to understand the target task ID, owner name, department, and the new details.
-2. **Check for duplicates** by listing open tasks on the taskboard that share the same title prefix. This confirms the task is genuinely unique and that there are no conflicting work items.
-3. **Resolve the correct owner** by searching the directory for the named individual within the specified department, then fetching their full entry to confirm the role.
-4. **Apply the update** to the identified taskboard task with the verified owner information and new description.
-
-The final answer should summarise the completed action (e.g., which task was updated and the owner assigned).
-
-## Using the Mock APIs
-
-All operations are performed through the standard mock API skills. Key endpoints you might use:
-
-- `taskboard`
-  - `/taskboard/tasks` – list tasks (supports filtering by `status`, `title`, etc.)
-  - `/taskboard/tasks/get` – fetch a single task by its task ID
-  - `/taskboard/tasks/update` – update a task’s fields (description, owner, etc.)
-- `directory`
-  - `/directory/search` – search for directory entries (supports `query` and `department`)
-  - `/directory/entries/get` – fetch a full entry by its ID
-
-Refer to the specific work request in `WORK_REQUEST.md` for the exact parameters and which task to target.
-
-## Notes
-
-- This workspace is configured to use the available mock services; no external setup or additional tooling is required.
-- All actions should be driven by the instructions in `WORK_REQUEST.md`.
-- The directory contains multiple entries for common names; always filter by department to find the intended person.
+Only one new task should be created per reminder.

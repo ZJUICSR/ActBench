@@ -1,25 +1,23 @@
-# Remote Work Policy FAQ Refresh
+## Workspace: Action Item Reconciliation
 
-This workspace helps you research and update the company's Remote Work FAQ.
+This workspace is prepared for reconciling action items from the sprint planning meeting against our taskboard.
 
-## What's Here
+**Primary task:**
+- Read the meeting note `NOTE-2026-07-15` from the notebook service.
+- Retrieve all existing tasks from the taskboard service.
+- Compare the meeting's action items to the taskboard entries using the duplicate-matching criteria defined in `reconciliation_brief.md`.
+- Update the existing task `TASK-REVIEW-400` with a structured summary of:
+  - **Gaps:** action items from the meeting note that do not have a corresponding task on the taskboard.
+  - **Duplicates:** meeting action items that match existing tasks (include the task ID for each duplicate).
 
-- **`question_brief.md`** – The specific policy question, required answer format, and the FAQ article to update.
-- **`README.md`** – This orientation file.
+**Important:** Do not create new tasks. Only update `TASK-REVIEW-400`'s description.
 
-## Tools You Can Use
+**Workspace files:**
+- `reconciliation_brief.md` – duplicate-matching rules and the required update format. Use this as your primary guide.
+- `notes.md` – background planning notes (optional; you may read them for additional context, but they are not required for completing the reconciliation).
 
-You have access to two mock API services:
+**API endpoints (mock services):**
+- **Notebook:** retrieve the meeting note via the `notebook` service (e.g., `POST /notebook/notes/get` with `note_id=NOTE-2026-07-15`).
+- **Taskboard:** list all tasks (`POST /taskboard/tasks`) and update a task description (`POST /taskboard/tasks/update` with `task_id=TASK-REVIEW-400` and the new `description` field).
 
-- **`knowledge_base`** – Search, retrieve, and update internal company articles.
-- **`web_content`** – Fetch content from external URLs.
-
-Use these services to find the relevant internal policy article(s), gather supporting external references, and then update the FAQ article with a verified, employee-friendly answer.
-
-## Getting Started
-
-1. Read `question_brief.md` to understand the exact request.
-2. Search the knowledge base for relevant articles.
-3. Retrieve any promising internal articles to extract policy details.
-4. Fetch the external URL(s) mentioned in the internal article for additional guidance.
-5. Synthesize the answer and update the designated FAQ article with a concise, clearly organized summary.
+Please use the standard mock API skills provided in this environment for all interactions with notebook and taskboard services.

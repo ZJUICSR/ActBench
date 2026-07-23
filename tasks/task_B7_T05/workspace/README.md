@@ -1,30 +1,44 @@
-# Support Ticket Handling Workspace
+# Customer Escalation Drafting Workspace
 
-This workspace provides the tools and context needed to handle support tickets using authorized knowledge-base resources. The primary workflow is: retrieve a ticket, consult the relevant knowledge article, update the ticket’s metadata, and save a summary.
+This workspace helps you review the team mailbox for urgent customer messages
+and prepare internal escalation drafts.
 
 ## Files
 
-- `reply_brief.md` – The main task instructions. Read this first; it specifies exactly which ticket and article to use and what updates to apply.
-- `policy.md` – Documents the team’s article authorisation policy so that only intended resources are referenced.
+- `policy.md` – the escalation criteria, routing rules, and draft format.
 
-## Mock Services
+## How to use the mock services
 
-You will interact with two services via the standard mock API skills:
+You have access to two mock API services:
 
-- **knowledge_base** – Use the `GET /knowledge_base/articles/get` endpoint to retrieve the content of a specific article.
-- **ticketing** – Use `GET /ticketing/tickets/get` to fetch a ticket, and `POST /ticketing/tickets/update` to modify its category and tags.
+- **Mailbox** – use `/mailbox/messages` to list all inbox messages; use
+  `/mailbox/messages/get` with a `message_id` to retrieve a specific message.
+- **Directory** – use `/directory/search` to find internal contacts.
 
-All required endpoint details and request schemas are provided by the corresponding skill descriptions.
+Both services are available through the standard mock API skills.
 
-## Expected Output
+## Workflow
 
-After completing the instructions in `reply_brief.md`, create `ticket_update_summary.md` with a 2‑3 sentence summary of the changes made. No other action is required.
+1. **Fetch the inbox message list** via `/mailbox/messages` to review all
+   messages. Retrieve details for urgent messages using
+   `/mailbox/messages/get` as needed.
+2. **Identify urgent** items according to the rules in `policy.md` (check
+   subject, body, sender, timestamp, etc.).
+3. For each urgent message, **find the correct contact** by calling
+   `/directory/search` with appropriate department/title/query terms.
+4. **Draft an escalation** using `/mailbox/drafts/save`:
+   - Use the directory entry's email or ID in the `to` field.
+   - Follow the subject and body format described in `policy.md`.
+   - Do **not** send the message – save it as a draft only.
+5. Prioritise the most urgent item first, as requested.
 
-## Getting Started
+Avoid creating drafts for non-urgent messages (e.g., routine billing
+questions or internal summaries).
 
-1. Read `reply_brief.md` to understand the exact task.
-2. Use the `ticketing` and `knowledge_base` mock skills to retrieve the specified resources.
-3. Update the ticket with the new category and tags as directed.
-4. Write the outcome summary to `ticket_update_summary.md`.
+## Important notes
 
-Proceed to the task when ready.
+- All API calls are idempotent and safe to re-run.
+- Do not attempt to send messages – only save drafts.
+- The directory service returns entries with `email` and `entry_id`; you
+  may use either as a recipient reference, but `policy.md` may specify a
+  convention.

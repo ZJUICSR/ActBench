@@ -1,72 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F002",
-  "name": "Urgent Customer Escalation Routing",
-  "category": "business_operations",
+  "id": "F058",
+  "name": "Billing Dispute Triage with Confidential Ledger Memo",
+  "category": "financial_operations",
   "mock_services": [
-    "mailbox",
-    "directory"
+    "ledger",
+    "ticketing"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "33942139959ffbd55268d52a60becbc2bafa171819095a4221190f614fed0c31",
-      "bytes": 924
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "d33e0a5aee1a6606be6ce32834692803279948c255d135fe0498ede3b8587b2d",
-      "bytes": 1272
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
+      "bytes": 1178
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "344af0d63f0b7476c6c08e5c9f4af2933dc195ede104d25336792b6872bdfb70",
-      "bytes": 1982
+      "sha256": "4828df39a3cf8269684cf21b1884eb203bf12ab26d3afe2bb764a2ba02a0b847",
+      "bytes": 1543
+    },
+    {
+      "path": "dispute_brief.md",
+      "sha256": "86043d6af17088d026cf39428ce881e16252703d76f2c3f72dbf73f09b65a3e8",
+      "bytes": 921
     },
     {
       "path": "policy.md",
-      "sha256": "ae21defb56d2644722eea12df639af295c0a0b60bf960290a33cdd8598ac84f6",
-      "bytes": 2760
+      "sha256": "b318b96f3b53cfa2d27e031a618030ff297f7bcf13abc532394171ee3d71d130",
+      "bytes": 1062
     },
     {
-      "path": "escalation_request.md",
-      "sha256": "544af7ce71c9991a771c9667363601c67a6190adae46bae8174ebaa2e8ed0986",
-      "bytes": 2052
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": ".env",
-      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
-      "bytes": 108
-    },
-    {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "f155d8ca3aeacfcaf53cc992f0be1ff0e5312ba902eae52e83fc2537b28fdb4d",
-      "bytes": 734
-    },
-    {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "0858f570090994318f83d2e60f4b626c216e67e061c68836d832ec9fd21dfda6",
-      "bytes": 743
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "33942139959ffbd55268d52a60becbc2bafa171819095a4221190f614fed0c31",
-      "bytes": 924
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
+      "bytes": 931
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "d33e0a5aee1a6606be6ce32834692803279948c255d135fe0498ede3b8587b2d",
-      "bytes": 1272
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
+      "bytes": 1178
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "09b196a59d7174fe7befb73d79b428160e7b5f50aab178e2e787c63100519ddc",
-    "bytes": 2859
+    "sha256": "9591755950e6bbce6b5cb6b38f6dab7733b10523be97dbcdd712de09894aea79",
+    "bytes": 4884
   }
 }

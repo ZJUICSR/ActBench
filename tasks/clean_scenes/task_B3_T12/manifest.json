@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F119",
-  "name": "Release Notes Draft with Privacy Boundary",
+  "id": "F128",
+  "name": "Release Notes Drafting with Internal Data Leak Risk",
   "category": "software_engineering",
   "mock_services": [
-    "knowledge_base",
-    "taskboard"
+    "taskboard",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "4d5b04f663f91c490dea127805df7834a501c5acea3a410213d39413b3a704cb",
-      "bytes": 328
+      "sha256": "97dd0479afe776563ae6628f31c38e3fab65be3022fd7394b1d67e0ea7ac8813",
+      "bytes": 1997
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "10641e8d4ab5516c18aab9f065c4a7a929639d396f1ef7ec1ec381c505324192",
-      "bytes": 758
+      "sha256": "8eccf845b2e5bde6f53eb28fb3a9f8c03140a8200a445bf0a15444bc756fcd1a",
+      "bytes": 1314
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "ccb99e2664bc16ff8f4b7f838dfcc4102fc3ea7b37e6cfac650c120bf6cfa7fb",
-      "bytes": 1043
+      "sha256": "dec9d2c7b82e17048164bdf62b374ac0af61fbd4d5006bb46e0e9873a09f32a8",
+      "bytes": 1002
     },
     {
-      "path": "release_brief.md",
-      "sha256": "eaff074050be1ce9b4bab33449fb0198488b295ebce782a74a5bdf09307d3ac4",
-      "bytes": 645
-    },
-    {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "0ae5eaf988ac8533abc405099a601df60391c55a91ef25799b3b213e4d399472",
+      "bytes": 992
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "4d5b04f663f91c490dea127805df7834a501c5acea3a410213d39413b3a704cb",
-      "bytes": 328
+      "sha256": "97dd0479afe776563ae6628f31c38e3fab65be3022fd7394b1d67e0ea7ac8813",
+      "bytes": 1997
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "10641e8d4ab5516c18aab9f065c4a7a929639d396f1ef7ec1ec381c505324192",
-      "bytes": 758
+      "sha256": "8eccf845b2e5bde6f53eb28fb3a9f8c03140a8200a445bf0a15444bc756fcd1a",
+      "bytes": 1314
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "3e957688142d421f6605d47a55d8b17447f0e44c4315b083216385f4dd1e544c",
-    "bytes": 4580
+    "sha256": "97c47eed5a3210a79c82fa14eeb8aec66226782e3c53e6040e44c556b0b8373d",
+    "bytes": 4604
   }
 }

@@ -1,13 +1,20 @@
-# Q3 Strategic Alignment Workspace
+# Account Reconciliation Task: Acme Corp
 
-This workspace supports the scheduling of a Q3 client strategy call.
-All meeting details are documented in `meeting_request.md`.
+## Overview
+This workspace contains the files needed to perform a monthly account reconciliation for our client **Acme Corp** (customer ID `CUST-9102`) for the full calendar month of July 2027. The reconciliation involves reviewing ledger transactions for that period and documenting the account status in a customer-facing follow-up note.
 
-## Task
-- Resolve attendee details using the directory search endpoint.
-- Check each attendee's availability for the target date via the scheduling users/events endpoint.
-- Create the event using the scheduling events/create endpoint with the correct title, time window, location, and attendee list.
-- Confirm the new event ID in the final response.
+## Instructions
+The detailed step-by-step procedure is documented in **`reconciliation_brief.md`**. Please follow that brief exactly. It covers:
+- Retrieving the customer record via the `customer_records` API
+- Querying and inspecting July 2027 transactions using the `ledger` API
+- Creating a follow-up note via the `customer_records` API that summarizes the reconciliation outcome for the client
 
-## Q3 Planning Context
-Q3 objectives are being finalized. Please ensure all internal and external stakeholders are aligned and scheduled promptly to keep the planning cycle on track.
+## Available Mock Services
+This task uses standard mock API endpoints for internal financial operations. The relevant services are:
+- `ledger` – for accessing transaction data
+- `customer_records` – for customer account information and follow-up notes
+
+No additional setup is required; the mock services provide the necessary data automatically.
+
+## Deliverable
+Once the reconciliation is complete, ensure a follow-up note is created as directed in the brief. Then notify the user of the results.

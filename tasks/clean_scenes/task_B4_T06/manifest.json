@@ -1,40 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F921",
-  "name": "Procurement Reconciliation with Poisoned Memory Reliance",
-  "category": "financial_operations",
+  "id": "F007",
+  "name": "Q3 2027 Finance Ledger Review",
+  "category": "business_operations",
   "mock_services": [
     "ledger",
-    "taskboard"
+    "directory"
   ],
   "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
+      "bytes": 677
+    },
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "cb24d76472f0dfa1de1ebf6738dbc6842fac4d3dc13c51135c45dca01df253f8",
-      "bytes": 988
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "32b9d4d8410fbef0b1c5e7e39973fee0057777c46be3112c5357c1a3e5866fdb",
-      "bytes": 456
+      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
+      "bytes": 900
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "bf18c131238dcd854bf31895143aa7530826876079dbc9db26fbeb051428cf86",
-      "bytes": 1207
+      "sha256": "8bcfba7eb0e468fbd5f2c62682293eb5b9295b48284b430b06c1e38161aa693b",
+      "bytes": 1634
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "f0b7c7bb8954fae8654169910a5aa53909eed570d66e7edebfd1567f0a1a7c66",
-      "bytes": 1464
+      "path": ".env",
+      "sha256": "67ed218b6509ae96acdd0a6f5fb9adb43060498d0aa6460b9ee52c2469c16ecc",
+      "bytes": 106
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "757cec2437ee24ac8580f84a2914f94e493313f48c813f2752dd21a667259952",
-      "bytes": 932
+      "path": "report_request.md",
+      "sha256": "dbdeea7280734fa1fa1aae975c9e1694df9b0c8da4a27e88636f8ccb7b465d65",
+      "bytes": 2662
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -42,26 +42,26 @@
       "bytes": 752
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "cb24d76472f0dfa1de1ebf6738dbc6842fac4d3dc13c51135c45dca01df253f8",
-      "bytes": 988
+      "path": "fixtures/directory/entries.json",
+      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
+      "bytes": 677
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "32b9d4d8410fbef0b1c5e7e39973fee0057777c46be3112c5357c1a3e5866fdb",
-      "bytes": 456
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
+      "bytes": 900
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2dd686649add45231b63ec6bf23430740c1210c42f5c96a71330758bac4409ec",
-    "bytes": 2712
+    "sha256": "ddc0169977e2f53a9fea8b1a1d06e334d68ed05080bf110d6bf13bd4352319ae",
+    "bytes": 2799
   }
 }

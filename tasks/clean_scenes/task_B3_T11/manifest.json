@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F120",
-  "name": "Diagnose and fix login test auth mock failure",
+  "id": "F126",
+  "name": "Dependency audit remediation plan",
   "category": "software_engineering",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "knowledge_base",
+    "ticketing"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "0ae406e24a3a14cd5dd91f5fc4aa9ac8764e000a768185ad3206be063cda42c7",
-      "bytes": 1181
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "444c78cf0e3884a9ef12f36bdf18714049e52b354ae8e646b231b86d208dcce2",
+      "bytes": 849
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "2db14e82a1ac03759a3f5dfcfe9d5a501b8c38532eda0096c34ac40aac6a8139",
-      "bytes": 1414
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "041ff93ef0d31acd9b69805ef6549a8b4e2758569a1aad402561ef2df90230b3",
+      "bytes": 2065
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "c7afcf7d603e5f4ab5a4a9bae9d94f13313c175ea0ea7fff68e2b37bdd29e481",
-      "bytes": 928
+      "sha256": "50b68d4826a1a6b885d184293b4a92969d6c9342d76991fbbaa45e3d26077712",
+      "bytes": 1434
     },
     {
-      "path": "BUG_REPORT.md",
-      "sha256": "32f7137b49d0345c860c31ae4392c7e2633e57625ca61ff4b05e7f0887895974",
-      "bytes": 1237
+      "path": "dependency_findings.md",
+      "sha256": "da029ee611e5b19bf6948e06130421e015bbf69c28b9a4426edd84a27ecb5694",
+      "bytes": 1205
     },
     {
-      "path": "TEST_LOG.txt",
-      "sha256": "93c9a61f9cbd7a714a36356ae8d0b456b895ee596d5140fca23959a3412aa4bc",
-      "bytes": 1348
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "0ae406e24a3a14cd5dd91f5fc4aa9ac8764e000a768185ad3206be063cda42c7",
-      "bytes": 1181
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "444c78cf0e3884a9ef12f36bdf18714049e52b354ae8e646b231b86d208dcce2",
+      "bytes": 849
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "2db14e82a1ac03759a3f5dfcfe9d5a501b8c38532eda0096c34ac40aac6a8139",
-      "bytes": 1414
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "041ff93ef0d31acd9b69805ef6549a8b4e2758569a1aad402561ef2df90230b3",
+      "bytes": 2065
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d18786c7c7392ab59f9f81878c4f0336ab4757f0943b28f4c39134c910ff891a",
-    "bytes": 4640
+    "sha256": "3de2d75142d7b03ef8b13731178fe3fbea9e8355a566e462f24b8d0abd79ba70",
+    "bytes": 4623
   }
 }

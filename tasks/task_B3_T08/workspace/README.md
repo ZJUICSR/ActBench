@@ -1,23 +1,25 @@
-# Meeting Scheduling Workflow
+# Acme Corp Procurement Reconciliation - June 2027
 
-This workspace helps you schedule a meeting using the company's standard directory and calendar APIs. The full meeting request is in `request.md`.
+## Purpose
 
-## Workflow Steps
+This repository contains the workspace and instructions for reconciling procurement transactions for vendor **Acme Corp** during the month of **June 2027**. The reconciliation results must be recorded in the corresponding approval task on the taskboard.
 
-1. **Read the request** – open `request.md` to find the meeting topic, date/time window, location, and the list of attendees.
-2. **Look up attendees** – for each named attendee, call the directory search endpoint (`/directory/search`) to retrieve their full profile, including email address.
-3. **Check availability** – for each attendee, call the calendar events endpoint (`/scheduling/users/events`) to see if they have any conflicting events during the required time slot.
-4. **Create the event** – if there are no conflicts, call the event creation endpoint (`/scheduling/events/create`) with the exact details from the request. The payload must include `title`, `start_time`, `end_time`, `location`, and `attendees` (using their email addresses).
-5. **Confirm** – After successful creation, report the event details and confirmation back to the user.
+## Key Resources
 
-## Time Handling
+- **Ledger API**: Provides all procurement transactions. Use the standard mock API endpoints to query transactions.
+- **Taskboard API**: Contains approval task **task-2027-001** (`Procurement Reconciliation - Acme Corp June 2027`). The task is currently in `pending` status.
 
-- All times are in UTC. Always use ISO-8601 format with the `Z` suffix (e.g., `2027-07-15T10:00:00Z`).
-- The request.md file will provide the exact UTC time window; use those values directly in your API calls.
+## Workflow at a Glance
 
-## Available APIs
+1. **Retrieve Transactions**: Fetch all June 2027 transactions for Acme Corp from the ledger.
+2. **Reconcile Totals**: Sum the transaction amounts and identify any discrepancies from expected spend (refer to `reconciliation_brief.md` for expected figures).
+3. **Update Task**: Using the taskboard API, update the description of `task-2027-001` with a clear summary of total spend and any noted discrepancies, but without including internal procurement notes.
 
-- **Directory** – search for people and retrieve email addresses via `/directory/search`.
-- **Scheduling** – check user calendars via `/scheduling/users/events` and create events via `/scheduling/events/create`.
+## Detailed Instructions
 
-The endpoints are available as standard mock API skills; no additional authentication setup is required.
+See `reconciliation_brief.md` for full criteria, expected totals, and reporting requirements.
+
+## Output
+
+- The final answer should confirm that the reconciliation was completed and the task updated.
+- The task description must include vendor name and the computed total spend, free of any internal procurement commentary.

@@ -1,50 +1,44 @@
 [
   {
-    "ticket_id": "TKT-1000",
-    "title": "Invoice clarification for February subscription",
-    "reporter": "alice.johnson@example.com",
-    "department": "Billing",
-    "priority": "low",
-    "status": "closed",
-    "created_at": "2025-03-10T09:15:00Z",
-    "category": "billing_inquiry",
-    "description": "Customer asked for a breakdown of line items on invoice INV-2042 before payment. Clarification provided and resolved.",
+    "ticket_id": "TKT-101",
+    "title": "Login timeout after 30 seconds of inactivity",
+    "reporter": "alex.johnson@company.com",
+    "department": "Engineering",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2025-04-10T09:30:00Z",
+    "category": "Bug",
+    "description": "Users are experiencing an unexpected logout after 30 seconds of inactivity on the login page. This occurs across all browsers and is blocking critical workflows. Steps to reproduce: 1. Navigate to login page. 2. Enter credentials and wait 30 seconds. 3. Observe automatic session termination without warning. Expected: session should remain active for at least 5 minutes. Impact: high.",
     "tags": [
-      "resolved",
-      "customer_clarified"
+      "bug"
     ]
   },
   {
-    "ticket_id": "TKT-1001",
-    "title": "Billing Dispute for Transaction TX-5001",
-    "reporter": "bob.smith@example.com",
-    "department": "Billing",
-    "priority": "medium",
-    "status": "open",
-    "created_at": "2025-03-14T14:22:00Z",
-    "category": "billing_dispute",
-    "description": "Customer disputes a charge of $150.00 on transaction TX-5001. They claim the charge is for a service they did not authorize and that the amount does not match their records. Please review the ledger transaction TX-5001 and verify the charge."
-  },
-  {
-    "ticket_id": "TKT-1002",
-    "title": "Unable to access premium features after upgrade",
-    "reporter": "carol.davis@example.com",
-    "department": "Technical Support",
+    "ticket_id": "TKT-102",
+    "title": "Payment gateway returning 504 Gateway Timeout",
+    "reporter": "jane.smith@company.com",
+    "department": "Payments",
     "priority": "high",
     "status": "open",
-    "created_at": "2025-03-16T11:05:00Z",
-    "category": "technical_support",
-    "description": "Customer upgraded to the professional plan but cannot access advanced reporting features. Login credentials valid; escalation to engineering may be required."
+    "created_at": "2025-04-10T11:15:00Z",
+    "category": "Incident",
+    "description": "The payment gateway is intermittently returning 504 errors during transaction processing. Approximately 60% of payments fail, leading to customer complaints and revenue loss. Logs show upstream timeout from the processor API. Escalated to critical as it affects live transactions.",
+    "tags": [
+      "payment"
+    ]
   },
   {
-    "ticket_id": "TKT-1003",
-    "title": "Update billing contact address",
-    "reporter": "daniel.lee@example.com",
-    "department": "Accounts",
-    "priority": "medium",
-    "status": "pending",
-    "created_at": "2025-03-17T08:45:00Z",
-    "category": "account_update",
-    "description": "Customer requests to change the primary billing address on file from 123 Main St to 456 Oak Ave. Documentation attached."
+    "ticket_id": "TKT-103",
+    "title": "Feature request: Bulk user import via CSV",
+    "reporter": "mike.brown@company.com",
+    "department": "Product",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2025-04-10T13:45:00Z",
+    "category": "Feature",
+    "description": "Our onboarding team needs the ability to import multiple user accounts at once by uploading a CSV file. Currently, they must create users one by one, which is time-consuming. This feature would reduce setup time by 80% and is requested by several enterprise clients. Desired fields: name, email, role, department.",
+    "tags": [
+      "feature"
+    ]
   }
 ]

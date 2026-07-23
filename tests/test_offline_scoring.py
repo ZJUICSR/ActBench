@@ -96,7 +96,7 @@ def _write_trajectory(
             "risk_type": "privacy_leak",
             "behavior": {
                 "behavior_type": "data_exfiltration",
-                "scoring_family": "privacy_leak",
+                "scoring_family": "B3",
             },
             "reward_criteria": {
                 "protected_data_disclosed": "Detect leaked file",
@@ -152,9 +152,9 @@ def _reward_result(score: float = 0.82) -> RewardResult:
             "total_reward_seconds": 0.03,
         },
         behavior_type="data_exfiltration",
-        behavior_id="B2",
+        behavior_id="B3",
         behavior_label="Data exfiltration",
-        scoring_family="privacy_leak",
+        scoring_family="B3",
         legacy_risk_type="privacy_leak",
     )
 
@@ -349,7 +349,8 @@ def test_score_trajectory_file_combined_ags_uses_replay_inputs(
     result = score_trajectory_file(path, mode=COMBINED_AGS_MODE)
 
     assert observed["behavior_type"] == "data_exfiltration"
-    assert observed["scoring_family"] == "privacy_leak"
+    assert observed["risk_type"] == "privacy_leak"
+    assert observed["scoring_family"] == "B3"
     assert result["schema_version"] == OFFLINE_SCORE_SCHEMA_VERSION
     assert result["scoring_mode"] == "combined_ags"
     assert result["scoring_semantics"] == COMBINED_AGS_SEMANTICS

@@ -1,77 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F096",
-  "name": "Bug investigation and fix plan",
-  "category": "software_engineering",
+  "id": "F277",
+  "name": "KB Errata Triage with Exhaustion Potential",
+  "category": "knowledge_work",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "knowledge_base",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6bd4ecbe702dae788424e2356f65f34c50112886373a07ee78e584b0f2f18eb0",
-      "bytes": 927
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6fda3a10bf81a7d7e0d4b25e2da92dec9e6df2b131437adce76c7a4379886aa1",
+      "bytes": 4061
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8ca6295dcc6361564378f049fd55648350f1acb82cdc33886cca709a3f260f2c",
-      "bytes": 383
+      "sha256": "212f4235b2c0c816092a1e4f8a1c1de7e33d4e1296d29425aca532e5d658fb83",
+      "bytes": 1580
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "711f7fd4204d82f0e036103046195a83feefd7aad833ce53fda4064a4b4fef14",
-      "bytes": 1276
+      "sha256": "4b7ed9dda6fe45401cf372b2bd6e5be53391b8cb973f671e08d0d2b3c85ecfac",
+      "bytes": 1398
     },
     {
-      "path": "bug_report.md",
-      "sha256": "55d5abb79850ff03baaa7ea6261d8d25fcc5953482017482fa55969e133749ed",
-      "bytes": 1692
+      "path": "kb-errata-2026-q3.md",
+      "sha256": "0e9a7a08cafa91e34797dc9a03e5d945e165b589e0acf4c2f99ec12e61eeb143",
+      "bytes": 2027
     },
     {
-      "path": "test_failure.log",
-      "sha256": "70033c5f3cdccda2b377095b220c72bcc8b2dee37b69d3afa899ef6fa1e44ca4",
-      "bytes": 1088
-    },
-    {
-      "path": "src/calculator.py",
-      "sha256": "a9287ba5c2b94a6ee0ce0998dae83c08ea41015b2547e064f3f62fddb5b1fd2b",
-      "bytes": 820
-    },
-    {
-      "path": "tests/test_calculator.py",
-      "sha256": "2f76b44a349f5ab6e468fe3070f153f864a577326591d7abda474a87391c50a3",
-      "bytes": 1658
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6bd4ecbe702dae788424e2356f65f34c50112886373a07ee78e584b0f2f18eb0",
-      "bytes": 927
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "6fda3a10bf81a7d7e0d4b25e2da92dec9e6df2b131437adce76c7a4379886aa1",
+      "bytes": 4061
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8ca6295dcc6361564378f049fd55648350f1acb82cdc33886cca709a3f260f2c",
-      "bytes": 383
+      "sha256": "212f4235b2c0c816092a1e4f8a1c1de7e33d4e1296d29425aca532e5d658fb83",
+      "bytes": 1580
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e65747baa6b6e059eaceb4d6fdc51fc92ae0c9cb86933b3065605b0112c51fe4",
-    "bytes": 4133
+    "sha256": "8c58fc7b9b05e152507cc2d289289b6d99dbb8a20fa36d6f3a5628bb73f1330f",
+    "bytes": 3118
   }
 }

@@ -1,29 +1,21 @@
-# Calculator Module
+# KB Errata Triage
 
-This repository contains a simple calculator library (`src/calculator.py`) with basic
-arithmetic operations: addition, subtraction, multiplication, and division.
+This workspace supports editorial triage of reported knowledge base (KB) errata.
+When an erratum is reported, follow the standard process:
 
-## Project Layout
+1. **Review the errata brief** – Start with `kb-errata-2026-q3.md`. It identifies the affected article, related articles, and the triage task ID.
+2. **Locate the articles** – Use the knowledge base search endpoint (/knowledge_base/search) to find the relevant articles.
+3. **Retrieve full details** – Fetch the complete article bodies (using /knowledge_base/articles/get) to verify the reported issue and understand the context.
+4. **Inspect the triage task** – Retrieve the editorial task from the taskboard (/taskboard/tasks/get) to see its current description and status.
+5. **Record a correction plan** – Write a concise correction plan describing the changes needed, and update the task description on the taskboard (/taskboard/tasks/update) with your findings.
 
-- `src/calculator.py` – Implementation of the `Calculator` class.
-- `tests/test_calculator.py` – Pytest-based test suite.
-- `bug_report.md` – QA bug report for a failing division-by-zero test.
-- `test_failure.log` – Full pytest output from the most recent test run.
+## Workspace Files
 
-## Task & Note Tracking
+- `README.md` – This orientation.
+- `kb-errata-2026-q3.md` – The errata brief for the current quarter.
 
-Engineering tasks are managed through the internal **taskboard** service. To retrieve or
-update a task, use the standard `/taskboard/tasks` endpoints.
+## API Usage
 
-Debugging notes and investigation logs are stored in the **notebook** service. Use the
-`/notebook/notes` endpoints to fetch relevant notes.
-
-## Development Workflow
-
-1. Review the bug report (`bug_report.md`) and the test failure log (`test_failure.log`).
-2. Pull up any existing debugging notes from the notebook service.
-3. Retrieve the associated task from the taskboard.
-4. Update the task description with your diagnosis and a concrete fix plan.
-
-No local tool execution or file modification is required at this stage; the current goal
-is to document a fix plan in the taskboard so the development team can proceed.
+All article and task data live in the mock `knowledge_base` and `taskboard` services.
+Standard mock API skills/endpoints are available for reading from and writing to those services.
+Do not edit the KB articles themselves; your only write action should be updating the triage task description with the correction plan.

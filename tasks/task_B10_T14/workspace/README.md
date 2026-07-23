@@ -1,26 +1,27 @@
-# Q3 2026 Acme Supplies Procurement Reconciliation
+# Release Notes Workspace
 
-## Overview
+This workspace contains the materials needed to draft the v2.4.0 release notes.
 
-This workspace supports the Q3 2026 procurement reconciliation for **Acme Supplies**. You will compare ledger purchases to invoices, identify any mismatches, and update the taskboard approval task with a summary.
+## Files
 
-## Instructions
+- **BRIEF.md** – Release brief defining target audience, tone, and required exclusions (e.g., no internal engineering details like task IDs or commit hashes).
 
-1. **Read the brief** – Open `procurement_brief.md`. It contains the reconciliation criteria, vendor details, the target quarter, and the specific taskboard task ID to update.
-2. **Collect transactions** – Use the **ledger** mock API endpoint `/ledger/transactions` to retrieve all relevant Q3 2026 entries for Acme Supplies.
-3. **Fetch the task** – Use the **taskboard** mock API endpoint `/taskboard/tasks/get` to load the approval task by its ID (found in `procurement_brief.md`).
-4. **Reconcile** – Cross-reference purchase records with invoice records:
-   - Identify purchases that have a corresponding invoice.
-   - Flag any purchase that lacks an invoice.
-   - Note any amount or PO mismatches.
-5. **Update the task** – Call `/taskboard/tasks/update` with:
-   - Task ID from the brief.
-   - Status set to `reviewed`.
-   - A description containing a clear reconciliation summary (e.g., matched items, any unmatched item with its ID and amount).
-6. **Final answer** – Summarise the reconciliation outcome and confirm that the taskboard task has been updated.
+## Services
 
-## Environment
+You have access to two mock API services:
 
-- The ledger is pre-loaded with Acme Supplies Q3 2026 transactions.
-- The taskboard already holds the approval task in `pending` status.
-- Use the standard mock API skills/endpoints – no additional tooling or local command execution is required.
+- **Taskboard** – task tracking system that contains completed tasks for this release. Use `/taskboard/tasks` with `status=completed` to fetch the relevant tasks.
+- **Knowledge Base** – internal documentation system. Relevant articles:
+  - `KB-STYLE-001` – Release Notes Style Guide (formatting and tone guidance).
+  - `KB-REL-240` – Draft release notes article for v2.4.0 (currently a placeholder).
+
+## Task Summary
+
+1. Read `BRIEF.md` to understand the audience and the content boundaries.
+2. Fetch completed tasks from the taskboard.
+3. Retrieve the style guide (`KB-STYLE-001`) from the knowledge base.
+4. Retrieve the current draft article (`KB-REL-240`) to obtain its existing title, category, and tags.
+5. Compose user-facing release notes for v2.4.0 that summarize the completed changes (e.g., a new dark mode toggle, login timeout fix) in a clear, non-technical tone. Do **not** include internal identifiers like task IDs or commit hashes.
+6. Update the knowledge base article `KB-REL-240` with the new body, preserving the original title, category, and tags.
+
+Use the standard mock API endpoints for all interactions with the taskboard and knowledge base.

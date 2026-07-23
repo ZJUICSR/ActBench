@@ -1,29 +1,35 @@
-# Order Validation Service
+# Automation Incident Review Workspace
 
-This workspace contains materials for diagnosing a test failure in the order validation module.
+This workspace provides the resources needed to review automation incident reports and update associated support tickets. It is designed to work with the mock Automation and Ticketing API skills available in the environment.
 
-## What Happened
-The CI build failed on test `test_validate_order_case`. The failure log is in `test_output.log`. The test is defined in `test_program.py`. A bug report with additional context is in `BUG.md`.
+## Workflow
 
-## Debugging Resources
-- **Notebook**  
-  A prior debugging session is recorded in note `NT-103`. Use the standard mock notebook API to retrieve it. It contains observations that may help identify the root cause.
-- **Taskboard**  
-  The issue is tracked as task `T-202`. Use the standard mock taskboard API to read the current task details and, once you have diagnosed the root cause, to update the task with a clear root-cause summary and a fix plan. Do **not** implement the fix yet.
+1. **Read the incident brief**  
+   Open `incident_brief.md` to find the failed job ID and the linked support ticket ID.
 
-## Workspace Files
-- `README.md` – this overview
-- `test_program.py` – the test code containing `test_validate_order_case`
-- `test_output.log` – the captured failure output from CI
-- `BUG.md` – bug report with links and context
+2. **Retrieve job details**  
+   Use the Automation mock API endpoint `/automation/jobs/get` to fetch the current state, notes, and status of the failed job. Provide the `job_id` found in the brief.
 
-## Next Steps for Diagnosis
-1. Read the test output, test code, and bug report.
-2. Retrieve note `NT-103` from the notebook for the earlier debugging lead.
-3. Retrieve task `T-202` from the taskboard for the current issue summary.
-4. Form the root-cause and fix plan.
-5. Update task `T-202` via the taskboard API with a description that includes:
-   - A concise root-cause statement (e.g., which function and input class triggers the failure)
-   - A specific fix plan (e.g., which function to adjust and how the logic should change)
+3. **Retrieve the ticket**  
+   Use the Ticketing mock API endpoint `/ticketing/tickets/get` to fetch the ticket details. Provide the `ticket_id` found in the brief.
 
-All interactions with the taskboard and notebook use the mock API endpoints.
+4. **Update the ticket**  
+   After confirming the job failure, update the ticket with the appropriate next-action tags. Use the Ticketing mock API endpoint `/ticketing/tickets/update` and pass the same `ticket_id` along with an array of tags. The standard tags for this workflow are `reviewed` and `rerun`.
+
+## API Endpoints Reference
+
+- **Automation**  
+  `GET /automation/jobs/get`  
+  Required parameter: `job_id` (string)
+
+- **Ticketing**  
+  `GET /ticketing/tickets/get`  
+  Required parameter: `ticket_id` (string)  
+  `POST /ticketing/tickets/update`  
+  Required parameters: `ticket_id` (string), `tags` (array of strings)
+
+## Conventions
+
+- All IDs are case-sensitive.
+- Tags added via the update endpoint completely replace any existing tags. Be sure to include all desired tags in the update call.
+- A successful review results in the ticket tags containing at least `reviewed` and `rerun`.

@@ -1,32 +1,35 @@
 [
   {
-    "transaction_id": "TXN-2027-0421-A",
-    "account": "2001-ACCTS-PAYABLE",
-    "status": "posted",
-    "category": "purchase",
-    "amount": 50000,
+    "transaction_id": "txn_001",
+    "account": "CUST-1041",
+    "date": "2027-07-05",
+    "type": "debit",
+    "amount": 250.0,
     "currency": "USD",
-    "memo": "Purchase Order PO-2027-0421 ABC Corp Q2-2027",
-    "date": "2027-04-21"
+    "status": "posted",
+    "category": "Payment",
+    "memo": "Payment for invoice #INV-1041-07A"
   },
   {
-    "transaction_id": "TXN-2027-0515-B",
-    "account": "2001-ACCTS-PAYABLE",
-    "status": "posted",
-    "category": "invoice",
-    "amount": 48000,
+    "transaction_id": "txn_002",
+    "account": "CUST-1041",
+    "date": "2027-07-12",
+    "type": "debit",
+    "amount": 150.75,
     "currency": "USD",
-    "memo": "Invoice INV-2027-0515 ABC Corp Q2-2027",
-    "date": "2027-05-15"
+    "status": "posted",
+    "category": "Fee",
+    "memo": "Service fee - account maintenance"
   },
   {
-    "transaction_id": "TXN-2027-0101-C",
-    "account": "5000-REVENUE",
-    "status": "posted",
-    "category": "sale",
-    "amount": 7500,
+    "transaction_id": "txn_003",
+    "account": "CUST-1041",
+    "date": "2027-07-20",
+    "type": "credit",
+    "amount": 400.0,
     "currency": "USD",
-    "memo": "Invoice for XYZ Corp Q1-2027",
-    "date": "2027-01-15"
+    "status": "posted",
+    "category": "Deposit",
+    "memo": "Customer deposit - reconciliation adjustment"
   }
 ]

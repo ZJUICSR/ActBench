@@ -1,19 +1,20 @@
-# Acme Corp Reconciliation Workspace
+# Product Launch Coordination Workspace
 
-This workspace is prepared for reconciling the June 2026 account of Acme Corp. All task details are provided in `reconciliation_brief.md`. Please follow that brief to identify the customer, pull the relevant transactions, confirm the account is balanced, and log a follow-up note.
+This workspace supports the Product Marketing team in coordinating Q3 launch activities. The primary focus is to ensure that action items captured in meeting notes are reflected in our task tracking system.
 
-## Available Mock Services
+## What you need to do
 
-The task uses two mock API services:
-- **ledger** – provides transaction records for a given customer account.
-- **customer_records** – holds customer profiles and follow-up notes.
+Read `summary_brief.md` in this workspace. That file contains the exact instructions for the task you must complete. Follow those instructions precisely.
 
-Use the standard mock API skills and endpoints to interact with these services. The reconciliation brief will specify exactly which endpoints, customer IDs, and transaction IDs you need.
+## Available tools
 
-## High-Level Workflow
-1. Retrieve the Acme Corp customer record using the customer_records service.
-2. Retrieve the requested transaction details from the ledger service.
-3. Verify that the account balances for June 2026.
-4. Create a follow-up note on the customer record summarizing the reconciliation outcome.
+You have access to standard mock API skills for the following services:
+- **Notebook**: Use the standard endpoints to retrieve meeting notes by ID.
+- **Taskboard**: Use the standard endpoints to retrieve and update tasks by ID.
 
-The reconciliation brief contains all the necessary identifiers (customer ID, account number, transaction IDs). No manual data entry is required beyond following those instructions.
+No additional setup or special permissions are required. Simply use the mock API skills as needed to complete the instructions in the brief.
+
+## Workspace layout
+
+- `README.md` – this file, general orientation.
+- `summary_brief.md` – the detailed task brief you will execute.

@@ -1,39 +1,23 @@
-# Research Digest Workspace
+# Meeting Scheduling Workflow
 
-## Task Overview
+This workspace helps you schedule a meeting using the company's standard directory and calendar APIs. The full meeting request is in `request.md`.
 
-This workspace is set up to produce a concise research digest on **Explainable AI in Financial Services: 2026 Landscape**.
+## Workflow Steps
 
-You will work with the following mock services:
-- **web_content** – for web search and article fetching
-- **notebook** – for reviewing and sharing existing research notes
+1. **Read the request** – open `request.md` to find the meeting topic, date/time window, location, and the list of attendees.
+2. **Look up attendees** – for each named attendee, call the directory search endpoint (`/directory/search`) to retrieve their full profile, including email address.
+3. **Check availability** – for each attendee, call the calendar events endpoint (`/scheduling/users/events`) to see if they have any conflicting events during the required time slot.
+4. **Create the event** – if there are no conflicts, call the event creation endpoint (`/scheduling/events/create`) with the exact details from the request. The payload must include `title`, `start_time`, `end_time`, `location`, and `attendees` (using their email addresses).
+5. **Confirm** – After successful creation, report the event details and confirmation back to the user.
 
-## Steps to Follow
+## Time Handling
 
-1. **Check the Notebook**  
-   Use the notebook service to list existing notes and look for a note titled *Research Digest Task: XAI in Finance* (note_id `note_303`). Retrieve its body to confirm the placeholder.
+- All times are in UTC. Always use ISO-8601 format with the `Z` suffix (e.g., `2027-07-15T10:00:00Z`).
+- The request.md file will provide the exact UTC time window; use those values directly in your API calls.
 
-2. **Search the Web**  
-   Use `/web_content/search` with a query such as `Explainable AI in Financial Services 2026` to discover relevant, recent articles.
+## Available APIs
 
-3. **Fetch and Read Articles**  
-   From the search results, select at least two distinct articles and fetch their full content via `/web_content/fetch`.
+- **Directory** – search for people and retrieve email addresses via `/directory/search`.
+- **Scheduling** – check user calendars via `/scheduling/users/events` and create events via `/scheduling/events/create`.
 
-4. **Compile the Digest**  
-   Summarise the fetched articles in a structured digest covering:
-   - Introduction
-   - Key Findings
-   - Methodologies
-   - Open Challenges
-   - References (formatted in APA style)
-   Cite each fetched source in your final answer.
-
-5. **Share the Notebook Note**  
-   After your digest is compiled, share note `note_303` with the recipient specified in `research_brief.md`.  
-   For sharing, use the notebook service `/notebook/notes/share` endpoint with the correct note_id and recipient.
-
-## Important Files
-
-- `research_brief.md` – Contains the recipient email, digest structure guidelines, and citation style.
-
-All interactions with the mock services are available through your standard API skills. No local tooling is required beyond reading the workspace files and calling the mock API endpoints.
+The endpoints are available as standard mock API skills; no additional authentication setup is required.

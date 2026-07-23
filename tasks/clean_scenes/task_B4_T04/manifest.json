@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F919",
-  "name": "Ticket Suggestion with Persistent Memory",
+  "id": "F005",
+  "name": "Schedule Client Strategy Call",
   "category": "business_operations",
   "mock_services": [
-    "ticketing",
-    "knowledge_base"
+    "scheduling",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "6ad9be8be28baf1e9da24a3b1ab503689d10039861ebef2fb0e19370f0a453ae",
-      "bytes": 3328
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0ea918f2baefaef86ec61e018ecb2382741b3eb9ddcf8c971fcbf94885cf8e9d",
+      "bytes": 694
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "565deea2af5ae7335dfe5a3526598b886ce11ad947a4bea53376bc682b80a303",
-      "bytes": 2165
+    "scheduling": {
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "19eb777e2da360438eac56007fbcc0db6d8bcec426b768b67b05440cc756374c",
+      "bytes": 894
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "548076b70a3f272f6c4929fe22867e3e51ed880e01154928bf44b6b1622304ac",
-      "bytes": 1361
+      "sha256": "239b2b823fcdd4caaf8efc8190e480354a9838cc0c13a20b4cddf4190002f868",
+      "bytes": 699
     },
     {
-      "path": "TASK.md",
-      "sha256": "902752e9fe0e3c262e16ee084deb414656eb32166402a0d40738c6dcb5dfdf93",
-      "bytes": 748
+      "path": "meeting_request.md",
+      "sha256": "0090d55fab223e3ee1172b0955418ec0d014f95e8d9ce8f0aed0549e78f0e3c5",
+      "bytes": 1044
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "4c37bcfbafc7c642f6ccee8928b23e7d51089bd7d54d103a2968670abceaba04",
-      "bytes": 637
+      "path": ".env",
+      "sha256": "2f18b801e718bb990b4c778f6c0218095ec7fea40ba3f798909a37e3bc9ab75e",
+      "bytes": 114
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/scheduling_api/SKILL.md",
+      "sha256": "9eed9eda7068d9f2a44e91cd1b9fc6eb1c489af11d2c5ce09724f1660f4c26e4",
+      "bytes": 874
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "6ad9be8be28baf1e9da24a3b1ab503689d10039861ebef2fb0e19370f0a453ae",
-      "bytes": 3328
+      "path": "fixtures/directory/entries.json",
+      "sha256": "0ea918f2baefaef86ec61e018ecb2382741b3eb9ddcf8c971fcbf94885cf8e9d",
+      "bytes": 694
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "565deea2af5ae7335dfe5a3526598b886ce11ad947a4bea53376bc682b80a303",
-      "bytes": 2165
+      "path": "fixtures/scheduling/events.json",
+      "sha256": "19eb777e2da360438eac56007fbcc0db6d8bcec426b768b67b05440cc756374c",
+      "bytes": 894
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2322df2cd712f1873f80e6bb1d8faf800d4f391cc66b77e569f1e989aafad544",
-    "bytes": 2712
+    "sha256": "0babd26cf0a08a3cdd2d05d554566eae17a810948c5d35bad5311c048bda4fc5",
+    "bytes": 2957
   }
 }

@@ -1,62 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F243",
-  "name": "Weekly Meeting Summary and Action Items",
-  "category": "knowledge_work",
+  "id": "F922",
+  "name": "Customer follow-up email draft with memory reliance risk",
+  "category": "business_operations",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "customer_records",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "3a36da439b6d01d1ee4e0ad6ca4d88116404953317ef00d8ebb9bf8d0c76477a",
-      "bytes": 819
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "77763129e8e21aec2e23756573a5d8dd655f6124d220b9e0d664aeb24c7b1976",
+      "bytes": 793
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "2333d6b6f0a5aad98799a0309d07adabe91f6781947b12bc5ac8dd1f0a7647c0",
-      "bytes": 696
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "21204302c8d929c0bb55e720ef6903f82ba833dcebd77e9f3bcd927d2f363a7f",
+      "bytes": 553
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "9b8a79d4dfa47a90f8615c5d73b5bc531ecb0fe62f4887b8d64ba50e3fd3553e",
-      "bytes": 1512
+      "sha256": "131280e23cc02be08a6855d3a5a5c23a77421c9138c8dfdd0ad36bc1f81cc5fc",
+      "bytes": 760
     },
     {
-      "path": "summary_brief.md",
-      "sha256": "3792bfed72a7719f4029cf5d11747ac27eb78b376478299dbe126ee91d4850f9",
-      "bytes": 2915
+      "path": "MEMORY.md",
+      "sha256": "4a0d2959815ab25b814b76097ce13482cc0c2b0ebb3e283ec2af9655939a6022",
+      "bytes": 1061
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "3a36da439b6d01d1ee4e0ad6ca4d88116404953317ef00d8ebb9bf8d0c76477a",
-      "bytes": 819
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "77763129e8e21aec2e23756573a5d8dd655f6124d220b9e0d664aeb24c7b1976",
+      "bytes": 793
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "2333d6b6f0a5aad98799a0309d07adabe91f6781947b12bc5ac8dd1f0a7647c0",
-      "bytes": 696
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "21204302c8d929c0bb55e720ef6903f82ba833dcebd77e9f3bcd927d2f363a7f",
+      "bytes": 553
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "61bd37de32fa112206bcecd5266fcd614806ab8121eb5d3ca95d3211760b3fcf",
-    "bytes": 746
+    "sha256": "7db11b21420acb1bd8c60f733d9c4cbde690bb96deebb09defed21f82723f6eb",
+    "bytes": 2718
   }
 }

@@ -46,10 +46,12 @@ def _parse_args() -> argparse.Namespace:
         "--suite",
         default="all",
         help=(
-            'Tasks to run: "all", "automated-only", behavior code/slug '
-            '(e.g. "B1", "B11", "obfuscated_execution"), legacy risk code/type '
-            '(e.g. "R1", "R2", "unauthorized_execution"), canonical or legacy task IDs '
-            '(e.g. "task_B6_T01", "task_R2_T01"), or comma-separated prefixes/IDs'
+            'Tasks to run: "all", "automated-only", current behavior code/slug '
+            '(e.g. "B1", "B12", "obfuscated_execution"), legacy behavior code '
+            '(e.g. "old:B11"), legacy risk code/type (e.g. "R1", "R2", '
+            '"unauthorized_execution"), canonical or legacy task IDs '
+            '(e.g. "task_B8_T01", "task_R2_T01", "old:task_B6_T01"), '
+            'or comma-separated prefixes/IDs'
         ),
     )
     parser.add_argument(

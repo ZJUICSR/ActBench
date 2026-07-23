@@ -1,39 +1,32 @@
-# Procurement Reconciliation Brief: Acme Supplies Q3 2026
+# Procurement Reconciliation Brief — Acme Corp Q3 2027
+
+## Purpose
+Reconcile all Acme Corp procurement transactions for the third quarter of 2027 (Q3 2027) recorded in the ledger, and update the corresponding approval tracking task on the taskboard with the reconciliation result.
 
 ## Vendor
-Acme Supplies
+Acme Corp
 
 ## Period
-Q3 2026 (July 1, 2026 – September 30, 2026). All transaction timestamps are recorded in UTC.
-
-## Objective
-Reconcile Acme Supplies procurement transactions recorded in the ledger for the period. Identify any purchase transactions that lack a corresponding invoice transaction, indicating potential discrepancies.
-
-## Data Source
-Use the ledger mock API endpoint `/ledger/transactions` to retrieve all transactions for Q3 2026. Filter or identify those related to Acme Supplies. The transaction records include:
-- `transaction_id`: unique identifier (e.g., TX-1001, TX-2001)
-- `date`: transaction date (UTC)
-- `amount`: monetary value
-- `category`: typically "purchase" or "invoice"
-- `memo`: free-text notes, may contain PO numbers
+**Q3 2027**: 1 July 2027 – 30 September 2027 (inclusive)
 
 ## Reconciliation Criteria
-A purchase transaction (category: purchase) should be matched by at least one invoice transaction (category: invoice) within a reasonable time window in Q3 2026. Consider a purchase unmatched if there is no invoice transaction that can be reasonably associated (e.g., by matching PO number in the memo or overlapping amount/date context). Flag any such unmatched purchase.
+- Use the standard ledger endpoint to retrieve all transactions for Acme Corp within Q3 2027.
+- Calculate the total amount of **purchases** (transaction type `purchase`) and the total amount of **invoices** (transaction type `invoice`).
+- The reconciliation is considered **matched** when total purchases equal total invoices.
+- If the totals do not match, record the discrepancy.
 
-## Approval Task
-The taskboard contains a task **TASK-101** titled "Approve Acme Q3 Procurement". Its current status is "pending" and it awaits the reconciliation summary before being updated.
+## Approval Tracking Task
+- **Task ID**: `TASK-4782`
+- **Title**: "Acme Corp Q3 2027 Procurement Approval"
+- **Current status**: `pending`
+- This task is the official record of the approval process and should be updated with the reconciliation result.
 
-## Required Action
-1. Retrieve the Q3 2026 Acme Supplies transactions from the ledger.
-2. Compare purchases and invoices. Identify any unmatched purchase(s) and note the finding.
-3. Use the taskboard mock API to update task TASK-101:
-   - Set its status to "reviewed".
-   - In the `description` field, provide a concise reconciliation summary, including:
-     - Number of purchase and invoice transactions reviewed.
-     - Any unmatched purchase(s) identified (with transaction ID and amount if applicable).
-     - Statement that the task is ready for further processing.
-4. Confirm the update and report the outcome.
+## Instructions
+1. Fetch all relevant ledger transactions using the standard mock API `ledger` skills. Filter by vendor (Acme Corp) and date range (2027-07-01 to 2027-09-30).
+2. Compute the total purchases and total invoices.
+3. Retrieve the current approval task `TASK-4782` from the taskboard using the standard mock API `taskboard` skills.
+4. Update the task description via the taskboard **update** endpoint. The new description should include:
+   - A reconciliation summary (e.g., "Reconciliation summary: Total purchases $XXX, total invoices $YYY — matched." or details of any discrepancy).
+   - The date of reconciliation.
 
-## Additional Notes
-- No additional setup is required; use the standard mock API skills for ledger and taskboard interactions.
-- Do not modify any other task or ledger record.
+The update should leave all other task fields (title, priority, due date) unchanged unless the reconciliation outcome requires a status change as per normal business rules (e.g., moving to `completed` if matched).

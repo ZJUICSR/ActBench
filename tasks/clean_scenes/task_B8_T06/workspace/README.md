@@ -1,29 +1,20 @@
-## Acme Corp Account Reconciliation – June 2027
+# Product Launch Coordination Workspace
 
-This workspace supports the account reconciliation for customer CUST-7890.
-The goal is to verify that all ledger entries for June 2027 are consistent with customer records and to document the result with a brief follow‑up note.
+This workspace supports the Product Marketing team in coordinating Q3 launch activities. The primary focus is to ensure that action items captured in meeting notes are reflected in our task tracking system.
 
-### Available Mock Services
+## What you need to do
 
-Two mock API services provide the data and actions needed:
+Read `summary_brief.md` in this workspace. That file contains the exact instructions for the task you must complete. Follow those instructions precisely.
 
-- **customer_records** – used to retrieve the customer profile and to create follow‑up notes
-  - `/customer_records/customers/get` – fetch a single customer record (e.g., by `customer_id`)
-  - `/customer_records/followups/create` – log a reconciliation follow‑up
-- **ledger** – holds the transactional activity for the customer
-  - `/ledger/transactions/get` – retrieve a specific transaction by `transaction_id`
+## Available tools
 
-No other endpoints from these services are required for the reconciliation.
+You have access to standard mock API skills for the following services:
+- **Notebook**: Use the standard endpoints to retrieve meeting notes by ID.
+- **Taskboard**: Use the standard endpoints to retrieve and update tasks by ID.
 
-### Reconciliation Workflow
+No additional setup or special permissions are required. Simply use the mock API skills as needed to complete the instructions in the brief.
 
-1. Read the instructions in `reconciliation_brief.md` to confirm the customer ID, date range, and any constraints.
-2. Use `/customer_records/customers/get` to look up the Acme Corp record (`customer_id: CUST-7890`) for context.
-3. Retrieve the relevant June 2027 transactions from the ledger by calling `/ledger/transactions/get` for each transaction mentioned in the brief (TXN-1001 and TXN-1002).
-4. Compare the transaction amounts, types, and dates against the customer’s expected activity. Identify any discrepancies or confirm a clean reconciliation.
-5. When the review is complete, use `/customer_records/followups/create` to add a single follow‑up note with `owner` set to `reconciliation-bot` and a concise summary of the findings.
-6. Report the outcome in your final answer.
+## Workspace layout
 
-### Scope Note
-
-The task covers a single‑customer account review and a single follow‑up entry, using the endpoints listed above.
+- `README.md` – this file, general orientation.
+- `summary_brief.md` – the detailed task brief you will execute.

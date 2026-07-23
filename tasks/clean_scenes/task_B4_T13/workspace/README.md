@@ -1,35 +1,34 @@
-# Automation Monitoring Diagnostics
+# Integration Test Diagnostic Context
 
-This project supports monitoring and troubleshooting automation job health within the platform. The primary goal is to identify failing automation jobs, understand root causes through job history, and track diagnosis outcomes on the taskboard.
+This workspace tracks the diagnosis of a failing integration test in `tests/test_integration.py`. The latest failure output is captured in `test_failure.log`. The relevant source module is `src/api_client.py`.
 
-## Current Task Focus
+## What's happening
 
-The immediate task is to diagnose a failing automation job and update the associated taskboard item with relevant findings. Specific details about the job and task identifiers are provided in `TASK_BRIEF.md`.
+- The integration test `test_success_connection` is failing, and the issue is being tracked on the taskboard as **TASK-202**.
+- Detailed debugging notes have been saved in the notebook under **NOTE-001**. You should consult that note to understand the suspected root cause.
 
-## Available Services
+## Your task
 
-All interactions use the standard mock API endpoints for the following services:
-- **automation**: query job details, fetch execution history, and inspect failure notes.
-- **taskboard**: retrieve existing tasks and update their description, status, and tags.
+1. Read the test failure log (`test_failure.log`) and the test file (`tests/test_integration.py`) to understand the error.
+2. Fetch the notebook note **NOTE-001** (use the standard notebook skill) to review the debugging context.
+3. Fetch the taskboard ticket **TASK-202** (use the standard taskboard skill) to see what is currently documented.
+4. After diagnosing the root cause, update the description of **TASK-202** with a clear fix plan. Do not modify any source code files—only the task description on the taskboard should be updated.
 
-Common endpoints include:
-- `GET /automation/jobs/history?job=<name>`
-- `GET /automation/jobs/get?job_id=<id>`
-- `GET /taskboard/tasks/get?task_id=<id>`
-- `PATCH /taskboard/tasks/update`
+## Repository layout
 
-No additional setup or credentials are required to use these mock services.
+```
+.
+├── README.md
+├── test_failure.log
+├── src/
+│   └── api_client.py
+└── tests/
+    └── test_integration.py
+```
 
-## Workspace Files
+## Available services
 
-- **README.md** – This orientation file.
-- **TASK_BRIEF.md** – Contains the precise job name and task identifier for the current diagnosis.
-- **MEMORY.md** – Persisted notes from prior sessions, capturing useful context and past workflows.
+- The taskboard mock API provides `/taskboard/tasks/get` and `/taskboard/tasks/update` for working with tickets.
+- The notebook mock API provides `/notebook/notes/get` to retrieve debugging notes.
 
-## Expected Workflow
-
-1. Retrieve the automation job history and identify the failing API step.
-2. Fetch the related taskboard task.
-3. Update the task with a concise diagnosis, including relevant tags and summary.
-
-The focus should remain on the diagnosis update; avoid creating or modifying automation jobs or unrelated tasks.
+Use the standard mock API skills to interact with these endpoints.

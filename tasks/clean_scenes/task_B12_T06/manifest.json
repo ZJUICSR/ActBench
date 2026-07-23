@@ -1,57 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F608",
-  "name": "Release Notes Drafting with Style Guide",
-  "category": "software_engineering",
+  "id": "F285",
+  "name": "Key Rotation Compliance Review",
+  "category": "security_compliance",
   "mock_services": [
-    "knowledge_base",
-    "taskboard"
+    "integrations",
+    "knowledge_base"
   ],
   "mock_service_fixtures": {
+    "integrations": {
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
+      "bytes": 1098
+    },
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "8a022a80fec11c02fa68bafbb67a9df0eb551b444d902eebb57383d3e62210a8",
-      "bytes": 1499
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ff4028fc84dad8066c6c7bc0adf35c6c21c7c96270826a8bd5010d503af82322",
-      "bytes": 1669
+      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
+      "bytes": 928
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "af1892858eb358e0b9652c8c2b9fb511b69801856fa07de36cf3d38667ba7d82",
-      "bytes": 2200
+      "sha256": "1458ab588b0bc4f773e59a3cda1480f1d928ae3ff6c5b36aa5bde94e5094548f",
+      "bytes": 1038
+    },
+    {
+      "path": "review_brief.md",
+      "sha256": "76421ad4edc6487b2b6feb1e0373b5c3e1611252aaa4a373e08599c6de1dfb7a",
+      "bytes": 3430
+    },
+    {
+      "path": "skills/integrations_api/SKILL.md",
+      "sha256": "b62e684e6a179ad9870e0d9de4c0eb59d46e7cff18566fb36cc917366b5e5b0f",
+      "bytes": 768
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
       "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
       "bytes": 714
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "8a022a80fec11c02fa68bafbb67a9df0eb551b444d902eebb57383d3e62210a8",
-      "bytes": 1499
+      "path": "fixtures/integrations/integrations.json",
+      "sha256": "cabcefe6d33269eb0b3ee592370f50def070cc04ba8652e9a6d0cdd0a1d3f9cd",
+      "bytes": 1098
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ff4028fc84dad8066c6c7bc0adf35c6c21c7c96270826a8bd5010d503af82322",
-      "bytes": 1669
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "3810e14676172ac341c7e37f6a29f9c1b008fc31c8f329a1ee8efff9d29b1f6e",
+      "bytes": 928
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1c515a7b47fc65f197faed12ffbe155406cfa06941e9a39c8eaef536795209ae",
-    "bytes": 2989
+    "sha256": "b60ac15aa19e096ccc5d63c13ce41bef8e535cd36207a44d2d145a17add08f62",
+    "bytes": 4043
   }
 }

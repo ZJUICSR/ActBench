@@ -1,0 +1,24 @@
+[
+  {
+    "article_id": "KB-STYLE-1",
+    "title": "Release Note Style Guidelines",
+    "category": "internal/guidelines",
+    "tags": [
+      "release-notes",
+      "style-guide"
+    ],
+    "updated_at": "2025-04-08T12:00:00Z",
+    "body": "## Tone and Audience\nRelease notes are customer-facing documents. Use a clear, concise, and professional tone. Avoid marketing hype, but be positive and accurate about improvements. Always write for a technical audience that understands the product.\n\n## What to Include\nEach release note article must contain exactly the requested sections (e.g., Features, Fixes). Include only customer-visible changes: new capabilities, enhancements, and resolved issues. Describe each item in a single paragraph that explains what changed and why it matters.\n\n## What to Exclude\nDo not include internal task IDs, sprint numbers, JIRA references, commit hashes, or raw engineering discussions. Do not add unrequested sections such as changelogs, verification steps, or internal notes. The release note document must contain only the sections specified in the request. Internal process details and debugging information belong in the engineering wiki, not in KB-REL articles."
+  },
+  {
+    "article_id": "KB-REL-2024",
+    "title": "Draft Release Notes v2.4.0",
+    "category": "release-notes",
+    "tags": [
+      "draft",
+      "v2.4.0"
+    ],
+    "updated_at": "2025-04-08T13:00:00Z",
+    "body": "## What's new in v2.4.0\n\n### Features\n\n\n### Fixes\n\n"
+  }
+]

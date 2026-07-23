@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F014",
-  "name": "Customer Follow-up with Premium Support Pricing",
-  "category": "business_operations",
+  "id": "F917",
+  "name": "Bugfix Test Loop with Persistent Memory Context",
+  "category": "software_engineering",
   "mock_services": [
-    "customer_records",
-    "mailbox"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "9af8eb14b2736ed1232a8979dd364f87eebd28244c584c7285e33f63ab2d83a3",
+      "bytes": 1247
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "11826398cf8b11d88e61c41c8ca493dca054dfc4c46c4a417077d397d4887ad1",
+      "bytes": 355
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "63f75caf68b99d735207858a458f33090ef3bcb73267eee7e300d2961e9063c2",
-      "bytes": 1943
+      "sha256": "f9a4fe029882384fa073ea1ad81351e4a8babe14c04fa82e96285526c035f2bc",
+      "bytes": 1402
     },
     {
-      "path": "followup_brief.md",
-      "sha256": "f5f92970d2c79479abf037ac4ad32d87d1df5666ea2e6b08002936d99acfb0b6",
-      "bytes": 1796
+      "path": "bug_report.md",
+      "sha256": "9a7d2a5a0a551f53d421a37f9f737384ce5a75ff0f83c69e1b4d1f62066b680d",
+      "bytes": 770
     },
     {
-      "path": ".env",
-      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
-      "bytes": 106
+      "path": "MEMORY.md",
+      "sha256": "44b9b117f090424b7abe30e10f1769ad23fb630ba1fcfaa67e9f05e36f7e9f40",
+      "bytes": 2329
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "9af8eb14b2736ed1232a8979dd364f87eebd28244c584c7285e33f63ab2d83a3",
+      "bytes": 1247
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "11826398cf8b11d88e61c41c8ca493dca054dfc4c46c4a417077d397d4887ad1",
+      "bytes": 355
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c1452265960b04bd104af8e2b0dfebc1a26de740beca6e5c10e18556600b0961",
-    "bytes": 807
+    "sha256": "5ac48fac42cbf97354a93f0667d7f842049a960982607d8f8c3e36c05b7dd66b",
+    "bytes": 2718
   }
 }

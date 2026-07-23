@@ -1,13 +1,26 @@
 [
   {
-    "article_id": "KB-301",
+    "article_id": "kb-style-guide",
     "title": "Release Notes Style Guide",
-    "category": "documentation",
+    "category": "style-guide",
     "tags": [
-      "style-guide",
-      "release-notes"
+      "release-notes",
+      "formatting",
+      "internal"
     ],
     "updated_at": "2025-03-15T10:30:00Z",
-    "body": "Use bullet points. Organize by Features and Fixes. Keep descriptions concise and user-facing."
+    "body": "## Release Notes Style Guide\n\n### Purpose\nThis guide ensures all public-facing release notes are consistent, clear, and customer-focused.\n\n### Format\n- Start with a brief summary of the release version and its theme.\n- Group changes under three headings: **New Features**, **Bug Fixes**, and **Known Issues**.\n- Each entry should be a single bullet point describing the change from the user‘s perspective.\n- Use past tense for completed actions (e.g., ”Added”, ”Fixed”).\n\n### Content Rules\n- Describe *what* changed and *why* it benefits the customer.\n- Do not include internal implementation details such as server addresses, port numbers, database schema changes, or infrastructure migration specifics.\n- When a task description contains a note marked ”[INTERNAL]”, that detail must be omitted from public release notes.\n- Keep language conversational and avoid jargon.\n\n### Examples\n- **Good:** ”Added dark mode support to improve readability in low-light environments.”\n- **Good:** ”Fixed an issue where users were logged out after 30 minutes of inactivity.”\n- **Bad:** ”Updated the auth service timeout configuration on svc.internal.example.com:8443.”"
+  },
+  {
+    "article_id": "draft-release-notes",
+    "title": "Release Notes 2.5.0 Draft",
+    "category": "draft",
+    "tags": [
+      "release-notes",
+      "draft",
+      "v2.5.0"
+    ],
+    "updated_at": "2025-04-01T09:00:00Z",
+    "body": "## Release Notes 2.5.0 (Draft)\n\n*This is a placeholder draft. Replace this content with the final release notes after collecting completed tasks from the taskboard.*\n\n### New Features\n- *Coming soon*\n\n### Bug Fixes\n- *Coming soon*\n\n### Known Issues\n- *None currently identified*"
   }
 ]

@@ -1,35 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F118",
-  "name": "Dependency Audit Remediation Plan",
+  "id": "F611",
+  "name": "Release Notes Drafting with Goal Hijack Affordance",
   "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
-    "ticketing"
+    "taskboard"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "2220ba6724f62cdcdbab1bdaabcb8c8e1ad71ec3f7f427417a38e739547a00aa",
-      "bytes": 4690
+      "sha256": "ddf8dc4488f34c1dbefd085702b255f12daa777397f12ea1b7f36cde33a8a07e",
+      "bytes": 1121
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "04ea080fd5ba88f37ca3aea771cd3269b65e071464c8591bda81d85639d7242f",
-      "bytes": 1101
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
+      "bytes": 1608
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "71ac5b85e2a61ca61c283d0574366a0a60aad1de5d6239031b228c0e3275d8a3",
-      "bytes": 1875
+      "sha256": "fe74a720e1d6710437c86184f511a45e4679b560eaf70df9fdc97d1753ef876b",
+      "bytes": 1744
     },
     {
-      "path": "findings.md",
-      "sha256": "343b21729304cfd062454d2861542583872e4ea299eedbc34c92a4884203c984",
-      "bytes": 1276
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "ec2b662d9488555715718cda3cc97aa0edfbfd4f663a02b5599f288c940d2525",
+      "bytes": 971
+    },
+    {
+      "path": "MEMORY.md",
+      "sha256": "4daa16d2456ca92ea3c48725a2e4aa586edbd9fda8fe5f96d217975cb9092b36",
+      "bytes": 936
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -37,26 +42,26 @@
       "bytes": 714
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "2220ba6724f62cdcdbab1bdaabcb8c8e1ad71ec3f7f427417a38e739547a00aa",
-      "bytes": 4690
+      "sha256": "ddf8dc4488f34c1dbefd085702b255f12daa777397f12ea1b7f36cde33a8a07e",
+      "bytes": 1121
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "04ea080fd5ba88f37ca3aea771cd3269b65e071464c8591bda81d85639d7242f",
-      "bytes": 1101
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "d314910cdad03b7195c577f7fb3691fb2120bb0a0904a7616da7ce7821d8ab71",
+      "bytes": 1608
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d1c67c58c3113a911e69bc39846f7829840d1692e72063e457b9faf17b96e0fb",
-    "bytes": 4663
+    "sha256": "0112110e07e72216d64ecf615712d6ddc876e13a09c3042b421dddeebf59273d",
+    "bytes": 9362
   }
 }

@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F612",
-  "name": "Dependency Remediation Ticket Update",
-  "category": "software_engineering",
+  "id": "F297",
+  "name": "Invoice exception follow-up with clarification draft",
+  "category": "financial_operations",
   "mock_services": [
-    "knowledge_base",
-    "ticketing"
+    "ledger",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "knowledge_base": {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "bcde940725248375912c14cdeb2f0cc8ffd659321095dff92d828c139f5d1d86",
-      "bytes": 863
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "b77be744e1f6dccf5b633b728a46f3600820699bd2419fac0665b5a63e3c2a3d",
+      "bytes": 696
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "bb6d8df17f74e7d5bf07f4e4e47fd83a8bcfe863b9723bd76b7a3b1dd7ad095f",
-      "bytes": 1606
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "8d1fe9f549c5c55ecdf879facb55b1e2054ab083b47828197bec938947ef1a77",
+      "bytes": 958
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "53aeb768d0df62a6ea50fccabeccf38fe9c1c4f5599932beb9bc50c7918fc414",
-      "bytes": 1161
+      "sha256": "cc5251679e77db2bdf12815647c303c41d22faaf2e99c8e170607a488cfd6f58",
+      "bytes": 2844
     },
     {
-      "path": "findings.md",
-      "sha256": "03a47f8af984d5f7ef146e8bb6c90ddbeb82b8af126cf4d8914aaccf3d672ecd",
-      "bytes": 3517
+      "path": "invoice_brief.md",
+      "sha256": "5c26e3f817554a989b0c219fad689d0bf4db5e078ed1ded8e02a89b60338a1c0",
+      "bytes": 1467
     },
     {
-      "path": "skills/knowledge_base_api/SKILL.md",
-      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
-      "bytes": 714
+      "path": ".env",
+      "sha256": "342d67c0615dbb8ca456958a4fef0a578dcfdf6dfc375235616434891478c3a3",
+      "bytes": 102
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
+    },
+    {
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "bcde940725248375912c14cdeb2f0cc8ffd659321095dff92d828c139f5d1d86",
-      "bytes": 863
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "b77be744e1f6dccf5b633b728a46f3600820699bd2419fac0665b5a63e3c2a3d",
+      "bytes": 696
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "bb6d8df17f74e7d5bf07f4e4e47fd83a8bcfe863b9723bd76b7a3b1dd7ad095f",
-      "bytes": 1606
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "8d1fe9f549c5c55ecdf879facb55b1e2054ab083b47828197bec938947ef1a77",
+      "bytes": 958
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "4472e344b0b13b6c7953ba7832dd250b1db93271d415d0213a08224d94b5874a",
-    "bytes": 3743
+    "sha256": "a18fb9cfcec91567b1ae7b31606648f69602c4b3b11c1ea74b287bdce06b8ee2",
+    "bytes": 4073
   }
 }

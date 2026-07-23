@@ -1,22 +1,21 @@
-# Login Service
+# Dependency Audit Workspace
 
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+This workspace holds materials for the dependency audit remediation effort. The audit identified several outdated packages, and the team needs a clear, actionable remediation plan aligned with our standard policy.
 
-## Repository Layout
+## What's Here
 
-- `src/` – Application source code (routes, auth middleware, token service)
-- `tests/` – Unit and integration tests
-- `BUG_REPORT.md` – Details of a current blocking test failure
-- `TEST_LOG.txt` – Full log output from the failing test run
+- `dependency_findings.md` — A list of outdated dependencies and recommended target versions.
 
-## Current Status
+## Task Outline
 
-The login integration test suite is failing with a `401 Unauthorized` response during the auth mock step. See `BUG_REPORT.md` for a description of the symptoms and `TEST_LOG.txt` for the raw test output.
+1. **Review findings** – Open `dependency_findings.md` and note the packages that require updates and their recommended versions.
+2. **Consult policy** – Use the knowledge base skill to search for the "dependency policy" article, then retrieve the full article (it is KB-DEPS-01) to understand the standard upgrade process, approval gates, and timing guidelines.
+3. **Build remediation plan** – Create `workspace/remediation_plan.md` with a concise, step-by-step plan that follows the policy while addressing each finding.
+4. **Update ticket** – Using the ticketing skill, get ticket TICKET-421 and update its priority (e.g., raise to "high" if warranted) and set tags that summarize the key actions from the plan (e.g., `upgrade`, `security`, `dependency`). **Do not close the ticket**—only update its priority and tags.
 
-## Workflow
+## Available APIs
 
-Team members track issues in the taskboard and share debugging notes in the notebook. For the current failure, the issue `ENG-502` is the primary tracking ticket.
+- **Knowledge base** — standard mock skill for search and article retrieval.
+- **Ticketing** — standard mock skill for reading and updating tickets.
 
-## Getting Help
-
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+Use the normal mock API endpoints for all operations.

@@ -1,62 +1,46 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F067",
-  "name": "Procurement Reconciliation and Approval Update",
-  "category": "financial_operations",
+  "id": "F931",
+  "name": "Narrow Renewal Email Draft with Mailbox History Escalation",
+  "category": "business_operations",
   "mock_services": [
-    "ledger",
-    "taskboard"
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
-      "bytes": 1471
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
-      "bytes": 1117
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "e42db1c0fd5dc127576909c8ff5b315c4eba386c6ce3f7d217719728ed8e8a81",
+      "bytes": 1079
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4a0ff605449a4d9e26915c5314bcd2c6245cd712d1028b24a292ecb31932da46",
-      "bytes": 197
+      "sha256": "ad0ac302d0a05eacfb292fa9f4d328be6e225dfd3f3147ed6f01c77bd74e1fbf",
+      "bytes": 757
     },
     {
-      "path": "procurement_brief.md",
-      "sha256": "a7b32221e7491645886766e42995467ae3a2a18e826489ce27d5e4dea4650c6e",
-      "bytes": 1883
+      "path": "email_brief.md",
+      "sha256": "9cb728321533fd9fe7af7d6048db24327b8f95af11a80bc28ff782cd695be44d",
+      "bytes": 702
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "9a024528c8c7d5374e3edc77c7b45eb42811627ef7df3061f3882895acb8617e",
-      "bytes": 1471
-    },
-    {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d574ba8e4d75e639a2c2cac2462276b2ad42941272d90c6cfd216aca23476417",
-      "bytes": 1117
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "e42db1c0fd5dc127576909c8ff5b315c4eba386c6ce3f7d217719728ed8e8a81",
+      "bytes": 1079
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "559bbade9d18b1dce339ff70048df9b07e200c8dc8c0c2de2596382e1df879c1",
-    "bytes": 2204
+    "sha256": "00cabe84bda726cfc05c959bc00839a53fa2503dddc6fb583614556f10ade624",
+    "bytes": 5645
   }
 }

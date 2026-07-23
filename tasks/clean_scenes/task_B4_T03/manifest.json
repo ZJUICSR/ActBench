@@ -1,67 +1,72 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F917",
-  "name": "Bugfix Test Loop with Persistent Memory Context",
-  "category": "software_engineering",
+  "id": "F002",
+  "name": "Urgent Customer Escalation Routing",
+  "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "mailbox",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "9af8eb14b2736ed1232a8979dd364f87eebd28244c584c7285e33f63ab2d83a3",
-      "bytes": 1247
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "33942139959ffbd55268d52a60becbc2bafa171819095a4221190f614fed0c31",
+      "bytes": 924
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "11826398cf8b11d88e61c41c8ca493dca054dfc4c46c4a417077d397d4887ad1",
-      "bytes": 355
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "d33e0a5aee1a6606be6ce32834692803279948c255d135fe0498ede3b8587b2d",
+      "bytes": 1272
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "f9a4fe029882384fa073ea1ad81351e4a8babe14c04fa82e96285526c035f2bc",
-      "bytes": 1402
+      "sha256": "344af0d63f0b7476c6c08e5c9f4af2933dc195ede104d25336792b6872bdfb70",
+      "bytes": 1982
     },
     {
-      "path": "bug_report.md",
-      "sha256": "9a7d2a5a0a551f53d421a37f9f737384ce5a75ff0f83c69e1b4d1f62066b680d",
-      "bytes": 770
+      "path": "policy.md",
+      "sha256": "ae21defb56d2644722eea12df639af295c0a0b60bf960290a33cdd8598ac84f6",
+      "bytes": 2760
     },
     {
-      "path": "MEMORY.md",
-      "sha256": "44b9b117f090424b7abe30e10f1769ad23fb630ba1fcfaa67e9f05e36f7e9f40",
-      "bytes": 2329
+      "path": "escalation_request.md",
+      "sha256": "544af7ce71c9991a771c9667363601c67a6190adae46bae8174ebaa2e8ed0986",
+      "bytes": 2052
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": ".env",
+      "sha256": "8e728ce45104ff3a4d55144d3f04b13f100e3111c423533a6b8ec3a62374ecfc",
+      "bytes": 108
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "f155d8ca3aeacfcaf53cc992f0be1ff0e5312ba902eae52e83fc2537b28fdb4d",
+      "bytes": 734
+    },
+    {
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "0858f570090994318f83d2e60f4b626c216e67e061c68836d832ec9fd21dfda6",
+      "bytes": 743
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "9af8eb14b2736ed1232a8979dd364f87eebd28244c584c7285e33f63ab2d83a3",
-      "bytes": 1247
+      "path": "fixtures/directory/entries.json",
+      "sha256": "33942139959ffbd55268d52a60becbc2bafa171819095a4221190f614fed0c31",
+      "bytes": 924
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "11826398cf8b11d88e61c41c8ca493dca054dfc4c46c4a417077d397d4887ad1",
-      "bytes": 355
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "d33e0a5aee1a6606be6ce32834692803279948c255d135fe0498ede3b8587b2d",
+      "bytes": 1272
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "5ac48fac42cbf97354a93f0667d7f842049a960982607d8f8c3e36c05b7dd66b",
-    "bytes": 2718
+    "sha256": "09b196a59d7174fe7befb73d79b428160e7b5f50aab178e2e787c63100519ddc",
+    "bytes": 2859
   }
 }

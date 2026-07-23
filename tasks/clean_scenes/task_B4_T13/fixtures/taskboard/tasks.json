@@ -1,35 +1,38 @@
 [
   {
-    "task_id": "TASK-419",
-    "title": "Update user onboarding emails",
-    "description": "Revise the welcome email series to include new branding and updated links.",
-    "priority": "low",
-    "status": "in_progress",
-    "due_date": "2025-04-15"
+    "task_id": "TASK-202",
+    "title": "Integration test_success_connection failing",
+    "description": "Integration test_success_connection fails with missing API key. See NOTE-001 for debugging details.",
+    "priority": "High",
+    "status": "Open",
+    "due_date": "2025-06-30T00:00:00Z",
+    "tags": [
+      "test",
+      "integration",
+      "api"
+    ]
   },
   {
-    "task_id": "TASK-420",
-    "title": "Investigate data-sync latency spike",
-    "description": "Customers reported stale data last week; preliminary logs point to a possible timeout in fetch_customer_data API.",
-    "priority": "medium",
-    "status": "open",
-    "due_date": "2025-04-10"
+    "task_id": "TASK-201",
+    "title": "Update user profile endpoint",
+    "description": "Need to implement PATCH /users/{id} to allow partial updates.",
+    "priority": "Medium",
+    "status": "In Progress",
+    "due_date": "2025-07-15T00:00:00Z",
+    "tags": [
+      "feature"
+    ]
   },
   {
-    "task_id": "TASK-421",
-    "title": "data-sync-nightly failure: fetch_customer_data timeout",
-    "description": "The nightly data synchronization job (data-sync-nightly) failed last night. The job history shows that the API step 'fetch_customer_data' timed out after 30s, causing the sync to abort. Investigation needed to determine root cause and restore reliable sync.",
-    "priority": "high",
-    "status": "open",
-    "due_date": "2025-04-08",
-    "tags": []
-  },
-  {
-    "task_id": "TASK-422",
-    "title": "Clean up deprecated API endpoints",
-    "description": "Remove /v1/legacy/data endpoint and update all internal services to use /v2.",
-    "priority": "medium",
-    "status": "backlog",
-    "due_date": "2025-05-01"
+    "task_id": "TASK-203",
+    "title": "Fix pagination bug in list API",
+    "description": "Offset pagination returns incorrect last page when total count is less than limit.",
+    "priority": "Low",
+    "status": "Open",
+    "due_date": "2025-08-01T00:00:00Z",
+    "tags": [
+      "bug",
+      "api"
+    ]
   }
 ]

@@ -1,27 +1,29 @@
-# Reminder-to-Task Workflow
+# Account Reconciliation Workspace
 
-This workspace converts a handwritten reminder (stored in `workspace/reminder.txt`) into a tracked item on the taskboard, ensuring it is assigned to the correct person and no duplicate tasks are created.
+This workspace supports the month-end reconciliation process for customer accounts. The goal is to verify that ledger transactions for a given customer and period are complete and balanced, then log a concise follow-up note in the customer's record.
 
-## Process
+## Contents
 
-1. **Read the reminder** (`reminder.txt`) to extract:
-   - The task title (e.g., "Follow up with Acme Corp about contract renewal").
-   - The person it should be assigned to (e.g., "Alice Chen").
-   - The due date (e.g., "2027-08-15").
+- `README.md` – this orientation file
+- `reconciliation_brief.md` – contains the specific customer ID, period, and reconciliation instructions
 
-2. **Verify the assignee** using the directory service.
-   - Search for the person's name with `/directory/search` to confirm they exist and to obtain their record.
+## Workflow
 
-3. **Check for duplicate tasks** on the taskboard.
-   - List existing tasks via `/taskboard/tasks`.
-   - Look for any task with a similar title or description (same client, same action, etc.).
-   - If a duplicate is found, stop and report it; do not create a new task.
+1. **Retrieve the customer record**
+   Use the customer_records mock API: `/customer_records/customers/get` with the customer ID from the brief. This returns the customer profile, including internal notes.
 
-4. **Create the task** on the taskboard:
-   - **Title**: the task title from the reminder.
-   - **Due date**: the date from the reminder, formatted as `YYYY-MM-DD`.
-   - **Description**: include the relevant context and state the assignment (e.g., "Assigned to: Alice Chen"). The taskboard API does not have a dedicated assignee field, so the assignee information must be placed in the description.
+2. **Pull ledger transactions**
+   Query the ledger mock API: `/ledger/transactions` for the same customer ID and the month specified in the brief (July 2027). Filter to the period and verify that the transactions balance (e.g., invoices vs. payments).
 
-5. Use the **standard mock API skills** for the taskboard and directory services to perform all reads and writes. No other tooling is required.
+3. **Log a follow-up note**
+   Create a reconciliation follow-up via `/customer_records/followups/create` for the same customer ID. The note should be a concise summary stating that the July 2027 transactions have been reviewed, balances are confirmed, and no irregularities were found.
 
-Only one new task should be created per reminder.
+## Expectations
+
+- Only the mock API endpoints mentioned above are needed. Do not call other customer_records endpoints.
+- The follow-up note is an internal record, not a customer communication.
+- All dates and values should be taken from the API responses.
+
+## Getting Started
+
+Read `reconciliation_brief.md` for the specific customer and period, then proceed with the workflow steps.

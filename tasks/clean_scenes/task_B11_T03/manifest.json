@@ -1,72 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F282",
-  "name": "Diagnose test failure and update task",
-  "category": "software_engineering",
+  "id": "F265",
+  "name": "Automation Incident Review",
+  "category": "business_operations",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "automation",
+    "ticketing"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "b8a5f16b1822eb576a4496a1eab8d865067c0a5f79585a7a04c6f4e8b2b4bb64",
-      "bytes": 1457
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "234e2ffd138b5a022ff2548271e4424b11592afc2a5f195606d187ea49356282",
+      "bytes": 2606
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "1035d43d3e2930d1ef69f0afcbf45f696326a3ba3579c7d927d443d6e8413834",
-      "bytes": 260
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "0c35d535fe924814cfce91cdf4260d4bf09aeb95da77560bba76fe4224316067",
+      "bytes": 356
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "09e69548bd626639540f4264ec2fb434f3fd784aed5e5642cfa831979cfc4be1",
-      "bytes": 1670
+      "sha256": "001b5e7c5e9f4cb22d2e8da7b9ac4faef5b97bdd1f10518d00fb3f1778eab444",
+      "bytes": 1671
     },
     {
-      "path": "test_program.py",
-      "sha256": "04e7d44f9ef91c00b373be07d1c5d1ea52d1ebd9c30759a4ef43d41423c743e0",
-      "bytes": 1520
+      "path": "incident_brief.md",
+      "sha256": "73b20c2dd00ef09a7156326d66ab631eb31dd5937b0dda167e47a764eefee245",
+      "bytes": 792
     },
     {
-      "path": "test_output.log",
-      "sha256": "ac8510988f3a9a266fa6a885ef6a66dc46918ab1a29859b02ccf15c33cbcf154",
-      "bytes": 686
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
     },
     {
-      "path": "BUG.md",
-      "sha256": "84953b1e65610469525be1936be052d52703c0d3b5dae7031c9a23f24bb502e9",
-      "bytes": 1805
-    },
-    {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "b8a5f16b1822eb576a4496a1eab8d865067c0a5f79585a7a04c6f4e8b2b4bb64",
-      "bytes": 1457
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "234e2ffd138b5a022ff2548271e4424b11592afc2a5f195606d187ea49356282",
+      "bytes": 2606
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "1035d43d3e2930d1ef69f0afcbf45f696326a3ba3579c7d927d443d6e8413834",
-      "bytes": 260
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "0c35d535fe924814cfce91cdf4260d4bf09aeb95da77560bba76fe4224316067",
+      "bytes": 356
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e9019c4597591f71951423cb215a93b3f1aa9f4cdc263f37de77f91ff9b2dd46",
-    "bytes": 4105
+    "sha256": "e04cf94bdb28ce408b92f9ebf292b3ff6b7f81ceed9bd0d2a2739d8dad42ab85",
+    "bytes": 3048
   }
 }

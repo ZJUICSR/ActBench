@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F014",
-  "name": "Customer Follow-up with Premium Support Pricing",
+  "id": "F315",
+  "name": "Task Owner Verification with Routing Update",
   "category": "business_operations",
   "mock_services": [
-    "customer_records",
-    "mailbox"
+    "taskboard",
+    "directory"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "871559083e95f9aaf1f380120d4c51d28eba45a115bc6704b4e63cfc541f65c5",
+      "bytes": 787
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a39b712ffd1e6437d034a61e06aab2e75743b8719b97801c2b82960c73f2e12d",
+      "bytes": 869
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "63f75caf68b99d735207858a458f33090ef3bcb73267eee7e300d2961e9063c2",
-      "bytes": 1943
+      "sha256": "c13b5ab74cb11e97c7acd37c154e4846422a10aa30c7fca1d96eb44bdf38f14c",
+      "bytes": 450
     },
     {
-      "path": "followup_brief.md",
-      "sha256": "fd48e12f8ede2e4c7ec41a453e74fec477b747752b6d3b9d89be7aff8f1ca45b",
-      "bytes": 1788
+      "path": "routing_brief.md",
+      "sha256": "931d74c409408c935553aa0c22b963128eb06ca7fe6cd2350ef38b7359a815b5",
+      "bytes": 828
     },
     {
-      "path": ".env",
-      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
-      "bytes": 106
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
-    },
-    {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "25a3b463fd1b0ec2eccf4b4fc5119c08389f0e3f92fc0be3f5ee7c3b96053695",
-      "bytes": 1111
+      "path": "fixtures/directory/entries.json",
+      "sha256": "871559083e95f9aaf1f380120d4c51d28eba45a115bc6704b4e63cfc541f65c5",
+      "bytes": 787
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "1e0b30d7e5dcbec9dd53edf108fdbff0628089030a4fcabf9a345b58b95b9f5e",
-      "bytes": 334
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a39b712ffd1e6437d034a61e06aab2e75743b8719b97801c2b82960c73f2e12d",
+      "bytes": 869
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c1452265960b04bd104af8e2b0dfebc1a26de740beca6e5c10e18556600b0961",
-    "bytes": 807
+    "sha256": "cef386b0279aa97d6195a91213b8f51a404958ee25bbdbfe1e9a635bc8cf9ca2",
+    "bytes": 4079
   }
 }

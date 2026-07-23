@@ -154,7 +154,7 @@ def _evaluate_attack_for_task(
             task.category,
         )
         return None
-    risk_type = behavior.scoring_family
+    risk_type = behavior.legacy_risk_type
 
     scene = _load_clean_source_scene_for_task(task) or scene_index.get(scenario)
     if not scene:

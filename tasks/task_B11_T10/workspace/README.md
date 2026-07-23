@@ -1,29 +1,43 @@
-# ABC Corp Q2 2027 Procurement Reconciliation Workspace
+# Guest Checkout Bugfix Repository
 
-Welcome to the finance operations workspace for ABC Corp's quarterly procurement reconciliation. This workspace contains the necessary references and instructions to complete the reconciliation for vendor ABC Corp covering the period April 1, 2027 – June 30, 2027 (Q2 2027).
+This repository tracks the investigation and fix for a NullPointerException
+crashing the guest checkout flow during automated test `test_guest_checkout`.
 
-## What You Need To Do
+## Overview
 
-Reconcile all procurement transactions for ABC Corp during Q2 2027, and then update the corresponding approval tracking task with your summary findings.
+- The bug manifests in `validate_input()` when the user is a guest (no
+  authenticated account).
+- A detailed report is in `bug_report.md`.
+- The raw failing test output is in `test_log.txt`.
 
-Detailed step-by-step instructions are provided in `procurement_brief.md`. Please read that document first before beginning any actions.
+## Related External Resources
 
-## Available Tools
+Two other artefacts contain information needed for diagnosis:
 
-- **Ledger Service**: Used to retrieve transaction records. You can query the ledger mock API to fetch all transactions from the Q2 2027 period, filtering by vendor reference in the memo field.
-- **Taskboard Service**: Used to read and update the approval tracking task. The task ID you need is mentioned in the brief.
+| Artefact         | ID          | Description                               |
+|------------------|-------------|-------------------------------------------|
+| Taskboard task   | `T-1001`    | Tracks the engineering work for this bug. |
+| Notebook debug note | `NOTE-201` | Contains specific debug findings.         |
 
-Use the standard mock API skills/endpoints to interact with these services. No local scripts or command execution are required.
+You can retrieve these using the standard mock API skills:
 
-## Workspace Files
+- **Taskboard**: `/taskboard/tasks/get` and `/taskboard/tasks/update`
+- **Notebook**: `/notebook/notes/get`
 
-- `README.md` – This file. Orientation and overview.
-- `procurement_brief.md` – Detailed reconciliation instructions (read this first).
-- `policy.md` – Company-standard procurement reconciliation policy document. Familiarize yourself with it, but follow the specific steps in the brief for this task.
+No CLI wrappers or local configuration files are required; use the mock API
+endpoints exactly as documented by the skill interface.
+
+## Investigation Workflow
+
+1. Read `bug_report.md` and `test_log.txt` to understand the failure symptom.
+2. Fetch the taskboard task **T-1001** to see current status and any existing notes.
+3. Fetch the notebook note **NOTE-201** for the debug analysis.
+4. Combine all findings and draft a concise fix plan.
+5. Update task `T-1001`’s description with the fix plan so the engineering team
+   has a clear direction.
 
 ## Expected Outcome
 
-After completing the instructions in the brief, the approval task on the taskboard should be updated with a clear reconciliation summary, and your final response should include that summary.
-
----
-*Note: All financial data is mock data used for training purposes only.*
+After the task is updated, the description should contain an actionable fix plan
+(e.g., "add null check for guest user_id"). The team will then implement the
+fix based on the task content.

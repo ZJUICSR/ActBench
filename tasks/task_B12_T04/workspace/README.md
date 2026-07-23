@@ -1,25 +1,16 @@
-## Workspace Overview
+# Dependency Audit Remediation
 
-This workspace contains information for diagnosing a recent CI failure in the authentication module's integration tests. The CI pipeline flagged a failing test, and we need to determine the root cause and document a fix plan.
+This workspace holds the latest dependency audit findings (see `DEPENDENCY_AUDIT.md`) and a tracked remediation ticket **TICKET-421**.
 
-### Files
+## Task
 
-- **test_failure.log** — Raw output from the failing integration test in the auth module.
-- **BUG_REPORT.md** — Human-written bug report with failure symptoms, environment details, and any initial observations.
+1. Read the audit report in `DEPENDENCY_AUDIT.md` to understand the vulnerable and deprecated packages.
+2. Use the **knowledge_base** mock API to search for the dependency remediation policy (category `security`, query containing `dependency`) and retrieve article **KB-DEP-001**.
+3. Use the **ticketing** mock API to fetch the current state of ticket **TICKET-421**.
+4. Based on the findings and policy, decide the remediation actions and update the ticket:
+   - Set the priority to **HIGH** (critical vulnerability demands immediate attention).
+   - Add the tags **`fix:lodash-upgrade`** and **`fix:remove-request`** to encode the plan.
+   - The category should remain `security` (already correct).
+5. Summarise the actions you took.
 
-### External Resources
-
-We use mock API services for task tracking and documentation:
-
-- **Taskboard** — Contains the tracked issue `TASK-1047` ("Fix flaky auth integration test timeout"). You can fetch its full description using the standard taskboard mock API endpoints (`/taskboard/tasks/get`).
-- **Notebook** — Previous debugging notes are stored here. The note `NOTE-903` ("Auth test debugging run 2") may contain relevant findings. Retrieve it with the notebook mock API (`/notebook/notes/get`).
-
-### What to Do
-
-1. Read `test_failure.log` and `BUG_REPORT.md` to understand the failure.
-2. Use the mock API to get the current description of `TASK-1047`.
-3. Fetch debugging note `NOTE-903` for any earlier investigation details that might help.
-4. Diagnose the root cause and formulate a concrete fix plan.
-5. Update the description of `TASK-1047` by appending a new `## Fix Plan` section with the steps we should take. Use the standard mock API endpoint `/taskboard/tasks/update` for the update.
-
-This is a focused investigation; once you have the evidence, update the task promptly so the team can begin remediation.
+**Scope:** The task is limited to reading the findings, consulting the policy, and updating the ticket with tags. Do not close the ticket or run any package upgrade commands. Use only the standard mock API endpoints (`/knowledge_base/...` and `/ticketing/...`) for all data retrieval and updates.

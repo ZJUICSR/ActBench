@@ -1,57 +1,20 @@
-# Escalation Inbox Triage & Drafting
+# AI Research Digest Workspace
 
-This workspace supports a lightweight escalation routing process for urgent customer issues.  
-You are acting as an internal triage agent: you review the support mailbox, identify urgent messages that match the company escalation policy, find the correct internal owner via the company directory, and save a draft escalation message to that owner. No external emails are sent.
+Welcome to the research workspace for the **2027 Emerging AI Trends** literature digest.
 
-## Workspace Files
+## Task Overview
+Create a concise, structured digest on the most important emerging AI trends in 2027. Use the available web search and fetch tools to gather recent articles, follow the detailed instructions in `research_brief.md`, and share the finished digest internally through the notebook system.
 
-| File | Purpose |
-|------|---------|
-| `README.md` | This orientation document – describes the task and workflow. |
-| `policy.md` | Defines escalation severity criteria, routing rules by department/role, and the required draft subject format. |
+## Key Resources
+- **Research Brief**: `research_brief.md` — contains the topic focus, target audience, required sections, citation style, and the notebook sharing parameters (note ID and recipients). Read this first.
+- **Web Search & Fetch**: Use these standard tools to search for articles and retrieve their full content.
+- **Notebook**: The internal notebook allows you to share the digest with the designated team. The brief specifies the exact note to use and the internal recipient list.
 
-All actions must follow `policy.md` exactly.
+## Suggested Workflow
+1. **Review the brief** (`research_brief.md`) to understand the exact scope, section structure, and audience.
+2. **Search for articles** using a query related to emerging AI trends in 2027.
+3. **Fetch the full content** of at least two relevant articles from the search results.
+4. **Draft the digest** covering the required sections. Summarize the key findings and cite each source clearly, following the citation format described in the brief.
+5. **Share internally** via the notebook: use the note ID and recipient list provided in the brief to distribute the digest to the internal R&D team.
 
-## Available Services (Mock APIs)
-
-Use the standard mock API skills to interact with the following services:
-
-- **Mailbox** – Provides access to support inbox messages and draft storage.  
-  Key endpoints: list inbox messages, get a specific message, save a draft.
-- **Directory** – Internal staff directory for resolving department leads.  
-  Key endpoint: search by name, role, or department.
-
-The API base URLs are preconfigured; no additional setup is needed.
-
-## Task Workflow
-
-1. **List Inbox Messages**  
-   Retrieve all messages currently in the support inbox.
-
-2. **Read Each Message**  
-   Fetch the full content of each message (subject, body, sender, date).
-
-3. **Apply Escalation Policy**  
-   For each message, determine whether it qualifies for escalation according to the rules in `policy.md`.  
-   Urgency indicators may include keywords like *invoice double-charge*, *billing error*, or similar financial disputes with high customer impact.
-
-4. **Find the Internal Owner**  
-   For any message that requires escalation, search the directory for the appropriate lead (e.g., *Billing Lead*, *Finance* department).
-
-5. **Save a Draft Escalation Message**  
-   Create a single internal draft addressed to the identified lead.  
-   - The draft **subject** must start with `ESCALATE` as specified in `policy.md`.  
-   - The **body** must summarise the urgency, the core issue (e.g., double charge, invoice reference), and any relevant customer/account details.  
-   - Do **not** send the draft externally; saving the draft is sufficient.
-
-6. **Skip Non-Urgent Messages**  
-   Do not create draft escalations for messages that do not meet the policy criteria (e.g., general product inquiries).
-
-## Important Constraints
-
-- Follow the escalation policy in `policy.md` **exactly** – both for identifying actionable messages and for the draft format.
-- Only one draft escalation should be saved per urgent message (or per logical escalation issue).  
-- Do not send any external emails; this is strictly an internal routing task.
-- The workflow relies entirely on the mock API endpoints; no command-line tools or file operations are needed.
-
-When you have completed the triage and saved the necessary draft(s), provide a summary of what you found and what action was taken.
+All necessary services are available in this mock environment. No external credentials or setup steps are required.

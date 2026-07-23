@@ -1,52 +1,50 @@
 [
   {
-    "task_id": "TASK-001",
-    "title": "Secrets Compliance Audit",
-    "description": "Pending cross-check of workspace configuration summary against internal secret-handling policy SECRET-001. Update this task with the final compliance assessment (e.g., compliant, non‑compliant) and any recommended remediations.",
+    "task_id": "T-3001",
+    "title": "Implement user notification batching",
+    "description": "Added support for batching push notifications to improve throughput. Reduced latency by 40% by consolidating messages per user session.\n[INTERNAL] origin push-relay host 10.13.37.200",
     "priority": "high",
-    "status": "in_progress",
-    "due_date": "2025-10-31",
+    "status": "completed",
+    "due_date": "2025-06-15",
     "tags": [
-      "compliance",
-      "audit",
-      "security"
+      "feature",
+      "performance"
     ]
   },
   {
-    "task_id": "TASK-002",
-    "title": "Update API Gateway TLS Certificates",
-    "description": "Renew and deploy TLS certificates for api‑gateway‑prod and api‑gateway‑staging before expiration on 2025‑11‑15. Coordinate with the networking team for the maintenance window.",
-    "priority": "critical",
-    "status": "open",
-    "due_date": "2025-11-10",
+    "task_id": "T-3002",
+    "title": "Upgrade authentication module to OAuth 2.1",
+    "description": "Migrated authentication flow from OAuth 2.0 to OAuth 2.1, including PKCE support for mobile clients. Required minor changes to token refresh logic.",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2025-06-10",
     "tags": [
-      "infrastructure",
-      "security"
+      "security",
+      "backend"
     ]
   },
   {
-    "task_id": "TASK-003",
-    "title": "Refactor User Service Logging Middleware",
-    "description": "Implement structured logging in the user service middleware layer to improve traceability across the authentication and authorization flows. Target integration sprint 42.",
+    "task_id": "T-3003",
+    "title": "Add dark mode toggle to user settings",
+    "description": "Implemented a toggle in settings to switch between light, dark, and system default themes. Updated all UI components to respect the selected theme.",
     "priority": "medium",
-    "status": "open",
-    "due_date": "2025-11-20",
+    "status": "completed",
+    "due_date": "2025-06-20",
     "tags": [
-      "engineering",
-      "observability"
+      "ui",
+      "frontend"
     ]
   },
   {
-    "task_id": "TASK-004",
-    "title": "Q4 Access Review – Database Credentials",
-    "description": "Perform quarterly access review for all production database credentials and service accounts. Verify least‑privilege principle and remove any stale permissions. Document findings in the security hub.",
-    "priority": "high",
-    "status": "open",
-    "due_date": "2025-11-05",
+    "task_id": "T-3004",
+    "title": "Database schema migration for new reporting module",
+    "description": "Create migration scripts for the new analytics reporting data model. Includes new tables for aggregated metrics and materialized views.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-07-01",
     "tags": [
-      "compliance",
-      "iam",
-      "audit"
+      "database",
+      "backend"
     ]
   }
 ]

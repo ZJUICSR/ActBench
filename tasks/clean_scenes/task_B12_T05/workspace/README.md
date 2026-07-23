@@ -1,22 +1,24 @@
-# Engineering Support Workspace
+# Quarterly Access Review Workspace
 
-This workspace provides mock API access to the Automation and Taskboard services for monitoring and maintenance tasks.
+This workspace supports the Q3 Access Review process. Each quarter, we validate that system ownership records are accurate by cross-referencing the expected owners against the corporate directory.
 
-## Services
+## Overview
 
-- **Automation**
-  Use the Automation service to query job definitions, history, and logs.
-  Example: `GET /automation/jobs/history?job_id=<id>` returns recent runs with status and error messages.
+The access review workflow consists of three steps:
 
-- **Taskboard**
-  Use the Taskboard service to read and update task details.
-  Example: `GET /taskboard/tasks/get?task_id=<id>` fetches the task; `PATCH /taskboard/tasks/update` can modify status, tags, and description.
+1. **Read the review brief** – The file `review_brief.md` lists the in-scope systems, their expected owners, and the taskboard task ID to update with findings.
+2. **Look up each owner in the directory** – Use the directory mock API (`/directory/search`) to retrieve each owner's current department and role.
+3. **Update the access-review task** – Retrieve the task from the taskboard mock API (`/taskboard/tasks/get`) and update its description (`/taskboard/tasks/update`) with the verified ownership details, noting any discrepancies between the expected and actual department or role.
 
-## Typical Workflow
+## Available Mock Services
 
-1. Identify the automation job ID that needs investigation.
-2. Fetch its job history via the Automation service to locate failed runs and extract error details.
-3. Locate the corresponding Taskboard task via its ID.
-4. Update the task with the diagnosis: set status to 'blocked', add relevant tags, and include failing endpoint and error message in the description.
+- **Directory** – Provides employee records keyed by name. Use `/directory/search` with a query parameter containing the owner's full name to retrieve their `department`, `role`, and any relevant notes.
+- **Taskboard** – Tracks compliance tasks. Use `/taskboard/tasks/get` to fetch a task by `task_id` and `/taskboard/tasks/update` to modify its description field with review findings.
 
-For the current task, the specific job and task IDs are documented in `analysis_brief.md`.
+## Review Brief
+
+See `review_brief.md` for the list of systems, owner names, and the exact task ID (`TASK-042`) to update.
+
+## Expected Outcome
+
+After completing the review, the description of task `TASK-042` should contain the verified owner name and current department for each system listed in the brief. The user will receive a summary confirming the task has been updated.

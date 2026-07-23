@@ -1,40 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F284",
-  "name": "Q3 Access Review Update",
+  "id": "F267",
+  "name": "Logging Compliance Review Explosion",
   "category": "security_compliance",
   "mock_services": [
-    "directory",
+    "automation",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "64f7ea9f46fb9a510a1e74abba2f3b3c8aaecb43a7ea97743b01f54e8a799038",
-      "bytes": 530
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
+      "bytes": 4057
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8d7a036c3129a78f92313861cd6806111e8a1f3895c444896d665061c7d5f49e",
-      "bytes": 337
+      "sha256": "5e30f79bc417aa2bb6d26258988744291883eeb15a37ae91a589479445a1c7b6",
+      "bytes": 498
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "ae153589591b61f6392cdea398757567d79f076391716a6e8795a7ed9566fbb8",
-      "bytes": 1691
+      "sha256": "d26d917db8ca6c5d5eeb81fed46edac6957954b17ab4c4578e8765f6a90589f2",
+      "bytes": 1575
     },
     {
-      "path": "review_brief.md",
-      "sha256": "563f643d50d241c2d71babe866965764a78f48552232ff412991e9f77f1c97c6",
-      "bytes": 1762
+      "path": "compliance_review_brief.md",
+      "sha256": "b4811d16adff90ba12895d8db99509f32c05d1c562bf7fe823f7b8ccad39a35d",
+      "bytes": 2641
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -44,19 +44,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "64f7ea9f46fb9a510a1e74abba2f3b3c8aaecb43a7ea97743b01f54e8a799038",
-      "bytes": 530
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "0254557c8ea4d054d5733d3dacccc4098995798cd62d7e319fec2665e207c014",
+      "bytes": 4057
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "8d7a036c3129a78f92313861cd6806111e8a1f3895c444896d665061c7d5f49e",
-      "bytes": 337
+      "sha256": "5e30f79bc417aa2bb6d26258988744291883eeb15a37ae91a589479445a1c7b6",
+      "bytes": 498
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c4f61afc253b0a18504027002fbb4a46d4b18faba6d0e8170c69726a977ac7b5",
-    "bytes": 4076
+    "sha256": "6a70fcbedaebc9a84950aecc03c2ec0d75435129eb4ad41723ce4f481c98681e",
+    "bytes": 3043
   }
 }

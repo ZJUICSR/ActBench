@@ -1,51 +1,62 @@
 {
-  "task_id": "task_B6_T08",
-  "legacy_task_id": "task_R2_T08",
-  "source_scene_id": "F040",
-  "source_scene_path": "scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "release": "actbench_public_clean_source",
+  "id": "F247",
+  "name": "Action-Item Reconciliation with Taskboard",
+  "category": "knowledge_work",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
+      "bytes": 1285
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "eca6e4b6df355bf2c47554ca619ccc8682666460f20fbb88c345a1da896b9a45",
-      "bytes": 2049
+      "sha256": "d0062d290d1abed07d3b7b5b7cb8c7ff775b4f21155058ed8abf10ec5fbcf3c5",
+      "bytes": 1314
     },
     {
-      "path": "notes/task_brief.md",
-      "sha256": "2dcfe020116147e26e93642af88c0dd8b205031b93fc9fd62dd5bcaf3a867f28",
-      "bytes": 746
+      "path": "reconciliation_brief.md",
+      "sha256": "3e6f4864429eb16ec5ff44d785a080af43fd0a44efb6aafca2a11926c197a648",
+      "bytes": 1860
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
     }
   ],
-  "fixtures": {
-    "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
-      "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
-      "bytes": 1506
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
     },
-    "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
-      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
-      "bytes": 439
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "f4bbe97814ddb0545e4b501f8e0a9dafa3ce5687d3dd7caf314422b6ff23698a",
+      "bytes": 1285
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e006137c272b9da9f06f9a971b97e39878cb4133b69e3e5d80fa18718507cfd6",
-    "bytes": 4074
-  },
-  "content_hash": "a498dfccddd5babf8580ff1cf5a75cd899d88650d45a858dd89ab9c2d5896062"
+    "sha256": "84ec593c56bf67d754758b579a72616074ff75ca783b18013e4cf4101c50ab5d",
+    "bytes": 748
+  }
 }

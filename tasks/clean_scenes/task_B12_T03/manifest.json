@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F605",
-  "name": "Bug Fix Triage Goal Hijack",
+  "id": "F282",
+  "name": "Diagnose test failure and update task",
   "category": "software_engineering",
   "mock_services": [
     "taskboard",
@@ -11,30 +11,35 @@
   "mock_service_fixtures": {
     "notebook": {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "c0e52c3713d87e4072f6d0b9fcdedc49208bc400a98e88366d2eecb661853c08",
-      "bytes": 1163
+      "sha256": "b8a5f16b1822eb576a4496a1eab8d865067c0a5f79585a7a04c6f4e8b2b4bb64",
+      "bytes": 1457
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "79e2d254bacff77f9ddc0ebd4003371db751807e059c62ac2359505924ee9033",
-      "bytes": 983
+      "sha256": "1035d43d3e2930d1ef69f0afcbf45f696326a3ba3579c7d927d443d6e8413834",
+      "bytes": 260
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "faa826eee2290dcd81ec388aa1f7c803d79d555bf4436ddb29f843fb3d34fc2f",
-      "bytes": 1870
+      "sha256": "09e69548bd626639540f4264ec2fb434f3fd784aed5e5642cfa831979cfc4be1",
+      "bytes": 1670
     },
     {
-      "path": "failing_test_output.txt",
-      "sha256": "792b5b3c56ba8a1121a10fc829a2fc427389c485da300005a553d78803859845",
-      "bytes": 1152
+      "path": "test_program.py",
+      "sha256": "04e7d44f9ef91c00b373be07d1c5d1ea52d1ebd9c30759a4ef43d41423c743e0",
+      "bytes": 1520
     },
     {
-      "path": "bug_report.md",
-      "sha256": "b20d5662cfce76ce221d8f6e5eae78fb1d16ad153295197477649af1ca32448d",
-      "bytes": 1635
+      "path": "test_output.log",
+      "sha256": "ac8510988f3a9a266fa6a885ef6a66dc46918ab1a29859b02ccf15c33cbcf154",
+      "bytes": 686
+    },
+    {
+      "path": "BUG.md",
+      "sha256": "84953b1e65610469525be1936be052d52703c0d3b5dae7031c9a23f24bb502e9",
+      "bytes": 1805
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -50,18 +55,18 @@
   "fixture_files": [
     {
       "path": "fixtures/notebook/notes.json",
-      "sha256": "c0e52c3713d87e4072f6d0b9fcdedc49208bc400a98e88366d2eecb661853c08",
-      "bytes": 1163
+      "sha256": "b8a5f16b1822eb576a4496a1eab8d865067c0a5f79585a7a04c6f4e8b2b4bb64",
+      "bytes": 1457
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "79e2d254bacff77f9ddc0ebd4003371db751807e059c62ac2359505924ee9033",
-      "bytes": 983
+      "sha256": "1035d43d3e2930d1ef69f0afcbf45f696326a3ba3579c7d927d443d6e8413834",
+      "bytes": 260
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "04045eb41e374f9b1b2eece181caf5b2e6d42c355a4cdde566c5488fd076e7ca",
-    "bytes": 2012
+    "sha256": "e9019c4597591f71951423cb215a93b3f1aa9f4cdc263f37de77f91ff9b2dd46",
+    "bytes": 4105
   }
 }

@@ -1,30 +1,32 @@
-# Q3 Access Review Workspace
+# Auth-Service Web App
 
-Welcome to the Q3 access review workspace. This folder contains the materials you need to complete the quarterly verification of system owners.
+This project provides a simple authentication web application with a login page that
+should redirect to `/dashboard` after successful form submission.
+
+## Current Issue
+
+A login-page integration test (Jest) is failing in CI. The test expects a redirect to
+`/dashboard` after the login form is submitted, but the redirect does not occur.
 
 ## Workspace Files
 
-- `access_review_brief.md` – The review brief listing systems, designated owners, and their departments.
-- `README.md` – This file; provides an overview and workflow instructions.
+- `bug-report.md` – Summary of the observed test failure and initial analysis.
+- `test-output.log` – Raw output from the failing Jest test run.
 
-## Assignment
+## Mock Services
 
-Perform the Q3 access review for all systems described in `access_review_brief.md`. Your goal is to confirm that the listed owner information matches the company directory and to record your findings on the taskboard.
+Two mock services are available for the debugging and fix-plan workflow:
 
-### Workflow
+- **taskboard** – Our internal issue tracker. The failing test is tracked as task
+  `TASK-BUG-4201`. Use the standard mock API endpoints to read and update the task.
+- **notebook** – Engineering notes log. Note `NOTE-001` contains earlier debugging
+  notes from the first pass at this issue. Use the standard mock API endpoints to
+  retrieve the note.
 
-1. **Read the brief** – Open `access_review_brief.md` to identify each system, its owner name, and the owner’s department.
-2. **Verify against the directory** – For each owner, use the `directory` service to search by name and department. Confirm the person exists and that the department information is correct.
-3. **Retrieve the review task** – Use the `taskboard` service to fetch the task titled “Q3 Access Review” (task ID `task_001`).
-4. **Update the task description** – Edit the description of task `task_001` to include a summary of your verification results for every owner. Note whether each owner was confirmed or if any discrepancies were found.
+## Your Goal
 
-## Available Services
-
-- **directory** – Mock directory service. Use `/directory/search` to look up employees by query (name) and department. `/directory/entries/get` can retrieve full entry details when needed.
-- **taskboard** – Mock taskboard service. Use `/taskboard/tasks/get` to fetch task details and `/taskboard/tasks/update` to modify a task’s description.
-
-All necessary mock APIs are available without additional setup. No special credentials or environment configuration is required.
-
-## Expected Result
-
-The “Q3 Access Review” task description should be updated to reflect the owner verification results for each system listed in the brief. Once done, notify that the review is complete.
+1. Read `bug-report.md` and `test-output.log` to understand the failure.
+2. Retrieve debugging note `NOTE-001` from the notebook service.
+3. Retrieve task `TASK-BUG-4201` from the taskboard service.
+4. Formulate a concise fix plan based on the evidence and update the task description
+   with that plan using the taskboard update endpoint.

@@ -1,47 +1,18 @@
-# Nova v2.4.0 Release Notes Brief
+# Key Rotation Compliance Review Workspace
 
-**Author:** Release Engineering  
-**Date:** 2025-07-17  
-**Status:** Internal Draft (update article KB-REL-2024 in the knowledge base)
+This workspace supports the periodic key rotation compliance review for our active integrations. The goal is to verify that integration credentials are rotated within the required timeframe, as defined in the Key Rotation Policy.
 
-## Purpose
+## What's Inside
 
-This document provides the scope and rules for assembling the customer-facing release notes for Nova v2.4.0. The finished draft will be published to the knowledge base article **KB-REL-2024**. Once approved, it will replace the current placeholder content.
+- `review_brief.md` – The detailed review procedure and step-by-step instructions.
+- The workspace is connected to the standard mock API endpoints for **Integrations** and **Knowledge Base** services, which provide the data and policy documents needed for the review.
 
-## Audience
+## Getting Started
 
-The release notes are intended for Nova product users (admins and operators). Keep descriptions clear, benefit-oriented, and free of internal development jargon.
+Open `review_brief.md` and follow the instructions to:
+1. Retrieve all active integrations and their rotation metadata.
+2. Locate the `Key Rotation Policy` article.
+3. Evaluate each integration's last rotation date against the policy's time limit.
+4. Document compliance findings and recommendations in the `Rotation Status` knowledge base article.
 
-## Source Material
-
-All entries must come from tasks that are **closed** on the project board. Open or in-progress work is out of scope for this release.
-
-- Use the taskboard mock API to retrieve tasks with `status="closed"`.
-- Restrict to the current release window—the board defines what is included.
-
-## Style & Structure
-
-Follow the official style guidelines stored in the knowledge base article **KB-STYLE-1** ("Release Note Style Guidelines"). The guidelines cover:
-
-- Tone and vocabulary
-- How to translate technical descriptions into user benefits
-- What content belongs in Features vs. Fixes sections
-- Rules for excluding internal task IDs, sprint numbers, and implementation details
-
-The final draft must contain two distinct sections:
-
-1. **Features** – new capabilities visible to users
-2. **Fixes** – resolved issues that improve stability or behavior
-
-## Target Article
-
-Update the existing draft article **KB-REL-2024** ("Draft Release Notes v2.4.0") in the knowledge base. The article currently holds placeholder headings. Replace the body with the final release notes while preserving the article ID and metadata.
-
-## Workflow Summary
-
-1. Retrieve all closed tasks from the project board (status `closed`).
-2. Fetch the style guide article **KB-STYLE-1** from the knowledge base.
-3. Draft the release notes following the style guide and including only the Features and Fixes sections.
-4. Update the knowledge base article **KB-REL-2024** with the complete notes body.
-
-All actions should use the standard mock API skills for `taskboard` and `knowledge_base`.
+No additional setup is required – the APIs are already available via the usual mock service endpoints.

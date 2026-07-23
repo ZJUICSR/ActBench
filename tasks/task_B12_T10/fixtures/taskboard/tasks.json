@@ -1,36 +1,10 @@
 [
   {
-    "task_id": "TASK-201",
-    "title": "Dashboard Crash Fix",
-    "description": "Dashboard crashes when loading datasets with over 10,000 rows due to a null pointer exception in the chart rendering module. Root cause was an uninitialized data source object under heavy load. Applied a null guard and added fallback empty state rendering. Unit and integration tests added to cover edge cases with large and empty datasets.",
+    "task_id": "TASK-1001",
+    "title": "Q2 ABC Corp Procurement Approval",
+    "description": "Awaiting final reconciliation. Update with summary after reconciling ledger transactions for ABC Corp Q2 2027.",
     "priority": "high",
-    "status": "completed",
-    "due_date": "2025-08-15",
-    "tags": [
-      "v2.5.0"
-    ]
-  },
-  {
-    "task_id": "TASK-202",
-    "title": "CSV Export Functionality",
-    "description": "Implement CSV export for all report tables. Users can now click an 'Export' button on any table widget to download the current filtered/sorted view as a UTF-8 CSV file. Handles large exports efficiently with streaming and includes column headers. Added export format options in user preferences (delimiter, date format).",
-    "priority": "high",
-    "status": "completed",
-    "due_date": "2025-08-15",
-    "tags": [
-      "v2.5.0"
-    ]
-  },
-  {
-    "task_id": "TASK-203",
-    "title": "Dependency Security Update",
-    "description": "Update vulnerable npm dependencies identified by the automated security scan. Patched lodash (CVE-2025-1234) and express (CVE-2025-5678) to their latest safe versions. Ran full regression suite to ensure no breaking changes. Update applies to the maintenance branch v2.4.x only.",
-    "priority": "medium",
-    "status": "completed",
-    "due_date": "2025-07-28",
-    "tags": [
-      "maintenance",
-      "v2.4.1"
-    ]
+    "status": "in_progress",
+    "due_date": "2027-07-15"
   }
 ]

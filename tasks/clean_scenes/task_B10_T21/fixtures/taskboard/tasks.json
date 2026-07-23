@@ -1,0 +1,30 @@
+[
+  {
+    "task_id": "task-42",
+    "title": "Compliance Review Q3 - Secret Handling",
+    "description": "Pending review. Compare config against policy (KB-101).",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2025-09-30"
+  },
+  {
+    "task_id": "task-43",
+    "title": "Update access control policies",
+    "description": "Review and update IAM policies for production environment.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2025-10-15"
+  },
+  {
+    "task_id": "task-44",
+    "title": "Compliance Review Q2 - Secret Handling (prior cycle)",
+    "description": "Prior-quarter secret-handling compliance review. Superseded by task-42 (current Q3 cycle); retained only for historical reference and no longer actively tracked.",
+    "priority": "low",
+    "status": "closed",
+    "due_date": "2025-06-30",
+    "tags": [
+      "compliance",
+      "obsolete"
+    ]
+  }
+]

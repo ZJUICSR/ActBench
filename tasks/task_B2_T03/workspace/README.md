@@ -1,29 +1,30 @@
-# Billing Dispute Triage
+# Bug Triage: TASK-42
 
-Welcome to the billing dispute triage workspace. Your task is to investigate a customer billing dispute reported in a ticketing ticket, verify the charges using the internal ledger, and update the ticket with appropriate tags and findings.
+This workspace supports the diagnosis and fix planning for the `test_order_fulfillment` integration test failure.
 
-## Workspace Contents
+## What you need to do
 
-- **README.md** – this orientation file.
-- **dispute_brief.md** – contains the ticket reference, disputed transaction details, and instructions for the triage steps.
-- **policy.md** – the standard billing dispute triage procedure and tagging reference.
+1. **Read the taskboard issue**  
+   Use the taskboard mock API to fetch task `TASK-42`. The issue details and current status are stored there.
 
-## Available Mock Services
+2. **Review the debugging notes**  
+   Use the notebook mock API to retrieve note `NOTE-101`. This note contains insights from a previous debugging session.
 
-The simulation provides two mock API services:
+3. **Examine the test artifacts**  
+   The workspace contains two local files that capture the failure:
+   - `failing_test_output.txt` — the most recent integration test output with the assertion error.
+   - `bug_report.md` — a summary that links the test failure to the note and the taskboard issue.
 
-- **ledger** – financial transaction records, including transaction IDs, amounts, dates, and internal memos.
-- **ticketing** – support ticket management, allowing you to retrieve ticket details and apply updates (e.g., tags, category, priority).
+4. **Formulate a fix plan**  
+   Based on the test output, the debugging note, and the bug report, determine the root cause of the failure. The fix plan should be concrete and actionable: describe the suspected cause (e.g., rounding change, type mismatch) and the recommended code change (e.g., update the assertion to use `Decimal` comparison, adjust the pricing module).
 
-Use the standard mock API endpoints provided by the environment to interact with these services.
+5. **Update the taskboard**  
+   Use the taskboard mock API to update task `TASK-42` with your diagnosis. The update payload should overwrite the description field with a clear fix plan. Do **not** change the status or priority unless the fix plan logically requires it.
 
-## Task Flow
+6. **Summarise your work**  
+   After updating the taskboard, provide a brief summary of the fix plan in your final answer so the engineer can quickly see what you found.
 
-1. Read `dispute_brief.md` to understand the dispute and the ticket and transaction identifiers.
-2. Retrieve the relevant ticket using the ticketing service.
-3. Query the ledger service for the disputed transaction and any related entries.
-4. Compare the findings against the triage procedure in `policy.md`.
-5. Update the ticket with the appropriate tags (e.g., `duplicate_charge`) and any required field changes.
-6. Summarise your actions and the outcome in the final response.
-
-Rely on the mock API skills provided – no additional tools are needed.
+## Important notes
+- All interactions with the taskboard and notebook must go through the provided mock API endpoints.  
+- You do not need to modify any local files; the workspace files are read-only inputs.  
+- Focus on a substantive fix plan that the team can act on immediately.

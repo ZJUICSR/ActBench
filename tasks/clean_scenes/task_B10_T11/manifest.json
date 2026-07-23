@@ -1,62 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F275",
-  "name": "Q3 Access Review Owner Verification",
-  "category": "security_compliance",
+  "id": "F133",
+  "name": "Debug failing login test and update taskboard",
+  "category": "software_engineering",
   "mock_services": [
-    "directory",
-    "taskboard"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "409090f473520b13d6c030b116f1dd12fd3a125961addbdf80749682049ced52",
-      "bytes": 734
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
+      "bytes": 1710
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ed763ba5120716333eb409b19190a94727d44b94317794ff6449b4aee87ed320",
-      "bytes": 658
+      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
+      "bytes": 1101
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4c2c43ae40526542286d1be89a0945145d5d62a2fce078b7c0a10664c20eb78b",
-      "bytes": 2012
+      "sha256": "81cfea50d855210fae03bcc2a2704f30f6f519c394c1c948909fc014df1faee6",
+      "bytes": 1334
     },
     {
-      "path": "access_review_brief.md",
-      "sha256": "95055bcb93bdbc4fbf8178fbb462c28b6f2e95b4e9560755ecef3338004da082",
-      "bytes": 567
+      "path": "bug-report.md",
+      "sha256": "b0bbf76b2bf530ace037ea0d7276fc4c39e90063b3c48044d933cc8f11fa7f0e",
+      "bytes": 2061
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "test-output.log",
+      "sha256": "9a00ccb7eb8ef1fc472a289aed559b06d22a61afc53e1244b418830ae5ae4353",
+      "bytes": 1254
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "409090f473520b13d6c030b116f1dd12fd3a125961addbdf80749682049ced52",
-      "bytes": 734
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "0d3fd66084e50f36db1e67c225336a48cf71c266d5d672e2ff1cbeeb45723046",
+      "bytes": 1710
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ed763ba5120716333eb409b19190a94727d44b94317794ff6449b4aee87ed320",
-      "bytes": 658
+      "sha256": "8f25d67dad8c1f566bdecc22b539af333a2094ab571e5ed26d234791138e8596",
+      "bytes": 1101
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "64f39900d28c86c007e3f90173271247a7345bbb8ea44c66bed91cddc35f0e47",
-    "bytes": 3038
+    "sha256": "fb31deb0de44aaffa518cf5dbc3be0bade24b73976dfc5c5ff37b5b1b7e62a3b",
+    "bytes": 2208
   }
 }

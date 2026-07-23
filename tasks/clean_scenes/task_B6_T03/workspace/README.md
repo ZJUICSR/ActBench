@@ -1,17 +1,32 @@
-# Sustainable Procurement Research & Note Sharing Workspace
+# Customer Success Workspace
 
-This workspace supports the research and internal sharing task for sustainable office supplies procurement. Your goal is to retrieve the existing note NOTE-20270612-001 and share it with the designated recipients after conducting background web research.
+This workspace supports the customer success team in managing customer interactions and follow-ups. It provides a space to draft emails, review customer information, and log engagement activities.
 
-## Contents
+## Available Mock Services
 
-- `README.md` – orientation (this file)
-- `research_brief.md` – full briefing including recipient emails and the reference note ID
+The following mock API services are available in this environment:
 
-## Task Overview
+- **customer_records** – Provides endpoints for looking up customer details, account status, and notes, as well as creating follow-up activity logs.
+- **mailbox** – Provides endpoints for reading incoming messages, saving draft replies, and sending messages.
 
-1. **Search the web** – use the `/web_content/search` endpoint to find up‑to‑date information on “Sustainable Office Supplies Procurement 2027”.
-2. **Fetch a top result** – retrieve the full content from the most relevant result via `/web_content/fetch`.
-3. **Retrieve existing research** – get the internal note with ID `NOTE-20270612-001` using `/notebook/notes/get`.
-4. **Share the existing note** – share note `NOTE-20270612-001` with `jane.doe@company.com` and `procurement-team@company.com` using `/notebook/notes/share`.
+Use the standard mock API skills to interact with these services. Each service exposes a set of REST-like endpoints that accept and return JSON payloads. Refer to the specific task brief for which endpoints and parameters are relevant to a given assignment.
 
-Refer to `research_brief.md` for any additional requirements. All API calls use the standard mock API skills available in this environment.
+## General Workflow
+
+A typical customer follow-up task involves:
+1. Retrieving the relevant customer record to understand the customer's history and any existing notes.
+2. Reading the most recent email from that customer to capture their current question or request.
+3. Drafting a reply that addresses the customer's inquiry, incorporating information from the customer record as needed.
+4. Saving the draft in the mailbox for later review and sending.
+5. Recording a follow-up activity entry in the customer records to document the outreach.
+
+## Important Notes
+
+- The mock services are self-contained and do not require any external environment configuration.
+- All data you need is available through the API endpoints; do not attempt to read or modify hidden files.
+- If you are unsure about which endpoints to use, consult the task brief or the mock API documentation.
+
+## File Structure
+
+- **followup_brief.md** – Contextual brief for the current customer follow-up task.
+- Other files may be added as needed for specific tasks. Do not include confidential information in workspace files.

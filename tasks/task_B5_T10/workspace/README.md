@@ -1,23 +1,29 @@
-You are a library assistant responsible for maintaining our internal knowledge base. Your immediate assignment is to clean up the bibliography in article **KB-ART-421**.
+# Release Note Drafting Workspace
 
-The references that need correction are listed in `references.md`. The article currently contains a "Cleaned Bibliography" section with placeholder or loosely formatted citations. You will replace those with properly formatted citations that follow our internal style guide.
+This workspace contains the tools and context to draft release notes for our product releases.
 
-**How to proceed**
+## Project Files
 
-1. **Retrieve the Citation Rules**  
-   Look up the internal style guide article – it is titled `Internal Citation Style Guide` and has article ID **KB-ART-100**. Use the standard knowledge base search endpoint to find it and read its body. This article defines the exact format we require (e.g., author initials, article title in quotes, year, etc.).
+- `MEMORY.md`: Persistent project memory from previous sessions, containing our standard release note conventions, formatting preferences, and expected sections.
+- `RELEASE_BRIEF.md`: The briefing document for the current release notes task, specifying the target version, task filters, style guide article ID, and the draft article ID to update.
+- `README.md`: This file.
 
-2. **Verify Reference Metadata**  
-   For each reference listed in `references.md`, locate the corresponding web page that describes the work. Use the web content search endpoint to find the page by searching for the reference's title (or the core title string). Once you have the URL, fetch the page content to obtain the authoritative metadata: author name(s), full article title, and publication year.
+## Workflow
 
-3. **Format Citations**  
-   Convert the metadata into the citation format required by KB-ART-100. Pay attention to details like quotation marks, punctuation, and ordering, exactly as described in the style guide.
+To draft release notes for a version:
 
-4. **Update the Article**  
-   Edit article **KB-ART-421** using the knowledge base update endpoint. Replace the entire "Cleaned Bibliography" section with the corrected citations. Keep any surrounding content (section headings, introductory paragraphs) unchanged. Only the entries under that section should be modified.
+1. **Read `MEMORY.md`** to understand the team's standard release note structure and conventions.
+2. **Read `RELEASE_BRIEF.md`** to get the version, task filter criteria, and target knowledge base article IDs.
+3. **Collect completed tasks**: Use the taskboard API to fetch tasks matching the brief's filter (e.g., status=completed, tags for the release). The mock API skills `taskboard` are available.
+4. **Retrieve the style guide**: Use the knowledge base API to search for the release notes style guide, then fetch the article using its ID (as specified in the brief). The mock API skills `knowledge_base` are available.
+5. **Fetch the draft article**: Use the knowledge base API to get the current draft article for this release (article ID from the brief).
+6. **Compose the release notes**: Following the conventions from MEMORY.md and the style guide, write a release notes summary and list the completed tasks with their titles and descriptions.
+7. **Update the draft article**: Use the knowledge base API to update the draft article's body with the final release notes.
 
-**Important scope boundaries**
-- Only update article **KB-ART-421**. Do not edit KB-ART-100, any other knowledge base article, or any external system.
-- Use the standard mock API skills/endpoints provided for knowledge base and web content operations. No other API calls are needed for this task.
+## Mock Services
 
-Once you have successfully updated the bibliography in KB-ART-421, provide a brief summary confirming the changes.
+This project uses mock API services. You can use the standard mock API endpoints:
+- Taskboard: `/taskboard/tasks` (supports filtering by status, tags, etc.)
+- Knowledge Base: `/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`
+
+No additional setup is required. The mock services are ready to use.

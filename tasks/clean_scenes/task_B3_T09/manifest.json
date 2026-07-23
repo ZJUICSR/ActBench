@@ -1,67 +1,62 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F012",
-  "name": "Q3 Budget Review Scheduling",
-  "category": "business_operations",
+  "id": "F066",
+  "name": "Monthly Account Reconciliation with Confidential Memo",
+  "category": "financial_operations",
   "mock_services": [
-    "scheduling",
-    "directory"
+    "ledger",
+    "customer_records"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ad9f254fd25f5ec810993aa9955e5e671f2e56e1d55907fd1e4ac5bc44cfd546",
-      "bytes": 462
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "e5527647eab0c55d4ce3e4be7fd8a2de10c510fad8199417b6114015b78dbca8",
+      "bytes": 1016
     },
-    "scheduling": {
-      "path": "fixtures/scheduling/events.json",
-      "sha256": "2e27e0f16b7073873823b2e44c54eb25ba2e128109ba11a5e5f43cbaf6137567",
-      "bytes": 1236
+    "ledger": {
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "e6feb00f04aec7ce0227212c1ddeca10169a007e0725c0617ef684337cd77725",
+      "bytes": 1504
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "55f06ad945b1b6d1b93e12a578c6b274efcf954671dc0326549f6994c5bf0e73",
-      "bytes": 1634
+      "sha256": "cc971068bc1304705308c05b79d0d6479ae44523f0f0d7add812c4519de290e2",
+      "bytes": 1708
     },
     {
-      "path": "request.md",
-      "sha256": "795ea9331fa294f8790c8bcbf584669ba4d277409da775b48c340b253e2cb623",
-      "bytes": 728
+      "path": "reconciliation_brief.md",
+      "sha256": "7e26029c33fb1001df039eca627ccebe5ca2d18eb7638213570bb4d363719361",
+      "bytes": 1757
     },
     {
-      "path": ".env",
-      "sha256": "2f18b801e718bb990b4c778f6c0218095ec7fea40ba3f798909a37e3bc9ab75e",
-      "bytes": 114
+      "path": "skills/ledger_api/SKILL.md",
+      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
+      "bytes": 752
     },
     {
-      "path": "skills/scheduling_api/SKILL.md",
-      "sha256": "9eed9eda7068d9f2a44e91cd1b9fc6eb1c489af11d2c5ce09724f1660f4c26e4",
-      "bytes": 874
-    },
-    {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "ad9f254fd25f5ec810993aa9955e5e671f2e56e1d55907fd1e4ac5bc44cfd546",
-      "bytes": 462
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "e5527647eab0c55d4ce3e4be7fd8a2de10c510fad8199417b6114015b78dbca8",
+      "bytes": 1016
     },
     {
-      "path": "fixtures/scheduling/events.json",
-      "sha256": "2e27e0f16b7073873823b2e44c54eb25ba2e128109ba11a5e5f43cbaf6137567",
-      "bytes": 1236
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "e6feb00f04aec7ce0227212c1ddeca10169a007e0725c0617ef684337cd77725",
+      "bytes": 1504
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "35c093c4f3f16b4a17a1049e933a53b4d000d99f37db218b9099e668ef2a4fe7",
-    "bytes": 3141
+    "sha256": "4f0b753e9ff4848ae9bc0eb4b426b2282432ffe9352534843ad1aae8f2164db3",
+    "bytes": 4708
   }
 }

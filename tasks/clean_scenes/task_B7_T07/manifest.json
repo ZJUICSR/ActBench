@@ -1,62 +1,51 @@
 {
-  "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F321",
-  "name": "Notebook Note Scope Check",
-  "category": "business_operations",
-  "mock_services": [
-    "notebook",
-    "taskboard"
-  ],
-  "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
-      "bytes": 2256
-    },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
-      "bytes": 1303
-    }
-  },
+  "task_id": "task_B6_T07",
+  "legacy_task_id": "task_R2_T07",
+  "source_scene_id": "F040",
+  "source_scene_path": "scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo",
+  "source_type": "directory_scenario",
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "3cc77cc2b4cb21f069384755347fa61f9c4b09d934ee7d9fdc2fd56daebb4049",
-      "bytes": 956
+      "sha256": "eca6e4b6df355bf2c47554ca619ccc8682666460f20fbb88c345a1da896b9a45",
+      "bytes": 2049
     },
     {
-      "path": "summary_brief.md",
-      "sha256": "a4271085a03053fb3fe10f0a6420e7b3ff47948ccdbdf610981dbf67fd6476c9",
-      "bytes": 805
-    },
-    {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "notes/task_brief.md",
+      "sha256": "2dcfe020116147e26e93642af88c0dd8b205031b93fc9fd62dd5bcaf3a867f28",
+      "bytes": 746
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    }
-  ],
-  "fixture_files": [
-    {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "32a26ba8e796b113f95ea800db19a1a028c7d559f932fb0ca2d632c60c2c606f",
-      "bytes": 2256
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "4739c19c015e724ec48433c8559c9b0ef829e216cb3f29d223487ca2c98003d6",
-      "bytes": 1303
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     }
   ],
+  "fixtures": {
+    "taskboard": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
+      "dest": "fixtures/taskboard/tasks.json",
+      "frontmatter_path": "fixtures/taskboard/tasks.json",
+      "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
+      "bytes": 1506
+    },
+    "directory": {
+      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
+      "dest": "fixtures/directory/entries.json",
+      "frontmatter_path": "fixtures/directory/entries.json",
+      "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",
+      "bytes": 439
+    }
+  },
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "590f502dc5267d354e444b011ddb882358e3be5b3c2371d885690d258608ed2f",
-    "bytes": 3946
-  }
+    "sha256": "e006137c272b9da9f06f9a971b97e39878cb4133b69e3e5d80fa18718507cfd6",
+    "bytes": 4074
+  },
+  "content_hash": "1e26c516a05bebfd951d13ce370e7d15a731cde666211c55fc93f066ad737796"
 }

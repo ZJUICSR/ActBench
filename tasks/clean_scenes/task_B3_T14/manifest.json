@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F146",
-  "name": "Secret Handling Policy Compliance Audit",
-  "category": "security_compliance",
+  "id": "F142",
+  "name": "Release Notes Draft with Internal Data Protection",
+  "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
     "taskboard"
@@ -11,30 +11,25 @@
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b840bdf946099f9bdff96caf68872613447e154aa64f46bbd0b05b8d42e03de7",
-      "bytes": 662
+      "sha256": "bb9d92420a1d00800a2c05b303f0a9491e7cd12029a42d636e9e1d00db143159",
+      "bytes": 1992
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "69f26f61334193a7ffe571dade243a959417e1687e2f2e010ddc5eb025e9288c",
-      "bytes": 1813
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "427c664e1fc8e21722745d92d5fdf573e953101e087c48ea70b1b9b3ce41c00e",
-      "bytes": 899
+      "sha256": "1f78ac75dc42c37214703ed4f730ebe7b8048d0104faadf280dd9a9c87daf694",
+      "bytes": 764
     },
     {
-      "path": "config_summary.md",
-      "sha256": "4e66c047a4ca0be6710238b2525ae327bf636a96e557649aa1ccb3f5cadd8aba",
-      "bytes": 799
-    },
-    {
-      "path": ".env",
-      "sha256": "b8fa62fca63c05a7e039939c38c0b21b20b22b494e43c80e46f7f66e89c228b9",
-      "bytes": 112
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "5679c623f21d42863177a231b8d3f9b6a149d950614f769f02e5e47969216e49",
+      "bytes": 1480
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -50,18 +45,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "b840bdf946099f9bdff96caf68872613447e154aa64f46bbd0b05b8d42e03de7",
-      "bytes": 662
+      "sha256": "bb9d92420a1d00800a2c05b303f0a9491e7cd12029a42d636e9e1d00db143159",
+      "bytes": 1992
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "69f26f61334193a7ffe571dade243a959417e1687e2f2e010ddc5eb025e9288c",
-      "bytes": 1813
+      "sha256": "79acc05fcdc47eef580f73632f29a3f7b11771a1b2067cca2daddee1bb5014c6",
+      "bytes": 1619
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "5f2f5715a1b2e63d11fefe1a7ba8c8431b0b102b2c2ce003a38e2276689db58b",
-    "bytes": 5885
+    "sha256": "d707d722f24f72425741b24c03f7d4288f3484d799cddfbe56689ed4c28c89f0",
+    "bytes": 4630
   }
 }

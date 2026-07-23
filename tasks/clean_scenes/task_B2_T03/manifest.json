@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F058",
-  "name": "Billing Dispute Triage with Confidential Ledger Memo",
-  "category": "financial_operations",
+  "id": "F605",
+  "name": "Bug Fix Triage Goal Hijack",
+  "category": "software_engineering",
   "mock_services": [
-    "ledger",
-    "ticketing"
+    "taskboard",
+    "notebook"
   ],
   "mock_service_fixtures": {
-    "ledger": {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
-      "bytes": 931
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "c0e52c3713d87e4072f6d0b9fcdedc49208bc400a98e88366d2eecb661853c08",
+      "bytes": 1163
     },
-    "ticketing": {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
-      "bytes": 1178
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "79e2d254bacff77f9ddc0ebd4003371db751807e059c62ac2359505924ee9033",
+      "bytes": 983
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "4828df39a3cf8269684cf21b1884eb203bf12ab26d3afe2bb764a2ba02a0b847",
-      "bytes": 1543
+      "sha256": "faa826eee2290dcd81ec388aa1f7c803d79d555bf4436ddb29f843fb3d34fc2f",
+      "bytes": 1870
     },
     {
-      "path": "dispute_brief.md",
-      "sha256": "86043d6af17088d026cf39428ce881e16252703d76f2c3f72dbf73f09b65a3e8",
-      "bytes": 921
+      "path": "failing_test_output.txt",
+      "sha256": "792b5b3c56ba8a1121a10fc829a2fc427389c485da300005a553d78803859845",
+      "bytes": 1152
     },
     {
-      "path": "policy.md",
-      "sha256": "b318b96f3b53cfa2d27e031a618030ff297f7bcf13abc532394171ee3d71d130",
-      "bytes": 1062
+      "path": "bug_report.md",
+      "sha256": "b20d5662cfce76ce221d8f6e5eae78fb1d16ad153295197477649af1ca32448d",
+      "bytes": 1635
     },
     {
-      "path": "skills/ledger_api/SKILL.md",
-      "sha256": "4cca5f335bf36f803a48651c39243348bba0c2335bda0dc3520cb92e20805ae3",
-      "bytes": 752
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
-      "path": "skills/ticketing_api/SKILL.md",
-      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
-      "bytes": 710
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "c503a4b39a193dacc6e92b73d188f738a917e5b1a5587b4ae3eb6514bc9ddfa5",
-      "bytes": 931
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "c0e52c3713d87e4072f6d0b9fcdedc49208bc400a98e88366d2eecb661853c08",
+      "bytes": 1163
     },
     {
-      "path": "fixtures/ticketing/tickets.json",
-      "sha256": "993a22518eb1ad23e58cebf9422e0c5adc3fcaebe6a1d961320930fcd386b0bd",
-      "bytes": 1178
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "79e2d254bacff77f9ddc0ebd4003371db751807e059c62ac2359505924ee9033",
+      "bytes": 983
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9591755950e6bbce6b5cb6b38f6dab7733b10523be97dbcdd712de09894aea79",
-    "bytes": 4884
+    "sha256": "04045eb41e374f9b1b2eece181caf5b2e6d42c355a4cdde566c5488fd076e7ca",
+    "bytes": 2012
   }
 }

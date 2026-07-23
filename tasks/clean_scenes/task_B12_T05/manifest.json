@@ -1,40 +1,40 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F607",
-  "name": "API Job Failure Diagnosis and Taskboard Update",
-  "category": "software_engineering",
+  "id": "F284",
+  "name": "Q3 Access Review Update",
+  "category": "security_compliance",
   "mock_services": [
-    "automation",
+    "directory",
     "taskboard"
   ],
   "mock_service_fixtures": {
-    "automation": {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "5fa872215d6e4d690f29f10f91b9719179c8769be1924d4e008ec0ab9c8ef34e",
-      "bytes": 766
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "64f7ea9f46fb9a510a1e74abba2f3b3c8aaecb43a7ea97743b01f54e8a799038",
+      "bytes": 530
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "c5f54638cd9fbf7f361c38454a29822051df1236e868019f954fb35aa8f71567",
-      "bytes": 979
+      "sha256": "8d7a036c3129a78f92313861cd6806111e8a1f3895c444896d665061c7d5f49e",
+      "bytes": 337
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "3c816dd98049cd280a205359863aa1b0bbfed4b44cb6f5f7e94195dfef1acabb",
-      "bytes": 1064
+      "sha256": "ae153589591b61f6392cdea398757567d79f076391716a6e8795a7ed9566fbb8",
+      "bytes": 1691
     },
     {
-      "path": "analysis_brief.md",
-      "sha256": "7a0368db1d6852b1c2ae45a87a58aa03c9b82a977ae490748a4fe994fae7f273",
-      "bytes": 1218
+      "path": "review_brief.md",
+      "sha256": "563f643d50d241c2d71babe866965764a78f48552232ff412991e9f77f1c97c6",
+      "bytes": 1762
     },
     {
-      "path": "skills/automation_api/SKILL.md",
-      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
-      "bytes": 771
+      "path": "skills/directory_api/SKILL.md",
+      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
+      "bytes": 729
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
@@ -44,19 +44,19 @@
   ],
   "fixture_files": [
     {
-      "path": "fixtures/automation/jobs.json",
-      "sha256": "5fa872215d6e4d690f29f10f91b9719179c8769be1924d4e008ec0ab9c8ef34e",
-      "bytes": 766
+      "path": "fixtures/directory/entries.json",
+      "sha256": "64f7ea9f46fb9a510a1e74abba2f3b3c8aaecb43a7ea97743b01f54e8a799038",
+      "bytes": 530
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "c5f54638cd9fbf7f361c38454a29822051df1236e868019f954fb35aa8f71567",
-      "bytes": 979
+      "sha256": "8d7a036c3129a78f92313861cd6806111e8a1f3895c444896d665061c7d5f49e",
+      "bytes": 337
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "c343e2af25b875664f9e0911b5c2529406b9be3ee3f336f82a9364f07b77295f",
-    "bytes": 2600
+    "sha256": "c4f61afc253b0a18504027002fbb4a46d4b18faba6d0e8170c69726a977ac7b5",
+    "bytes": 4076
   }
 }

@@ -15,10 +15,13 @@ tasks/task_B*_T*/
 
 Important fields:
 
-- `id` — canonical task id, e.g. `task_B7_T01`.
+- `id` — canonical task id, e.g. `task_B8_T01`.
 - `legacy_task_id` — optional compatibility id from the older risk-family layout.
-- `behavior_id` / `behavior_type` / `behavior_label` — ActBench behavior taxonomy.
-- `scoring_family` / `risk_type` / `legacy_risk_type` — compatibility scoring family.
+- `taxonomy_version` — behavior taxonomy version, currently `actbench.behavior_taxonomy.v2_20260722`.
+- `behavior_id` / `behavior_type` / `behavior_label` — ActBench behavior taxonomy. Behavior slugs are stable; B-class numbers follow the current taxonomy version.
+- `legacy_behavior_id` / `legacy_behavior_task_id` — optional v1 B-class compatibility fields used when migrating old task ids/directories.
+- `scoring_family` — current B-class scoring bucket (`B1`-`B15`).
+- `risk_type` / `legacy_risk_type` — legacy compatibility risk-family bucket.
 - `attack_method` — high-level carrier mechanism category.
 - `scenario` — stable public scenario identifier used for grouping and baseline cache keys.
 - `prompt` / `user_prompt` — benign user request passed to the agent.

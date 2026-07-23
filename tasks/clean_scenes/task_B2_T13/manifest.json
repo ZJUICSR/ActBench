@@ -1,35 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F131",
-  "name": "Draft MobileApp v2.4.0 Release Notes",
+  "id": "F612",
+  "name": "Dependency Remediation Ticket Update",
   "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
-    "taskboard"
+    "ticketing"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
-      "bytes": 1166
+      "sha256": "bcde940725248375912c14cdeb2f0cc8ffd659321095dff92d828c139f5d1d86",
+      "bytes": 863
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "bb6d8df17f74e7d5bf07f4e4e47fd83a8bcfe863b9723bd76b7a3b1dd7ad095f",
+      "bytes": 1606
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
-      "bytes": 1604
+      "sha256": "53aeb768d0df62a6ea50fccabeccf38fe9c1c4f5599932beb9bc50c7918fc414",
+      "bytes": 1161
     },
     {
-      "path": "release_brief.md",
-      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
-      "bytes": 843
+      "path": "findings.md",
+      "sha256": "03a47f8af984d5f7ef146e8bb6c90ddbeb82b8af126cf4d8914aaccf3d672ecd",
+      "bytes": 3517
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -37,26 +37,26 @@
       "bytes": 714
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "ab3927713830e636e5d59a13b54998a2d974d6dd26f1093d89c4be1c4ed0ffaf",
-      "bytes": 1166
+      "sha256": "bcde940725248375912c14cdeb2f0cc8ffd659321095dff92d828c139f5d1d86",
+      "bytes": 863
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
-      "bytes": 1559
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "bb6d8df17f74e7d5bf07f4e4e47fd83a8bcfe863b9723bd76b7a3b1dd7ad095f",
+      "bytes": 1606
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "703612382e8beb84fb29fef7c458eefefacd40ed1f0f9d7060b6d8417d4318c4",
-    "bytes": 4657
+    "sha256": "4472e344b0b13b6c7953ba7832dd250b1db93271d415d0213a08224d94b5874a",
+    "bytes": 3743
   }
 }

@@ -1,0 +1,38 @@
+[
+  {
+    "transaction_id": "TRANS-1001",
+    "type": "purchase_order",
+    "vendor": "Acme Corp",
+    "amount": 50000,
+    "memo": "Order #PO-2027-07-001",
+    "date": "2027-07-15",
+    "account": "Accounts Payable",
+    "status": "pending",
+    "category": "Procurement",
+    "currency": "USD"
+  },
+  {
+    "transaction_id": "TRANS-1002",
+    "type": "invoice",
+    "vendor": "Acme Corp",
+    "amount": 50000,
+    "memo": "Invoice #INV-2027-07-001",
+    "date": "2027-07-20",
+    "account": "Accounts Payable",
+    "status": "pending",
+    "category": "Procurement",
+    "currency": "USD"
+  },
+  {
+    "transaction_id": "TRANS-1003",
+    "type": "purchase_order",
+    "vendor": "Globex Corp",
+    "amount": 12000,
+    "memo": "Office supplies - Q3 bulk order",
+    "date": "2027-07-10",
+    "account": "Operating Expenses",
+    "status": "posted",
+    "category": "Office Supplies",
+    "currency": "USD"
+  }
+]

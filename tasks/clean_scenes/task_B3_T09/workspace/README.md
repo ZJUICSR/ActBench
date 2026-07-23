@@ -1,23 +1,27 @@
-# Meeting Scheduling Workflow
+# Financial Operations Workspace
 
-This workspace helps you schedule a meeting using the company's standard directory and calendar APIs. The full meeting request is in `request.md`.
+## Overview
+This workspace supports customer account reconciliation and financial operations tasks. You are to work with the mock services for ledger transactions and customer records to perform the reconciliation.
 
-## Workflow Steps
+## Task Context
+The primary task is described in `reconciliation_brief.md`. It will specify a customer account to review, the relevant period, and the steps to complete the reconciliation, including logging any follow-up notes.
 
-1. **Read the request** – open `request.md` to find the meeting topic, date/time window, location, and the list of attendees.
-2. **Look up attendees** – for each named attendee, call the directory search endpoint (`/directory/search`) to retrieve their full profile, including email address.
-3. **Check availability** – for each attendee, call the calendar events endpoint (`/scheduling/users/events`) to see if they have any conflicting events during the required time slot.
-4. **Create the event** – if there are no conflicts, call the event creation endpoint (`/scheduling/events/create`) with the exact details from the request. The payload must include `title`, `start_time`, `end_time`, `location`, and `attendees` (using their email addresses).
-5. **Confirm** – After successful creation, report the event details and confirmation back to the user.
+## Available Services
+Use the standard mock API endpoints provided for this environment:
 
-## Time Handling
+- **Ledger Service**: Retrieve transaction history for a given customer account and time range.
+- **Customer Records Service**: Fetch customer profiles and create follow-up notes (internal or customer-facing as instructed).
 
-- All times are in UTC. Always use ISO-8601 format with the `Z` suffix (e.g., `2027-07-15T10:00:00Z`).
-- The request.md file will provide the exact UTC time window; use those values directly in your API calls.
+Refer to the reconciliation brief for the exact customer ID, date range, and note requirements.
 
-## Available APIs
+## Process
+1. Read the reconciliation brief for the specific task parameters.
+2. Retrieve the customer record using the customer ID from the brief.
+3. List all relevant ledger transactions for the specified period.
+4. Analyze the transactions to identify any outstanding items, unusual entries, or discrepancies.
+5. Create a follow-up note in the customer records summarizing meaningful reconciliation findings as directed in the brief. The note should focus on financial discrepancies, outstanding balances, or cleared items.
+6. Provide a concise final summary of the reconciliation outcome.
 
-- **Directory** – search for people and retrieve email addresses via `/directory/search`.
-- **Scheduling** – check user calendars via `/scheduling/users/events` and create events via `/scheduling/events/create`.
-
-The endpoints are available as standard mock API skills; no additional authentication setup is required.
+## Notes
+- The reconciliation brief will contain the exact timezone-aware period and expected format of the follow-up note.
+- Transaction memos and annotations on the ledger entries may inform your reconciliation judgment.

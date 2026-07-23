@@ -12,8 +12,11 @@ import yaml
 
 from lib_tasks import Task
 from lib_taxonomy import (
+    TAXONOMY_VERSION_LEGACY,
     behavior_code_for_type,
+    behavior_type_for_id,
     infer_behavior_from_metadata,
+    legacy_behavior_id_for_type,
     normalize_behavior_type,
     normalize_risk_type,
 )
@@ -112,8 +115,18 @@ def _build_task_index(tasks_dir: Path) -> List[TaskIndexEntry]:
 
 
 def _behavior_suite_matches(tasks: Sequence[Task | TaskIndexEntry], token: str) -> List[str]:
+    token_text = token.strip()
+    token_lower = token_text.lower()
+    legacy_prefixes = ("old:", "legacy:", "v1:")
     try:
-        token_behavior = normalize_behavior_type(token)
+        if token_lower.startswith(legacy_prefixes):
+            _, raw_legacy_id = token_text.split(":", 1)
+            token_behavior = behavior_type_for_id(
+                raw_legacy_id,
+                taxonomy_version=TAXONOMY_VERSION_LEGACY,
+            )
+        else:
+            token_behavior = normalize_behavior_type(token_text)
     except ValueError:
         return []
     token_code = behavior_code_for_type(token_behavior)
@@ -128,28 +141,69 @@ def _behavior_suite_matches(tasks: Sequence[Task | TaskIndexEntry], token: str) 
     return matched
 
 
+def _task_alias_ids(
+    task: Task | TaskIndexEntry,
+    *,
+    include_legacy_behavior_aliases: bool = False,
+) -> List[str]:
+    aliases: List[str] = []
+    fm = task.frontmatter or {}
+    value = fm.get("legacy_task_id")
+    if value:
+        aliases.append(str(value))
+
+    if include_legacy_behavior_aliases:
+        value = fm.get("legacy_behavior_task_id")
+        if value:
+            aliases.append(str(value))
+
+        match = re.match(r"^task_B(?:[1-9]|1[0-5])_T(\d+)$", task.task_id)
+        if match:
+            try:
+                inference = infer_behavior_from_metadata(fm, path=task.file_path)
+                legacy_behavior_id = legacy_behavior_id_for_type(inference.behavior_type)
+                aliases.append(f"task_{legacy_behavior_id}_T{match.group(1)}")
+            except ValueError:
+                pass
+
+    unique: List[str] = []
+    seen: set[str] = set()
+    for alias in aliases:
+        key = alias.lower()
+        if key in seen or key == task.task_id.lower():
+            continue
+        seen.add(key)
+        unique.append(alias)
+    return unique
+
+
 def _legacy_task_id(task: Task | TaskIndexEntry) -> str | None:
-    value = (task.frontmatter or {}).get("legacy_task_id")
-    return str(value) if value else None
+    aliases = _task_alias_ids(task)
+    return aliases[0] if aliases else None
 
 
-def _build_legacy_task_id_map(tasks: Sequence[Task | TaskIndexEntry]) -> Dict[str, str]:
+def _build_legacy_task_id_map(
+    tasks: Sequence[Task | TaskIndexEntry],
+    *,
+    include_legacy_behavior_aliases: bool = False,
+) -> Dict[str, str]:
     legacy_task_ids: Dict[str, str] = {}
     for task in tasks:
-        legacy_task_id = _legacy_task_id(task)
-        if not legacy_task_id:
-            continue
-        key = legacy_task_id.lower()
-        if key in legacy_task_ids:
-            logger.warning(
-                "Duplicate legacy_task_id %s maps to both %s and %s; keeping %s",
-                legacy_task_id,
-                legacy_task_ids[key],
-                task.task_id,
-                legacy_task_ids[key],
-            )
-            continue
-        legacy_task_ids[key] = task.task_id
+        for legacy_task_id in _task_alias_ids(
+            task,
+            include_legacy_behavior_aliases=include_legacy_behavior_aliases,
+        ):
+            key = legacy_task_id.lower()
+            if key in legacy_task_ids:
+                logger.warning(
+                    "Duplicate legacy_task_id %s maps to both %s and %s; keeping %s",
+                    legacy_task_id,
+                    legacy_task_ids[key],
+                    task.task_id,
+                    legacy_task_ids[key],
+                )
+                continue
+            legacy_task_ids[key] = task.task_id
     return legacy_task_ids
 
 
@@ -173,7 +227,13 @@ def _legacy_risk_suite_matches(tasks: Sequence[Task | TaskIndexEntry], token: st
     return matched
 
 
-def _task_prefix_matches(tasks: Sequence[Task | TaskIndexEntry], token: str) -> List[str]:
+def _task_prefix_matches(
+    tasks: Sequence[Task | TaskIndexEntry],
+    token: str,
+    *,
+    include_legacy_behavior_aliases: bool = False,
+    include_current_ids: bool = True,
+) -> List[str]:
     token = token.strip().lower()
     prefixes = [f"task_{token}_"]
     if token.startswith("task_"):
@@ -181,10 +241,14 @@ def _task_prefix_matches(tasks: Sequence[Task | TaskIndexEntry], token: str) -> 
     matched: List[str] = []
     seen: set[str] = set()
     for task in tasks:
-        task_ids = [task.task_id.lower()]
-        legacy_task_id = _legacy_task_id(task)
-        if legacy_task_id:
-            task_ids.append(legacy_task_id.lower())
+        task_ids = [task.task_id.lower()] if include_current_ids else []
+        task_ids.extend(
+            alias.lower()
+            for alias in _task_alias_ids(
+                task,
+                include_legacy_behavior_aliases=include_legacy_behavior_aliases,
+            )
+        )
         if any(any(task_id.startswith(prefix) for prefix in prefixes) for task_id in task_ids):
             if task.task_id not in seen:
                 matched.append(task.task_id)
@@ -198,19 +262,31 @@ def _select_task_ids(tasks: Sequence[Task | TaskIndexEntry], suite: str) -> Opti
     if suite == "automated-only":
         return [task.task_id for task in tasks if task.grading_type == "automated"]
     all_task_ids = {task.task_id.lower(): task.task_id for task in tasks}
-    legacy_task_ids = _build_legacy_task_id_map(tasks)
+    include_legacy_behavior_aliases = bool(re.search(r"(?:^|,)\s*(?:old|legacy|v1):", suite, re.IGNORECASE))
+    legacy_task_ids = _build_legacy_task_id_map(
+        tasks,
+        include_legacy_behavior_aliases=include_legacy_behavior_aliases,
+    )
     selected: List[str] = []
     for token in suite.split(","):
         token = token.strip()
         if not token:
             continue
         token_key = token.lower()
+        legacy_behavior_token = None
+        if re.match(r"^(?:old|legacy|v1):", token, re.IGNORECASE):
+            legacy_behavior_token = token.split(":", 1)[1].strip()
         if token_key in all_task_ids:
             selected.append(all_task_ids[token_key])
             continue
         if token_key in legacy_task_ids:
             selected.append(legacy_task_ids[token_key])
             continue
+        if legacy_behavior_token:
+            legacy_behavior_key = legacy_behavior_token.lower()
+            if legacy_behavior_key in legacy_task_ids:
+                selected.append(legacy_task_ids[legacy_behavior_key])
+                continue
         legacy_risk_matched = _legacy_risk_suite_matches(tasks, token)
         if legacy_risk_matched:
             selected.extend(legacy_risk_matched)
@@ -220,6 +296,13 @@ def _select_task_ids(tasks: Sequence[Task | TaskIndexEntry], suite: str) -> Opti
             selected.extend(behavior_matched)
             continue
         prefix_matched = _task_prefix_matches(tasks, token)
+        if not prefix_matched and legacy_behavior_token:
+            prefix_matched = _task_prefix_matches(
+                tasks,
+                legacy_behavior_token,
+                include_legacy_behavior_aliases=True,
+                include_current_ids=False,
+            )
         if prefix_matched:
             selected.extend(prefix_matched)
         else:
@@ -253,8 +336,8 @@ def _direct_task_files_for_exact_ids(tasks_dir: Path, suite: str) -> Optional[Li
     for token in tokens:
         task_file = files_by_dir_id[token]
         entry = _read_task_index_entry(task_file)
-        legacy_task_id = (_legacy_task_id(entry) or "").lower()
-        if entry.task_id.lower() != token and legacy_task_id != token:
+        alias_ids = {alias.lower() for alias in _task_alias_ids(entry)}
+        if entry.task_id.lower() != token and token not in alias_ids:
             raise ValueError(
                 f"task directory {task_file.parent} declares id {entry.task_id!r}, not {token!r}"
             )

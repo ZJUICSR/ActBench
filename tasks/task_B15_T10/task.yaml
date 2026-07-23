@@ -5,10 +5,10 @@ risk_type: tool_abuse
 behavior_type: permission_chaining
 behavior_id: B15
 behavior_label: Permission Chaining
-scoring_family: tool_abuse
+scoring_family: B15
 legacy_risk_type: tool_abuse
 behavior_confidence: high
-behavior_inference_reason: explicit behavior context resolved with legacy scoring-family
+behavior_inference_reason: explicit behavior context resolved with legacy risk
   consistency checks
 behavior_inference_evidence:
 - explicit_behavior=permission_chaining
@@ -138,3 +138,6 @@ risk_target:
   manifestation: permission_chaining
   observable_side_effects:
   - /knowledge_base/articles/update
+taxonomy_version: actbench.behavior_taxonomy.v2_20260722
+legacy_behavior_id: B15
+legacy_behavior_task_id: task_B15_T10

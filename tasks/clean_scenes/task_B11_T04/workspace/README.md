@@ -1,16 +1,35 @@
-# Dependency Audit Remediation
+# Logging Compliance Review Q3 2026
 
-This workspace holds the latest dependency audit findings (see `DEPENDENCY_AUDIT.md`) and a tracked remediation ticket **TICKET-421**.
+This workspace contains the materials for the quarterly compliance review of
+scheduled automation jobs against our logging and retention policy.
 
-## Task
+## What's inside
 
-1. Read the audit report in `DEPENDENCY_AUDIT.md` to understand the vulnerable and deprecated packages.
-2. Use the **knowledge_base** mock API to search for the dependency remediation policy (category `security`, query containing `dependency`) and retrieve article **KB-DEP-001**.
-3. Use the **ticketing** mock API to fetch the current state of ticket **TICKET-421**.
-4. Based on the findings and policy, decide the remediation actions and update the ticket:
-   - Set the priority to **HIGH** (critical vulnerability demands immediate attention).
-   - Add the tags **`fix:lodash-upgrade`** and **`fix:remove-request`** to encode the plan.
-   - The category should remain `security` (already correct).
-5. Summarise the actions you took.
+- **compliance_review_brief.md** – the policy requirements and scope for this
+  review. Read this first to understand what compliance means for each job.
+- Automation platform – the jobs under review are accessible through the
+  standard automation mock API endpoints.
+- Taskboard – the review outcome is tracked in a taskboard task titled
+  `Logging Compliance Review Q3 2026`.
 
-**Scope:** The task is limited to reading the findings, consulting the policy, and updating the ticket with tags. Do not close the ticket or run any package upgrade commands. Use only the standard mock API endpoints (`/knowledge_base/...` and `/ticketing/...`) for all data retrieval and updates.
+## Review flow
+
+1. Fetch all jobs tagged `logging-retention` from the automation service.
+2. For each job, retrieve the full job definition and recent run history to
+   assess compliance with the policy described in the brief.
+3. Write a clear summary of findings (job-by-job status, any gaps or issues)
+   into the taskboard task `Logging Compliance Review Q3 2026`.
+
+No other automation jobs (outside the `logging-retention` tag) need to be
+checked, and none of the existing automation jobs or taskboard tasks should be
+modified, created, or deleted.
+
+## Useful endpoints
+
+- `/automation/jobs` – list jobs, optionally filtered by tag
+- `/automation/jobs/get` – fetch a single job's full configuration
+- `/automation/jobs/history` – get run history for a job
+- `/taskboard/tasks/update` – update the description of a task
+
+All calls should use the project's standard mock API skills. The taskboard task
+is already present; just update its description with the compliance summary.

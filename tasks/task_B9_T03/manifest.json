@@ -2,82 +2,85 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B9_T03",
-  "legacy_task_id": "task_R3_T06",
+  "legacy_task_id": "task_R3_T03",
   "behavior_id": "B9",
-  "behavior_type": "state_tampering",
-  "behavior_label": "State Tampering",
-  "scoring_family": "tool_abuse",
+  "behavior_type": "tool_scope_escalation",
+  "behavior_label": "Tool Scope Escalation",
+  "scoring_family": "B9",
   "legacy_risk_type": "tool_abuse",
   "risk_type": "tool_abuse",
   "attack_method": "context_injection",
-  "scenario": "F019",
+  "scenario": "F015",
   "mock_services": [
-    "notebook",
-    "taskboard"
+    "customer_records",
+    "mailbox"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+    "customer_records": {
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "d0720ca859dfba41cd184eb3e7a6a8646572ace8755107a5cb0b182441e5bb5d",
+      "bytes": 1906
     },
-    "taskboard": {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ee587412dfa168dc8468a0d4904c791d08545cf4aaca90248205a86955aeaffd",
-      "bytes": 1684
+    "mailbox": {
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
     }
   },
   "attack_payload_paths": [
-    "README.md"
+    "followup_brief.md"
   ],
   "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": ".env",
-      "sha256": "d2708ee2712f48062b3c6cc91710de913a3aafa54dbd302a92bd3a369f400e49",
-      "bytes": 110
+      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
+      "bytes": 106
     },
     {
       "path": "README.md",
-      "sha256": "f7ca601c81a106f9808cecb9f85a4ad5db18cb39c4aedfd58371031b0dc8f947",
-      "bytes": 2955
+      "sha256": "3bd0769bdc0f69899da4dd7e38faa91b7180deb681d3c5173e30f32f05d146bf",
+      "bytes": 1980
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "06d3d66e621078208051f81a7096507175e01cee7117da14278369118ac16d8e",
-      "bytes": 640
+      "path": "followup_brief.md",
+      "sha256": "7921f345dd24590a2d4aaebb0cfa0c22f6607313083a74a28659d096ccf9aaa8",
+      "bytes": 1365
     },
     {
-      "path": "skills/taskboard_api/SKILL.md",
-      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
-      "bytes": 730
+      "path": "skills/customer_records_api/SKILL.md",
+      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
+      "bytes": 760
     },
     {
-      "path": "workflow.md",
-      "sha256": "dba9e5851a469956ea2cf3155855b278277f76454fc989d7be2c89271fd0438a",
-      "bytes": 2069
+      "path": "skills/mailbox_api/SKILL.md",
+      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
+      "bytes": 722
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e69b627e7f2e3ddddb3b61ae52d4bb4c097b91eb7f790946bd3ffb6644945e1",
-      "bytes": 915
+      "path": "fixtures/customer_records/customers.json",
+      "sha256": "d0720ca859dfba41cd184eb3e7a6a8646572ace8755107a5cb0b182441e5bb5d",
+      "bytes": 1906
     },
     {
-      "path": "fixtures/taskboard/tasks.json",
-      "sha256": "ee587412dfa168dc8468a0d4904c791d08545cf4aaca90248205a86955aeaffd",
-      "bytes": 1684
+      "path": "fixtures/mailbox/inbox.json",
+      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
+      "bytes": 613
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "803417b50aeed80e0ab4d38016c4c0acced769d9b51d029a45978a11870fc6f8",
-    "bytes": 10764
+    "sha256": "ce1522ffb6213204fd1af21beef233fb25c9def5257f7b190c831a0773c2d197",
+    "bytes": 7608
   },
   "clean_source": {
-    "content_hash": "2f792cd4a524917c3e02438801ce2752debb57e04f1bf1b14b52a532576b0dae",
+    "content_hash": "aa5e6b9dbdd2e1782b84b5e2d97e5b79a553e6483e7e32eeeee4b09d60306f6f",
     "bundle_path": "clean_scenes/task_B9_T03",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B8",
+  "legacy_behavior_task_id": "task_B8_T03"
 }

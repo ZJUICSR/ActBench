@@ -1,67 +1,67 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F015",
-  "name": "Customer Follow-up Draft for Alice Chen",
-  "category": "business_operations",
+  "id": "F923",
+  "name": "Automation log diagnosis with persisted memory",
+  "category": "software_engineering",
   "mock_services": [
-    "customer_records",
-    "mailbox"
+    "automation",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "customer_records": {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
-      "bytes": 1645
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "4ef121e8351ad347e94483b48b1d56a89b9dcf0d09a8595a1d0f7ab54e3e9b00",
+      "bytes": 2277
     },
-    "mailbox": {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
-      "bytes": 613
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a387059d49e769b98129455f80a087e1786e5a80c4782dba23cf604043b1c34e",
+      "bytes": 1306
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "2886e6b99d170e017835cd1c72dbe6d6ccda1a55c9b62573fd712ac0cdca5f57",
-      "bytes": 1986
+      "sha256": "72140bb9cb786596d668e7465b69da0a3cb9e6045acc785d89594fc4a42a2d1e",
+      "bytes": 1658
     },
     {
-      "path": "followup_brief.md",
-      "sha256": "eced046565fde3095d0bd488cfe30dcd9ca852aa4a8a04331c992c51bd5bf009",
-      "bytes": 1208
+      "path": "TASK_BRIEF.md",
+      "sha256": "e1f47089341279764a0a74513847f267d5f440363aff1221f30982c6eea6fcca",
+      "bytes": 984
     },
     {
-      "path": ".env",
-      "sha256": "24f8749a638aad0284638e85d2db6b8f5a979d36d2113004d5433ae022299024",
-      "bytes": 106
+      "path": "MEMORY.md",
+      "sha256": "3131f520f6f4f02aa449023b944c6985b7307bccf4de392249224c35bddea5f9",
+      "bytes": 2107
     },
     {
-      "path": "skills/customer_records_api/SKILL.md",
-      "sha256": "91de265e0609e95def7e76d3380323e2ee89b7855028d86d3a75b795819e9c93",
-      "bytes": 760
+      "path": "skills/automation_api/SKILL.md",
+      "sha256": "fcc0d3bbdcd7482f9db2771f410af881af40d555e0f1e80b4e181dc70099de3e",
+      "bytes": 771
     },
     {
-      "path": "skills/mailbox_api/SKILL.md",
-      "sha256": "074bcece68382469a4a92efbf4952e4ad30bdd60749cd8bf5e34bc60b67ab15b",
-      "bytes": 722
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/customer_records/customers.json",
-      "sha256": "642f2252e80130683bdb8acb967fb7cf952740ca16a4b895edc16ab4b2075e47",
-      "bytes": 1645
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "4ef121e8351ad347e94483b48b1d56a89b9dcf0d09a8595a1d0f7ab54e3e9b00",
+      "bytes": 2277
     },
     {
-      "path": "fixtures/mailbox/inbox.json",
-      "sha256": "6ab0b40b5d02a92eab95a5f78aa391d55686e5797d3dfeed491c971b619e7c19",
-      "bytes": 613
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "a387059d49e769b98129455f80a087e1786e5a80c4782dba23cf604043b1c34e",
+      "bytes": 1306
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "d9cd3756b9f1ff65fa4d71ae713d72cda34d6ebbf3e737e6f0651828688f37e4",
-    "bytes": 643
+    "sha256": "0dd82e5d884e8e407b71ef454232e7b18fceffce880f6a31f63931c4e0c27587",
+    "bytes": 2740
   }
 }

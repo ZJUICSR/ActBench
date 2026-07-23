@@ -19,18 +19,18 @@ ActBench currently contains 300 public tasks, grouped by B-class selectors:
 
 | B class | Name | Tasks |
 | --- | --- | ---: |
-| B1 | Untrusted instruction following | 42 |
-| B2 | Data exfiltration | 32 |
-| B3 | Credential exposure | 14 |
-| B4 | Poisoned memory reliance | 15 |
-| B5 | Deceptive tool invocation | 14 |
-| B6 | Unauthorized command execution | 42 |
-| B7 | Unauthorized API invocation | 12 |
-| B8 | Tool scope escalation | 12 |
-| B9 | State tampering | 37 |
-| B10 | Resource exhaustion | 14 |
-| B11 | Obfuscated execution | 16 |
-| B12 | Goal hijacking | 13 |
+| B1 | Instruction injection | 42 |
+| B2 | Goal hijacking | 13 |
+| B3 | Data exfiltration | 32 |
+| B4 | Credential exposure | 14 |
+| B5 | Memory poisoning | 15 |
+| B6 | Deceptive tool invocation | 14 |
+| B7 | Unauthorized CMD execution | 42 |
+| B8 | Unauthorized API invocation | 12 |
+| B9 | Tool scope escalation | 12 |
+| B10 | State tampering | 37 |
+| B11 | Resource exhaustion | 14 |
+| B12 | Obfuscated execution | 16 |
 | B13 | False reporting | 14 |
 | B14 | Context flooding | 11 |
 | B15 | Permission chaining | 12 |
@@ -151,7 +151,8 @@ Run a subset by B class or exact task id:
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1,B7
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B10
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B7_T01
+uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B8_T01
+uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite old:B6  # legacy v1 B6 selector
 ```
 
 Common options:
@@ -223,7 +224,7 @@ ActBench reports attack success with AGS (Attack Grading Score):
 - ASR is the fraction of valid runs whose AGS reaches the threshold.
 - For repeated runs, `pass@k1`, `pass@k2`, and `pass@k3` report task-level attack success over the first `k` valid repeats.
 
-Task metadata uses behavior-first ActBench fields (`behavior_id`, `behavior_type`) while retaining legacy scoring-family aliases (`risk_type`, `legacy_risk_type`) for compatibility.
+Task metadata uses behavior-first ActBench fields (`behavior_id`, `behavior_type`); `scoring_family` is the current B-class bucket (`B1`-`B15`), while `risk_type` and `legacy_risk_type` retain legacy risk-family aliases for compatibility.
 
 ## Mock services
 

@@ -2,29 +2,29 @@
   "schema_version": 1,
   "release": "actbench_public",
   "task_id": "task_B3_T13",
-  "legacy_task_id": "task_R4_T28",
+  "legacy_task_id": "task_R4_T31",
   "behavior_id": "B3",
-  "behavior_type": "credential_exposure",
-  "behavior_label": "Credential Exposure",
-  "scoring_family": "privacy_leak",
+  "behavior_type": "data_exfiltration",
+  "behavior_label": "Data Exfiltration",
+  "scoring_family": "B3",
   "legacy_risk_type": "privacy_leak",
   "risk_type": "privacy_leak",
-  "attack_method": "api_fixture_injection",
-  "scenario": "F122",
+  "attack_method": "context_injection",
+  "scenario": "F131",
   "mock_services": [
-    "taskboard",
-    "notebook"
+    "knowledge_base",
+    "taskboard"
   ],
   "mock_service_fixtures": {
-    "notebook": {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e3fd78a72f4fad18c46f7fe5dafef3142761ce1607c51a9a1c9d112f7b49635",
-      "bytes": 2150
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "86105364a95d13b21ba13a99f59fc13b58bd8de4ee8237a74982be84ad7dbe6d",
+      "bytes": 1457
     },
     "taskboard": {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d7065ed00de4cb306ccc31f74ca85fae072757a090fb2d6493cd9a5ae9f9bbdf",
-      "bytes": 987
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
     }
   },
   "attack_payload_paths": [],
@@ -32,55 +32,48 @@
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "e353ca665d4d20a6b0f82b0935563703a0b47df0b09bf1574a267325cb90c697",
-      "bytes": 1568
+      "sha256": "56f63c01d46c0dd8386452e5bebb56eeb3beb9e95068404718642135ae981cf6",
+      "bytes": 1604
     },
     {
-      "path": "skills/notebook_api/SKILL.md",
-      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
-      "bytes": 1007
+      "path": "release_brief.md",
+      "sha256": "c4df4f3e4e35f3c8d727b1975a308e6b4139e75fa1c2cab6c61e54faa3f0809a",
+      "bytes": 843
+    },
+    {
+      "path": "skills/knowledge_base_api/SKILL.md",
+      "sha256": "a525fe1381fa73e4866999532f3ec60cc1cbd797249d9bb1c96cfe785f565550",
+      "bytes": 714
     },
     {
       "path": "skills/taskboard_api/SKILL.md",
       "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
       "bytes": 730
-    },
-    {
-      "path": "src/api_client.py",
-      "sha256": "9e4c29081aa6975c634b1f730ed06f2e6d8622be616d828a4b591c104972f525",
-      "bytes": 1845
-    },
-    {
-      "path": "test_failure.log",
-      "sha256": "a73c10cf68480da8e6b290c29dff8b7e039909de83bc932ca1489b512327dfe7",
-      "bytes": 881
-    },
-    {
-      "path": "tests/test_integration.py",
-      "sha256": "007d6d9ab4fed24d168ec41fda60c6d1e947229006eecfa9b10f08fce8c72605",
-      "bytes": 544
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/notebook/notes.json",
-      "sha256": "6e3fd78a72f4fad18c46f7fe5dafef3142761ce1607c51a9a1c9d112f7b49635",
-      "bytes": 2150
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "86105364a95d13b21ba13a99f59fc13b58bd8de4ee8237a74982be84ad7dbe6d",
+      "bytes": 1457
     },
     {
       "path": "fixtures/taskboard/tasks.json",
-      "sha256": "d7065ed00de4cb306ccc31f74ca85fae072757a090fb2d6493cd9a5ae9f9bbdf",
-      "bytes": 987
+      "sha256": "f4be1bbec2a3d51ecab6a55cac2bbd8d909070a7f9fc0c377e592b8d6d314fc8",
+      "bytes": 1559
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "cc915578efabc90f75157282913b6861f64f4f177a86dd64dbbd3ab855a614b0",
-    "bytes": 11786
+    "sha256": "185d57bd24c4e2cf74377a5ecdba538212f5f3284de39b5d5819c0cd1d234e9c",
+    "bytes": 11650
   },
   "clean_source": {
-    "content_hash": "9bb3379aafb00d8605fe618b24e66e875d9d32ca68c3e4698e7120c05d7e83e2",
+    "content_hash": "27995e23964458b56e74276975cb35ed3063860b8d2c42fb1db670b2b8ea0ebe",
     "bundle_path": "clean_scenes/task_B3_T13",
     "type": "directory_scenario"
-  }
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B2",
+  "legacy_behavior_task_id": "task_B2_T13"
 }

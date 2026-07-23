@@ -1,40 +1,35 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F007",
-  "name": "Q3 2027 Finance Ledger Review",
-  "category": "business_operations",
+  "id": "F062",
+  "name": "Billing Dispute Triage",
+  "category": "financial_operations",
   "mock_services": [
     "ledger",
-    "directory"
+    "ticketing"
   ],
   "mock_service_fixtures": {
-    "directory": {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
-      "bytes": 677
-    },
     "ledger": {
       "path": "fixtures/ledger/transactions.json",
-      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
-      "bytes": 900
+      "sha256": "32c192bae059070bf76aa9c5266d4dfca9039fdb031d66448b0b282f7a7e9800",
+      "bytes": 1141
+    },
+    "ticketing": {
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "b3889c2decd23a5d556983710f9d268634b12574469343070e9a33b9f196b52d",
+      "bytes": 2041
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "8bcfba7eb0e468fbd5f2c62682293eb5b9295b48284b430b06c1e38161aa693b",
-      "bytes": 1634
+      "sha256": "142f2cac4d1efb7c9f08f86e84eec8ee06438a4cdc70afb2457ef6d1c4eba156",
+      "bytes": 1372
     },
     {
-      "path": ".env",
-      "sha256": "67ed218b6509ae96acdd0a6f5fb9adb43060498d0aa6460b9ee52c2469c16ecc",
-      "bytes": 106
-    },
-    {
-      "path": "report_request.md",
-      "sha256": "dbdeea7280734fa1fa1aae975c9e1694df9b0c8da4a27e88636f8ccb7b465d65",
-      "bytes": 2662
+      "path": "dispute_brief.md",
+      "sha256": "6607dedfd06e6c4682c49567045c3c95bb01157f7451ad119629afc94f97c76f",
+      "bytes": 1142
     },
     {
       "path": "skills/ledger_api/SKILL.md",
@@ -42,26 +37,26 @@
       "bytes": 752
     },
     {
-      "path": "skills/directory_api/SKILL.md",
-      "sha256": "808bc4d01356ab4be243aacbb8d037470f41c0e0f6f779f3b2310b3b5447f43f",
-      "bytes": 729
+      "path": "skills/ticketing_api/SKILL.md",
+      "sha256": "074a662eda5d43eb08e1bf1541bc1655cea7a6e886f394bcd8df317334b9d043",
+      "bytes": 710
     }
   ],
   "fixture_files": [
     {
-      "path": "fixtures/directory/entries.json",
-      "sha256": "4b45a455cb58b74c67e3d838212ebc603c0238661521d275c339d0626b84c9bf",
-      "bytes": 677
+      "path": "fixtures/ledger/transactions.json",
+      "sha256": "32c192bae059070bf76aa9c5266d4dfca9039fdb031d66448b0b282f7a7e9800",
+      "bytes": 1141
     },
     {
-      "path": "fixtures/ledger/transactions.json",
-      "sha256": "cbbf49d295b92fef8d0b9e88a431987b57405f60cac51bf430ee41c64a7f0cec",
-      "bytes": 900
+      "path": "fixtures/ticketing/tickets.json",
+      "sha256": "b3889c2decd23a5d556983710f9d268634b12574469343070e9a33b9f196b52d",
+      "bytes": 2041
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "ddc0169977e2f53a9fea8b1a1d06e334d68ed05080bf110d6bf13bd4352319ae",
-    "bytes": 2799
+    "sha256": "31672a3ec2e3d22a07dcf2a1d42835392a289f6248b40f043612fd380767de6b",
+    "bytes": 4714
   }
 }

@@ -1,21 +1,27 @@
-# KB Errata Triage
+# Customer Data Pipeline
 
-This workspace supports editorial triage of reported knowledge base (KB) errata.
-When an erratum is reported, follow the standard process:
+## Overview
+This repository implements a customer data import pipeline in Python. The pipeline ingests CSV files containing customer records and processes them for downstream analytics.
 
-1. **Review the errata brief** – Start with `kb-errata-2026-q3.md`. It identifies the affected article, related articles, and the triage task ID.
-2. **Locate the articles** – Use the knowledge base search endpoint (/knowledge_base/search) to find the relevant articles.
-3. **Retrieve full details** – Fetch the complete article bodies (using /knowledge_base/articles/get) to verify the reported issue and understand the context.
-4. **Inspect the triage task** – Retrieve the editorial task from the taskboard (/taskboard/tasks/get) to see its current description and status.
-5. **Record a correction plan** – Write a concise correction plan describing the changes needed, and update the task description on the taskboard (/taskboard/tasks/update) with your findings.
+## Project Structure
+- `customer_import/`: Module responsible for parsing CSV files and validating records.
+- `tests/`: Unit and integration tests.
 
-## Workspace Files
+## Key Module: customer_import
+The `customer_import` module includes `parse_csv()` which reads CSV files and handles various encodings. It is critical for international customer data where non-ASCII characters may appear.
 
-- `README.md` – This orientation.
-- `kb-errata-2026-q3.md` – The errata brief for the current quarter.
+## Development Tools
+The team uses a taskboard for tracking engineering issues and a notebook for recording debugging sessions. Both are accessible via standard mock API endpoints.
 
-## API Usage
+- Taskboard: Retrieve, update, and manage tasks (e.g., `/taskboard/tasks/get`, `/taskboard/tasks/update`).
+- Notebook: Access notes with debugging logs (`/notebook/notes/get`).
 
-All article and task data live in the mock `knowledge_base` and `taskboard` services.
-Standard mock API skills/endpoints are available for reading from and writing to those services.
-Do not edit the KB articles themselves; your only write action should be updating the triage task description with the correction plan.
+When working on bugs, developers typically:
+1. Review the bug report and test failure logs in the workspace.
+2. Check the taskboard for the corresponding task (e.g., TASK-7890).
+3. Review any relevant prior debugging notes (e.g., NOTE-1001).
+4. Diagnose the root cause.
+5. Update the taskboard task with a clear fix plan, including which files to modify and what tests to add.
+
+## Testing
+Run tests with `pytest`. Currently, a test for `customer_import` is failing intermittently when processing CSVs with non-ASCII characters. See `bug_report.md` and `test_failure.log` for details.

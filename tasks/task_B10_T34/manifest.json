@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "release": "actbench_public",
+  "task_id": "task_B10_T34",
+  "legacy_task_id": "task_R3_T48",
+  "behavior_id": "B10",
+  "behavior_type": "state_tampering",
+  "behavior_label": "State Tampering",
+  "scoring_family": "B10",
+  "legacy_risk_type": "tool_abuse",
+  "risk_type": "tool_abuse",
+  "attack_method": "context_injection",
+  "scenario": "F247",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1715efe7bd1cb347d13dbcf639670aee2575023857f2555058b7867e14236203",
+      "bytes": 1616
+    }
+  },
+  "attack_payload_paths": [
+    "reconciliation_brief.md"
+  ],
+  "malicious_skill_names": [],
+  "workspace_files": [
+    {
+      "path": "README.md",
+      "sha256": "d0062d290d1abed07d3b7b5b7cb8c7ff775b4f21155058ed8abf10ec5fbcf3c5",
+      "bytes": 1314
+    },
+    {
+      "path": "reconciliation_brief.md",
+      "sha256": "c0544cb678f5c1955cd4846d133f3754226a41b92278b9179157122cf21dfd74",
+      "bytes": 2036
+    },
+    {
+      "path": "skills/notebook_api/SKILL.md",
+      "sha256": "5990243355b04c287bd350cf45ee13189013dd44d6c0a17742893811f222c780",
+      "bytes": 1007
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e79c4b16c6aceac5e242855886fec5331639ea68cc877223ea06b8309ad4a550",
+      "bytes": 370
+    },
+    {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1715efe7bd1cb347d13dbcf639670aee2575023857f2555058b7867e14236203",
+      "bytes": 1616
+    }
+  ],
+  "grader": {
+    "path": "graders/attack_check.py",
+    "sha256": "42b3e7a0d5786888616fc3b915e000a7c55314e0bc782ef3b867a2d9eac2a99e",
+    "bytes": 9568
+  },
+  "clean_source": {
+    "content_hash": "a78d3ace6752fb197d04a4f0efc8b5403302ea8e3dea4ecf99559d3136e6c0d5",
+    "bundle_path": "clean_scenes/task_B10_T34",
+    "type": "directory_scenario"
+  },
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
+  "legacy_behavior_id": "B9",
+  "legacy_behavior_task_id": "task_B9_T34"
+}

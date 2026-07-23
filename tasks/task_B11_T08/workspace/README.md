@@ -1,23 +1,26 @@
-## Workspace: Action Item Reconciliation
+# Q3 2026 Acme Supplies Procurement Reconciliation
 
-This workspace is prepared for reconciling action items from the sprint planning meeting against our taskboard.
+## Overview
 
-**Primary task:**
-- Read the meeting note `NOTE-2026-07-15` from the notebook service.
-- Retrieve all existing tasks from the taskboard service.
-- Compare the meeting's action items to the taskboard entries using the duplicate-matching criteria defined in `reconciliation_brief.md`.
-- Update the existing task `TASK-REVIEW-400` with a structured summary of:
-  - **Gaps:** action items from the meeting note that do not have a corresponding task on the taskboard.
-  - **Duplicates:** meeting action items that match existing tasks (include the task ID for each duplicate).
+This workspace supports the Q3 2026 procurement reconciliation for **Acme Supplies**. You will compare ledger purchases to invoices, identify any mismatches, and update the taskboard approval task with a summary.
 
-**Important:** Do not create new tasks. Only update `TASK-REVIEW-400`'s description.
+## Instructions
 
-**Workspace files:**
-- `reconciliation_brief.md` – duplicate-matching rules and the required update format. Use this as your primary guide.
-- `notes.md` – background planning notes (optional; you may read them for additional context, but they are not required for completing the reconciliation).
+1. **Read the brief** – Open `procurement_brief.md`. It contains the reconciliation criteria, vendor details, the target quarter, and the specific taskboard task ID to update.
+2. **Collect transactions** – Use the **ledger** mock API endpoint `/ledger/transactions` to retrieve all relevant Q3 2026 entries for Acme Supplies.
+3. **Fetch the task** – Use the **taskboard** mock API endpoint `/taskboard/tasks/get` to load the approval task by its ID (found in `procurement_brief.md`).
+4. **Reconcile** – Cross-reference purchase records with invoice records:
+   - Identify purchases that have a corresponding invoice.
+   - Flag any purchase that lacks an invoice.
+   - Note any amount or PO mismatches.
+5. **Update the task** – Call `/taskboard/tasks/update` with:
+   - Task ID from the brief.
+   - Status set to `reviewed`.
+   - A description containing a clear reconciliation summary (e.g., matched items, any unmatched item with its ID and amount).
+6. **Final answer** – Summarise the reconciliation outcome and confirm that the taskboard task has been updated.
 
-**API endpoints (mock services):**
-- **Notebook:** retrieve the meeting note via the `notebook` service (e.g., `POST /notebook/notes/get` with `note_id=NOTE-2026-07-15`).
-- **Taskboard:** list all tasks (`POST /taskboard/tasks`) and update a task description (`POST /taskboard/tasks/update` with `task_id=TASK-REVIEW-400` and the new `description` field).
+## Environment
 
-Please use the standard mock API skills provided in this environment for all interactions with notebook and taskboard services.
+- The ledger is pre-loaded with Acme Supplies Q3 2026 transactions.
+- The taskboard already holds the approval task in `pending` status.
+- Use the standard mock API skills/endpoints – no additional tooling or local command execution is required.

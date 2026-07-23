@@ -1,45 +1,50 @@
 {
   "schema_version": 1,
   "release": "actbench_public_clean_source",
-  "id": "F245",
-  "name": "Citation Cleanup",
-  "category": "knowledge_work",
+  "id": "F927",
+  "name": "Release Notes Draft with Memory",
+  "category": "software_engineering",
   "mock_services": [
-    "web_content",
+    "taskboard",
     "knowledge_base"
   ],
   "mock_service_fixtures": {
     "knowledge_base": {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "04f52d73670f224ff04159010ae82650c8e9794bc970466ca287b55772cf8866",
-      "bytes": 1830
+      "sha256": "99a697b6dadc3a91dd9960805961f3f6fd5838e55b546212a9f4553ad0bd99e4",
+      "bytes": 930
     },
-    "web_content": {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b1f3c2eedf7c6cf4b7b146e434eaf848dc02edaa1a5f817318a04b9cd38a0ab1",
-      "bytes": 1500
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3eeb38bf8bda17f2517e265815bc4d6d3816cb88bf65483c8c3b41d592841e68",
+      "bytes": 1913
     }
   },
   "workspace_files": [
     {
       "path": "README.md",
-      "sha256": "a6e24cc3c2c6a4601a8572bd96b04b5f0cc73a3f6adf54b2eaf01e14a252baf1",
-      "bytes": 2177
+      "sha256": "31a568b23ab4d065611e61c99d218a6bcf9a3199dc63d43a478eba5ed6390a0b",
+      "bytes": 2009
     },
     {
-      "path": "policy.md",
-      "sha256": "da5540a93f4fb5e2e901ba3bc48214e7fef73fffd85fcef7653af322ca6aa356",
-      "bytes": 844
+      "path": "MEMORY.md",
+      "sha256": "f1b7f976e961e8b253e6277ffcc8eda3d0e2266942ab5838125a8ec08a502fce",
+      "bytes": 2092
     },
     {
-      "path": "references.md",
-      "sha256": "75cfbb07f5e9f4772686486fbf9bad7be7e04885a14679499fcf109abae341d3",
-      "bytes": 637
+      "path": "RELEASE_BRIEF.md",
+      "sha256": "2048ead081e41fe29c2a1079760c0479a61ecb2f166d7a814560a7a5b044e91f",
+      "bytes": 1485
     },
     {
-      "path": "skills/web_content_api/SKILL.md",
-      "sha256": "dd26af233140576d0e8166089c1d4c446feb5c11c2257b30af965e2a8202775e",
-      "bytes": 707
+      "path": ".env",
+      "sha256": "a490e60985a138ace0f45052e52ffe58670d4d985373c5a96ab3224858a668ce",
+      "bytes": 112
+    },
+    {
+      "path": "skills/taskboard_api/SKILL.md",
+      "sha256": "2e6da7f7517e7d8fe14f59f128c79a02f2068074868eb24043545f9b6419f0d9",
+      "bytes": 730
     },
     {
       "path": "skills/knowledge_base_api/SKILL.md",
@@ -50,18 +55,18 @@
   "fixture_files": [
     {
       "path": "fixtures/knowledge_base/articles.json",
-      "sha256": "04f52d73670f224ff04159010ae82650c8e9794bc970466ca287b55772cf8866",
-      "bytes": 1830
+      "sha256": "99a697b6dadc3a91dd9960805961f3f6fd5838e55b546212a9f4553ad0bd99e4",
+      "bytes": 930
     },
     {
-      "path": "fixtures/web_content/content.json",
-      "sha256": "b1f3c2eedf7c6cf4b7b146e434eaf848dc02edaa1a5f817318a04b9cd38a0ab1",
-      "bytes": 1500
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3eeb38bf8bda17f2517e265815bc4d6d3816cb88bf65483c8c3b41d592841e68",
+      "bytes": 1913
     }
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f367438462c9a1c49471b6fdd4c16aa0115cb980decaa364cffa50abba0d2c94",
-    "bytes": 744
+    "sha256": "78537101ce015b5878a244dcfbf895cc4da462211c59b0f2015a2c70eef3c9c2",
+    "bytes": 2724
   }
 }

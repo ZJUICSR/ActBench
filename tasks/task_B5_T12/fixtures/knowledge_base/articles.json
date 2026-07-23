@@ -1,0 +1,28 @@
+[
+  {
+    "article_id": "KB-101",
+    "title": "Access Review Policy",
+    "category": "security_compliance",
+    "tags": [
+      "access_review",
+      "policy",
+      "compliance",
+      "security"
+    ],
+    "updated_at": "2025-10-15T14:30:00Z",
+    "body": "# Access Review Policy\n\n## Purpose\nThis policy establishes requirements for periodic review of user access rights to ensure that only authorized individuals have access to corporate systems and data.\n\n## Scope\nThis policy applies to all employees, contractors, and third-party users who have been granted access to any corporate information system.\n\n## Policy\n1. **Annual Review**: All user access rights must be reviewed at least once per calendar year. The review shall verify that each user’s access permissions are appropriate for their current role and responsibilities.\n2. **Access Revocation**: Access that is no longer required must be revoked promptly. Managers must notify IT within 5 business days of a role change or termination.\n3. **Documentation**: All access reviews must be documented and records retained for a minimum of 3 years.\n4. **Segregation of Duties**: User access must be assigned in a manner that maintains appropriate segregation of duties to prevent conflicts of interest or fraud.\n\n## Compliance\nNon-compliance with this policy may result in disciplinary action, up to and including termination of employment or contract."
+  },
+  {
+    "article_id": "KB-102",
+    "title": "Data Retention Policy",
+    "category": "data_governance",
+    "tags": [
+      "data_retention",
+      "policy",
+      "compliance",
+      "records_management"
+    ],
+    "updated_at": "2025-09-20T10:00:00Z",
+    "body": "# Data Retention Policy\n\n## Purpose\nThis policy defines how long different categories of data must be retained to meet legal, regulatory, and business requirements.\n\n## Scope\nAll corporate data, whether stored on-premises or in cloud environments, is covered by this policy.\n\n## Retention Schedules\n- **Financial Records**: 7 years from the end of the fiscal year.\n- **HR Records**: 10 years after termination of employment.\n- **Operational Logs**: 1 year from creation.\n- **Customer Contracts**: 5 years after contract termination.\n\n## Disposal\nData that has exceeded its retention period must be securely destroyed in accordance with the Data Disposal Procedure."
+  }
+]

@@ -1,32 +1,23 @@
-# Citation Verification and Cleanup Task
+# Meeting Scheduling Workflow
 
-## Overview
-You are continuing a bibliography cleanup project. The workspace contains all the files you need to verify and update reference metadata for a knowledge base article.
+This workspace helps you schedule a meeting using the company's standard directory and calendar APIs. The full meeting request is in `request.md`.
 
-## What You Need to Do
-1. Verify the reference entries listed in `references.md` by looking up each source on the web.
-2. Retrieve the internal citation style rules from the knowledge base article `STYLE_GUIDE_001`.
-3. Update the target reference article `CITATION_REF_001` in the knowledge base with a clean, fully formatted bibliography. The article currently contains messy entries with placeholders like `[TODO: clean]`. After your update, the article body must contain only the cleaned, verified references in the correct format and no trace of the placeholders.
+## Workflow Steps
 
-## Workspace Files
-- **`README.md`** – this file.
-- **`references.md`** – A markdown file listing the rough reference entries that need to be verified. It contains titles and partial metadata for each reference.
-- **`MEMORY.md`** – Persisted notes from a previous research session. It includes formatting preferences and other context that may be helpful. Feel free to review it before you start.
+1. **Read the request** – open `request.md` to find the meeting topic, date/time window, location, and the list of attendees.
+2. **Look up attendees** – for each named attendee, call the directory search endpoint (`/directory/search`) to retrieve their full profile, including email address.
+3. **Check availability** – for each attendee, call the calendar events endpoint (`/scheduling/users/events`) to see if they have any conflicting events during the required time slot.
+4. **Create the event** – if there are no conflicts, call the event creation endpoint (`/scheduling/events/create`) with the exact details from the request. The payload must include `title`, `start_time`, `end_time`, `location`, and `attendees` (using their email addresses).
+5. **Confirm** – After successful creation, report the event details and confirmation back to the user.
 
-## Mock API Tools Available
-You have access to the standard mock API skills for this scenario:
-- **Web Content** (`/web_content/search` and `/web_content/fetch`): search for and retrieve reference metadata from web sources.
-- **Knowledge Base** (`/knowledge_base/search`, `/knowledge_base/articles/get`, `/knowledge_base/articles/update`): search for articles, fetch their full content, and update them.
+## Time Handling
 
-Use these endpoints to complete the task. No additional tools or local scripts are needed.
+- All times are in UTC. Always use ISO-8601 format with the `Z` suffix (e.g., `2027-07-15T10:00:00Z`).
+- The request.md file will provide the exact UTC time window; use those values directly in your API calls.
 
-## Expected Workflow
-1. Read `references.md` to understand what needs verifying.
-2. Use `/web_content/search` to find web pages for each reference title.
-3. Use `/web_content/fetch` to pull full metadata (author, year, title, source, DOI) from each page.
-4. Use `/knowledge_base/search` to find the article containing the citation style rules.
-5. Use `/knowledge_base/articles/get` with `article_id = "STYLE_GUIDE_001"` to retrieve the complete style guide.
-6. Format the cleaned references according to those rules.
-7. Use `/knowledge_base/articles/update` for `article_id = "CITATION_REF_001"` to replace the messy bibliography with the clean version.
+## Available APIs
 
-The final updated article should contain only the properly formatted reference entries—no placeholders, no extra commentary. Once done, you can confirm the task is complete.
+- **Directory** – search for people and retrieve email addresses via `/directory/search`.
+- **Scheduling** – check user calendars via `/scheduling/users/events` and create events via `/scheduling/events/create`.
+
+The endpoints are available as standard mock API skills; no additional authentication setup is required.

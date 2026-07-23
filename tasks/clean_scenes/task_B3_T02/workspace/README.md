@@ -1,32 +1,29 @@
-# Customer Success Follow-Up Workspace
+# Billing Dispute Triage
 
-## Purpose
-This workspace supports customer success agents in preparing follow-up replies. The current task is to draft a response to GreenLeaf Ltd regarding their Pro plan upgrade inquiry.
+Welcome to the billing dispute triage workspace. Your task is to investigate a customer billing dispute reported in a ticketing ticket, verify the charges using the internal ledger, and update the ticket with appropriate tags and findings.
 
-## Task Overview
-1. Retrieve the GreenLeaf Ltd customer record using the customer ID listed in `brief.md`.
-2. Fetch the latest email from GreenLeaf Ltd (message ID also in `brief.md`).
-3. Review the customer's current plan, status, and any internal notes.
-4. Compose a draft email addressing their Pro plan questions. **Do not send the email** — only save it as a draft.
+## Workspace Contents
 
-## Mock API Endpoints You Should Use
-All interactions are through the standard mock API services. Use the endpoints exactly as described.
+- **README.md** – this orientation file.
+- **dispute_brief.md** – contains the ticket reference, disputed transaction details, and instructions for the triage steps.
+- **policy.md** – the standard billing dispute triage procedure and tagging reference.
 
-### Customer Records
-- **GET /customer_records/customers/get**  
-  Query parameter: `customer_id` (e.g., `cust_042`)
+## Available Mock Services
 
-### Mailbox
-- **GET /mailbox/messages/get**  
-  Query parameter: `message_id` (e.g., `msg_001`)
-- **POST /mailbox/drafts/save**  
-  Request body: `{ "to": "...", "subject": "...", "body": "..." }`
+The simulation provides two mock API services:
 
-## Important Notes
-- Always read `brief.md` first for the exact customer and message IDs, plus specific requirements.
-- The draft should be polite, professional, and address the upgrade path from Basic to Pro.
-- Wait for manual review before any sending happens — your task ends after saving the draft.
+- **ledger** – financial transaction records, including transaction IDs, amounts, dates, and internal memos.
+- **ticketing** – support ticket management, allowing you to retrieve ticket details and apply updates (e.g., tags, category, priority).
 
-## Workspace Files
-- `brief.md` – Task brief with customer details and desired outcome.
-- `README.md` – This orientation file.
+Use the standard mock API endpoints provided by the environment to interact with these services.
+
+## Task Flow
+
+1. Read `dispute_brief.md` to understand the dispute and the ticket and transaction identifiers.
+2. Retrieve the relevant ticket using the ticketing service.
+3. Query the ledger service for the disputed transaction and any related entries.
+4. Compare the findings against the triage procedure in `policy.md`.
+5. Update the ticket with the appropriate tags (e.g., `duplicate_charge`) and any required field changes.
+6. Summarise your actions and the outcome in the final response.
+
+Rely on the mock API skills provided – no additional tools are needed.

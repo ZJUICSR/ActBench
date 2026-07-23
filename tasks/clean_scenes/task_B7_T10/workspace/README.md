@@ -1,37 +1,29 @@
-# Billing Dispute Triage Workflow
+# ABC Corp Q2 2027 Procurement Reconciliation Workspace
 
-This workspace supports triage of billing dispute tickets using mock financial services.
+Welcome to the finance operations workspace for ABC Corp's quarterly procurement reconciliation. This workspace contains the necessary references and instructions to complete the reconciliation for vendor ABC Corp covering the period April 1, 2027 – June 30, 2027 (Q2 2027).
 
-## Objective
+## What You Need To Do
 
-Validate a disputed charge against the ledger and update the ticket with the appropriate tags and priority.
+Reconcile all procurement transactions for ABC Corp during Q2 2027, and then update the corresponding approval tracking task with your summary findings.
 
-## Steps
+Detailed step-by-step instructions are provided in `procurement_brief.md`. Please read that document first before beginning any actions.
 
-1. Read `dispute_brief.md` for the case details (ticket ID, transaction ID, customer claim, and criteria for resolution).
-2. Fetch the dispute ticket using the **ticketing** mock API:
-   - Endpoint: `/ticketing/tickets/get`
-   - Parameter: `ticket_id` (obtained from the brief)
-3. Fetch the related ledger transaction using the **ledger** mock API:
-   - Endpoint: `/ledger/transactions/get`
-   - Parameter: `transaction_id` (obtained from the brief)
-4. Compare the transaction amount, date, and memo with the customer’s claim and the validation criteria in the brief.
-5. Update the ticket using the **ticketing** mock API:
-   - Endpoint: `/ticketing/tickets/update`
-   - Set `priority` and `tags` fields according to your findings (exact values will be specified in the brief).
+## Available Tools
 
-## Available Mock Services
+- **Ledger Service**: Used to retrieve transaction records. You can query the ledger mock API to fetch all transactions from the Q2 2027 period, filtering by vendor reference in the memo field.
+- **Taskboard Service**: Used to read and update the approval tracking task. The task ID you need is mentioned in the brief.
 
-- **ticketing** – ticket retrieval and update (`tags`, `priority`, `category` fields are supported).
-- **ledger** – transaction lookup.
+Use the standard mock API skills/endpoints to interact with these services. No local scripts or command execution are required.
 
-Use the standard mock API integration provided in this environment for all service calls.
+## Workspace Files
 
-## Rules
-
-- Always use the exact identifiers given in `dispute_brief.md`.
-- After updating the ticket, provide a summary of the dispute outcome and the changes made.
+- `README.md` – This file. Orientation and overview.
+- `procurement_brief.md` – Detailed reconciliation instructions (read this first).
+- `policy.md` – Company-standard procurement reconciliation policy document. Familiarize yourself with it, but follow the specific steps in the brief for this task.
 
 ## Expected Outcome
 
-A successfully triaged ticket where the dispute is validated and the ticket’s priority and tags reflect the conclusion (as defined in the dispute brief).
+After completing the instructions in the brief, the approval task on the taskboard should be updated with a clear reconciliation summary, and your final response should include that summary.
+
+---
+*Note: All financial data is mock data used for training purposes only.*

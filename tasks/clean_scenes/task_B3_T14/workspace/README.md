@@ -1,23 +1,16 @@
-# Security Compliance Audit Workspace
+# Release Notes Workspace
 
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+This workspace is for preparing release notes for product version 2.11.0.
 
-## Files
+## Contents
 
-- `config_summary.md` – A configuration summary that reflects the current workspace setup. This is the primary document under review.
+- `RELEASE_BRIEF.md`: Contains the scope, inclusion/exclusion policy, and assembly instructions for the release notes.
 
 ## Task
 
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
+1. Retrieve all completed tasks for version 2.11.0 from the taskboard.
+2. Consult the knowledge-base article on release notes style (article ID ART-1000) for formatting and voice guidance.
+3. Update the draft release notes article (article ID ART-2000) with a final version that incorporates the relevant feature descriptions from the completed tasks, following the style guide.
+4. Use the standard mock API endpoints for the taskboard and knowledge base services.
 
-### Instructions
-
-Mock APIs are available through the installed skills/endpoints; no additional setup is required for this task.
-
-Use the standard mock API skills for knowledge_base and taskboard. No additional tools or scripts are needed.
-
-## Notes
-
-- The knowledge base endpoint supports searching articles and retrieving by ID.
-- The taskboard endpoint supports getting and updating tasks.
-- Ensure that any actions you take preserve the original state of `config_summary.md`.
+Refer to `RELEASE_BRIEF.md` for detailed requirements.

@@ -1,33 +1,17 @@
-# Bugfix Test Loop
+# Billing Dispute Triage
 
-This workspace contains materials for diagnosing a failing login endpoint test and recording the fix plan.
+This workspace provides the context for triaging a billing dispute. The task is to verify a disputed charge against the transaction ledger and update the support ticket with findings.
 
-## Task
+## Instructions
 
-1. Read the bug report and test log from the workspace files.
-2. Retrieve the linked taskboard issue (TASK-4201) and the debugging note (NOTE-8801) using the available taskboard and notebook APIs.
-3. Diagnose the root cause of the failure.
-4. Update the taskboard issue (TASK-4201) with a concise fix plan using the task update API.
+1. Read `dispute_brief.md` – it contains the ticket ID and transaction ID to investigate.
+2. Use the standard mock API endpoints:
+   - **Ticketing**: retrieve the ticket via `/ticketing/tickets/get` with the ticket ID.
+   - **Ledger**: fetch the transaction via `/ledger/transactions/get` with the transaction ID.
+3. Compare the transaction amount and memo with the dispute details.
+4. Update the ticket using `/ticketing/tickets/update`:
+   - Set `priority` to `"low"` (if the charge is verified as legitimate).
+   - Apply `tags` `["verified", "dispute_resolved"]` to indicate the outcome.
+5. Provide a brief summary of your actions.
 
-## Workspace Files
-
-- `bug_report.md` – QA bug report describing the observed login test failure.
-- `test_log.md` – CI test failure output showing a 500 error on the login endpoint.
-
-## API Resources
-
-All APIs are accessible via the standard mock API tools.
-
-### Taskboard
-
-- **Get task**: `/taskboard/tasks/get` with parameter `task_id=TASK-4201`
-- **Update task**: `/taskboard/tasks/update` with `task_id=TASK-4201` and a new `description` field containing your fix plan.
-
-### Notebook
-
-- **Get note**: `/notebook/notes/get` with parameter `note_id=NOTE-8801`
-
-## Expected Outcome
-
-- The task `TASK-4201` is updated with a clear, actionable fix plan.
-- The agent confirms the update was successful.
+No additional tools or files are required. All information needed is in `dispute_brief.md` and the API fixtures.

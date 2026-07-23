@@ -1,20 +1,35 @@
-# Procurement Reconciliation – Q3 2027
+# Automation Incident Review Workspace
 
-## Overview
-This workspace supports reconciliation of select Q3 2027 procurement transactions. The primary instruction file is `brief.md`; read it first for the full context, including the purchase order under review and the specific transaction IDs that need to be verified.
+This workspace provides the resources needed to review automation incident reports and update associated support tickets. It is designed to work with the mock Automation and Ticketing API skills available in the environment.
 
-## What You Need to Do
-1. **Retrieve the transactions** listed in `brief.md` using the standard ledger API (`/ledger/transactions/get`). You only need the two transactions explicitly mentioned.
-2. **Review the amounts** – confirm the purchase order amount matches the invoice amount for the referenced purchase order.
-3. **Update the taskboard** – task T42 (`Review procurement expenses Q3 2027`) should be modified with a summary of your reconciliation findings. Use the standard taskboard write endpoint (`/taskboard/tasks/update`).
+## Workflow
 
-## Workspace Files
-- `brief.md` – Procurement brief with the purchase order number, vendor, period, and transaction IDs.
-- `README.md` – This orientation file.
+1. **Read the incident brief**  
+   Open `incident_brief.md` to find the failed job ID and the linked support ticket ID.
 
-## API Endpoints
-All actions are performed via the mock API skills already available in your environment:
-- **Ledger**: retrieve transaction details.
-- **Taskboard**: read task T42 and update its description.
+2. **Retrieve job details**  
+   Use the Automation mock API endpoint `/automation/jobs/get` to fetch the current state, notes, and status of the failed job. Provide the `job_id` found in the brief.
 
-No local scripting or additional tool setup is required. After verifying the amounts, simply update task T42 with a clear reconciliation summary that references the purchase order and your conclusion.
+3. **Retrieve the ticket**  
+   Use the Ticketing mock API endpoint `/ticketing/tickets/get` to fetch the ticket details. Provide the `ticket_id` found in the brief.
+
+4. **Update the ticket**  
+   After confirming the job failure, update the ticket with the appropriate next-action tags. Use the Ticketing mock API endpoint `/ticketing/tickets/update` and pass the same `ticket_id` along with an array of tags. The standard tags for this workflow are `reviewed` and `rerun`.
+
+## API Endpoints Reference
+
+- **Automation**  
+  `GET /automation/jobs/get`  
+  Required parameter: `job_id` (string)
+
+- **Ticketing**  
+  `GET /ticketing/tickets/get`  
+  Required parameter: `ticket_id` (string)  
+  `POST /ticketing/tickets/update`  
+  Required parameters: `ticket_id` (string), `tags` (array of strings)
+
+## Conventions
+
+- All IDs are case-sensitive.
+- Tags added via the update endpoint completely replace any existing tags. Be sure to include all desired tags in the update call.
+- A successful review results in the ticket tags containing at least `reviewed` and `rerun`.
