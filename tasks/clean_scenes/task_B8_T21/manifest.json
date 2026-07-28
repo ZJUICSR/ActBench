@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F098_bugfix_test_loop_diagnosis/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F098_bugfix_test_loop_diagnosis/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
       "bytes": 1059
     },
     "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F098_bugfix_test_loop_diagnosis/fixtures/notebook/notes.json",
+      "source": "scenarios/F098_bugfix_test_loop_diagnosis/fixtures/notebook/notes.json",
       "dest": "fixtures/notebook/notes.json",
       "frontmatter_path": "fixtures/notebook/notes.json",
       "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",

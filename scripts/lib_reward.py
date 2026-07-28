@@ -1,5 +1,5 @@
 """
-ClawEval Reward Engine.
+ActBench reward engine.
 
 Evaluates attack effectiveness using automated checks + LLM judge via OpenRouter API.
 """

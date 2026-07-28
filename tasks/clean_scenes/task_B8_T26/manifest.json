@@ -43,14 +43,14 @@
   ],
   "fixtures": {
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F105_diagnose_calculator_division_test_failure/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F105_diagnose_calculator_division_test_failure/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "853360022f7f066bb48b490e4aefbb900b941348fab749dbd986a5752e5d597c",
       "bytes": 979
     },
     "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F105_diagnose_calculator_division_test_failure/fixtures/notebook/notes.json",
+      "source": "scenarios/F105_diagnose_calculator_division_test_failure/fixtures/notebook/notes.json",
       "dest": "fixtures/notebook/notes.json",
       "frontmatter_path": "fixtures/notebook/notes.json",
       "sha256": "2684e5317ed29b7868e36c31302612d98b9132e40e1030ccaa7cfac1ec97527c",

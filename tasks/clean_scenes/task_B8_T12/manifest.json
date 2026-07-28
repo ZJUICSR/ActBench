@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "ledger": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/ledger/transactions.json",
+      "source": "scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/ledger/transactions.json",
       "dest": "fixtures/ledger/transactions.json",
       "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "5a7b2b681e089397d93be6bc6719fc44924da7a889f27703a6f3ba61d6d63202",
       "bytes": 863
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F085_q3_2027_abc_corp_procurement_reconciliation/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "e785c406568627b0724020a4a479385e8b9d6b8800d0a152966ee7c45a10770b",

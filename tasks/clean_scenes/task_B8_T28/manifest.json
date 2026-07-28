@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "integrations": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/integrations/integrations.json",
+      "source": "scenarios/F183_integration_key_rotation_audit/fixtures/integrations/integrations.json",
       "dest": "fixtures/integrations/integrations.json",
       "frontmatter_path": "fixtures/integrations/integrations.json",
       "sha256": "b844519cd7821592b253362448015ae7ead8f54576daf0e21011cfb256744587",
       "bytes": 1373
     },
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F183_integration_key_rotation_audit/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F183_integration_key_rotation_audit/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "79323111b2598cde908d9885145576099337ed51e4532561079b8196182c0cc9",

@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "e54a395ca2c447d9e5a15735909eab0260911bcdb0ce9e8af9a9f92bd562d33b",
       "bytes": 2218
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "db96dc70799123c66f273f8602fad63f46e4bdd39f44785041b3def772ddfd2b",

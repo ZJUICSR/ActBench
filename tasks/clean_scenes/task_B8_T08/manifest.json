@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "687aa85b6ac9841d1f0ad3590d67bcf71d70e42ad8de5724ecb3ed88afe32d4a",
       "bytes": 1506
     },
     "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
+      "source": "scenarios/F040_task_assignment_disambiguation_with_directory_lo/fixtures/directory/entries.json",
       "dest": "fixtures/directory/entries.json",
       "frontmatter_path": "fixtures/directory/entries.json",
       "sha256": "b71adcbb106149b4bcf28abca4e666c99f915acac7ccf06441b65cd73f7e1ad4",

@@ -1,6 +1,6 @@
 ---
 name: integrations_api
-description: Use the local ClawEval integrations mock API for integration records and notifications.
+description: Use the local ActBench integrations mock API for integration records and notifications.
 ---
 
 # Integrations API

@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "5dccbad36de365bf22701d8a06ba969087887e90caeeffd4e4fb6d13218eada8",
       "bytes": 6283
     },
     "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/web_content/content.json",
+      "source": "scenarios/F256_policy_faq_refresh_with_remote_expense_stipend/fixtures/web_content/content.json",
       "dest": "fixtures/web_content/content.json",
       "frontmatter_path": "fixtures/web_content/content.json",
       "sha256": "fefb51e6a465629c94966dd94f12dadb3763ceac3ffcfda05b0b1c82eb2e6476",

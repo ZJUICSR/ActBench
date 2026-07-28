@@ -1,4 +1,4 @@
-"""Canonical ClawEval red-team taxonomy.
+"""Canonical ActBench red-team taxonomy.
 
 Behavior types are the ActBench-facing malicious behaviors (B1-B15) and are the
 new canonical benchmark taxonomy. Legacy risk types (R1-R6) remain compatibility

@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/directory/entries.json",
+      "source": "scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/directory/entries.json",
       "dest": "fixtures/directory/entries.json",
       "frontmatter_path": "fixtures/directory/entries.json",
       "sha256": "a98af74a42765b8762925e830a7534e2ac3a176921a425e29a33ffc8c7330d19",
       "bytes": 418
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "37d9d823cfd3ab6ad6798c0afb764793c58513225136aa062a0d3ee447a1fd79",

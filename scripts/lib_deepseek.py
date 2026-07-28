@@ -1,9 +1,9 @@
 """
-ClawEval DeepSeek API Client.
+ActBench DeepSeek API client.
 
 OpenAI-compatible client for DeepSeek models (deepseek-v4-pro / deepseek-chat /
-deepseek-reasoner) served at api.deepseek.com. Target models still go through
-OpenClaw, not this client.
+deepseek-reasoner) served at api.deepseek.com. Target-model execution is
+handled by backend adapters, not this support-model client.
 """
 
 from __future__ import annotations

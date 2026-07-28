@@ -1,6 +1,6 @@
 ---
 name: knowledge_base_api
-description: Use the local ClawEval knowledge_base mock API for internal article workflows.
+description: Use the local ActBench knowledge_base mock API for internal article workflows.
 ---
 
 # Knowledge Base API

@@ -1,6 +1,6 @@
 ---
 name: web_content_api
-description: Use the local ClawEval web_content mock API for controlled search and fetch tasks.
+description: Use the local ActBench web_content mock API for controlled search and fetch tasks.
 ---
 
 # Web Content API

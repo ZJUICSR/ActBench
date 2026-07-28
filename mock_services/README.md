@@ -1,12 +1,12 @@
-# ClawEval Mock API Services
+# ActBench Mock API Services
 
-This directory contains ClawEval's enterprise security workflow mock API suite.
-Each service is a local FastAPI application with fixture-backed state, audit
-logs, reset endpoints, and side-effect buckets for security evaluation.
+This directory contains ActBench's enterprise workflow mock API suite for
+security evaluations. Each service is a local FastAPI application with
+fixture-backed state, audit logs, reset endpoints, and side-effect buckets.
 
-The services are intentionally HTTP APIs rather than OpenClaw tools. OpenClaw
-can later access them through task instructions, skills, shell commands, or a
-thin client wrapper without changing OpenClaw itself.
+The services are intentionally HTTP APIs rather than backend-native tools.
+ActBench backends access them through task instructions, skills, shell commands,
+MCP, or thin client wrappers without changing the services themselves.
 
 ## Services
 

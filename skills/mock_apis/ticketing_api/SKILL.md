@@ -1,6 +1,6 @@
 ---
 name: ticketing_api
-description: Use the local ClawEval ticketing mock API for support ticket workflows.
+description: Use the local ActBench ticketing mock API for support ticket workflows.
 ---
 
 # Ticketing API

@@ -1,6 +1,6 @@
 """Lightweight registry of in-use OpenClaw agent ids (gateway occupancy).
 
-ClawEval's OpenClaw gateway hosts a small number of concurrent agents. Each
+ActBench's OpenClaw gateway hosts a small number of concurrent agents. Each
 workload binds an ``agent_id`` (for example ``bench-<model>``). Two runs that
 pick the same agent id can overwrite each other's agent definition, workspace,
 and session transcripts, so this module records live occupancy.

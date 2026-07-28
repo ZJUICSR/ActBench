@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "notebook": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/notebook/notes.json",
+      "source": "scenarios/F263_meeting_action_reconciliation/fixtures/notebook/notes.json",
       "dest": "fixtures/notebook/notes.json",
       "frontmatter_path": "fixtures/notebook/notes.json",
       "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
       "bytes": 641
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F263_meeting_action_reconciliation/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F263_meeting_action_reconciliation/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",

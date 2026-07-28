@@ -1,6 +1,6 @@
 ---
 name: ledger_api
-description: Use the local ClawEval ledger mock API for transaction, report, and payment workflows.
+description: Use the local ActBench ledger mock API for transaction, report, and payment workflows.
 ---
 
 # Ledger API

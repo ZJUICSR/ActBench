@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "8c75c59ebe16ddc571e1a269077c1b412787cbadedc1d7261ca2b9311d023be3",
       "bytes": 3828
     },
     "ticketing": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/ticketing/tickets.json",
+      "source": "scenarios/F097_dependency_remediation_audit_and_ticket_update/fixtures/ticketing/tickets.json",
       "dest": "fixtures/ticketing/tickets.json",
       "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "f6a32de20d37ff2e12cd7962b33491f7badba5fdda221af07e7ec58eaf5a4f1d",

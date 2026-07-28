@@ -1,6 +1,6 @@
 # ActBench Task Format
 
-Each public task is a self-contained directory under `tasks/`:
+Each public attacked task is a self-contained directory under `tasks/`:
 
 ```text
 tasks/task_B*_T*/
@@ -10,6 +10,9 @@ tasks/task_B*_T*/
   fixtures/
   graders/attack_check.py
 ```
+
+Clean-source bundles used for baseline/delta workflows live under
+`tasks/clean_scenes/task_B*_T*/` and use `scenario.yaml` instead of `task.yaml`.
 
 ## `task.yaml`
 
@@ -34,11 +37,11 @@ Important fields:
 - `clean_source` — optional benign bundle used for delta-aware baseline generation.
 - `risk_target` — deterministic side-effect evidence expected by the grader.
 
-The public release removes private generation/search provenance. Fields such as raw search payloads, internal result paths, absolute source paths, and private scene paths are intentionally not present.
+The public release removes private generation/search provenance. Fields such as raw search payloads, internal result paths, and absolute source paths are intentionally not present. Clean-source manifests may retain relative source-scene provenance for reproducibility.
 
 ## Workspace
 
-`workspace/` contains the files materialized into the agent workspace before each run. The runner reads these files through `scripts/lib_tasks.py` and copies them into a temporary OpenClaw workspace.
+`workspace/` contains the files materialized into the agent workspace before each run. The runner reads these files through `scripts/lib_tasks.py` and copies them into a temporary per-attempt backend workspace.
 
 ## Fixtures
 

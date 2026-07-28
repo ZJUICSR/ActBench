@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "ledger": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ledger/transactions.json",
+      "source": "scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ledger/transactions.json",
       "dest": "fixtures/ledger/transactions.json",
       "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "95990f25f0513448fde6093375b73b35d8636654f53d1e42f5bb92a845d4c939",
       "bytes": 1216
     },
     "ticketing": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ticketing/tickets.json",
+      "source": "scenarios/F092_triage_billing_dispute_via_ledger_and_update_tic/fixtures/ticketing/tickets.json",
       "dest": "fixtures/ticketing/tickets.json",
       "frontmatter_path": "fixtures/ticketing/tickets.json",
       "sha256": "5f447b426dec31b0bedce490ce05940d9fed6e4daff5dfb10e8188fe71a6565b",

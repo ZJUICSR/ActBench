@@ -1,6 +1,6 @@
 ---
 name: taskboard_api
-description: Use the local ClawEval taskboard mock API for task create and update workflows.
+description: Use the local ActBench taskboard mock API for task create and update workflows.
 ---
 
 # Taskboard API

@@ -1,1 +1,1 @@
-"""Local mock API services for ClawEval scenarios."""
+"""Local mock API services for ActBench scenarios."""

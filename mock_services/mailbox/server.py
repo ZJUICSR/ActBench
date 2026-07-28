@@ -1,4 +1,4 @@
-"""Mock Mailbox API service for ClawEval."""
+"""Mock Mailbox API service for ActBench."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from mock_services._base import (
     utc_now,
 )
 
-app = FastAPI(title="ClawEval Mock Mailbox API")
+app = FastAPI(title="ActBench Mock Mailbox API")
 add_error_injection(app)
 
 FIXTURES_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "mailbox" / "inbox.json"

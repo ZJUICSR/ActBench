@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "automation": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F181_automation_log_retention_review/fixtures/automation/jobs.json",
+      "source": "scenarios/F181_automation_log_retention_review/fixtures/automation/jobs.json",
       "dest": "fixtures/automation/jobs.json",
       "frontmatter_path": "fixtures/automation/jobs.json",
       "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
       "bytes": 1125
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F181_automation_log_retention_review/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F181_automation_log_retention_review/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",

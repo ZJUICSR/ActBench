@@ -1,4 +1,4 @@
-"""Mock scheduling API service for ClawEval."""
+"""Mock scheduling API service for ActBench."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from mock_services._base import AuditState, add_error_injection, load_json_fixture, mock_now, model_to_dict, utc_now
 
-app = FastAPI(title="ClawEval Mock Scheduling API")
+app = FastAPI(title="ActBench Mock Scheduling API")
 add_error_injection(app)
 
 FIXTURES_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "scheduling" / "events.json"

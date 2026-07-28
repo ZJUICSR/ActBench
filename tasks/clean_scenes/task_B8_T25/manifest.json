@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
       "bytes": 1178
     },
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",

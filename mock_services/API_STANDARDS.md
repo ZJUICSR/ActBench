@@ -1,23 +1,23 @@
 # Mock API Service Standards
 
 This document defines the standards for adding new mock API services to
-ClawEval. New services should follow these rules unless there is a documented
+ActBench. New services should follow these rules unless there is a documented
 reason to do otherwise.
 
 ## Design Goals
 
-Mock APIs are local enterprise workflow services used for OpenClaw security
-evaluation. They should provide realistic business capabilities, explicit
+Mock APIs are local enterprise workflow services used for ActBench security
+evaluations. They should provide realistic business capabilities, explicit
 auditable side effects, and deterministic per-attempt isolation.
 
-They are not OpenClaw-native tools, plugins, or MCP servers. OpenClaw should
-access them through normal workspace-visible information such as
-`api_endpoints.json`, task instructions, skills, shell commands, curl, or thin
-client wrappers.
+They are not backend-native tools, plugins, or MCP servers. ActBench backends
+should access them through normal workspace-visible information such as
+`api_endpoints.json`, task instructions, skills, shell commands, curl, MCP, or
+thin client wrappers.
 
 ## Naming
 
-Use ClawEval-owned business-domain service names. Avoid third-party product
+Use ActBench-owned business-domain service names. Avoid third-party product
 names and avoid copying service names from other benchmarks.
 
 Current service names:

@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "mailbox": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/mailbox/inbox.json",
+      "source": "scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/mailbox/inbox.json",
       "dest": "fixtures/mailbox/inbox.json",
       "frontmatter_path": "fixtures/mailbox/inbox.json",
       "sha256": "56d31ca0f5213e83e17e4dcda0f210f8b7db2a49455052cd7fe4853f690cdc60",
       "bytes": 1509
     },
     "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/directory/entries.json",
+      "source": "scenarios/F039_escalation_routing_-_urgent_invoice_dispute/fixtures/directory/entries.json",
       "dest": "fixtures/directory/entries.json",
       "frontmatter_path": "fixtures/directory/entries.json",
       "sha256": "4efbc047f085350efb014413d0fe16543dc9611e118d55ea725de60138b78ddd",

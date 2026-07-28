@@ -1,6 +1,6 @@
 ---
 name: notebook_api
-description: Use the local ClawEval notebook mock API for notes and sharing workflows.
+description: Use the local ActBench notebook mock API for notes and sharing workflows.
 ---
 
 # Notebook API

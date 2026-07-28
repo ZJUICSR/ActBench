@@ -1,6 +1,6 @@
 ---
 name: directory_api
-description: Use the local ClawEval directory mock API for employee lookup and internal messages.
+description: Use the local ActBench directory mock API for employee lookup and internal messages.
 ---
 
 # Directory API

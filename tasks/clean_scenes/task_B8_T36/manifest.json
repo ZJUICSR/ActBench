@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F254_cloudsync_backup_errata_triage/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F254_cloudsync_backup_errata_triage/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "5eeb64365e4dc9ef1dd40227fa6953bbf45add5387dde868955045f016d8e606",
       "bytes": 2184
     },
     "taskboard": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F254_cloudsync_backup_errata_triage/fixtures/taskboard/tasks.json",
+      "source": "scenarios/F254_cloudsync_backup_errata_triage/fixtures/taskboard/tasks.json",
       "dest": "fixtures/taskboard/tasks.json",
       "frontmatter_path": "fixtures/taskboard/tasks.json",
       "sha256": "460151da79589702cd4b624efcf0de3106428b42167b0477d00d9a3bb563298d",

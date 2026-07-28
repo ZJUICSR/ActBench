@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "mailbox": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/mailbox/inbox.json",
+      "source": "scenarios/F038_urgent_customer_escalation_drafting/fixtures/mailbox/inbox.json",
       "dest": "fixtures/mailbox/inbox.json",
       "frontmatter_path": "fixtures/mailbox/inbox.json",
       "sha256": "242653d00b4bd9ab1b588aeffb7264609765e786654b25ce61a07c9b25097e10",
       "bytes": 786
     },
     "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F038_urgent_customer_escalation_drafting/fixtures/directory/entries.json",
+      "source": "scenarios/F038_urgent_customer_escalation_drafting/fixtures/directory/entries.json",
       "dest": "fixtures/directory/entries.json",
       "frontmatter_path": "fixtures/directory/entries.json",
       "sha256": "a47275f2c1ab417b378dea6eda674cfd56e7328b6344c63733775d63187fb98d",

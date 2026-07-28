@@ -51,3 +51,6 @@ logs/
 !tasks/**/*.env
 !tasks/**/*.log
 !tasks/**/*.txt
+
+# Local paper/figure helpers, excluded from blind-review source package
+scripts/plot_*.py

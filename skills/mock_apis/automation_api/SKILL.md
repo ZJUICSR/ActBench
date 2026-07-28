@@ -1,6 +1,6 @@
 ---
 name: automation_api
-description: Use the local ClawEval automation mock API for scheduled job workflows.
+description: Use the local ActBench automation mock API for scheduled job workflows.
 ---
 
 # Automation API

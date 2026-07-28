@@ -1,6 +1,6 @@
 ---
 name: scheduling_api
-description: Use the local ClawEval scheduling mock API for calendar event workflows.
+description: Use the local ActBench scheduling mock API for calendar event workflows.
 ---
 
 # Scheduling API

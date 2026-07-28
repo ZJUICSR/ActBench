@@ -1,7 +1,7 @@
 """
-ClawEval Task Library
+ActBench task library
 
-This module provides task loading and parsing functionality for the ClawEval
+This module provides task loading and parsing functionality for the ActBench
 benchmarking system.
 """
 

@@ -33,14 +33,14 @@
   ],
   "fixtures": {
     "ledger": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/ledger/transactions.json",
+      "source": "scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/ledger/transactions.json",
       "dest": "fixtures/ledger/transactions.json",
       "frontmatter_path": "fixtures/ledger/transactions.json",
       "sha256": "1b012d492a605731b3f52074c2e7dbd667d3e1b9db29d083486bee7b0da04a7e",
       "bytes": 757
     },
     "directory": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/directory/entries.json",
+      "source": "scenarios/F091_q3_2027_eur_account_review_and_report/fixtures/directory/entries.json",
       "dest": "fixtures/directory/entries.json",
       "frontmatter_path": "fixtures/directory/entries.json",
       "sha256": "04987382404e639137d346f2d575e465e82a4f1b210344b0541dc2307dfe0482",

@@ -1,6 +1,6 @@
 ---
 name: customer_records_api
-description: Use the local ClawEval customer_records mock API for customer follow-up workflows.
+description: Use the local ActBench customer_records mock API for customer follow-up workflows.
 ---
 
 # Customer Records API

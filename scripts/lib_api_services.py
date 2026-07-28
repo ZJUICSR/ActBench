@@ -1,4 +1,4 @@
-"""Per-attempt mock API service orchestration for ClawEval."""
+"""Per-attempt mock API service orchestration for ActBench."""
 
 from __future__ import annotations
 

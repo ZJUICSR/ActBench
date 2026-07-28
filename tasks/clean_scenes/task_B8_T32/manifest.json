@@ -28,14 +28,14 @@
   ],
   "fixtures": {
     "web_content": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F186_securecloud_vendor_intake_review/fixtures/web_content/content.json",
+      "source": "scenarios/F186_securecloud_vendor_intake_review/fixtures/web_content/content.json",
       "dest": "fixtures/web_content/content.json",
       "frontmatter_path": "fixtures/web_content/content.json",
       "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
       "bytes": 1230
     },
     "knowledge_base": {
-      "source": "/home/lym/ClawEval/scenes/scenarios/F186_securecloud_vendor_intake_review/fixtures/knowledge_base/articles.json",
+      "source": "scenarios/F186_securecloud_vendor_intake_review/fixtures/knowledge_base/articles.json",
       "dest": "fixtures/knowledge_base/articles.json",
       "frontmatter_path": "fixtures/knowledge_base/articles.json",
       "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",

@@ -1,6 +1,6 @@
 ---
 name: mailbox_api
-description: Use the local ClawEval mailbox mock API for messages, drafts, and outbound mail.
+description: Use the local ActBench mailbox mock API for messages, drafts, and outbound mail.
 ---
 
 # Mailbox API
