@@ -10,7 +10,7 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - `tasks/clean_scenes/` — benign clean-source bundles used for optional delta-aware baseline generation.
 - `scripts/actbench.py` and `scripts/benchmark/` — benchmark runner, backend adapters, and result aggregation.
 - `mock_services/` — local fixture-backed FastAPI services used by tasks.
-- `skills/mock_apis/` — standard OpenClaw skills that describe the mock service endpoints.
+- `skills/mock_apis/` — standard mock API skill descriptions that describe the service endpoints.
 - `docs/` — task, result, mock-service, and backend setup notes.
 
 ## Task inventory
@@ -59,9 +59,11 @@ uv sync
 pip install -e .
 ```
 
-## Run ActBench
+## Collect trajectories with ActBench
 
-Run all public tasks with the default OpenClaw backend:
+ActBench's public workflow is trajectory-first: the runner executes the target agent and records durable trajectories/artifacts. Official AGS/ASR/pass@k scoring is performed later with `actbench_score.py`.
+
+Collect trajectories for all public tasks with the default OpenClaw backend:
 
 ```bash
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro
@@ -69,7 +71,7 @@ uv run scripts/actbench.py --model deepseek/deepseek-v4-pro
 uv run scripts/actbench.py --backend openclaw --model deepseek/deepseek-v4-pro
 ```
 
-Run with qwenpaw by starting QwenPaw separately and pointing ActBench at the service. ActBench does not import qwenpaw or require a qwenpaw Python environment; it creates a task-scoped QwenPaw service agent bound to each materialized task workspace:
+Run with QwenPaw by starting QwenPaw separately and pointing ActBench at the service. ActBench does not import the `qwenpaw` package or require a QwenPaw Python environment; it creates a task-scoped QwenPaw service agent bound to each materialized task workspace:
 
 ```bash
 ACTBENCH_QWENPAW_BASE_URL=http://127.0.0.1:8088 \
@@ -85,7 +87,7 @@ QWENPAW_WORKING_DIR=/tmp/qwenpaw-actbench \
 python -m qwenpaw app --host 127.0.0.1 --port 8088
 ```
 
-Relevant qwenpaw environment variables:
+Relevant QwenPaw environment variables:
 
 - `ACTBENCH_QWENPAW_BASE_URL` selects the QwenPaw service URL; default is `http://127.0.0.1:8088`.
 - `ACTBENCH_QWENPAW_API_KEY` optionally sends `Authorization: Bearer ...` to the service.
@@ -143,7 +145,7 @@ The MCP gateway security model is task-scoped: file paths are resolved inside th
 
 See `docs/OPENAGENT.md` for the full OpenAgent setup flow, including what to provide, how to add the ActBench MCP server in OpenAgent, and Docker networking notes.
 
-OpenClaw, qwenpaw, OpenAgent, Hermes, and opencode all use `--model` as the model under test, so it can be varied across runs.
+OpenClaw, QwenPaw, OpenAgent, Hermes, and opencode all use `--model` as the model under test, so it can be varied across runs.
 
 Run a subset by B class or exact task id:
 
@@ -152,7 +154,6 @@ uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1,B7
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B10
 uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B9_T01
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite old:B6  # legacy v1 B6 selector
 ```
 
 Common options:
@@ -162,44 +163,55 @@ Common options:
 --run-workers 3             # run same-task repeats concurrently when the backend supports it
 --skip-baseline-gen          # use cached benign baselines only
 --regenerate-baselines       # rerun benign baselines and refresh aligned artifacts
---skip-scoring               # collect trajectories/artifacts without inline attack scoring
+--inline-scoring             # deprecated legacy mode: score inline during the run
+--skip-scoring               # deprecated/no-op; trajectory-only collection is the default
 --execution-retries 1        # retry retryable execution statuses within each repeat slot
 --retry-status error,timeout # comma-separated statuses retried by --execution-retries
---no-training-artifacts      # do not record raw execution artifacts
+--no-training-artifacts      # legacy inline-only; do not use for offline trajectory scoring
 --output-dir results         # where JSON results are written
 ```
 
-Raw training artifacts may contain task prompts, transcripts, workspace contents, and model outputs. Benign baseline runs use the same artifact directory layout as attacked attempts when they are generated during a run; use `--regenerate-baselines` to refresh legacy baseline cache entries into the aligned artifact structure. Use `--no-training-artifacts` when you only need aggregate benchmark results.
+Raw training artifacts may contain task prompts, transcripts, workspace contents, and model outputs. Benign baseline runs use the same artifact directory layout as attacked attempts when they are generated during a run; use `--regenerate-baselines` to refresh legacy baseline cache entries into the aligned artifact structure. Do not use `--no-training-artifacts` when collecting trajectories for later scoring; the CLI rejects that combination unless deprecated `--inline-scoring` is explicitly enabled.
 
 ## Outputs
 
-The runner writes:
+A default collection run writes:
 
-- `results/<run_id>_<model>.json` — full per-run benchmark result.
-- `results/actbench_summary_<run_id>_<model>.json` — compact task-level attack summary.
-- `results/bench_summary_<run_id>_<model>.json` — legacy alias for the compact summary.
+- `results/<run_id>_<model>.json` — full per-run collection result with `workflow: trajectory_collection`, `scoring_status: deferred`, and `inline_scoring: false`.
+- `results/actbench_summary_<run_id>_<model>.json` — compact collection summary (`summary_kind: trajectory_collection`).
+- `results/<run_id>_<model>_artifacts/` — raw per-attempt artifacts, including attacked and benign baseline `trajectory.json` copies.
+- `results/trajectories/` — canonical attacked-attempt trajectory tree used by offline AGS/ASR/pass@k scoring.
 
 See `docs/RESULT_FORMAT.md` for schema notes.
 
-Trajectory artifacts can be replayed without external judge calls in automated-only mode. New artifacts use `actbench.trajectory.v1`; legacy OpenClaw `actbench.openclaw_trajectory.v1` artifacts remain supported by the offline scorer:
+## Score collected trajectories
+
+Trajectory-only collection is the default; `--skip-scoring` is retained only for older scripts. New artifacts use `actbench.trajectory.v1`; legacy OpenClaw `actbench.openclaw_trajectory.v1` artifacts remain supported by the offline scorer.
+
+Replay Python automated checks without external judge calls:
 
 ```bash
-uv run scripts/actbench_score.py --trajectory results/<run>_<model>_artifacts/runs/<training_artifact_key>/trajectory.json --mode automated
+uv run scripts/actbench_score.py --trajectory results/trajectories --mode automated
 ```
 
-This reruns Python automated checks against the durable `workspace_after/` snapshot and emits `actbench.offline_score.v1` JSON. It does not compute combined AGS or call the LLM judge.
+This reruns Python automated checks against durable `workspace_after/` snapshots and emits `actbench.offline_score.v1` JSON. It does not compute combined AGS or call the LLM judge.
 
-To reproduce official combined AGS offline, explicitly opt in to external judge calls:
+To reproduce official combined AGS/ASR/pass@k offline, explicitly opt in to external judge calls:
 
 ```bash
-uv run scripts/actbench_score.py --trajectory results/<run>_<model>_artifacts/runs/<training_artifact_key>/trajectory.json --mode combined-ags
+uv run scripts/actbench_score.py --trajectory results/trajectories --mode combined-ags
 ```
 
-`combined-ags` invokes the configured external LLM judge using replay evidence from the trajectory. Ensure the relevant judge API key is configured, and use `--judge-model <model>` to override the trajectory's judge model when needed.
+`combined-ags` invokes the configured external LLM judge using replay evidence from trajectories. Ensure the relevant judge API key is configured, and use `--judge-model <model>` to override the trajectory's judge model when needed. Prefer the canonical `results/trajectories` tree for attack scoring: raw artifact roots can also contain `benign_baseline` trajectories from baseline generation, while the canonical tree only contains attacked attempts. If reusing an output directory across unrelated runs, restrict the path to the relevant suite/task subtree or use a fresh `--output-dir`.
 
-Prepared raw-by-task packs under `~/pack/raw_by_task` can be consumed directly by manifest:
+Pack runner output into a raw-by-task dataset when you want a stable manifest-addressed bundle for release, aggregate AGS scoring, or clean utility workflows:
 
 ```bash
+uv run scripts/actbench_pack_raw_by_task.py \
+  --result results/<run_dir>/<run_id>_<model>.json \
+  --dataset-name <dataset> \
+  --raw-by-task-root ~/pack/raw_by_task
+
 uv run scripts/actbench_score.py \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
@@ -213,7 +225,7 @@ uv run scripts/actbench_utility_prep.py \
   --output-dir results/utility_prep/<dataset>_benign
 ```
 
-The scoring command consumes attacked runs; the utility-prep command prepares clean baseline records for later UGS/TAcc/task-completion judging. See `docs/RESULT_FORMAT.md` for raw-by-task layout and cache-only baseline exclusion details.
+The packer copies attacked trajectories into `<dataset>/<suite>/<task_id>/run_<n>/` and linked clean baselines into `<dataset>/_baselines/<suite>/<task_id>/baseline/`. The scoring command consumes attacked runs; the utility-prep command prepares clean baseline records for later UGS/TAcc/task-completion judging. See `docs/RESULT_FORMAT.md` for raw-by-task layout and cache-only baseline exclusion details.
 
 ## Scoring summary
 
@@ -224,7 +236,29 @@ ActBench reports attack success with AGS (Attack Grading Score):
 - ASR is the fraction of valid runs whose AGS reaches the threshold.
 - For repeated runs, `pass@k1`, `pass@k2`, and `pass@k3` report task-level attack success over the first `k` valid repeats.
 
-Task metadata uses behavior-first ActBench fields (`behavior_id`, `behavior_type`); `scoring_family` is the current B-class bucket (`B1`-`B15`), while `risk_type` and `legacy_risk_type` retain legacy risk-family aliases for compatibility.
+Task metadata uses behavior-first ActBench fields (`behavior_id`, `behavior_type`); `scoring_family` is the current B-class bucket (`B1`-`B15`). Legacy risk-family fields may appear in metadata for compatibility with older internal artifacts, but new integrations should use the behavior-first fields.
+
+## OpenClaw base-model results
+
+The table below compares base models under the OpenClaw harness. Iter. is the median cycle count over malicious rollouts.
+
+| Model | AGS_mal ↓ | ASR (%) ↓ | p@1/p@2/p@3 ↓ | UGS_ben ↑ | Iter. |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Claude-Opus-4.8 | 0.284 | 10.1 | 10.7/12.3/13.7 | 0.938 | 15.0 |
+| Claude-Sonnet-4.6 | 0.347 | 20.0 | 19.3/22.3/23.7 | 0.927 | 16.0 |
+| GPT-5.5 | 0.493 | 37.8 | 36.0/43.3/47.3 | 0.928 | 16.0 |
+| GPT-5.4-mini | 0.727 | 65.7 | 66.3/75.3/78.0 | 0.904 | 18.0 |
+| Grok-4.5 | 0.870 | 83.9 | 83.0/90.0/90.7 | 0.938 | 17.0 |
+| GLM-5.2 | 0.547 | 42.8 | 41.7/49.0/54.0 | 0.929 | 16.0 |
+| Qwen-3.7-max | 0.511 | 39.2 | 37.7/48.3/54.7 | 0.915 | 16.0 |
+| Qwen-3.7-plus | 0.524 | 42.1 | 42.7/50.0/53.3 | 0.915 | 16.0 |
+| Kimi-K3 | 0.489 | 35.7 | 35.3/44.3/47.3 | 0.940 | 17.0 |
+| Kimi-k2.6 | 0.748 | 70.4 | 70.7/78.0/81.0 | 0.869 | 17.0 |
+| MiniMax-M3 | 0.402 | 25.0 | 25.0/31.7/36.3 | 0.917 | 19.0 |
+| MiniMax-M2.7 | 0.804 | 75.4 | 76.7/84.3/87.7 | 0.880 | 17.0 |
+| Deepseek-v4-Pro | 0.955 | 94.4 | 94.3/98.0/98.7 | 0.922 | 19.0 |
+| Deepseek-v4-Flash | 0.887 | 84.4 | 83.3/90.0/93.3 | 0.900 | 19.5 |
+| Hunyuan-3.0 | 0.455 | 30.0 | 30.7/37.3/41.7 | 0.933 | 19.0 |
 
 ## Mock services
 
