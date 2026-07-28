@@ -169,6 +169,37 @@ def _attempt_context(
     return replace(context, metadata=metadata)
 
 
+def _attack_eval_has_error(attack_eval: Any) -> bool:
+    if attack_eval is None:
+        return False
+    if bool(getattr(attack_eval, "evaluation_error", False)):
+        return True
+    to_dict = getattr(attack_eval, "to_dict", None)
+    if not callable(to_dict):
+        return False
+    try:
+        payload = to_dict()
+    except Exception:  # pragma: no cover - invalid reward objects are handled elsewhere
+        return False
+    return bool(payload.get("evaluation_error", False)) if isinstance(payload, dict) else False
+
+
+def _attempt_scoring_status(
+    *,
+    attack_eval: Any,
+    execution_error: Optional[str],
+    evaluation_error: Optional[str],
+    scoring_skipped: bool,
+) -> str:
+    if execution_error or evaluation_error or _attack_eval_has_error(attack_eval):
+        return "error"
+    if scoring_skipped:
+        return "deferred"
+    if attack_eval is None:
+        return "error"
+    return "scored"
+
+
 def _attempt_error_record(
     *,
     task: Task,
@@ -176,18 +207,28 @@ def _attempt_error_record(
     run_index: int,
     stderr: str,
     execution_time: float = 0.0,
+    scoring_skipped: bool = False,
+    inline_scoring: Optional[bool] = None,
 ) -> Dict[str, Any]:
+    attempt_inline_scoring = not scoring_skipped if inline_scoring is None else bool(inline_scoring)
+    result = execution_error_result(
+        context=context,
+        task=task,
+        stderr=stderr,
+        execution_time=execution_time,
+    )
+    result["inline_scoring"] = attempt_inline_scoring
+    result["scoring_skipped"] = scoring_skipped
+    result["scoring_status"] = "error"
     return {
         "run_index": run_index,
-        "result": execution_error_result(
-            context=context,
-            task=task,
-            stderr=stderr,
-            execution_time=execution_time,
-        ),
+        "result": result,
         "attack_eval": None,
         "execution_error": stderr,
         "evaluation_error": None,
+        "scoring_skipped": scoring_skipped,
+        "scoring_status": "error",
+        "inline_scoring": attempt_inline_scoring,
     }
 
 
@@ -200,19 +241,29 @@ def _attempt_evaluation_payload(
 ) -> Dict[str, Any]:
     if attack_eval is not None:
         return attack_eval.to_dict()
+    if execution_error or evaluation_error:
+        return {
+            "error": execution_error or evaluation_error,
+            "error_type": "execution_error" if execution_error else "evaluation_error",
+            "scoring_skipped": scoring_skipped,
+            "scoring_status": "error",
+            "inline_scoring": not scoring_skipped,
+        }
     if scoring_skipped:
         return {
             "schema_version": "actbench.evaluation_skipped.v1",
             "skipped": True,
-            "reason": "--skip-scoring",
+            "reason": "trajectory_only_default",
+            "scoring_status": "deferred",
+            "inline_scoring": False,
+            "score_with": "scripts/actbench_score.py",
         }
     return {
-        "error": execution_error or evaluation_error,
-        "error_type": (
-            "execution_error"
-            if execution_error
-            else "evaluation_error" if evaluation_error else "missing_evaluation"
-        ),
+        "error": None,
+        "error_type": "missing_evaluation",
+        "scoring_skipped": scoring_skipped,
+        "scoring_status": "error",
+        "inline_scoring": not scoring_skipped,
     }
 
 
@@ -441,13 +492,22 @@ def _canonical_scoring_summary(
     evaluation_error: Optional[str],
     scoring_skipped: bool,
 ) -> Dict[str, Any]:
+    scoring_status = _attempt_scoring_status(
+        attack_eval=attack_eval,
+        execution_error=execution_error,
+        evaluation_error=evaluation_error,
+        scoring_skipped=scoring_skipped,
+    )
     summary: Dict[str, Any] = {
         "scoring_skipped": scoring_skipped,
+        "scoring_status": scoring_status,
+        "inline_scoring": not scoring_skipped,
         "execution_error": execution_error,
         "evaluation_error": evaluation_error,
     }
     if attack_eval is not None:
         payload = attack_eval.to_dict()
+        attack_eval_error = bool(payload.get("evaluation_error", False))
         summary.update(
             {
                 "score": payload.get("score"),
@@ -457,15 +517,15 @@ def _canonical_scoring_summary(
                 "attack_pass": payload.get("attack_pass", payload.get("is_success")),
                 "is_success": payload.get("is_success"),
                 "evaluation_error": (
-                    payload.get("error_message")
-                    if payload.get("evaluation_error")
-                    else evaluation_error
+                    payload.get("error_message") if attack_eval_error else evaluation_error
                 ),
                 "error_type": payload.get("error_type"),
                 "usage": payload.get("usage", {}),
                 "timing": payload.get("timing", {}),
             }
         )
+        if attack_eval_error:
+            summary["scoring_status"] = "error"
     return summary
 
 
@@ -637,6 +697,9 @@ def _execute_and_evaluate_attempt(
             )
         if retry_history:
             result["retry_history"] = list(retry_history)
+        result["inline_scoring"] = not skip_scoring
+        result["scoring_skipped"] = skip_scoring
+        result["scoring_status"] = "deferred" if skip_scoring else "pending_inline"
 
         _persist_trajectory_before_scoring(
             backend=backend,
@@ -674,7 +737,10 @@ def _execute_and_evaluate_attempt(
 
         attack_eval = None
         if skip_scoring:
-            logger.info("Skipping inline attack scoring for %s (--skip-scoring)", task.task_id)
+            logger.info(
+                "Deferring attack scoring for %s; score the saved trajectory later with actbench-score",
+                task.task_id,
+            )
         else:
             try:
                 attack_eval = _evaluate_attack_for_task(
@@ -692,6 +758,12 @@ def _execute_and_evaluate_attempt(
                 evaluation_error = str(exc)
                 logger.warning("Attack evaluation failed for %s, continuing: %s", task.task_id, exc)
                 attack_eval = None
+        result["scoring_status"] = _attempt_scoring_status(
+            attack_eval=attack_eval,
+            execution_error=execution_error,
+            evaluation_error=evaluation_error,
+            scoring_skipped=skip_scoring,
+        )
         return {
             "run_index": run_index,
             "result": result,
@@ -699,6 +771,8 @@ def _execute_and_evaluate_attempt(
             "execution_error": execution_error,
             "evaluation_error": evaluation_error,
             "scoring_skipped": skip_scoring,
+            "scoring_status": result.get("scoring_status"),
+            "inline_scoring": not skip_scoring,
             "retry_history": retry_history,
         }
 
@@ -708,6 +782,8 @@ def _execute_and_evaluate_attempt(
         context=context,
         run_index=run_index,
         stderr="execution retry loop ended without a final attempt",
+        scoring_skipped=skip_scoring,
+        inline_scoring=not skip_scoring,
     )
 
 
@@ -759,6 +835,146 @@ def _format_rate_for_log(value: Any) -> str:
         return f"{float(value) * 100:.1f}%"
     except (TypeError, ValueError):
         return "n/a"
+
+
+def _offline_scoring_command(trajectory_root: Optional[Path], judge_model: Optional[str]) -> str:
+    trajectory_arg = str(trajectory_root) if trajectory_root is not None else "<canonical-trajectory-dir>"
+    command = f"uv run scripts/actbench_score.py --trajectory {trajectory_arg} --mode combined-ags"
+    if judge_model:
+        command += f" --judge-model {judge_model}"
+    return command
+
+
+def _status_counts(entries: Sequence[Dict[str, Any]], key: str) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for entry in entries:
+        value = str(entry.get(key) or "unknown")
+        counts[value] = counts.get(value, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _task_scoring_status(*, valid_count: int, invalid_count: int, default_status: str) -> str:
+    if invalid_count and valid_count:
+        return "partial"
+    if invalid_count:
+        return "error"
+    return default_status
+
+
+def _run_scoring_status(
+    task_entries: Sequence[Dict[str, Any]],
+    *,
+    inline_scoring: bool,
+    default_status: str,
+) -> str:
+    if not inline_scoring:
+        return default_status
+    statuses = [str(entry.get("scoring_status") or "") for entry in task_entries]
+    if not statuses:
+        return default_status
+    scored = sum(1 for status in statuses if status == "scored")
+    errors = sum(1 for status in statuses if status == "error")
+    if errors and scored:
+        return "partial"
+    if errors:
+        return "error"
+    if scored:
+        return "scored"
+    if all(status == "deferred" for status in statuses):
+        return "deferred"
+    return default_status
+
+
+def _collection_summary(task_entries: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+    task_ids = {str(entry.get("task_id")) for entry in task_entries if entry.get("task_id")}
+    by_behavior: Dict[str, Dict[str, Any]] = {}
+    tasks: list[Dict[str, Any]] = []
+    for entry in task_entries:
+        backend_meta = entry.get("backend_metadata") if isinstance(entry.get("backend_metadata"), dict) else {}
+        run_number = backend_meta.get("run_number") or backend_meta.get("run_index")
+        behavior_key = str(entry.get("behavior_label") or entry.get("behavior_id") or "unknown")
+        behavior = by_behavior.setdefault(
+            behavior_key,
+            {
+                "behavior_id": entry.get("behavior_id"),
+                "behavior_type": entry.get("behavior_type"),
+                "behavior_label": entry.get("behavior_label"),
+                "tasks": set(),
+                "attempts": 0,
+                "status_counts": {},
+                "scoring_status_counts": {},
+            },
+        )
+        if entry.get("task_id"):
+            behavior["tasks"].add(str(entry["task_id"]))
+        behavior["attempts"] += 1
+        status = str(entry.get("status") or "unknown")
+        scoring_status = str(entry.get("scoring_status") or "unknown")
+        behavior["status_counts"][status] = behavior["status_counts"].get(status, 0) + 1
+        behavior["scoring_status_counts"][scoring_status] = (
+            behavior["scoring_status_counts"].get(scoring_status, 0) + 1
+        )
+        tasks.append(
+            {
+                "task_id": entry.get("task_id"),
+                "display": (
+                    str(entry.get("task_id")).removeprefix("task_")
+                    if entry.get("task_id")
+                    else None
+                ),
+                "behavior_id": entry.get("behavior_id"),
+                "behavior_type": entry.get("behavior_type"),
+                "behavior_label": entry.get("behavior_label"),
+                "behavior_key": behavior_key,
+                "scoring_family": entry.get("scoring_family"),
+                "backend": entry.get("backend"),
+                "status": entry.get("status"),
+                "workflow": entry.get("workflow"),
+                "scoring_status": entry.get("scoring_status"),
+                "inline_scoring": entry.get("inline_scoring"),
+                "run_number": run_number,
+                "attempt_run_id": backend_meta.get("attempt_run_id"),
+                "training_artifact_key": entry.get("training_artifact_key"),
+                "trajectory": entry.get("trajectory"),
+                "timed_out": entry.get("timed_out"),
+                "execution_time": entry.get("execution_time"),
+                "transcript_entry_count": entry.get("transcript_entry_count"),
+                "iteration_count": entry.get("iteration_count"),
+                "message_count": entry.get("message_count"),
+                "message_json_chars": entry.get("message_json_chars"),
+                "message_text_chars": entry.get("message_text_chars"),
+                "transcript_json_chars": entry.get("transcript_json_chars"),
+            }
+        )
+    behavior_summary = {}
+    for key, behavior in by_behavior.items():
+        task_set = behavior.pop("tasks")
+        behavior["tasks"] = len(task_set)
+        behavior["status_counts"] = dict(sorted(behavior["status_counts"].items()))
+        behavior["scoring_status_counts"] = dict(sorted(behavior["scoring_status_counts"].items()))
+        behavior_summary[key] = behavior
+    return {
+        "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
+        "attack_pass_definition": "not scored; run actbench_score.py for attack pass verdicts",
+        "attack_reproduced_definition": "not scored; run actbench_score.py for AGS",
+        "official_scores_deferred": True,
+        "total_tasks": len(task_ids),
+        "total_attempts": len(task_entries),
+        "collected_attempts": sum(1 for entry in task_entries if entry.get("trajectory")),
+        "failed_attempts": sum(1 for entry in task_entries if entry.get("status") == "error"),
+        "status_counts": _status_counts(task_entries, "status"),
+        "scoring_status_counts": _status_counts(task_entries, "scoring_status"),
+        "attack_reproduced_tasks": 0,
+        "attack_success_count": 0,
+        "valid_runs": 0,
+        "asr": 0.0,
+        "pass@k": {},
+        "pass@k1": None,
+        "pass@k2": None,
+        "pass@k3": None,
+        "by_behavior": dict(sorted(behavior_summary.items())),
+        "tasks": tasks,
+    }
 
 
 def run_benchmark(args: argparse.Namespace) -> None:
@@ -824,6 +1040,20 @@ def run_benchmark(args: argparse.Namespace) -> None:
         logger.error("❌ --baseline-only cannot be used with --skip-baseline-gen")
         sys.exit(2)
 
+    inline_scoring = bool(getattr(args, "inline_scoring", False))
+    if inline_scoring and getattr(args, "skip_scoring", False):
+        logger.warning("Ignoring deprecated --skip-scoring because --inline-scoring was provided")
+    skip_scoring = not inline_scoring
+    if skip_scoring and not baseline_only and getattr(args, "no_training_artifacts", False):
+        logger.error(
+            "❌ --no-training-artifacts is incompatible with trajectory-only collection; "
+            "offline scoring requires recorded trajectories. Remove --no-training-artifacts "
+            "or use --inline-scoring for deprecated legacy inline scoring."
+        )
+        sys.exit(2)
+    workflow = "legacy_inline_scoring" if inline_scoring else "trajectory_collection"
+    scoring_status = "scored" if inline_scoring else "deferred"
+
     runs_per_task = max(1, args.runs)
     try:
         selected_run_numbers = _normalize_run_numbers(
@@ -882,6 +1112,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
     skill_dir = skill_root
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    offline_trajectory_root = output_dir / "trajectories"
     agent_id = backend.make_agent_id(model_id)
     # Use a shared workspace for the agent - we'll copy fixtures per task
     agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
@@ -894,8 +1125,17 @@ def run_benchmark(args: argparse.Namespace) -> None:
         "run_workers": effective_run_workers,
         "requested_run_workers": run_workers,
         "baseline_only": baseline_only,
+        "workflow": workflow,
+        "scoring_status": scoring_status,
+        "inline_scoring": inline_scoring,
         "command": command,
     }
+    if inline_scoring:
+        logger.warning(
+            "Deprecated legacy inline scoring mode enabled; default ActBench runs collect trajectories only"
+        )
+    else:
+        logger.info("Trajectory collection mode enabled; official scoring is deferred to actbench-score")
     if execution_retries > 0:
         run_metadata.update(
             {
@@ -917,7 +1157,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
     )
 
     training_recorder = None
-    if not args.no_training_artifacts:
+    artifact_root: Optional[Path] = None
+    if not getattr(args, "no_training_artifacts", False):
         artifact_root = (
             Path(args.training_artifact_dir)
             if args.training_artifact_dir
@@ -943,6 +1184,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
                 "baseline_only": baseline_only,
+                "workflow": workflow,
+                "scoring_status": scoring_status,
+                "inline_scoring": inline_scoring,
+                "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
                 "tasks_dir": str(tasks_dir),
@@ -1122,7 +1367,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         model=model_id,
                         judge_model=args.judge_model,
                         verbose=args.verbose,
-                        skip_scoring=getattr(args, "skip_scoring", False),
+                        skip_scoring=skip_scoring,
                         execution_retries=execution_retries,
                         retry_statuses=retry_statuses,
                         canonical_output_dir=output_dir,
@@ -1156,7 +1401,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         model=model_id,
                         judge_model=args.judge_model,
                         verbose=args.verbose,
-                        skip_scoring=getattr(args, "skip_scoring", False),
+                        skip_scoring=skip_scoring,
                         execution_retries=execution_retries,
                         retry_statuses=retry_statuses,
                         canonical_output_dir=output_dir,
@@ -1210,6 +1455,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                                         context=attempt_context,
                                         run_index=run_index,
                                         stderr=message,
+                                        scoring_skipped=skip_scoring,
+                                        inline_scoring=inline_scoring,
                                     )
                                 )
                             if next_run_position < scheduled_run_count:
@@ -1226,7 +1473,17 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 attack_eval = attempt_record["attack_eval"]
                 execution_error = attempt_record["execution_error"]
                 evaluation_error = attempt_record.get("evaluation_error")
-                scoring_skipped = bool(attempt_record.get("scoring_skipped", False))
+                scoring_skipped = bool(attempt_record.get("scoring_skipped", skip_scoring))
+                attempt_inline_scoring = bool(attempt_record.get("inline_scoring", inline_scoring))
+                attempt_scoring_status = str(
+                    attempt_record.get("scoring_status")
+                    or _attempt_scoring_status(
+                        attack_eval=attack_eval,
+                        execution_error=execution_error,
+                        evaluation_error=evaluation_error,
+                        scoring_skipped=scoring_skipped,
+                    )
+                )
 
                 task_results.append(result)
                 results.append(result)
@@ -1252,6 +1509,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                             "run_number": run_number,
                             "attempt_run_id": backend_meta.get("attempt_run_id"),
                             "training_artifact_key": result.get("training_artifact_key"),
+                            "scoring_status": attempt_scoring_status,
+                            "inline_scoring": attempt_inline_scoring,
                             "attack_success_threshold": ATTACK_SUCCESS_THRESHOLD,
                             "pass": bool(attack_eval_entry.get("is_success", False)),
                             "attack_pass": bool(attack_eval_entry.get("is_success", False)),
@@ -1320,6 +1579,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         "run_number": entry.get("run_number"),
                         "attempt_run_id": entry.get("attempt_run_id"),
                         "training_artifact_key": entry.get("training_artifact_key"),
+                        "scoring_status": entry.get("scoring_status"),
+                        "inline_scoring": entry.get("inline_scoring"),
                         "ags": (
                             round(float(entry.get("attack_success", 0.0) or 0.0), 4)
                             if not entry.get("evaluation_error")
@@ -1351,6 +1612,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     "valid_runs": len(valid_attack_runs),
                     "invalid_runs": invalid_count,
                     "evaluation_error_count": invalid_count,
+                    "scoring_status": _task_scoring_status(
+                        valid_count=len(valid_attack_runs),
+                        invalid_count=invalid_count,
+                        default_status=scoring_status,
+                    ),
+                    "inline_scoring": inline_scoring,
                     "mean": statistics.mean(attack_scores) if attack_scores else 0.0,
                     "std": statistics.stdev(attack_scores) if len(attack_scores) > 1 else 0.0,
                     "min": min(attack_scores) if attack_scores else 0.0,
@@ -1381,6 +1648,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     "valid_runs": len(valid_attack_runs),
                     "invalid_runs": invalid_count,
                     "evaluation_error_count": invalid_count,
+                    "scoring_status": _task_scoring_status(
+                        valid_count=len(valid_attack_runs),
+                        invalid_count=invalid_count,
+                        default_status=scoring_status,
+                    ),
+                    "inline_scoring": inline_scoring,
                     **pass_at,
                     **scoring_semantics,
                 }
@@ -1408,6 +1681,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     "pass@k1": None,
                     "pass@k2": None,
                     "pass@k3": None,
+                    "scoring_status": scoring_status,
+                    "inline_scoring": inline_scoring,
                     **empty_scoring_semantics,
                 }
 
@@ -1415,9 +1690,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 not run_result.get("transcript") for run_result in task_results
             )
             if (
-                task.task_id == sanity_task_id
+                inline_scoring
+                and task.task_id == sanity_task_id
                 and grades_by_task_id[task.task_id]["mean"] == 0.0
-                and not args.no_fail_fast
+                and not getattr(args, "no_fail_fast", False)
                 and not all_runs_missing_transcript
             ):
                 logger.error(
@@ -1426,7 +1702,11 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     sanity_task_id,
                 )
                 sys.exit(3)
-            if task.task_id == sanity_task_id and grades_by_task_id[task.task_id]["mean"] == 0.0:
+            if (
+                inline_scoring
+                and task.task_id == sanity_task_id
+                and grades_by_task_id[task.task_id]["mean"] == 0.0
+            ):
                 if all_runs_missing_transcript:
                     logger.warning(
                         "⚠️ Sanity check scored 0%% AGS but transcripts were missing for all runs; "
@@ -1493,6 +1773,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
                         "canonical_metadata_absolute",
                         "canonical_sha256",
                         "canonical_size_bytes",
+                        "attempt_path",
+                        "attempt_absolute",
                         "legacy_path",
                         "legacy_absolute",
                     )
@@ -1514,6 +1796,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     {"name": backend.name, "model": model_id, "agent_id": agent_id},
                 ),
                 "status": result["status"],
+                "workflow": workflow,
+                "scoring_status": result.get("scoring_status", scoring_status),
+                "inline_scoring": bool(result.get("inline_scoring", inline_scoring)),
                 "timed_out": result["timed_out"],
                 "execution_time": result["execution_time"],
                 "transcript_length": transcript_metrics["entry_count"],
@@ -1557,7 +1842,6 @@ def run_benchmark(args: argparse.Namespace) -> None:
                     "pass@k3"
                 ),
                 "agent_feedback": _execution_feedback(result, backend.name),
-                "openclaw_feedback": _execution_feedback(result, backend.name),
                 "frontmatter": tasks_by_id[tid].frontmatter,
                 "baseline": baseline_lite,
             }
@@ -1567,6 +1851,11 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 task_entry["retry_history"] = result["retry_history"]
             task_entries.append(task_entry)
 
+        run_scoring_status = _run_scoring_status(
+            task_entries,
+            inline_scoring=inline_scoring,
+            default_status=scoring_status,
+        )
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         attack_pass_summary = _compute_attack_pass_summary(attack_eval_by_task_id)
 
@@ -1590,6 +1879,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "run_workers": effective_run_workers,
             "requested_run_workers": run_workers,
             "baseline_only": baseline_only,
+            "workflow": workflow,
+            "scoring_status": run_scoring_status,
+            "inline_scoring": inline_scoring,
+            "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
             "execution_retries": execution_retries,
             "retry_statuses": list(retry_statuses),
             "scoring_semantics": "actbench_ags",
@@ -1624,10 +1917,14 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 }
             )
 
-        # Compact, machine-readable per-task attack summary: lets curation tooling
-        # read ags/py/llm/runs/attack_reproduced per task without grepping the
-        # [FINAL] log table or parsing the full aggregate.
-        attack_summary = build_attack_summary(attack_eval_by_task_id, tasks_by_id=tasks_by_id)
+        # Compact, machine-readable per-task summary. Inline scoring keeps the
+        # AGS-focused attack summary; default collection summarizes collected
+        # attempts so deferred runs do not look empty before offline scoring.
+        attack_summary = (
+            build_attack_summary(attack_eval_by_task_id, tasks_by_id=tasks_by_id)
+            if inline_scoring
+            else _collection_summary(task_entries)
+        )
         attack_summary.update(
             {
                 "model": model_id,
@@ -1640,6 +1937,11 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "run_workers": effective_run_workers,
                 "requested_run_workers": run_workers,
                 "baseline_only": baseline_only,
+                "workflow": workflow,
+                "scoring_status": run_scoring_status,
+                "inline_scoring": inline_scoring,
+                "summary_kind": "inline_attack_summary" if inline_scoring else "trajectory_collection",
+                "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
             }
@@ -1647,41 +1949,48 @@ def run_benchmark(args: argparse.Namespace) -> None:
         summary_payload = json.dumps(attack_summary, indent=2)
         summary_path = output_dir / f"actbench_summary_{run_id}_{model_slug}.json"
         summary_path.write_text(summary_payload, encoding="utf-8")
-        legacy_summary_path = output_dir / f"bench_summary_{run_id}_{model_slug}.json"
-        legacy_summary_path.write_text(summary_payload, encoding="utf-8")
 
-        # Calculate and log final AGS summary.
-        total_score = sum(grades_by_task_id[tid]["mean"] for tid in grades_by_task_id)
-        max_score = float(len(grades_by_task_id))
-        score_pct = (total_score / max_score * 100) if max_score > 0 else 0
-        logger.info("📊 Mean AGS: %.2f/%.0f (%.1f%%)", total_score, max_score, score_pct)
-        logger.info(
-            "🔥 ASR: %d/%d valid runs (%.1f%%); pass@k1=%s pass@k2=%s pass@k3=%s",
-            attack_pass_summary.get("attack_success_count", 0),
-            attack_pass_summary.get("valid_runs", attack_pass_summary.get("total_runs", 0)),
-            float(attack_pass_summary.get("asr", 0.0) or 0.0) * 100,
-            _format_rate_for_log(attack_pass_summary.get("pass@k1")),
-            _format_rate_for_log(attack_pass_summary.get("pass@k2")),
-            _format_rate_for_log(attack_pass_summary.get("pass@k3")),
-        )
-        if attack_pass_summary.get("invalid_runs"):
+        if inline_scoring:
+            # Calculate and log final AGS summary for deprecated inline scoring runs.
+            total_score = sum(grades_by_task_id[tid]["mean"] for tid in grades_by_task_id)
+            max_score = float(len(grades_by_task_id))
+            score_pct = (total_score / max_score * 100) if max_score > 0 else 0
+            logger.info("📊 Mean AGS: %.2f/%.0f (%.1f%%)", total_score, max_score, score_pct)
             logger.info(
-                "⚠️ Invalid evaluation runs: %d/%d",
-                attack_pass_summary.get("invalid_runs", 0),
-                attack_pass_summary.get("total_runs", 0),
+                "🔥 ASR: %d/%d valid runs (%.1f%%); pass@k1=%s pass@k2=%s pass@k3=%s",
+                attack_pass_summary.get("attack_success_count", 0),
+                attack_pass_summary.get("valid_runs", attack_pass_summary.get("total_runs", 0)),
+                float(attack_pass_summary.get("asr", 0.0) or 0.0) * 100,
+                _format_rate_for_log(attack_pass_summary.get("pass@k1")),
+                _format_rate_for_log(attack_pass_summary.get("pass@k2")),
+                _format_rate_for_log(attack_pass_summary.get("pass@k3")),
             )
+            if attack_pass_summary.get("invalid_runs"):
+                logger.info(
+                    "⚠️ Invalid evaluation runs: %d/%d",
+                    attack_pass_summary.get("invalid_runs", 0),
+                    attack_pass_summary.get("total_runs", 0),
+                )
 
-        logger.info("Saved results to %s", output_path)
-        logger.info(
-            "[FINAL] Attack summary (%d/%d tasks reproduced) saved to %s (legacy alias: %s)",
-            attack_summary.get("attack_reproduced_tasks", 0),
-            attack_summary.get("total_tasks", 0),
-            summary_path,
-            legacy_summary_path,
-        )
-        _log_attack_category_summary(task_entries, tasks_by_id, scene_index=scene_index)
-        _log_attack_eval_summary(attack_eval_by_task_id, tasks_by_id, scene_index=scene_index)
-        _log_efficiency_summary(efficiency, grades_by_task_id)
+            logger.info("Saved results to %s", output_path)
+            logger.info(
+                "[FINAL] Attack summary (%d/%d tasks reproduced) saved to %s",
+                attack_summary.get("attack_reproduced_tasks", 0),
+                attack_summary.get("total_tasks", 0),
+                summary_path,
+            )
+            _log_attack_category_summary(task_entries, tasks_by_id, scene_index=scene_index)
+            _log_attack_eval_summary(attack_eval_by_task_id, tasks_by_id, scene_index=scene_index)
+            _log_efficiency_summary(efficiency, grades_by_task_id)
+        else:
+            logger.info("Trajectory collection complete; scoring deferred.")
+            logger.info("Saved results to %s", output_path)
+            logger.info("Saved collection summary to %s", summary_path)
+            if training_recorder:
+                logger.info("Saved trajectories to %s", training_recorder.root)
+            else:
+                logger.warning("No trajectory artifact directory was recorded; offline scoring needs trajectories")
+            logger.info("Score later with: %s", _offline_scoring_command(offline_trajectory_root, args.judge_model))
     finally:
         if backend_initialized:
             try:

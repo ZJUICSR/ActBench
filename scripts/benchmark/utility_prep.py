@@ -26,6 +26,7 @@ from benchmark.raw_by_task import (
     BASELINE_CACHE_ONLY_REASON,
     RawByTaskError,
     collect_raw_by_task_trajectories,
+    is_raw_by_task_trajectory_path,
     raw_by_task_role_from_roles,
     resolve_raw_by_task_datasets,
 )
@@ -221,6 +222,20 @@ def _artifact_ref(
     trajectory_path: Optional[Path],
     key: str,
 ) -> Dict[str, Any]:
+    raw_by_task_sidecars = {
+        "api_audit": Path("api") / "audit.json",
+        "api_endpoints": Path("api") / "endpoints.json",
+    }
+    if trajectory_path is not None and key in raw_by_task_sidecars:
+        local_path = trajectory_path.parent / raw_by_task_sidecars[key]
+        if is_raw_by_task_trajectory_path(trajectory_path) and local_path.is_file():
+            state = _path_state(local_path)
+            return {
+                "path": str(local_path),
+                "source": f"trajectory_directory.{raw_by_task_sidecars[key]}",
+                **state,
+            }
+
     artifacts = _as_dict(trajectory.get("artifacts"))
     root = _artifact_root(trajectory, trajectory_path)
     raw = artifacts.get(f"{key}_absolute") or artifacts.get(key)
@@ -388,11 +403,22 @@ def _api_side_effect_summary(api_audit: Any) -> List[Dict[str, Any]]:
     return summary
 
 
-def _baseline_ref(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+def _raw_by_task_source_paths(trajectory_path: Optional[Path]) -> Dict[str, Any]:
+    if trajectory_path is None or not is_raw_by_task_trajectory_path(trajectory_path):
+        return {}
+    try:
+        payload = _load_json_file(trajectory_path.parent / "source_paths.json")
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _baseline_ref(trajectory: Dict[str, Any], trajectory_path: Optional[Path] = None) -> Dict[str, Any]:
     task = _as_dict(trajectory.get("task"))
     scoring_inputs = _as_dict(trajectory.get("scoring_inputs"))
     baseline = _as_dict(task.get("baseline") or scoring_inputs.get("baseline"))
     baseline_artifacts = _as_dict(baseline.get("artifacts"))
+    source_paths = _raw_by_task_source_paths(trajectory_path)
     ref: Dict[str, Any] = {}
     for key in (
         "schema_version",
@@ -412,13 +438,21 @@ def _baseline_ref(trajectory: Dict[str, Any]) -> Dict[str, Any]:
         ref["cache_path"] = task.get("baseline_cache_path") or scoring_inputs.get("baseline_cache_path")
     if task.get("baseline_artifact_path") or scoring_inputs.get("baseline_artifact_path"):
         ref["artifact_path"] = task.get("baseline_artifact_path") or scoring_inputs.get("baseline_artifact_path")
+    if source_paths:
+        for key, source_key in (
+            ("source_task_id", "source_task_id"),
+            ("clean_task_id", "clean_task_id"),
+            ("cache_path", "baseline_cache_path"),
+            ("trajectory", "baseline_trajectory"),
+        ):
+            if source_paths.get(source_key) is not None:
+                ref[key] = source_paths.get(source_key)
     if baseline_artifacts:
         ref["artifact_root"] = baseline_artifacts.get("artifact_root")
         ref["run_dir"] = baseline_artifacts.get("run_dir")
         ref["trajectory"] = baseline_artifacts.get("trajectory")
         ref["trajectory_absolute"] = baseline_artifacts.get("trajectory_absolute")
-        ref = {key: value for key, value in ref.items() if value is not None}
-    return ref
+    return {key: value for key, value in ref.items() if value is not None}
 
 
 def _source_metadata(path: Path, trajectory: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -472,27 +506,36 @@ def _role_allowed(role: str, roles: Sequence[str]) -> bool:
     return ROLE_ALL in roles or role in roles
 
 
-def _task_filter_values(trajectory: Dict[str, Any]) -> set[str]:
+def _task_filter_values(
+    trajectory: Dict[str, Any],
+    trajectory_path: Optional[Path] = None,
+) -> set[str]:
     task = _as_dict(trajectory.get("task"))
     frontmatter = _as_dict(task.get("frontmatter"))
     run = _as_dict(trajectory.get("run"))
     context_metadata = _as_dict(run.get("context_metadata"))
+    source_paths = _raw_by_task_source_paths(trajectory_path)
     values = {
         _task_id_from_trajectory(trajectory),
         str(trajectory.get("source_task_id") or ""),
         str(task.get("source_task_id") or ""),
         str(context_metadata.get("baseline_task_id") or ""),
+        str(source_paths.get("source_task_id") or ""),
         str(frontmatter.get("source_task_id") or ""),
         str(frontmatter.get("id") or ""),
     }
     return {value for value in values if value}
 
 
-def _task_allowed(trajectory: Dict[str, Any], filters: Optional[Sequence[str]]) -> bool:
+def _task_allowed(
+    trajectory: Dict[str, Any],
+    filters: Optional[Sequence[str]],
+    trajectory_path: Optional[Path] = None,
+) -> bool:
     if not filters:
         return True
     allowed = {str(item) for item in filters}
-    return bool(_task_filter_values(trajectory) & allowed)
+    return bool(_task_filter_values(trajectory, trajectory_path) & allowed)
 
 
 def _passes_filters(
@@ -503,6 +546,7 @@ def _passes_filters(
     models: Optional[Sequence[str]],
     task_ids: Optional[Sequence[str]],
     suites: Optional[Sequence[str]],
+    trajectory_path: Optional[Path] = None,
 ) -> Optional[str]:
     if not _role_allowed(_role_from_trajectory(trajectory), roles):
         return EXCLUDED_ROLE_FILTER
@@ -510,7 +554,7 @@ def _passes_filters(
         return EXCLUDED_BACKEND_FILTER
     if not _value_allowed(_model_name(trajectory), models):
         return EXCLUDED_MODEL_FILTER
-    if not _task_allowed(trajectory, task_ids):
+    if not _task_allowed(trajectory, task_ids, trajectory_path):
         return EXCLUDED_TASK_FILTER
     if not _value_allowed(_suite_from_trajectory(trajectory), suites):
         return EXCLUDED_SUITE_FILTER
@@ -562,23 +606,29 @@ def _execution_payload(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _identity_payload(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+def _identity_payload(
+    trajectory: Dict[str, Any],
+    trajectory_path: Optional[Path] = None,
+) -> Dict[str, Any]:
     run = _as_dict(trajectory.get("run"))
     context_metadata = _as_dict(run.get("context_metadata"))
     task = _as_dict(trajectory.get("task"))
     frontmatter = _as_dict(task.get("frontmatter"))
+    source_paths = _raw_by_task_source_paths(trajectory_path)
     task_id = _task_id_from_trajectory(trajectory)
     role = _role_from_trajectory(trajectory)
     source_task_id = _string_or_none(
         trajectory.get("source_task_id")
         or task.get("source_task_id")
         or context_metadata.get("baseline_task_id")
+        or source_paths.get("source_task_id")
         or frontmatter.get("source_task_id")
         or frontmatter.get("id")
     )
     clean_task_id = _string_or_none(
         trajectory.get("clean_task_id")
         or task.get("clean_task_id")
+        or source_paths.get("clean_task_id")
         or (task_id if role == "benign_baseline" and task_id.endswith("_baseline") else None)
     )
     return {
@@ -659,7 +709,7 @@ def prepare_utility_record(
             "canonical_trajectory_path": canonical.get("trajectory_path"),
             "legacy_trajectory_path": artifacts.get("trajectory"),
         },
-        "identity": _identity_payload(trajectory),
+        "identity": _identity_payload(trajectory, trajectory_path),
         "agent": _agent_payload(trajectory),
         "task": _task_payload(trajectory),
         "execution": _execution_payload(trajectory),
@@ -673,7 +723,7 @@ def prepare_utility_record(
             "side_effect_summary": _api_side_effect_summary(execution.get("api_audit")),
         },
         "transcript": transcript_block,
-        "baseline_ref": _baseline_ref(trajectory),
+        "baseline_ref": _baseline_ref(trajectory, trajectory_path),
         "quality_flags": [],
         "future_grading": {
             "intended_uses": ["ugs", "tacc"],
@@ -820,6 +870,7 @@ def prepare_utility_records(
             models=models,
             task_ids=task_ids,
             suites=suites,
+            trajectory_path=path,
         )
         if filter_reason:
             excluded.append(_exclusion(path, filter_reason, trajectory=trajectory))
@@ -1016,7 +1067,7 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         action="append",
         choices=sorted(ROLE_ALIASES),
         default=None,
-        help="Role to include: attacked_attempt, benign_baseline, or all. May be repeated.",
+        help="Role to include: attacked/attacked_attempt, benign/benign_baseline, or all. May be repeated.",
     )
     parser.add_argument("--backend", action="append", default=None, help="Backend filter")
     parser.add_argument("--model", action="append", default=None, help="Model filter")

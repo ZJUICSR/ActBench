@@ -537,6 +537,8 @@ def _canonical_metadata_payload(
         "retry_history": _json_safe(execution_result.get("retry_history", [])),
         "retry_statuses": list((context.metadata or {}).get("retry_statuses") or []),
         "artifact_root": str(recorder.root),
+        "attempt_trajectory_path": str(legacy_relative_path),
+        "attempt_trajectory_absolute": str(legacy_path),
         "legacy_trajectory_path": str(legacy_relative_path),
         "legacy_trajectory_absolute": str(legacy_path),
         "canonical_trajectory_path": canonical["trajectory_path"],
@@ -574,6 +576,8 @@ def _trajectory_index_entry(metadata: Dict[str, Any]) -> Dict[str, Any]:
         "exit_code",
         "execution_time",
         "retry_statuses",
+        "attempt_trajectory_path",
+        "attempt_trajectory_absolute",
         "legacy_trajectory_path",
         "legacy_trajectory_absolute",
         "canonical_trajectory_path",
@@ -835,6 +839,8 @@ def persist_trajectory(
     trajectory_artifacts = dict(_as_dict(execution_result.get("trajectory_artifacts")))
     trajectory_artifacts.update(
         {
+            "attempt_path": str(legacy_relative_path),
+            "attempt_absolute": str(legacy_path),
             "legacy_path": str(legacy_relative_path),
             "legacy_absolute": str(legacy_path),
         }

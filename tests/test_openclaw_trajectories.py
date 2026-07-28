@@ -512,6 +512,13 @@ def test_persist_trajectory_writes_canonical_slot_and_replacement_metadata(tmp_p
     index = json.loads(index_path.read_text(encoding="utf-8"))
 
     assert (
+        first_execution["trajectory_artifacts"]["attempt_path"]
+        == "runs/attempt-one/trajectory.json"
+    )
+    assert first_execution["trajectory_artifacts"]["attempt_absolute"].endswith(
+        "/runs/attempt-one/trajectory.json"
+    )
+    assert (
         first_execution["trajectory_artifacts"]["canonical_path"]
         == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
     )
@@ -521,8 +528,17 @@ def test_persist_trajectory_writes_canonical_slot_and_replacement_metadata(tmp_p
         == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
     )
     assert metadata["training_artifact_key"] == "attempt-one"
+    assert metadata["attempt_trajectory_path"] == "runs/attempt-one/trajectory.json"
+    assert metadata["attempt_trajectory_absolute"].endswith("/runs/attempt-one/trajectory.json")
     assert metadata["sha256"]
     assert metadata["size_bytes"] > 0
+    assert (
+        index["entries"]["B6/task_fake/run_1"]["attempt_trajectory_path"]
+        == "runs/attempt-one/trajectory.json"
+    )
+    assert index["entries"]["B6/task_fake/run_1"]["attempt_trajectory_absolute"].endswith(
+        "/runs/attempt-one/trajectory.json"
+    )
     assert (
         index["entries"]["B6/task_fake/run_1"]["canonical_trajectory_path"]
         == "trajectories/B6/task_fake/runs/run_1/trajectory.json"
