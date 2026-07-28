@@ -257,6 +257,31 @@ def test_score_trajectory_file_replays_automated_checks_from_durable_workspace(
     assert result["usage"] == {"llm_calls": 0}
 
 
+def test_score_trajectory_file_ignores_deferred_collection_evaluation(
+    tmp_path: Path,
+) -> None:
+    path = _write_trajectory(tmp_path)
+    (path.parent / "evaluation.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "actbench.evaluation_skipped.v1",
+                "skipped": True,
+                "reason": "trajectory_only_default",
+                "scoring_status": "deferred",
+                "inline_scoring": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = score_trajectory_file(path)
+
+    assert result["schema_version"] == OFFLINE_SCORE_SCHEMA_VERSION
+    assert result["trajectory_id"] == "attempt-one"
+    assert result["score"] == 1.0
+    assert result["evaluation_error"] is False
+
+
 def test_score_trajectory_file_accepts_legacy_openclaw_schema(tmp_path: Path) -> None:
     path = _write_trajectory(tmp_path, schema_version=OPENCLAW_TRAJECTORY_SCHEMA_VERSION)
 
@@ -611,7 +636,7 @@ def test_raw_by_task_combined_ags_uses_judge_override(
     _write_raw_attack_trajectory(tmp_path, dataset)
 
     def fake_evaluate_attack(**kwargs: object) -> RewardResult:
-        assert kwargs["judge_model"] == "zjuicsr/gpt-5.5"
+        assert kwargs["judge_model"] == "private/gpt-5.5"
         return _reward_result(score=0.9)
 
     monkeypatch.setattr(offline_scoring, "evaluate_attack", fake_evaluate_attack)
@@ -625,14 +650,14 @@ def test_raw_by_task_combined_ags_uses_judge_override(
             "--mode",
             COMBINED_AGS_MODE,
             "--judge-model",
-            "zjuicsr/gpt-5.5",
+            "private/gpt-5.5",
         ]
     )
 
     payload = json.loads(capsys.readouterr().out)
     assert exit_code == 0
-    assert payload["judge_models"] == ["zjuicsr/gpt-5.5"]
-    assert payload["results"][0]["judge_model"] == "zjuicsr/gpt-5.5"
+    assert payload["judge_models"] == ["private/gpt-5.5"]
+    assert payload["results"][0]["judge_model"] == "private/gpt-5.5"
 
 
 def test_raw_by_task_auto_selection_prefers_merged_dataset(tmp_path: Path) -> None:

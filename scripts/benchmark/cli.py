@@ -46,12 +46,9 @@ def _parse_args() -> argparse.Namespace:
         "--suite",
         default="all",
         help=(
-            'Tasks to run: "all", "automated-only", current behavior code/slug '
-            '(e.g. "B1", "B12", "obfuscated_execution"), legacy behavior code '
-            '(e.g. "old:B11"), legacy risk code/type (e.g. "R1", "R2", '
-            '"unauthorized_execution"), canonical or legacy task IDs '
-            '(e.g. "task_B9_T01", "task_R2_T01", "old:task_B7_T01"), '
-            'or comma-separated prefixes/IDs'
+            'Tasks to run: "all", "automated-only", behavior code/slug '
+            '(e.g. "B1", "B12", "obfuscated_execution"), task IDs '
+            '(e.g. "task_B9_T01"), or comma-separated prefixes/IDs'
         ),
     )
     parser.add_argument(
@@ -97,8 +94,8 @@ def _parse_args() -> argparse.Namespace:
         help=(
             "Judge model for AGS attack_success and stealth scoring "
             "(default: deepseek/deepseek-v4-pro). "
-            "Routed by prefix: 'deepseek/...' → DeepSeek, otherwise OpenRouter. "
-            "Requires the matching API key env var."
+            "Routed by local provider config prefix or 'deepseek/...'; "
+            "otherwise OpenRouter. Requires the matching API key env var."
         ),
     )
     parser.add_argument(
@@ -126,9 +123,21 @@ def _parse_args() -> argparse.Namespace:
         help="Regenerate benign baselines even when a valid cache entry already exists",
     )
     parser.add_argument(
+        "--inline-scoring",
+        action="store_true",
+        help=(
+            "Deprecated legacy mode: run inline attack scoring immediately after "
+            "trajectory collection. By default ActBench only collects trajectories; "
+            "score them later with actbench-score."
+        ),
+    )
+    parser.add_argument(
         "--skip-scoring",
         action="store_true",
-        help="Skip inline attack scoring; record execution artifacts and trajectories only",
+        help=(
+            "Deprecated/no-op compatibility flag: trajectory-only collection is "
+            "now the default."
+        ),
     )
     parser.add_argument(
         "--baseline-only",
@@ -154,7 +163,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-training-artifacts",
         action="store_true",
-        help="Disable raw training artifact recording",
+        help=(
+            "Disable raw training artifact recording. Incompatible with default "
+            "trajectory-only collection because offline scoring requires trajectories."
+        ),
     )
     args = parser.parse_args()
     if args.skip_baseline_gen and args.regenerate_baselines:
@@ -167,6 +179,12 @@ def _parse_args() -> argparse.Namespace:
         part.strip() for part in args.retry_status.split(",")
     ):
         parser.error("--retry-status must include at least one status when --execution-retries > 0")
+    if args.no_training_artifacts and not args.inline_scoring and not args.baseline_only:
+        parser.error(
+            "--no-training-artifacts is incompatible with trajectory-only collection; "
+            "offline scoring requires recorded trajectories. Remove --no-training-artifacts "
+            "or use --inline-scoring for deprecated legacy inline scoring."
+        )
     if args.run_number:
         for raw_value in args.run_number:
             for part in str(raw_value).split(","):

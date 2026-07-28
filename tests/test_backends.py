@@ -274,6 +274,33 @@ def test_cli_accepts_execution_retry_options(monkeypatch: pytest.MonkeyPatch) ->
     assert args.retry_status == "error,timeout"
 
 
+def test_cli_defaults_to_trajectory_collection(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench"])
+
+    args = _parse_args()
+
+    assert args.inline_scoring is False
+    assert args.skip_scoring is False
+
+
+def test_cli_accepts_deprecated_inline_scoring(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--inline-scoring", "--no-training-artifacts"])
+
+    args = _parse_args()
+
+    assert args.inline_scoring is True
+    assert args.no_training_artifacts is True
+
+
+def test_cli_rejects_no_training_artifacts_for_default_collection(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--no-training-artifacts"])
+
+    with pytest.raises(SystemExit):
+        _parse_args()
+
+
 @pytest.mark.parametrize(
     "argv",
     [
@@ -307,6 +334,17 @@ def test_cli_accepts_baseline_only(monkeypatch: pytest.MonkeyPatch) -> None:
 
     assert args.baseline_only is True
     assert args.skip_baseline_gen is False
+
+
+def test_cli_accepts_baseline_only_without_training_artifacts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--baseline-only", "--no-training-artifacts"])
+
+    args = _parse_args()
+
+    assert args.baseline_only is True
+    assert args.no_training_artifacts is True
 
 
 @pytest.mark.parametrize(
@@ -427,9 +465,9 @@ def test_openclaw_agent_is_recreated_when_model_changes(
 
     workspace = tmp_path / "agent_workspace"
     existing = {
-        "id": "bench-taisure-claude-sonnet-4-6",
+        "id": "bench-private-claude-sonnet-4-6",
         "workspace": str(workspace),
-        "model": "taisure/claude-sonnet-4-6",
+        "model": "private/claude-sonnet-4-6",
     }
     run_calls: list[list[str]] = []
 
@@ -442,8 +480,8 @@ def test_openclaw_agent_is_recreated_when_model_changes(
     monkeypatch.setattr(lib_agent.subprocess, "run", fake_run)
 
     recreated = lib_agent.ensure_agent_exists(
-        "bench-taisure-claude-sonnet-4-6",
-        "taisure/claude-sonnet-4.6",
+        "bench-private-claude-sonnet-4-6",
+        "private/claude-sonnet-4.6",
         workspace,
     )
 
@@ -452,16 +490,16 @@ def test_openclaw_agent_is_recreated_when_model_changes(
         "openclaw",
         "agents",
         "delete",
-        "bench-taisure-claude-sonnet-4-6",
+        "bench-private-claude-sonnet-4-6",
         "--force",
     ]
     assert run_calls[1] == [
         "openclaw",
         "agents",
         "add",
-        "bench-taisure-claude-sonnet-4-6",
+        "bench-private-claude-sonnet-4-6",
         "--model",
-        "taisure/claude-sonnet-4.6",
+        "private/claude-sonnet-4.6",
         "--workspace",
         str(workspace),
         "--non-interactive",
@@ -3809,10 +3847,20 @@ def test_openagent_mcp_unregisters_on_request_error(
     ]
 
 
-def test_run_benchmark_with_fake_backend_writes_backend_schema(tmp_path: Path) -> None:
+def test_run_benchmark_with_fake_backend_writes_backend_schema(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
     tasks_dir = tmp_path / "tasks"
     _write_minimal_task(tasks_dir)
     output_dir = tmp_path / "results"
+    monkeypatch.setattr(
+        runner_module,
+        "_evaluate_attack_for_task",
+        lambda **_kwargs: (_ for _ in ()).throw(AssertionError("inline scorer should be deferred")),
+    )
 
     run_benchmark(
         Namespace(
@@ -3828,19 +3876,113 @@ def test_run_benchmark_with_fake_backend_writes_backend_schema(tmp_path: Path) -
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
     result_files = sorted(output_dir.glob("????_test-model.json"))
     assert len(result_files) == 1
+    assert len(list(output_dir.glob("actbench_summary_????_test-model.json"))) == 1
+    assert not list(output_dir.glob("bench_summary_????_test-model.json"))
     payload = json.loads(result_files[0].read_text(encoding="utf-8"))
     assert payload["backend"] == "fake"
     assert payload["backend_metadata"]["name"] == "fake"
+    assert payload["workflow"] == "trajectory_collection"
+    assert payload["scoring_status"] == "deferred"
+    assert payload["inline_scoring"] is False
+    assert payload["offline_scoring_command"] == (
+        f"uv run scripts/actbench_score.py --trajectory {output_dir / 'trajectories'} "
+        "--mode combined-ags"
+    )
     task_entry = payload["tasks"][0]
     assert task_entry["backend"] == "fake"
+    assert task_entry["workflow"] == "trajectory_collection"
+    assert task_entry["scoring_status"] == "deferred"
+    assert task_entry["inline_scoring"] is False
+    assert task_entry["attack_eval"] is None
+    assert task_entry["grading"]["scoring_status"] == "deferred"
+    assert task_entry["trajectory"]["attempt_path"].endswith("/trajectory.json")
     assert task_entry["agent_feedback"]["backend"] == "fake"
-    assert task_entry["openclaw_feedback"]["backend"] == "fake"
+    assert "openclaw_feedback" not in task_entry
+    artifact_root = Path(payload["training_artifact_dir"])
+    evaluation = json.loads(
+        (artifact_root / "runs" / task_entry["training_artifact_key"] / "evaluation.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert evaluation["schema_version"] == "actbench.evaluation_skipped.v1"
+    assert evaluation["scoring_status"] == "deferred"
+    summary = json.loads(next(output_dir.glob("actbench_summary_????_test-model.json")).read_text())
+    assert summary["workflow"] == "trajectory_collection"
+    assert summary["summary_kind"] == "trajectory_collection"
+    assert summary["scoring_status"] == "deferred"
+    assert summary["total_tasks"] == 1
+    assert summary["total_attempts"] == 1
+    assert summary["collected_attempts"] == 1
+    assert summary["scoring_status_counts"] == {"deferred": 1}
+    assert summary["tasks"][0]["task_id"] == "task_fake"
+    assert summary["tasks"][0]["trajectory"]["canonical_path"].startswith("trajectories/")
+
+
+def test_default_collection_execution_failure_writes_error_evaluation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from benchmark.backends.fake import FakeBackend
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    def fail_execute_task(self, **kwargs):
+        raise RuntimeError("backend exploded")
+
+    monkeypatch.setattr(FakeBackend, "execute_task", fail_execute_task)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=1,
+            run_workers=1,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=False,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    entry = payload["tasks"][0]
+    assert entry["status"] == "error"
+    assert entry["scoring_status"] == "error"
+    assert entry["inline_scoring"] is False
+
+    artifact_root = Path(payload["training_artifact_dir"])
+    evaluation = json.loads(
+        (artifact_root / "runs" / entry["training_artifact_key"] / "evaluation.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert evaluation["error_type"] == "execution_error"
+    assert "backend exploded" in evaluation["error"]
+    assert evaluation["scoring_status"] == "error"
+    assert evaluation["scoring_skipped"] is True
+    assert evaluation["inline_scoring"] is False
+    assert evaluation.get("schema_version") != "actbench.evaluation_skipped.v1"
+
+    summary = json.loads(next(output_dir.glob("actbench_summary_????_test-model.json")).read_text())
+    assert summary["total_tasks"] == 1
+    assert summary["total_attempts"] == 1
+    assert summary["status_counts"] == {"error": 1}
+    assert summary["scoring_status_counts"] == {"error": 1}
+
 
 
 def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -> None:
@@ -3863,7 +4005,7 @@ def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -3907,7 +4049,7 @@ def test_run_benchmark_targeted_run_number_executes_only_selected_slot(tmp_path:
             skip_baseline_gen=True,
             skip_scoring=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4093,7 +4235,7 @@ def test_run_benchmark_parallel_workers_are_reused_when_available(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4102,6 +4244,112 @@ def test_run_benchmark_parallel_workers_are_reused_when_available(
     assert by_run[1]["backend_metadata"]["run_worker_id"] == 1
     assert by_run[2]["backend_metadata"]["run_worker_id"] == 2
     assert by_run[3]["backend_metadata"]["run_worker_id"] == 2
+
+
+def test_default_collection_parallel_worker_exception_keeps_deferred_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+    from benchmark.backends.common import zero_usage
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    def fake_attempt(
+        *,
+        task,
+        context,
+        run_index,
+        runs_per_task,
+        run_workers,
+        worker_id,
+        **_kwargs,
+    ):
+        if run_index == 1:
+            raise RuntimeError("worker exploded")
+        attempt_id = runner_module._attempt_run_id(context.run_id, run_index)
+        attempt_context = runner_module._attempt_context(
+            context,
+            attempt_run_id=attempt_id,
+            run_index=run_index,
+            runs_per_task=runs_per_task,
+            run_workers=run_workers,
+            worker_id=worker_id,
+        )
+        result = {
+            "agent_id": attempt_context.agent_id,
+            "task_id": task.task_id,
+            "status": "success",
+            "transcript": [],
+            "usage": zero_usage(),
+            "workspace": str(tmp_path / f"workspace-{run_index + 1}"),
+            "exit_code": 0,
+            "timed_out": False,
+            "execution_time": 0.0,
+            "stdout": "",
+            "stderr": "",
+            "api_audit": {},
+            "api_endpoints": {},
+            "training_artifact_key": f"{attempt_id}_{task.task_id}",
+            "backend": context.backend,
+            "backend_metadata": {
+                "name": context.backend,
+                "model": context.model,
+                "agent_id": attempt_context.agent_id,
+                **attempt_context.metadata,
+            },
+            "inline_scoring": False,
+            "scoring_skipped": True,
+            "scoring_status": "deferred",
+        }
+        return {
+            "run_index": run_index,
+            "result": result,
+            "attack_eval": None,
+            "execution_error": None,
+            "evaluation_error": None,
+            "scoring_skipped": True,
+            "scoring_status": "deferred",
+            "inline_scoring": False,
+        }
+
+    monkeypatch.setattr(runner_module, "_execute_and_evaluate_attempt", fake_attempt)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=3,
+            run_workers=2,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            training_artifact_dir=None,
+            no_training_artifacts=False,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["workflow"] == "trajectory_collection"
+    assert payload["inline_scoring"] is False
+    entries = payload["tasks"]
+    assert [entry["scoring_status"] for entry in entries] == ["deferred", "error", "deferred"]
+    assert [entry["inline_scoring"] for entry in entries] == [False, False, False]
+    failed = entries[1]
+    assert failed["status"] == "error"
+    assert "worker exploded" in failed["agent_feedback"]["stderr"]
+
+    summary = json.loads(next(output_dir.glob("actbench_summary_????_test-model.json")).read_text())
+    assert summary["summary_kind"] == "trajectory_collection"
+    assert summary["scoring_status_counts"] == {"deferred": 2, "error": 1}
+
 
 
 def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
@@ -4140,12 +4388,16 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
             verbose=False,
             no_fail_fast=True,
             skip_baseline_gen=True,
+            inline_scoring=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
     payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["workflow"] == "legacy_inline_scoring"
+    assert payload["scoring_status"] == "partial"
+    assert payload["inline_scoring"] is True
     entries = payload["tasks"]
     assert [entry["backend_metadata"]["run_index"] for entry in entries] == [1, 2, 3]
     failed = entries[1]
@@ -4161,6 +4413,74 @@ def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
         True,
         False,
     ]
+
+
+def test_inline_reward_result_evaluation_error_marks_run_error(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import benchmark.runner as runner_module
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    output_dir = tmp_path / "results"
+
+    def invalid_reward(**_kwargs):
+        return RewardResult(
+            score=0.0,
+            attack_success=0.0,
+            stealth=0.0,
+            is_success=False,
+            evaluation_error=True,
+            error_type="judge_error",
+            error_message="malformed judge response",
+        )
+
+    monkeypatch.setattr(runner_module, "_evaluate_attack_for_task", invalid_reward)
+
+    run_benchmark(
+        Namespace(
+            tasks_dir=str(tasks_dir),
+            model="test/model",
+            backend="fake",
+            suite="task_fake",
+            output_dir=str(output_dir),
+            timeout_multiplier=1.0,
+            runs=1,
+            run_workers=1,
+            judge_model=None,
+            verbose=False,
+            no_fail_fast=True,
+            skip_baseline_gen=True,
+            inline_scoring=True,
+            training_artifact_dir=None,
+            no_training_artifacts=False,
+        )
+    )
+
+    payload = json.loads(next(output_dir.glob("????_test-model.json")).read_text(encoding="utf-8"))
+    assert payload["workflow"] == "legacy_inline_scoring"
+    assert payload["scoring_status"] == "error"
+    entry = payload["tasks"][0]
+    assert entry["scoring_status"] == "error"
+    assert entry["grading"]["scoring_status"] == "error"
+    assert entry["attack_eval"]["scoring_status"] == "error"
+    assert entry["attack_eval"]["evaluation_error_count"] == 1
+
+    artifact_root = Path(payload["training_artifact_dir"])
+    metadata = json.loads(
+        (output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "metadata.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert metadata["scoring"]["scoring_status"] == "error"
+    evaluation = json.loads(
+        (artifact_root / "runs" / entry["training_artifact_key"] / "evaluation.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert evaluation["evaluation_error"] is True
+    assert evaluation["error_type"] == "judge_error"
 
 
 def test_run_benchmark_openclaw_parallel_repeats_use_lanes(
@@ -4233,7 +4553,7 @@ def test_run_benchmark_openclaw_parallel_repeats_use_lanes(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4305,7 +4625,7 @@ def test_run_benchmark_hermes_parallel_repeats_use_attempt_scoped_homes(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4400,7 +4720,7 @@ def test_run_benchmark_opencode_parallel_repeats_use_attempt_scoped_homes(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4479,7 +4799,7 @@ def test_run_benchmark_claudecode_parallel_repeats_use_attempt_scoped_homes(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4536,7 +4856,7 @@ def test_run_benchmark_rejects_unsupported_parallel_backend(
                 no_fail_fast=True,
                 skip_baseline_gen=True,
                 training_artifact_dir=None,
-                no_training_artifacts=True,
+                no_training_artifacts=False,
             )
         )
 
@@ -4573,7 +4893,7 @@ def test_run_benchmark_clamps_workers_before_parallel_support_check(
             no_fail_fast=True,
             skip_baseline_gen=True,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4620,7 +4940,7 @@ def test_run_benchmark_baseline_context_uses_baseline_repeat_metadata(
             no_fail_fast=True,
             skip_baseline_gen=False,
             training_artifact_dir=None,
-            no_training_artifacts=True,
+            no_training_artifacts=False,
         )
     )
 
@@ -4629,6 +4949,36 @@ def test_run_benchmark_baseline_context_uses_baseline_repeat_metadata(
     assert captured_metadata[0]["run_worker_id"] == 1
     assert captured_metadata[0]["baseline"] is True
     assert captured_metadata[0]["baseline_index"] == 1
+
+
+def test_run_benchmark_rejects_direct_default_collection_without_artifacts(
+    tmp_path: Path,
+) -> None:
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_benchmark(
+            Namespace(
+                tasks_dir=str(tasks_dir),
+                model="test/model",
+                backend="fake",
+                suite="task_fake",
+                output_dir=str(tmp_path / "results"),
+                timeout_multiplier=1.0,
+                runs=1,
+                run_workers=1,
+                judge_model=None,
+                verbose=False,
+                no_fail_fast=True,
+                skip_baseline_gen=True,
+                training_artifact_dir=None,
+                no_training_artifacts=True,
+            )
+        )
+
+    assert exc_info.value.code == 2
+
 
 
 def test_run_benchmark_baseline_only_skips_attack_execution(
@@ -4703,7 +5053,7 @@ def test_run_benchmark_rejects_nonpositive_run_workers(
                 no_fail_fast=True,
                 skip_baseline_gen=True,
                 training_artifact_dir=None,
-                no_training_artifacts=True,
+                no_training_artifacts=False,
             )
         )
 
@@ -4734,7 +5084,7 @@ def test_run_benchmark_rejects_remote_backend_parallel_runs(
                 no_fail_fast=True,
                 skip_baseline_gen=True,
                 training_artifact_dir=None,
-                no_training_artifacts=True,
+                no_training_artifacts=False,
             )
         )
 

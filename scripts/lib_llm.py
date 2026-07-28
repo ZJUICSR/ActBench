@@ -2,12 +2,11 @@
 LLM backend router for ActBench support models.
 
 Dispatches based on the model id prefix:
-  - "zjuicsr/..."                                         -> ZJUICSR OpenAI-compatible gateway
-  - "taisure/..."                                         -> TAISURE (taisure.com)
-  - "deepseek/...", "deepseek-..."                        -> DeepSeek (api.deepseek.com)
-  - everything else                                        -> OpenRouter
+  - prefixes defined in config/llm_backends.local.yaml -> generic OpenAI-compatible gateway
+  - "deepseek/...", "deepseek-..."                    -> DeepSeek (api.deepseek.com)
+  - everything else                                    -> OpenRouter
 
-Target models (run via OpenClaw) are unaffected — they don't use this module.
+Target-model execution is handled by backend adapters; it does not use this module.
 """
 
 from __future__ import annotations
@@ -16,24 +15,13 @@ import time
 from typing import Any, Dict, List
 
 import lib_deepseek
+import lib_llm_config
+import lib_openai_compatible
 import lib_openrouter
-import lib_taisure
-import lib_zjuicsr
 from lib_training_artifacts import record_model_call
 
-ZJUICSR_PREFIXES = ("zjuicsr/",)
-TAISURE_PREFIXES = ("taisure/",)
 DEEPSEEK_PREFIXES = ("deepseek/", "deepseek-")
-
-
-def _is_zjuicsr(model: str) -> bool:
-    m = (model or "").lower()
-    return any(m.startswith(p) for p in ZJUICSR_PREFIXES)
-
-
-def _is_taisure(model: str) -> bool:
-    m = (model or "").lower()
-    return any(m.startswith(p) for p in TAISURE_PREFIXES)
+LOCAL_PROVIDER_PREFIXES = ("private/", "local/", "gateway/")
 
 
 def _is_deepseek(model: str) -> bool:
@@ -42,12 +30,6 @@ def _is_deepseek(model: str) -> bool:
 
 
 def _backend(model: str):
-    # Order matters: explicit gateway prefixes must win over bare/provider-looking
-    # model names inside those gateways (e.g. zjuicsr/deepseek-v4-pro).
-    if _is_zjuicsr(model):
-        return lib_zjuicsr
-    if _is_taisure(model):
-        return lib_taisure
     if _is_deepseek(model):
         return lib_deepseek
     return lib_openrouter
@@ -61,7 +43,14 @@ def chat_completion(
 ) -> str:
     trace_role = str(kwargs.pop("trace_role", "unknown"))
     trace_metadata = kwargs.pop("trace_metadata", {})
-    backend = _backend(model)
+    provider = lib_llm_config.match_provider(model)
+    if provider is None and (model or "").lower().startswith(LOCAL_PROVIDER_PREFIXES):
+        raise RuntimeError(
+            "No local LLM provider config matched model prefix "
+            f"{model.split('/', 1)[0]!r}. Copy config/llm_backends.example.yaml to "
+            "config/llm_backends.local.yaml or set ACTBENCH_LLM_BACKENDS_CONFIG."
+        )
+    backend = lib_openai_compatible if provider else _backend(model)
     request_payload = {
         "messages": messages,
         "model": model,
@@ -69,7 +58,12 @@ def chat_completion(
     }
     start = time.perf_counter()
     try:
-        response = backend.chat_completion(messages=messages, model=model, **kwargs)
+        if provider:
+            response = backend.chat_completion(
+                messages=messages, model=model, provider=provider, **kwargs
+            )
+        else:
+            response = backend.chat_completion(messages=messages, model=model, **kwargs)
         usage = normalize_usage(backend.get_last_usage())
         record_model_call(
             role=trace_role,
@@ -118,7 +112,7 @@ def query_with_system_prompt(
 
 
 def normalize_usage(usage: Dict[str, Any] | None) -> Dict[str, Any]:
-    """Normalize provider-specific usage fields into ClawEval's common shape."""
+    """Normalize provider-specific usage fields into ActBench's common shape."""
     usage = usage or {}
     input_tokens = int(
         usage.get("input_tokens") or usage.get("prompt_tokens") or usage.get("input") or 0
@@ -162,13 +156,11 @@ def get_last_usage() -> Dict[str, Any]:
     merged: Dict[str, Any] = {}
     merged.update(lib_openrouter.get_last_usage())
     merged.update(lib_deepseek.get_last_usage())
-    merged.update(lib_taisure.get_last_usage())
-    merged.update(lib_zjuicsr.get_last_usage())
+    merged.update(lib_openai_compatible.get_last_usage())
     return normalize_usage(merged)
 
 
 def reset_usage() -> None:
     lib_openrouter.reset_usage()
     lib_deepseek.reset_usage()
-    lib_taisure.reset_usage()
-    lib_zjuicsr.reset_usage()
+    lib_openai_compatible.reset_usage()

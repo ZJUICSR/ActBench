@@ -1,78 +1,69 @@
 # ActBench Result Format
 
-ActBench writes JSON results to `--output-dir` (default: `results`).
+ActBench writes JSON results to `--output-dir` (default: `results`). The public workflow is two-step: the runner collects trajectories first, then `actbench_score.py` scores those trajectories offline.
 
-## Full result
+## Collection run result
 
-`results/<run_id>_<model_slug>.json` contains:
+`results/<run_id>_<model_slug>.json` contains runner metadata and per-attempt execution records. For the default trajectory-only workflow, score-shaped aggregate fields are present for compatibility but are not official scores; rely on `workflow: trajectory_collection`, `scoring_status: deferred`, and `inline_scoring: false` to distinguish collection output from scored output.
+
+Key fields include:
 
 - `model` — target model id requested with `--model` and used by the selected backend.
 - `backend` / `backend_metadata` — target-agent backend name and adapter metadata.
-- `judge_model` — model id used for LLM-assisted AGS scoring.
+- `judge_model` — configured judge model to use later for LLM-assisted AGS scoring.
 - `run_id` / `timestamp` / `suite` / `runs_per_task`.
-- `scoring_semantics` — `actbench_ags`.
+- `workflow` — `trajectory_collection` by default, or deprecated `legacy_inline_scoring` when `--inline-scoring` is explicitly used.
+- `scoring_status` — `deferred` for default collection runs, `scored` for legacy inline-scoring runs.
+- `inline_scoring` — `false` by default.
+- `offline_scoring_command` — suggested `actbench_score.py` replay command for the canonical attacked-attempt trajectory tree.
+- `scoring_semantics` — `actbench_ags` for AGS-compatible fields.
 - `attack_success_threshold` — default `0.8`.
 - `attack_pass_condition` — `attack_success >= attack_success_threshold`.
-- `asr` — Attack Success Rate across valid scored runs.
-- `pass@k`, `pass@k1`, `pass@k2`, `pass@k3` — task-level attack-success pass rates using the first `k` valid repeats.
+- `asr` and `pass@k*` — meaningful only after scoring; default collection runs leave them empty/zero for compatibility.
 - `tasks` — per-task entries.
 - `efficiency` — token, request, timing, and cost summaries when available.
-- `attack_pass_summary` — repeated-run attack-success summary.
+- `attack_pass_summary` — repeated-run attack-success summary when scoring has run; empty for default collection runs.
 
 Each `tasks[]` entry includes:
 
 - `task_id`
 - `taxonomy_version`, currently `actbench.behavior_taxonomy.v2_20260722`
-- `behavior_id`, `behavior_type`, `behavior_label`, and optional `legacy_behavior_id`
+- `behavior_id`, `behavior_type`, and `behavior_label`
 - `backend` / `backend_metadata` — backend used for this task attempt.
 - `scoring_family` — current B-class scoring bucket (`B1`-`B15`)
-- `legacy_risk_type` — legacy compatibility risk-family bucket
 - execution status and timing
+- `workflow`, `scoring_status`, and `inline_scoring`
 - transcript length metrics: `transcript_entry_count`, `iteration_count`, `message_count`, `message_json_chars`, `message_text_chars`, `transcript_json_chars`, and `message_role_counts`
 - token `usage`
-- `grading` — AGS-oriented aggregate score for the task/repeat set
-- `attack_eval` — attack-oriented run scores, including `per_run_results` with each run's AGS/pass verdict and transcript length metrics
-- `pass_count`, `asr`, `pass@k1`, `pass@k2`, `pass@k3` — attack-success verdict summaries
+- `grading` — AGS-oriented aggregate score for the task/repeat set when scoring ran; compatibility empty/zero payload when scoring is deferred
+- `attack_eval` — attack-oriented run scores when scoring ran, including `per_run_results` with each run's AGS/pass verdict and transcript length metrics; `null`/absent when scoring is deferred
+- `pass_count`, `asr`, `pass@k1`, `pass@k2`, `pass@k3` — attack-success verdict summaries when scoring ran
 - `agent_feedback` — backend-neutral transcript/stdout/stderr/API audit details.
-- `openclaw_feedback` — legacy alias with the same execution details, retained for compatibility.
 - `frontmatter` — task metadata used for the run
 - `baseline` — compact benign baseline summary when available, including artifact refs for aligned benign-run artifacts when the baseline was generated with raw artifacts enabled
 
 ## Compact summary
 
-`results/actbench_summary_<run_id>_<model_slug>.json` contains a smaller summary intended for scripts and tables:
+`results/actbench_summary_<run_id>_<model_slug>.json` contains a smaller summary intended for scripts and tables. Default collection runs mark this as `summary_kind: trajectory_collection` with `scoring_status: deferred`; score fields remain compatibility placeholders until offline scoring is run.
 
+Common compact fields include:
+
+- `workflow`, `scoring_status`, `inline_scoring`, and `summary_kind`
+- `offline_scoring_command`
 - `attack_success_threshold`
 - `attack_pass_definition`
 - `attack_reproduced_definition`
 - `total_tasks`
-- `attack_reproduced_tasks`
-- `attack_success_count`
-- `valid_runs`
-- `asr`
-- `pass@k`, `pass@k1`, `pass@k2`, `pass@k3`
 - `by_behavior`
 - `tasks`
 
-Each compact task row includes:
+Default collection summaries additionally include `total_attempts`, `collected_attempts`, `failed_attempts`, `status_counts`, and `scoring_status_counts`. Each collection task row records `task_id`, behavior metadata, backend/status, `workflow`, `scoring_status`, `inline_scoring`, repeat/attempt identifiers, `training_artifact_key`, trajectory refs, timing, and transcript length metrics. These rows intentionally do not contain official AGS/ASR/pass verdicts.
 
-- `task_id`
-- `taxonomy_version`, `behavior_id`, `behavior_type`, `behavior_label`, `behavior_key`, and optional `legacy_behavior_id`
-- `ags` — mean attack success
-- `py_ags` — automated-check contribution
-- `llm_ags` — judge-model contribution
-- `runs` and `valid_runs`
-- `attack_success_count` / `attack_runs` / `pass_count`
-- `asr`
-- `pass@k1`, `pass@k2`, `pass@k3`
-- `attack_reproduced`
-- `per_run_results` — per-run `ags`, `pass`, run identifiers, evaluation-error status, and transcript length metrics
-
-`results/bench_summary_<run_id>_<model_slug>.json` is a legacy alias for the same compact payload.
+Deprecated inline-scoring summaries include attack-score fields such as `attack_reproduced_tasks`, `attack_success_count`, `valid_runs`, `asr`, `pass@k`, and per-row `ags` / `py_ags` / `llm_ags` / `per_run_results`.
 
 ## Raw training artifacts
 
-Unless `--no-training-artifacts` is set, ActBench also writes a raw artifact tree next to the aggregate result:
+By default, ActBench also writes a raw artifact tree next to the aggregate result. Do not disable this for trajectory collection, because the runner uses these artifacts to persist scoreable trajectories:
 
 ```text
 results/<run_id>_<model_slug>_artifacts/
@@ -86,11 +77,21 @@ runs/<training_artifact_key>/
 
 Existing per-attempt artifacts include `task.json`, `agent_execution.json`, `evaluation.json`, `baseline.json`, `workspace_before/`, `workspace_after/`, and mock API files under `api/`. Generated benign baseline runs use the same per-run layout as attacked attempts; their `evaluation.json` uses `schema_version: actbench.baseline_evaluation.v1` and `role: benign_baseline` rather than an attack-evaluation payload. When `--execution-retries` supersedes a failed execution attempt, the superseded attempt directory is kept with `evaluation.json` schema `actbench.execution_retry_superseded.v1`; aggregate results keep only the final attempt for that repeat slot and include `execution_retry` / `retry_history` metadata.
 
-Each backend attempt additionally writes one standalone execution trajectory before inline scoring starts. Generated benign baseline attempts also write `trajectory.json` with `role: benign_baseline`:
+Each backend attempt additionally writes one standalone execution trajectory. Generated benign baseline attempts also write `trajectory.json` with `role: benign_baseline`:
 
 ```text
 runs/<training_artifact_key>/trajectory.json
 ```
+
+The runner also mirrors attacked attempts (not benign baselines) into a canonical scoring tree under the output directory:
+
+```text
+results/trajectories/<suite>/<task_id>/runs/run_<n>/trajectory.json
+```
+
+Use that canonical tree, or a suite/task subtree inside it, for offline AGS/ASR/pass@k scoring. Raw artifact roots may contain both attacked attempts and benign baseline trajectories, and generic directory scoring recursively consumes every `trajectory.json` it finds.
+
+Aggregate `tasks[].trajectory` entries use `attempt_path` / `attempt_absolute` for the per-attempt trajectory copy and `canonical_path` / `canonical_absolute` when a stable canonical trajectory slot was written. Compatibility `legacy_path` fields may still appear in generated metadata for consumers of earlier artifacts; new integrations should prefer the `attempt_*` names. Canonical trajectory metadata and `trajectory_index.json` use the corresponding `attempt_trajectory_path` / `attempt_trajectory_absolute` fields.
 
 The current trajectory schema is versioned as `actbench.trajectory.v1`. Offline scoring also accepts legacy OpenClaw-only trajectories versioned as `actbench.openclaw_trajectory.v1`. The trajectory contains:
 
@@ -103,9 +104,45 @@ The current trajectory schema is versioned as `actbench.trajectory.v1`. Offline 
 - `artifacts` — relative paths to durable files/directories such as `workspace_after/`, manifests, API logs, `agent_execution.json`, `backend_execution`, `evaluation.json`, and `baseline.json`. OpenClaw artifacts also include the legacy `openclaw_execution.json` reference.
 - `scoring_inputs` — replay hints and evidence needed to rerun Python automated checks, LLM judge, or combined AGS later. If a task is not currently scoreable (for example because source scenario metadata is missing), this block still records task-local replay evidence where available and sets `scoreable: false` with `skip_reason`.
 
-`trajectory.json` is an execution artifact, not a score artifact: it intentionally does not include final `attack_eval` or aggregate grading scores. Existing inline scoring still runs immediately after the trajectory is written. Offline scoring should prefer `artifacts.workspace_after` as the replay `workspace_path` instead of the original temporary `/tmp/claweval/...` workspace path.
+`trajectory.json` is the canonical execution artifact, not a score artifact: it intentionally does not include final `attack_eval` or aggregate grading scores. Official AGS/ASR/pass@k scores are produced later by `actbench_score.py`. Offline scoring should prefer `artifacts.workspace_after` as the replay `workspace_path` instead of the original temporary `/tmp/claweval/...` workspace path.
 
 Benign baseline cache entries are versioned as `actbench.benign_baseline.v2` when regenerated by current code. The cache keeps the full benign transcript and file-operation summary, plus `training_artifact_key` and `artifacts` refs when raw artifacts were enabled. Use `--regenerate-baselines` to replace valid legacy cache entries with freshly generated aligned artifacts; it is mutually exclusive with `--skip-baseline-gen`.
+
+## Raw-by-task packing
+
+`actbench_pack_raw_by_task.py` converts normal trajectory-first runner output into the manifest-addressed raw-by-task layout used by aggregate AGS, utility prep, and utility scoring workflows. It copies existing trajectories/artifacts only; it does not rerun agents or rewrite trajectory JSON contents.
+
+```bash
+uv run scripts/actbench_pack_raw_by_task.py \
+  --result results/<run_dir>/<run_id>_<model>.json \
+  --dataset-name <dataset> \
+  --raw-by-task-root ~/pack/raw_by_task
+
+uv run scripts/actbench_score.py \
+  --raw-by-task-root ~/pack/raw_by_task \
+  --raw-by-task-dataset <dataset> \
+  --mode combined-ags
+```
+
+The destination layout is:
+
+```text
+~/pack/raw_by_task/<dataset>/
+  manifest.json
+  <suite>/<task_id>/run_<n>/trajectory.json
+  <suite>/<task_id>/run_<n>/workspace_after/
+  <suite>/<task_id>/run_<n>/api/audit.json
+  <suite>/<task_id>/run_<n>/api/endpoints.json
+  _baselines/<suite>/<task_id>/baseline/trajectory.json
+  _baselines/<suite>/<task_id>/baseline/baseline_cache.json
+  _baselines/<suite>/<task_id>/baseline/source_paths.json
+```
+
+The packer prefers aggregate `--result` JSON because it carries exact canonical trajectory paths, attempt artifact keys, backend/model metadata, and baseline refs. If an aggregate JSON is unavailable, use `--output-dir <runner-output-dir>` to read `trajectory_index.json` or scan `trajectories/*/*/runs/run_*/trajectory.json`. `--artifact-root` can be repeated when artifact roots were stored outside the output directory. `--suite`, `--task-id`, and `--run-number` filter structurally before copying.
+
+Safety defaults refuse an existing dataset. Use `--allow-existing` to add only missing files, `--overwrite` to replace files/directories inside the selected destination dataset, or `--dry-run` to print the planned pack summary without writing. Baseline copying is enabled by default; `--no-baselines` writes only attacked runs. If only a benign baseline cache is available, the packer writes `baseline_cache.json` without fabricating a raw `trajectory.json`, so raw-by-task consumers report the baseline as `baseline_cache_only` rather than silently treating it as full clean evidence.
+
+Direct `--trajectory results/<run_dir>/trajectories` scoring remains useful for local smoke checks. Raw-by-task packs are the recommended format when sharing datasets, merging shards, selecting by manifest, or pairing attacked AGS with clean utility/UGS workflows.
 
 ## Utility preparation artifacts
 
@@ -117,7 +154,7 @@ uv run scripts/actbench_utility_prep.py \
   --output-dir results/utility_prep/<run>_<model>
 ```
 
-Inputs follow the same discovery semantics as offline scoring: each `--trajectory` or positional value may be a trajectory file, artifact directory, canonical trajectory tree, or glob; directories are searched recursively for `trajectory.json`. The prep command deduplicates legacy per-attempt copies and canonical copies, preferring the canonical non-superseded copy for a run slot. By default it excludes execution failures, timeouts, missing replay workspaces, unsupported trajectory schemas, and records filtered out by role/backend/model/task/suite options. Use `--include-failed` or `--include-missing-workspace` only when you intentionally want lower-quality records marked with `quality_flags`.
+Inputs follow the same discovery semantics as offline scoring: each `--trajectory` or positional value may be a trajectory file, artifact directory, canonical trajectory tree, or glob; directories are searched recursively for `trajectory.json`. The prep command deduplicates per-attempt artifact copies and canonical copies, preferring the canonical non-superseded copy for a run slot. By default it excludes execution failures, timeouts, missing replay workspaces, unsupported trajectory schemas, and records filtered out by role/backend/model/task/suite options. Use `--include-failed` or `--include-missing-workspace` only when you intentionally want lower-quality records marked with `quality_flags`.
 
 Prepared raw-by-task packs can be consumed directly without globbing through both attack and baseline layouts:
 
@@ -158,7 +195,7 @@ Utility scoring is a separate scorer for clean raw-by-task baselines. UGS/TAcc m
 uv run scripts/actbench_utility_score.py \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
-  --judge-model zjuicsr/gpt-5.5 \
+  --judge-model private/gpt-5.5 \
   --output results/utility_scores/<dataset>_ugs_v1.json
 ```
 
@@ -174,7 +211,7 @@ The LLM utility judge prompt includes only task-goal and execution evidence, tre
 
 ## Offline trajectory scoring
 
-Trajectory artifacts can be replayed from a trajectory file, artifact directory, or glob. Directories are searched recursively for `trajectory.json` files. Use `--output offline-score.json` to persist the JSON result.
+Official attack scoring is written by `actbench_score.py`, not by default runner collection. Trajectory artifacts can be replayed from a trajectory file, artifact directory, or glob. Directories are searched recursively for `trajectory.json` files. Use `--output offline-score.json` to persist the JSON result.
 
 Prepared raw-by-task packs can be selected by manifest instead of by broad recursive globs:
 
@@ -187,14 +224,14 @@ uv run scripts/actbench_score.py \
 
 Raw-by-task scoring reads attacked attempts only from `<dataset>/<suite>/<task_id>/run_<n>/trajectory.json`; clean baselines are intentionally left to utility prep. When auto-selecting from a raw-by-task root with `--raw-by-task`, merged datasets supersede their shard datasets when the manifests identify the merge. AGS/ASR/pass@k semantics are unchanged because raw-by-task selection only expands to normal `trajectory.json` files before replay. Pack-local `workspace_after/` directories are preferred over stale original `results/` paths for raw-by-task trajectories.
 
-To replay combined AGS from a raw-by-task pack with the ZJUICSR judge:
+To replay combined AGS from a raw-by-task pack with a private OpenAI-compatible judge:
 
 ```bash
 uv run scripts/actbench_score.py \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
   --mode combined-ags \
-  --judge-model zjuicsr/gpt-5.5 \
+  --judge-model private/gpt-5.5 \
   --output results/offline_scores/<dataset>_combined_ags.json
 ```
 

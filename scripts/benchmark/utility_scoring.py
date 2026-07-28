@@ -1459,7 +1459,7 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--judge-model",
         required=True,
-        help="External judge model for utility scoring, e.g. zjuicsr/gpt-5.5.",
+        help="External judge model for utility scoring, e.g. private/gpt-5.5.",
     )
     parser.add_argument(
         "--output",

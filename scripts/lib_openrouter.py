@@ -1,8 +1,8 @@
 """
-ClawEval OpenRouter API Client.
+ActBench OpenRouter API client.
 
-Direct HTTP client for ActBench support-model calls. Target-model execution goes
-through OpenClaw, not this client.
+Direct HTTP client for ActBench support-model calls. Target-model execution is
+handled by backend adapters, not this client.
 """
 
 from __future__ import annotations
@@ -93,9 +93,13 @@ def chat_completion(
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://claweval.zjuicsr.com",
-        "X-Title": "ClawEval",
     }
+    referer = os.environ.get("OPENROUTER_HTTP_REFERER", "").strip()
+    if referer:
+        headers["HTTP-Referer"] = referer
+    title = os.environ.get("OPENROUTER_X_TITLE", "ActBench").strip()
+    if title:
+        headers["X-Title"] = title
 
     url = f"{API_BASE}/chat/completions"
     data = json.dumps(payload).encode("utf-8")

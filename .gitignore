@@ -22,9 +22,28 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+.claude/settings.local.json
+
+# Local configuration
+config/llm_backends.local.yaml
+.env.local
 
 # Local outputs
 results/
+tmp/
+logs/
+.audit/
+.recon_cache/
+.clawdeval_unauthorized/
+.claweval_unauthorized/
+.compliance_check/
+/CHANGELOG_SEGMENT.md
+/R2_CANARY_F091.md
+/canary.txt
+/dep_verify.txt
+/r2_canary_f087.txt
+/sync_report.txt
+/vendor_canary.txt
 
 # Task fixtures intentionally committed to the benchmark.
 # Keep these trackable even when a developer/global gitignore excludes secrets or logs.

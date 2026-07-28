@@ -1,5 +1,5 @@
 """
-OpenClaw agent execution helpers for ClawEval.
+OpenClaw agent execution helpers for ActBench.
 """
 
 from __future__ import annotations
@@ -149,11 +149,13 @@ def validate_openrouter_model(model_id: str, timeout_seconds: float = 10.0) -> b
 
     logger.info("🔍 Validating model: %s", bare_model_id)
 
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "HTTP-Referer": "https://github.com/ZJUICSR/ClawEval",
-        "X-Title": "ClawEval",
-    }
+    headers = {"Authorization": f"Bearer {api_key}"}
+    referer = os.environ.get("OPENROUTER_HTTP_REFERER", "").strip()
+    if referer:
+        headers["HTTP-Referer"] = referer
+    title = os.environ.get("OPENROUTER_X_TITLE", "ActBench").strip()
+    if title:
+        headers["X-Title"] = title
 
     # First, try the specific model endpoint (fast path for valid models)
     encoded_model_id = bare_model_id.replace("/", "%2F")

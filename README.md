@@ -48,8 +48,7 @@ ActBench currently contains 300 public tasks, grouped by B-class selectors:
 - A judge-model API key when using LLM-assisted scoring:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
   - `OPENROUTER_API_KEY` for OpenRouter-routed judge models
-  - `TAISURE_API_KEY` for `taisure/...` judge models
-  - `ZJUICSR_API_KEY` for `zjuicsr/...` judge models; set `ZJUICSR_API_BASE` if the OpenAI-compatible endpoint is not `https://router.zjuicsr.cn/v1/chat/completions`
+  - For private OpenAI-compatible gateways, copy `config/llm_backends.example.yaml` to the ignored `config/llm_backends.local.yaml` and set the configured API-key/base-URL environment variables.
 
 Install dependencies:
 
@@ -58,6 +57,16 @@ uv sync
 # or
 pip install -e .
 ```
+
+For private OpenAI-compatible judge gateways, keep provider details local:
+
+```bash
+cp config/llm_backends.example.yaml config/llm_backends.local.yaml
+export ACTBENCH_PRIVATE_GATEWAY_BASE_URL="https://your-gateway.example/v1"
+export ACTBENCH_PRIVATE_GATEWAY_API_KEY="..."
+```
+
+Then use the configured neutral prefix, for example `--judge-model private/gpt-5.5`.
 
 ## Collect trajectories with ActBench
 
@@ -216,7 +225,7 @@ uv run scripts/actbench_score.py \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
   --mode combined-ags \
-  --judge-model zjuicsr/gpt-5.5
+  --judge-model private/gpt-5.5
 
 uv run scripts/actbench_utility_prep.py \
   --raw-by-task-root ~/pack/raw_by_task \

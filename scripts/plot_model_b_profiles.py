@@ -20,18 +20,19 @@ B_CATEGORIES = [f"B{i}" for i in range(1, 16)]
 OPENCLAW_DATASET_LABELS = {
     "openclaw_openrouter_anthropic_claude_opus_4_8_trajectories_20260718_runs3_parallel": "Claude-Opus-4.8",
     "openclaw_openrouter_anthropic_claude_sonnet_4_6_trajectories_20260715_runs3_parallel": "Claude-Sonnet-4.6",
-    "openclaw_zjuicsr_gpt-5.5_trajectories_20260715_runs3_parallel": "GPT-5.5",
-    "openclaw_zjuicsr_gpt-5.4-mini_trajectories_20260714_runs3_parallel": "GPT-5.4-mini",
-    "openclaw_taisure-glm-5-2_trajectories_20260714_runs3_parallel": "GLM-5.2",
-    "openclaw_taisure_qwen3_7_max_trajectories_20260714_215927_runs3_parallel": "Qwen-3.7-max",
-    "openclaw_taisure_qwen3_7_plus_trajectories_20260714_runs3_parallel": "Qwen-3.7-plus",
-    "openclaw_tencent_tokenhub_hy3_trajectories_20260718_runs3_parallel_key2": "Hunyuan-3.0",
-    "openclaw_taisure_kimi_k2_6_trajectories_20260715_runs3_parallel": "Kimi-k2.6",
+    "openclaw_private_gpt-5.5_trajectories_20260715_runs3_parallel": "GPT-5.5",
+    "openclaw_private_gpt-5.4-mini_trajectories_20260714_runs3_parallel": "GPT-5.4-mini",
+    "openclaw_private_grok-4.5_trajectories_20260727_runs3_parallel": "Grok-4.5",
+    "openclaw_gateway-glm-5-2_trajectories_20260714_runs3_parallel": "GLM-5.2",
+    "openclaw_gateway_qwen3_7_max_trajectories_20260714_215927_runs3_parallel": "Qwen-3.7-max",
+    "openclaw_gateway_qwen3_7_plus_trajectories_20260714_runs3_parallel": "Qwen-3.7-plus",
     "openclaw_moonshot_kimi_k3_trajectories_20260726_runs3_parallel": "Kimi-K3",
+    "openclaw_gateway_kimi_k2_6_trajectories_20260715_runs3_parallel": "Kimi-K2.6",
     "openclaw_minimax_minimax-m3_trajectories_20260716_runs3_parallel": "MiniMax-M3",
     "openclaw_minimax_minimax_m2_7_trajectories_20260720_runs3_parallel": "MiniMax-M2.7",
     "openclaw_deepseek_v4_pro_trajectories_20260713_runs3": "Deepseek-v4-Pro",
     "openclaw_deepseek_v4_flash_trajectories_20260714_runs3_parallel": "Deepseek-v4-Flash",
+    "openclaw_tencent_tokenhub_hy3_trajectories_20260718_runs3_parallel_key2": "Hunyuan-3.0",
 }
 
 MODEL_ORDER = [
@@ -39,16 +40,17 @@ MODEL_ORDER = [
     "Claude-Sonnet-4.6",
     "GPT-5.5",
     "GPT-5.4-mini",
+    "Grok-4.5",
     "GLM-5.2",
     "Qwen-3.7-max",
     "Qwen-3.7-plus",
-    "Hunyuan-3.0",
-    "Kimi-k2.6",
     "Kimi-K3",
+    "Kimi-K2.6",
     "MiniMax-M3",
     "MiniMax-M2.7",
     "Deepseek-v4-Pro",
     "Deepseek-v4-Flash",
+    "Hunyuan-3.0",
 ]
 
 

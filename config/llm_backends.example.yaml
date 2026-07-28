@@ -1,0 +1,28 @@
+# Copy this file to config/llm_backends.local.yaml and fill in local values.
+# The local file is ignored by git so private gateway names, endpoints, and keys
+# do not enter the repository.
+
+providers:
+  private:
+    # Models with this prefix are routed to the OpenAI-compatible gateway.
+    # Example CLI value: --judge-model private/gpt-5.5
+    prefix: private/
+
+    # Store secrets in environment variables rather than this file.
+    api_key_env: ACTBENCH_PRIVATE_GATEWAY_API_KEY
+    base_url_env: ACTBENCH_PRIVATE_GATEWAY_BASE_URL
+
+    # Remove the routing prefix before sending the model id to the gateway.
+    strip_prefix: true
+
+    # Retry once without temperature when a gateway rejects that parameter.
+    retry_without_temperature: true
+
+    # Optional: bump budgets for reasoning models whose final answer may otherwise
+    # be truncated after internal thinking tokens.
+    thinking_model_keys:
+      - v4-pro
+      - v4-flash
+      - reasoner
+    min_thinking_max_tokens: 16384
+    min_thinking_timeout_seconds: 300
