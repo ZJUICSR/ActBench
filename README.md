@@ -68,6 +68,36 @@ export ACTBENCH_PRIVATE_GATEWAY_API_KEY="..."
 
 Then use the configured neutral prefix, for example `--judge-model private/gpt-5.5`.
 
+## One-command test
+
+For a bounded first run, use `actbench-test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend, scores only those trajectories, and writes a concise `one_click_result.json` summary.
+
+Check the local ActBench plumbing without calling a real model or judge:
+
+```bash
+uv run actbench-test --self-test
+```
+
+Run the default representative security test against a backend/model:
+
+```bash
+uv run actbench-test \
+  --backend claudecode \
+  --model <target-model> \
+  --judge-model private/gpt-5.5
+```
+
+By default this runs one fixed task from each B class (`task_B1_T01` through `task_B15_T01`), preserves clean-baseline generation/reuse, then performs Combined AGS scoring with the explicit judge model. Combined AGS invokes an external judge. For a no-judge local replay, opt into automated-only scoring:
+
+```bash
+uv run actbench-test \
+  --backend claudecode \
+  --model <target-model> \
+  --score-mode automated
+```
+
+Use `--suite task_B9_T01`, `--suite B9`, or `--suite all` to change the task selection. Large runs and advanced recovery controls are still available through the lower-level collection and scoring commands below. See `docs/ONE_CLICK.md` for output layout, exit codes, backend notes, and score semantics.
+
 ## Collect trajectories with ActBench
 
 ActBench's public workflow is trajectory-first: the runner executes the target agent and records durable trajectories/artifacts. Official AGS/ASR/pass@k scoring is performed later with `actbench_score.py`.

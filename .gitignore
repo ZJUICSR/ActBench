@@ -54,3 +54,12 @@ logs/
 
 # Local paper/figure helpers, excluded from blind-review source package
 scripts/plot_*.py
+
+# Local public-dataset release / desensitized trajectory tooling
+# Kept out of normal feature commits.
+docs/PUBLIC_DATASET_RELEASE.md
+scripts/actbench_build_release.py
+scripts/actbench_build_hf_dataset.py
+scripts/actbench_validate_release.py
+scripts/benchmark/release_*.py
+tests/test_release_*.py
