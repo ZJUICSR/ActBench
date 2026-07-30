@@ -17,10 +17,6 @@ dev = [
     "black>=23.7.0",
     "ruff>=0.0.285",
 ]
-release = [
-    "pyarrow>=15.0.0",
-    "huggingface-hub>=0.24.0",
-]
 
 [project.scripts]
 actbench = "scripts.actbench:main"
@@ -31,9 +27,6 @@ actbench-pack-raw-by-task = "scripts.actbench_pack_raw_by_task:main"
 actbench-utility-prep = "scripts.actbench_utility_prep:main"
 actbench-utility-score = "scripts.actbench_utility_score:main"
 actbench-utility-checker-report = "scripts.actbench_utility_checker_report:main"
-actbench-build-release = "scripts.actbench_build_release:main"
-actbench-build-hf-dataset = "scripts.actbench_build_hf_dataset:main"
-actbench-validate-release = "scripts.actbench_validate_release:main"
 
 [tool.uv]
 package = true
