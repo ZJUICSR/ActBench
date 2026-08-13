@@ -6,9 +6,10 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from deeptrap.paths import data_root
 from lib_api_services import SERVICE_SPECS
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = data_root()
 API_SKILL_TEMPLATE_ROOT = REPO_ROOT / "skills" / "mock_apis"
 
 

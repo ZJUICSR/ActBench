@@ -1,0 +1,53 @@
+name: Publish DeepTrap
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Verify release tag and package version
+        run: |
+          package_version=$(uv run python -c 'from deeptrap import __version__; print(__version__)')
+          test "${GITHUB_REF_NAME}" = "v${package_version}"
+      - name: Run tests
+        run: uv run --extra dev pytest -q
+      - name: Build distributions
+        run: uv build
+      - name: Check package metadata
+        run: uvx --from twine twine check dist/*
+      - name: Test the built wheel outside the repository
+        run: |
+          wheel_path=$(find "$GITHUB_WORKSPACE/dist" -name '*.whl' -print -quit)
+          uv venv /tmp/deeptrap-release-test
+          uv pip install --python /tmp/deeptrap-release-test/bin/python "$wheel_path"
+          cd /tmp
+          /tmp/deeptrap-release-test/bin/deeptrap test --self-test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/deeptrap/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,14 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
 [project]
-name = "actbench"
+name = "deeptrap"
 version = "0.1.0"
-description = "ActBench benchmark suite for evaluating security alignment in tool-using agents"
+description = "Security benchmark suite for evaluating alignment in tool-using AI agents"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "ZJUICSR" },
+]
+keywords = [
+    "agent-security",
+    "ai-safety",
+    "benchmark",
+    "llm-agents",
+    "prompt-injection",
+    "red-teaming",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+]
 dependencies = [
     "pyyaml>=6.0.1",
     "fastapi>=0.110.0",
     "uvicorn>=0.27.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ZJUICSR/ActBench"
+Documentation = "https://github.com/ZJUICSR/ActBench#readme"
+Repository = "https://github.com/ZJUICSR/ActBench"
+Issues = "https://github.com/ZJUICSR/ActBench/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -17,23 +53,41 @@ dev = [
     "black>=23.7.0",
     "ruff>=0.0.285",
 ]
+release = [
+    "pyarrow>=15.0.0",
+    "huggingface-hub>=0.24.0",
+]
 
 [project.scripts]
-actbench = "scripts.actbench:main"
-benchmark = "scripts.actbench:main"
-actbench-test = "scripts.actbench_test:main"
-actbench-score = "scripts.actbench_score:main"
-actbench-pack-raw-by-task = "scripts.actbench_pack_raw_by_task:main"
-actbench-utility-prep = "scripts.actbench_utility_prep:main"
-actbench-utility-score = "scripts.actbench_utility_score:main"
-actbench-utility-checker-report = "scripts.actbench_utility_checker_report:main"
+deeptrap = "deeptrap.cli:main"
 
 [tool.uv]
 package = true
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["scripts", "scripts.benchmark", "scripts.benchmark.*", "mock_services", "mock_services.*"]
+[tool.hatch.build.targets.wheel]
+packages = ["deeptrap", "scripts", "mock_services"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"tasks" = "deeptrap/data/tasks"
+"skills" = "deeptrap/data/skills"
+"crab.txt" = "deeptrap/data/crab.txt"
+"config/llm_backends.example.yaml" = "deeptrap/data/config/llm_backends.example.yaml"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/deeptrap",
+    "/scripts",
+    "/mock_services",
+    "/tasks",
+    "/skills",
+    "/config/llm_backends.example.yaml",
+    "/docs",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/crab.txt",
+    "/pyproject.toml",
+]
 
 [tool.black]
 line-length = 100

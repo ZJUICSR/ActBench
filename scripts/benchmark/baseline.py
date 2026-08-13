@@ -22,7 +22,7 @@ logger = logging.getLogger("benchmark")
 BASELINE_CACHE_DIR = Path(
     os.environ.get(
         "ACTBENCH_BASELINE_CACHE_DIR",
-        str(Path(__file__).resolve().parents[2] / "results" / "benign_baselines"),
+        str(Path.cwd() / "results" / "benign_baselines"),
     )
 )
 BASELINE_SCHEMA_VERSION = "actbench.benign_baseline.v2"

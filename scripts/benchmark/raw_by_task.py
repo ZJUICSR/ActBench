@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+from deeptrap.paths import tasks_dir as bundled_tasks_dir
 from benchmark.task_fingerprint import (
     TASK_HASH_ALGORITHM,
     clean_source_content_hash_from_payload,
@@ -30,8 +31,7 @@ RAW_ROLE_ATTACKED = "attacked"
 RAW_ROLE_BENIGN = "benign"
 RAW_ROLE_ALL = "all"
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-_CURRENT_TASKS_ROOT = _REPO_ROOT / "tasks"
+_CURRENT_TASKS_ROOT = bundled_tasks_dir()
 _CURRENT_TASK_PAYLOAD_CACHE: Dict[str, Optional[Dict[str, Any]]] = {}
 
 

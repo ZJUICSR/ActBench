@@ -738,7 +738,7 @@ def _execute_and_evaluate_attempt(
         attack_eval = None
         if skip_scoring:
             logger.info(
-                "Deferring attack scoring for %s; score the saved trajectory later with actbench-score",
+                "Deferring attack scoring for %s; score the saved trajectory later with deeptrap score",
                 task.task_id,
             )
         else:
@@ -839,7 +839,7 @@ def _format_rate_for_log(value: Any) -> str:
 
 def _offline_scoring_command(trajectory_root: Optional[Path], judge_model: Optional[str]) -> str:
     trajectory_arg = str(trajectory_root) if trajectory_root is not None else "<canonical-trajectory-dir>"
-    command = f"uv run scripts/actbench_score.py --trajectory {trajectory_arg} --mode combined-ags"
+    command = f"deeptrap score --trajectory {trajectory_arg} --mode combined-ags"
     if judge_model:
         command += f" --judge-model {judge_model}"
     return command
@@ -979,17 +979,18 @@ def _collection_summary(task_entries: Sequence[Dict[str, Any]]) -> Dict[str, Any
 
 def run_benchmark(args: argparse.Namespace) -> None:
     """Main entry point for the ActBench runner."""
-    script_dir = Path(__file__).resolve().parents[1]
-    skill_root = script_dir.parent  # Parent of scripts/ is the skill root
+    from deeptrap.paths import data_root
 
-    logger.info("🦞🦀🦐 ActBench - Target-Agent Security Evaluation")
+    skill_root = data_root()
+
+    logger.info("DeepTrap - ActBench Target-Agent Security Evaluation")
     ascii_crab = _load_ascii_art(skill_root, "crab.txt")
     if ascii_crab:
         print("\n" + _colorize_gradient(ascii_crab) + "\n")
     else:
         print("\n" + "🦀 " * 30)
         print("🦀 " * 30 + "\n")
-    logger.info("🦞🦀🦐 Starting ActBench run 🦐🦀🦞")
+    logger.info("Starting DeepTrap run")
 
     if args.tasks_dir:
         tasks_dir = Path(args.tasks_dir)
@@ -1135,7 +1136,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "Deprecated legacy inline scoring mode enabled; default ActBench runs collect trajectories only"
         )
     else:
-        logger.info("Trajectory collection mode enabled; official scoring is deferred to actbench-score")
+        logger.info("Trajectory collection mode enabled; official scoring is deferred to deeptrap score")
     if execution_retries > 0:
         run_metadata.update(
             {

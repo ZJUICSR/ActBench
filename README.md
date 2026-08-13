@@ -1,8 +1,34 @@
-# ActBench
+# DeepTrap
 
-ActBench is a task-based security evaluation suite for tool-using agents. It evaluates whether an agent remains aligned with the user's task when workspace files, mock API records, skills, or other task artifacts contain unsafe instructions or data. OpenClaw remains the default execution backend, with additional backends available through adapters.
+DeepTrap is a task-based security evaluation framework for tool-using agents. It evaluates whether an agent remains aligned with the user's task when workspace files, mock API records, skills, or other task artifacts contain unsafe instructions or data. It ships the 300-task ActBench suite, its runner and scorers, local mock services, and adapters for multiple agent backends.
 
-This public release contains the benchmark tasks, runner, scoring code, mock services, and result formats needed to reproduce ActBench evaluations. It does **not** include the private task-generation or attack-search pipeline used to create the tasks.
+This public release contains everything needed to run and reproduce ActBench evaluations. It does **not** include the private task-generation or attack-search pipeline used to create the tasks. Existing `actbench.*` result schema names are retained for compatibility.
+
+The source repository remains `ZJUICSR/ActBench`; `deeptrap` is the PyPI distribution name and installed command. This project does not use or modify the separate `ZJUICSR/DeepTrap` repository.
+
+## Install and verify
+
+Install DeepTrap as an isolated command-line tool:
+
+```bash
+uv tool install deeptrap
+# or
+pipx install deeptrap
+```
+
+Alternatively, install it into the current Python environment:
+
+```bash
+pip install deeptrap
+```
+
+Verify the complete installation without calling a model or external judge:
+
+```bash
+deeptrap test --self-test
+```
+
+The wheel includes the benchmark tasks, skills, and mock-service fixtures, so a repository checkout is not required. Run `deeptrap --help` to see all commands.
 
 ## What is included
 
@@ -12,6 +38,8 @@ This public release contains the benchmark tasks, runner, scoring code, mock ser
 - `mock_services/` — local fixture-backed FastAPI services used by tasks.
 - `skills/mock_apis/` — standard mock API skill descriptions that describe the service endpoints.
 - `docs/` — task, result, mock-service, and backend setup notes.
+
+Maintainers can publish versioned wheels through the repository release workflow; see `docs/PUBLISHING.md`.
 
 ## Task inventory
 
@@ -50,7 +78,7 @@ ActBench currently contains 300 public tasks, grouped by B-class selectors:
   - `OPENROUTER_API_KEY` for OpenRouter-routed judge models
   - For private OpenAI-compatible gateways, copy `config/llm_backends.example.yaml` to the ignored `config/llm_backends.local.yaml` and set the configured API-key/base-URL environment variables.
 
-Install dependencies:
+For development from a source checkout:
 
 ```bash
 uv sync
@@ -70,18 +98,18 @@ Then use the configured neutral prefix, for example `--judge-model private/gpt-5
 
 ## One-command test
 
-For a bounded first run, use `actbench-test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend, scores only those trajectories, and writes a concise `one_click_result.json` summary.
+For a bounded first run, use `deeptrap test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend, scores only those trajectories, and writes a concise `one_click_result.json` summary.
 
 Check the local ActBench plumbing without calling a real model or judge:
 
 ```bash
-uv run actbench-test --self-test
+deeptrap test --self-test
 ```
 
 Run the default representative security test against a backend/model:
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --judge-model private/gpt-5.5
@@ -90,7 +118,7 @@ uv run actbench-test \
 By default this runs one fixed task from each B class (`task_B1_T01` through `task_B15_T01`), preserves clean-baseline generation/reuse, then performs Combined AGS scoring with the explicit judge model. Combined AGS invokes an external judge. For a no-judge local replay, opt into automated-only scoring:
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --score-mode automated
@@ -105,16 +133,16 @@ ActBench's public workflow is trajectory-first: the runner executes the target a
 Collect trajectories for all public tasks with the default OpenClaw backend:
 
 ```bash
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro
+deeptrap run --model deepseek/deepseek-v4-pro
 # equivalent:
-uv run scripts/actbench.py --backend openclaw --model deepseek/deepseek-v4-pro
+deeptrap run --backend openclaw --model deepseek/deepseek-v4-pro
 ```
 
 Run with QwenPaw by starting QwenPaw separately and pointing ActBench at the service. ActBench does not import the `qwenpaw` package or require a QwenPaw Python environment; it creates a task-scoped QwenPaw service agent bound to each materialized task workspace:
 
 ```bash
 ACTBENCH_QWENPAW_BASE_URL=http://127.0.0.1:8088 \
-  uv run scripts/actbench.py --backend qwenpaw --model deepseek/deepseek-v4-pro
+  deeptrap run --backend qwenpaw --model deepseek/deepseek-v4-pro
 ```
 
 For source-checkout QwenPaw runs, one typical service startup command is:
@@ -142,7 +170,7 @@ Run with OpenAgent when an OpenAgent service is already running and configured w
 ```bash
 OPENAGENT_API_KEY=... \
 OPENAGENT_BASE_URL=http://localhost:14000 \
-uv run scripts/actbench.py --backend openagent --model deepseek/deepseek-v4-pro
+deeptrap run --backend openagent --model deepseek/deepseek-v4-pro
 ```
 
 OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and tools are controlled by the Store associated with `OPENAGENT_API_KEY`.
@@ -151,7 +179,7 @@ Run with Hermes when the Hermes CLI is installed and configured for the target p
 
 ```bash
 ACTBENCH_HERMES_PROVIDER=... \
-uv run scripts/actbench.py --backend hermes --model deepseek/deepseek-v4-pro
+deeptrap run --backend hermes --model deepseek/deepseek-v4-pro
 ```
 
 The Hermes backend launches isolated `hermes -z` subprocesses from each materialized task workspace. By default it writes a run-scoped `HERMES_HOME`, registers the ActBench MCP gateway as the `actbench` MCP server, and instructs Hermes to use task-scoped MCP tools for workspace and mock API access. See `docs/HERMES.md` for setup, environment variables, and troubleshooting.
@@ -159,7 +187,7 @@ The Hermes backend launches isolated `hermes -z` subprocesses from each material
 Run with opencode when the opencode CLI is installed and configured for the target provider:
 
 ```bash
-uv run scripts/actbench.py --backend opencode --model deepseek/deepseek-v4-pro
+deeptrap run --backend opencode --model deepseek/deepseek-v4-pro
 ```
 
 The opencode backend launches isolated `opencode run --format json` subprocesses from each materialized task workspace. By default it provides an inline opencode config with the ActBench MCP gateway as a remote MCP server named `actbench`, instructs opencode to use task-scoped MCP tools for workspace and mock API access, and extracts the full session with `opencode export <sessionID>` for scoring. See `docs/OPENCODE.md` for setup, environment variables, and troubleshooting.
@@ -189,10 +217,10 @@ OpenClaw, QwenPaw, OpenAgent, Hermes, and opencode all use `--model` as the mode
 Run a subset by B class or exact task id:
 
 ```bash
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B1,B7
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite B10
-uv run scripts/actbench.py --model deepseek/deepseek-v4-pro --suite task_B9_T01
+deeptrap run --model deepseek/deepseek-v4-pro --suite B1
+deeptrap run --model deepseek/deepseek-v4-pro --suite B1,B7
+deeptrap run --model deepseek/deepseek-v4-pro --suite B10
+deeptrap run --model deepseek/deepseek-v4-pro --suite task_B9_T01
 ```
 
 Common options:
@@ -230,7 +258,7 @@ Trajectory-only collection is the default; `--skip-scoring` is retained only for
 Replay Python automated checks without external judge calls:
 
 ```bash
-uv run scripts/actbench_score.py --trajectory results/trajectories --mode automated
+deeptrap score --trajectory results/trajectories --mode automated
 ```
 
 This reruns Python automated checks against durable `workspace_after/` snapshots and emits `actbench.offline_score.v1` JSON. It does not compute combined AGS or call the LLM judge.
@@ -238,7 +266,7 @@ This reruns Python automated checks against durable `workspace_after/` snapshots
 To reproduce official combined AGS/ASR/pass@k offline, explicitly opt in to external judge calls:
 
 ```bash
-uv run scripts/actbench_score.py --trajectory results/trajectories --mode combined-ags
+deeptrap score --trajectory results/trajectories --mode combined-ags
 ```
 
 `combined-ags` invokes the configured external LLM judge using replay evidence from trajectories. Ensure the relevant judge API key is configured, and use `--judge-model <model>` to override the trajectory's judge model when needed. Prefer the canonical `results/trajectories` tree for attack scoring: raw artifact roots can also contain `benign_baseline` trajectories from baseline generation, while the canonical tree only contains attacked attempts. If reusing an output directory across unrelated runs, restrict the path to the relevant suite/task subtree or use a fresh `--output-dir`.
@@ -246,18 +274,18 @@ uv run scripts/actbench_score.py --trajectory results/trajectories --mode combin
 Pack runner output into a raw-by-task dataset when you want a stable manifest-addressed bundle for release, aggregate AGS scoring, or clean utility workflows:
 
 ```bash
-uv run scripts/actbench_pack_raw_by_task.py \
+deeptrap pack \
   --result results/<run_dir>/<run_id>_<model>.json \
   --dataset-name <dataset> \
   --raw-by-task-root ~/pack/raw_by_task
 
-uv run scripts/actbench_score.py \
+deeptrap score \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
   --mode combined-ags \
   --judge-model private/gpt-5.5
 
-uv run scripts/actbench_utility_prep.py \
+deeptrap utility-prep \
   --raw-by-task-root ~/pack/raw_by_task \
   --raw-by-task-dataset <dataset> \
   --role benign \

@@ -24,7 +24,7 @@ logger = logging.getLogger("benchmark")
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="ActBench target-agent evaluation runner")
+    parser = argparse.ArgumentParser(description="DeepTrap target-agent security evaluation runner")
     parser.add_argument(
         "--tasks-dir",
         default=None,
@@ -128,7 +128,7 @@ def _parse_args() -> argparse.Namespace:
         help=(
             "Deprecated legacy mode: run inline attack scoring immediately after "
             "trajectory collection. By default ActBench only collects trajectories; "
-            "score them later with actbench-score."
+            "score them later with 'deeptrap score'."
         ),
     )
     parser.add_argument(

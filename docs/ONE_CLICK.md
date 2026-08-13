@@ -1,18 +1,18 @@
-# ActBench one-command testing
+# DeepTrap one-command testing
 
-`actbench-test` is the convenience path for a bounded ActBench run. It wraps the existing two-stage workflow:
+`deeptrap test` is the convenience path for a bounded ActBench run. It wraps the existing two-stage workflow:
 
-1. collect target-agent trajectories with `actbench`, and
-2. score only those invocation-local trajectories with `actbench-score`.
+1. collect target-agent trajectories with `deeptrap run`, and
+2. score only those invocation-local trajectories with `deeptrap score`.
 
 It does **not** replace the lower-level runner or scorer. Use the lower-level commands when you need custom recovery, baseline-only preparation, raw-by-task packing, or publication tooling.
 
 ## Quick start
 
-From a source checkout after `uv sync`:
+After installing DeepTrap, or from a source checkout after `uv sync`:
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --judge-model private/gpt-5.5
@@ -25,7 +25,7 @@ The command prints the resolved plan before execution and writes all artifacts u
 Validate local ActBench plumbing without calling a real target model or an external judge:
 
 ```bash
-uv run actbench-test --self-test
+deeptrap test --self-test
 ```
 
 Self-test forces:
@@ -41,7 +41,7 @@ This exercises task loading, workspace materialization, mock services, artifact 
 
 ## Defaults for real runs
 
-A real `actbench-test` run requires explicit `--backend`, `--model`, and (for the default scoring mode) `--judge-model`.
+A real `deeptrap test` run requires explicit `--backend`, `--model`, and (for the default scoring mode) `--judge-model`.
 
 Default behavior:
 
@@ -66,9 +66,9 @@ task_B11_T01, task_B12_T01, task_B13_T01, task_B14_T01, task_B15_T01
 Change the selection with any existing ActBench selector:
 
 ```bash
-uv run actbench-test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite task_B9_T01
-uv run actbench-test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite B9
-uv run actbench-test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite all
+deeptrap test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite task_B9_T01
+deeptrap test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite B9
+deeptrap test --backend claudecode --model <target-model> --judge-model private/gpt-5.5 --suite all
 ```
 
 `--suite all` is explicit and can run all 300 public tasks.
@@ -78,18 +78,18 @@ uv run actbench-test --backend claudecode --model <target-model> --judge-model p
 ### Combined AGS (default)
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --judge-model private/gpt-5.5
 ```
 
-Combined AGS replays each trajectory with Python automated evidence plus an external LLM judge. Because this can spend time and judge-provider credits, `actbench-test` requires an explicit `--judge-model` in this mode.
+Combined AGS replays each trajectory with Python automated evidence plus an external LLM judge. Because this can spend time and judge-provider credits, `deeptrap test` requires an explicit `--judge-model` in this mode.
 
 ### Automated-only scoring
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --score-mode automated
@@ -104,18 +104,18 @@ Real runs preserve the runner's default baseline behavior: missing clean baselin
 This improves delta-aware evidence, but the first run for a new backend/model can execute additional clean scenarios. To skip baseline generation for a faster run:
 
 ```bash
-uv run actbench-test \
+deeptrap test \
   --backend claudecode \
   --model <target-model> \
   --judge-model private/gpt-5.5 \
   --skip-baseline-gen
 ```
 
-If baseline evidence is missing in the collection aggregate, `actbench-test` records a warning in `one_click_result.json` and prints it in the final summary. Missing baseline evidence is not converted into a fake score.
+If baseline evidence is missing in the collection aggregate, `deeptrap test` records a warning in `one_click_result.json` and prints it in the final summary. Missing baseline evidence is not converted into a fake score.
 
 ## Backend setup
 
-`actbench-test` intentionally uses the existing backend adapters. It validates the selected backend name, task selector, task loadability, and same-task worker support, then delegates backend-specific setup to the normal runner initialization path.
+`deeptrap test` intentionally uses the existing backend adapters. It validates the selected backend name, task selector, task loadability, and same-task worker support, then delegates backend-specific setup to the normal runner initialization path.
 
 Backend notes:
 
@@ -176,18 +176,18 @@ A successful infrastructure exit (`0`) does not mean the model was safe. Check `
 
 ## Advanced runs
 
-Use lower-level commands when you need controls not exposed by `actbench-test`, such as targeted `--run-number` recovery, baseline-only generation, raw-by-task packing, utility/UGS scoring, publication bundle construction, or custom artifact handling.
+Use lower-level commands when you need controls not exposed by `deeptrap test`, such as targeted `--run-number` recovery, baseline-only generation, raw-by-task packing, utility/UGS scoring, publication bundle construction, or custom artifact handling.
 
 The equivalent two-stage shape is:
 
 ```bash
-uv run scripts/actbench.py \
+deeptrap run \
   --backend <backend> \
   --model <target-model> \
   --suite <selector> \
   --output-dir results/my_run
 
-uv run scripts/actbench_score.py \
+deeptrap score \
   --trajectory results/my_run/trajectories \
   --mode combined-ags \
   --judge-model <judge-model> \

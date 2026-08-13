@@ -3891,8 +3891,7 @@ def test_run_benchmark_with_fake_backend_writes_backend_schema(
     assert payload["scoring_status"] == "deferred"
     assert payload["inline_scoring"] is False
     assert payload["offline_scoring_command"] == (
-        f"uv run scripts/actbench_score.py --trajectory {output_dir / 'trajectories'} "
-        "--mode combined-ags"
+        f"deeptrap score --trajectory {output_dir / 'trajectories'} --mode combined-ags"
     )
     task_entry = payload["tasks"][0]
     assert task_entry["backend"] == "fake"

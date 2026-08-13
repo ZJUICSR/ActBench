@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
+from deeptrap.paths import tasks_dir as bundled_tasks_dir
 from lib_tasks import TaskLoader
 from lib_training_artifacts import atomic_write_json
 
@@ -110,7 +111,7 @@ def _scripts_dir() -> Path:
 
 
 def _default_tasks_dir() -> Path:
-    return _repo_root() / "tasks"
+    return bundled_tasks_dir()
 
 
 def _positive_int(value: str) -> int:
@@ -793,7 +794,7 @@ def _record_error(manifest: Dict[str, Any], exc: OneClickError) -> None:
 
 def _print_plan(plan: OneClickRunPlan, invocation_dir: Path) -> None:
     config = plan.config
-    print("ActBench one-command test")
+    print("DeepTrap one-command test")
     if config.self_test:
         print("  mode:    self-test (fake backend; no target model or external judge)")
     print(f"  backend: {config.backend}")
@@ -816,7 +817,7 @@ def _print_summary(manifest: Mapping[str, Any]) -> None:
     scoring = manifest.get("scoring") if isinstance(manifest.get("scoring"), Mapping) else {}
     collection = manifest.get("collection") if isinstance(manifest.get("collection"), Mapping) else {}
     request = manifest.get("request") if isinstance(manifest.get("request"), Mapping) else {}
-    print("\nActBench test complete")
+    print("\nDeepTrap test complete")
     print(f"  target: {request.get('backend')} / {request.get('model')}")
     print(f"  scoring: {request.get('score_mode')}")
     mean_ags = scoring.get("mean_ags")
@@ -952,7 +953,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         config = parse_args(argv)
         return run(config)
     except OneClickError as exc:
-        print(f"ActBench one-command test failed: {exc}", file=sys.stderr)
+        print(f"DeepTrap one-command test failed: {exc}", file=sys.stderr)
         return exc.exit_code
 
 
