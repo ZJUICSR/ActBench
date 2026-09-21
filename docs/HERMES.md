@@ -1,5 +1,10 @@
 # Hermes backend
 
+For per-attempt containers, use `--backend hermes --execution docker`. Build and
+check with `deeptrap docker-build --backend hermes` and
+`deeptrap docker-check --backend hermes`. See [Docker setup](DOCKER.md) for
+provider configuration and isolation. The native agent does not need to be installed on the host. The setup below describes local execution.
+
 ActBench can drive Hermes through the `hermes` CLI one-shot mode. The backend launches one isolated `hermes -z` subprocess per task attempt, materializes the task workspace as the subprocess working directory, and records results in the same schema as the other ActBench backends.
 
 The first integration is intentionally ActBench-side only: it does not import Hermes internals or require changes to the Hermes source tree.

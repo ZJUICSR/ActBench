@@ -14,7 +14,7 @@ import signal
 import subprocess
 import time
 import uuid
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -55,6 +55,9 @@ from benchmark.backends.common import (
     stdout_transcript_fallback,
     zero_usage,
 )
+
+from benchmark.docker_runtime import DockerRuntime
+from benchmark.docker_support import configure_mcp, initialize_runtime, isolated_env
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +129,8 @@ class ClaudeCodeConfig:
     mcp_port: int
     mcp_public_url: str
     mcp_admin_token: str | None
+    docker_runtime: DockerRuntime | None = None
+    docker_records: List[Dict[str, Any]] = field(default_factory=list)
 
     @property
     def mcp_admin_url(self) -> str:
@@ -165,6 +170,7 @@ class ClaudeCodeBackend:
 
     def __init__(self) -> None:
         self._config: ClaudeCodeConfig | None = None
+        self._docker: DockerRuntime | None = None
         self._mcp_gateway: ActBenchMcpGatewayProcess | None = None
 
     def slugify_model(self, model_id: str) -> str:
@@ -175,14 +181,23 @@ class ClaudeCodeBackend:
 
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
-        config = self._load_config(context)
-        if config.mcp_enabled:
-            self._initialize_mcp_gateway(config)
-        self._config = config
+        try:
+            self._docker = initialize_runtime(context)
+            config = configure_mcp(self._load_config(context), self._docker)
+            if config.mcp_enabled:
+                self._initialize_mcp_gateway(config)
+            self._config = config
+        except Exception:
+            self.finalize_run(context)
+            raise
 
     def finalize_run(self, context: BackendRunContext) -> None:
-        stop_gateway_process(self._mcp_gateway)
-        self._mcp_gateway = None
+        try:
+            if self._docker:
+                self._docker.close()
+        finally:
+            stop_gateway_process(self._mcp_gateway)
+            self._mcp_gateway = None
 
     def execute_task(
         self,
@@ -268,6 +283,7 @@ class ClaudeCodeBackend:
                     task=task,
                     attempt_run_id=attempt_run_id,
                     workspace=workspace,
+                    **({"protect_admin": True} if config.docker_runtime else {}),
                 )
                 if api_endpoints:
                     logger.info("   Mock API services started: %s", ", ".join(api_endpoints))
@@ -503,10 +519,12 @@ class ClaudeCodeBackend:
             )
 
     def _load_config(self, context: BackendRunContext) -> ClaudeCodeConfig:
-        executable = _resolve_executable(
+        executable = (
             os.environ.get("ACTBENCH_CLAUDECODE_BIN", DEFAULT_CLAUDECODE_EXECUTABLE).strip()
             or DEFAULT_CLAUDECODE_EXECUTABLE
         )
+        if self._docker is None:
+            executable = _resolve_executable(executable)
         model = os.environ.get("ACTBENCH_CLAUDECODE_MODEL", "").strip() or context.model
         if not model.strip():
             raise BackendInitializationError("claudecode backend requires a non-empty model id")
@@ -587,7 +605,7 @@ class ClaudeCodeBackend:
             workspace=workspace,
             leaf_name="claudecode_home",
         )
-        return replace(config, claudecode_home=claudecode_home)
+        return replace(config, claudecode_home=claudecode_home, docker_records=[])
 
     def _prepare_claudecode_home(self, config: ClaudeCodeConfig) -> None:
         try:
@@ -640,6 +658,11 @@ class ClaudeCodeBackend:
                         host=config.mcp_host,
                         port=config.mcp_port,
                         admin_token=config.mcp_admin_token,
+                        **(
+                            {"bind_host": config.docker_runtime.bind_host}
+                            if config.docker_runtime
+                            else {}
+                        ),
                     )
                 else:
                     check_gateway_admin_health(
@@ -709,6 +732,16 @@ class ClaudeCodeBackend:
             cmd.extend(["--allowedTools", ",".join(config.allowed_tools)])
         if mcp_config_path is not None:
             cmd.extend(["--mcp-config", str(mcp_config_path), "--strict-mcp-config"])
+        if config.docker_runtime:
+            return config.docker_runtime.run(
+                cmd,
+                workspace=workspace,
+                home=config.claudecode_home,
+                env=_claudecode_env(config),
+                timeout_seconds=timeout_seconds,
+                records=config.docker_records,
+                input_text=prompt,
+            )
         return _run_subprocess_with_process_group(
             cmd,
             input_text=prompt,
@@ -778,7 +811,13 @@ def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals
 
 
 def _claudecode_env(config: ClaudeCodeConfig) -> Dict[str, str]:
-    env = os.environ.copy()
+    env = (
+        isolated_env(config.home_dir, config.docker_runtime)
+        if config.docker_runtime
+        else os.environ.copy()
+    )
+    if config.docker_runtime:
+        env.update(DISABLE_AUTOUPDATER="1", CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1")
     if not str(env.get("ANTHROPIC_AUTH_TOKEN") or "").strip():
         deepseek_api_key = str(env.get("DEEPSEEK_API_KEY") or "").strip()
         if deepseek_api_key:
@@ -821,12 +860,18 @@ def _augment_claudecode_result(
     mcp_config_path: Path | None = None,
 ) -> Dict[str, Any]:
     extraction = transcript_extraction or {}
+    if config.docker_runtime and any(
+        record.get("cleanup") != "removed" for record in config.docker_records
+    ):
+        result.update(status="error", exit_code=-1)
+        result["stderr"] = result.get("stderr", "") + "\nDocker cleanup did not complete."
     return augment_execution_result(
         result,
         context=context,
         transcript_source=transcript_source,
         transcript_extraction=transcript_extraction,
         executable=config.executable,
+        docker_executions=config.docker_records if config.docker_runtime else None,
         claudecode_cli_model=config.model,
         claudecode_cli_model_matches_result_label=config.model == context.model,
         provider_env=_claudecode_provider_env_metadata(),
@@ -870,9 +915,11 @@ def _claudecode_provider_env_metadata(env: Dict[str, str] | None = None) -> Dict
     metadata["deepseek_api_key_mapped_to_anthropic_auth_token"] = (
         deepseek_key_present and not anthropic_auth_token_present
     )
-    metadata["auth_mapping"] = "deepseek_api_key_to_anthropic_auth_token" if (
-        deepseek_key_present and not anthropic_auth_token_present
-    ) else None
+    metadata["auth_mapping"] = (
+        "deepseek_api_key_to_anthropic_auth_token"
+        if (deepseek_key_present and not anthropic_auth_token_present)
+        else None
+    )
     metadata = {key: value for key, value in metadata.items() if value is not None}
     return metadata
 
@@ -926,9 +973,10 @@ def _detect_claudecode_permission_prompt(
     stderr: str,
     transcript_extraction: Dict[str, Any] | None = None,
 ) -> bool:
-    if isinstance(transcript_extraction, dict) and transcript_extraction.get(
-        "permission_prompt_detected"
-    ) is True:
+    if (
+        isinstance(transcript_extraction, dict)
+        and transcript_extraction.get("permission_prompt_detected") is True
+    ):
         return True
     text = "\n".join(part for part in (stdout[-8000:], stderr[-8000:]) if part)
     if not text:

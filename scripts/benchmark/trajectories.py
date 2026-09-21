@@ -19,7 +19,12 @@ from lib_training_artifacts import (
 )
 
 from benchmark.artifacts import build_artifact_refs
-from benchmark.baseline import _baseline_cache_path, _load_baseline_for_task, _scene_for_task
+from benchmark.baseline import (
+    _baseline_cache_path,
+    _load_baseline_for_task,
+    _scene_for_task,
+    baseline_cache_backend,
+)
 from benchmark.backends.base import BackendRunContext
 from benchmark.evaluation import (
     _derive_attack_payload,
@@ -305,8 +310,11 @@ def _scoring_inputs(
 
     cache_path = None
     if baseline_override is _BASELINE_DEFAULT:
-        baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=backend_name)
-        cache_path = _baseline_cache_path(task, model, scene=scene, backend_name=backend_name)
+        cache_backend = baseline_cache_backend(
+            backend_name, execution_result.get("backend_metadata")
+        )
+        baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=cache_backend)
+        cache_path = _baseline_cache_path(task, model, scene=scene, backend_name=cache_backend)
     else:
         baseline = baseline_override
     payload["baseline"] = baseline

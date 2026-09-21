@@ -59,6 +59,7 @@ class OneClickConfig:
     skip_baseline_gen: bool = False
     verbose: bool = False
     self_test: bool = False
+    execution: str = "local"
 
 
 @dataclass(frozen=True)
@@ -166,6 +167,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Target-agent backend. Required unless --self-test is used.",
     )
     parser.add_argument(
+        "--execution",
+        choices=("local", "docker"),
+        default="local",
+        help="Target-agent execution mode (all real backends support docker)",
+    )
+    parser.add_argument(
         "--model",
         default=None,
         help="Backend-specific model id/label. Required unless --self-test is used.",
@@ -183,7 +190,9 @@ def build_parser() -> argparse.ArgumentParser:
             "Any existing ActBench selector is accepted, including exact ids, B classes, and 'all'."
         ),
     )
-    parser.add_argument("--runs", type=_positive_int, default=None, help="Runs per task (default: 1).")
+    parser.add_argument(
+        "--runs", type=_positive_int, default=None, help="Runs per task (default: 1)."
+    )
     parser.add_argument(
         "--run-workers",
         type=_positive_int,
@@ -243,10 +252,16 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    tasks_dir = Path(args.tasks_dir).expanduser().resolve() if args.tasks_dir else _default_tasks_dir()
+    tasks_dir = (
+        Path(args.tasks_dir).expanduser().resolve() if args.tasks_dir else _default_tasks_dir()
+    )
     output_root = Path(args.output_root).expanduser().resolve()
 
     if args.self_test:
+        if args.execution != "local":
+            parser.error(
+                "--self-test uses the local fake backend; use deeptrap docker-check for Docker"
+            )
         if args.backend is not None:
             parser.error("--self-test cannot be combined with --backend")
         if args.model is not None:
@@ -285,6 +300,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
         parser.error("--backend is required unless --self-test is used")
     if not args.model:
         parser.error("--model is required unless --self-test is used")
+    if args.execution == "docker" and args.backend == "fake":
+        parser.error("Docker execution requires a real agent backend")
 
     score_mode = args.score_mode or COMBINED_AGS_MODE
     if score_mode == COMBINED_AGS_MODE and not args.judge_model:
@@ -293,7 +310,9 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
         parser.error("--judge-model is only valid with --score-mode combined-ags")
 
     retry_status = args.retry_status or "error,timeout"
-    if (args.execution_retries or 0) > 0 and not any(part.strip() for part in retry_status.split(",")):
+    if (args.execution_retries or 0) > 0 and not any(
+        part.strip() for part in retry_status.split(",")
+    ):
         parser.error("--retry-status must include at least one status when --execution-retries > 0")
 
     return OneClickConfig(
@@ -312,6 +331,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
         skip_baseline_gen=bool(args.skip_baseline_gen),
         verbose=bool(args.verbose),
         self_test=False,
+        execution=args.execution,
     )
 
 
@@ -320,9 +340,15 @@ def resolve_suite_selector(suite: str) -> str:
 
 
 def resolve_run_plan(config: OneClickConfig) -> OneClickRunPlan:
+    if config.execution not in {"local", "docker"} or (
+        config.execution == "docker" and config.backend == "fake"
+    ):
+        raise OneClickPreflightError("Docker execution requires a real agent backend")
     if config.backend not in available_backend_names():
         known = ", ".join(available_backend_names())
-        raise OneClickPreflightError(f"unknown backend {config.backend!r}; expected one of: {known}")
+        raise OneClickPreflightError(
+            f"unknown backend {config.backend!r}; expected one of: {known}"
+        )
     if not config.model.strip():
         raise OneClickPreflightError("model must be non-empty")
     if not config.tasks_dir.exists():
@@ -344,11 +370,17 @@ def resolve_run_plan(config: OneClickConfig) -> OneClickRunPlan:
             f"selected {len(task_files)} task file(s) but only loaded {len(tasks)} task(s)"
         )
     if config.suite == REPRESENTATIVE_SUITE_NAME:
-        representative_order = {task_id: index for index, task_id in enumerate(REPRESENTATIVE_TASK_IDS)}
+        representative_order = {
+            task_id: index for index, task_id in enumerate(REPRESENTATIVE_TASK_IDS)
+        }
         tasks = sorted(tasks, key=lambda task: representative_order.get(task.task_id, len(tasks)))
     task_ids = tuple(task.task_id for task in tasks)
 
-    backend = get_backend(config.backend)
+    backend = (
+        get_backend(config.backend, execution="docker")
+        if config.execution == "docker"
+        else get_backend(config.backend)
+    )
     if config.run_workers > 1 and not bool(getattr(backend, "supports_parallel_runs", False)):
         raise OneClickPreflightError(
             f"backend {config.backend!r} does not support --run-workers > 1"
@@ -375,7 +407,9 @@ def create_invocation_directory(output_root: Path) -> Path:
         except FileExistsError:
             continue
         return invocation_dir.resolve()
-    raise OneClickPreflightError(f"could not create a unique invocation directory under {output_root}")
+    raise OneClickPreflightError(
+        f"could not create a unique invocation directory under {output_root}"
+    )
 
 
 def build_collection_command(plan: OneClickRunPlan, collection_dir: Path) -> List[str]:
@@ -385,6 +419,8 @@ def build_collection_command(plan: OneClickRunPlan, collection_dir: Path) -> Lis
         str(_scripts_dir() / "actbench.py"),
         "--backend",
         config.backend,
+        "--execution",
+        config.execution,
         "--model",
         config.model,
         "--suite",
@@ -490,7 +526,9 @@ def run_child(
         raise
 
 
-def _load_json(path: Path, *, error_cls: type[OneClickError] = OneClickScoringError) -> Dict[str, Any]:
+def _load_json(
+    path: Path, *, error_cls: type[OneClickError] = OneClickScoringError
+) -> Dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
@@ -515,10 +553,14 @@ def find_collection_result(collection_dir: Path) -> Path:
             if isinstance(payload.get("tasks"), list):
                 candidates.append(path)
     if not candidates:
-        raise OneClickCollectionError(f"no trajectory_collection aggregate found in {collection_dir}")
+        raise OneClickCollectionError(
+            f"no trajectory_collection aggregate found in {collection_dir}"
+        )
     if len(candidates) > 1:
         names = ", ".join(path.name for path in candidates)
-        raise OneClickCollectionError(f"multiple collection aggregates found in {collection_dir}: {names}")
+        raise OneClickCollectionError(
+            f"multiple collection aggregates found in {collection_dir}: {names}"
+        )
     return candidates[0]
 
 
@@ -562,12 +604,16 @@ def validate_collection_result(result_path: Path, plan: OneClickRunPlan) -> Dict
 
     if payload.get("workflow") != "trajectory_collection":
         errors.append("collection aggregate workflow is not trajectory_collection")
+    if payload.get("execution", "local") != plan.config.execution:
+        errors.append("collection execution mode does not match the requested mode")
     if payload.get("backend") != plan.config.backend:
         errors.append(
             f"collection backend {payload.get('backend')!r} does not match {plan.config.backend!r}"
         )
     if payload.get("model") != plan.config.model:
-        errors.append(f"collection model {payload.get('model')!r} does not match {plan.config.model!r}")
+        errors.append(
+            f"collection model {payload.get('model')!r} does not match {plan.config.model!r}"
+        )
     if payload.get("suite") != plan.collection_suite:
         errors.append(
             f"collection suite {payload.get('suite')!r} does not match {plan.collection_suite!r}"
@@ -605,9 +651,13 @@ def validate_collection_result(result_path: Path, plan: OneClickRunPlan) -> Dict
                 f"{task_id or f'row {index}'} run {run_number or '?'} has status {row.get('status')!r}"
             )
         trajectory = row.get("trajectory") if isinstance(row.get("trajectory"), dict) else {}
-        canonical_path = _path_from_collection_link(collection_dir, trajectory.get("canonical_path"))
+        canonical_path = _path_from_collection_link(
+            collection_dir, trajectory.get("canonical_path")
+        )
         if canonical_path is None:
-            errors.append(f"{task_id or f'row {index}'} run {run_number or '?'} has no canonical trajectory")
+            errors.append(
+                f"{task_id or f'row {index}'} run {run_number or '?'} has no canonical trajectory"
+            )
         elif not canonical_path.exists():
             errors.append(f"canonical trajectory does not exist: {canonical_path}")
         else:
@@ -636,7 +686,9 @@ def validate_collection_result(result_path: Path, plan: OneClickRunPlan) -> Dict
         raise OneClickCollectionError("; ".join(errors))
 
     missing_baseline_task_ids = (
-        [] if plan.config.skip_baseline_gen else sorted(set(plan.selected_task_ids) - baseline_task_ids)
+        []
+        if plan.config.skip_baseline_gen
+        else sorted(set(plan.selected_task_ids) - baseline_task_ids)
     )
     return {
         "payload": payload,
@@ -679,7 +731,9 @@ def validate_score_result(score_path: Path, plan: OneClickRunPlan) -> Dict[str, 
     valid_scores = _as_int(payload.get("valid_scores"))
     evaluation_errors = _as_int(payload.get("evaluation_errors"))
     if trajectory_count != plan.expected_attempts:
-        errors.append(f"expected {plan.expected_attempts} scored trajectories, found {trajectory_count}")
+        errors.append(
+            f"expected {plan.expected_attempts} scored trajectories, found {trajectory_count}"
+        )
     if evaluation_errors is None:
         errors.append("score payload is missing evaluation_errors")
     elif evaluation_errors != 0:
@@ -725,6 +779,7 @@ def _request_manifest(config: OneClickConfig) -> Dict[str, Any]:
     return {
         "self_test": config.self_test,
         "backend": config.backend,
+        "execution": config.execution,
         "model": config.model,
         "suite": config.suite,
         "runs": config.runs,
@@ -798,6 +853,7 @@ def _print_plan(plan: OneClickRunPlan, invocation_dir: Path) -> None:
     if config.self_test:
         print("  mode:    self-test (fake backend; no target model or external judge)")
     print(f"  backend: {config.backend}")
+    print(f"  execution: {config.execution}")
     print(f"  model:   {config.model}")
     print(f"  suite:   {config.suite} -> {len(plan.selected_task_ids)} task(s)")
     print("  tasks:   " + ", ".join(plan.selected_task_ids))
@@ -815,7 +871,9 @@ def _print_plan(plan: OneClickRunPlan, invocation_dir: Path) -> None:
 
 def _print_summary(manifest: Mapping[str, Any]) -> None:
     scoring = manifest.get("scoring") if isinstance(manifest.get("scoring"), Mapping) else {}
-    collection = manifest.get("collection") if isinstance(manifest.get("collection"), Mapping) else {}
+    collection = (
+        manifest.get("collection") if isinstance(manifest.get("collection"), Mapping) else {}
+    )
     request = manifest.get("request") if isinstance(manifest.get("request"), Mapping) else {}
     print("\nDeepTrap test complete")
     print(f"  target: {request.get('backend')} / {request.get('model')}")
@@ -884,8 +942,12 @@ def run(config: OneClickConfig) -> int:
         write_invocation_manifest(invocation_dir, manifest)
         raise
     collection_summary = dict(collection_result["summary"])
-    collection_summary["result_path"] = _relpath(Path(collection_summary["result_path"]), invocation_dir)
-    collection_summary["trajectory_root"] = _relpath(Path(collection_summary["trajectory_root"]), invocation_dir)
+    collection_summary["result_path"] = _relpath(
+        Path(collection_summary["result_path"]), invocation_dir
+    )
+    collection_summary["trajectory_root"] = _relpath(
+        Path(collection_summary["trajectory_root"]), invocation_dir
+    )
     collection_summary["exit_code"] = collection_exit
     manifest["collection"] = collection_summary
     if collection_summary.get("baseline_tasks_missing"):

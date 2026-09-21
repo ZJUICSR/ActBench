@@ -9,10 +9,11 @@ import os
 import secrets
 import shutil
 import signal
+import socket
 import subprocess
 import tempfile
 import time
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 
@@ -51,6 +52,7 @@ from benchmark.backends.common import (
     stdout_transcript_fallback,
     zero_usage,
 )
+from benchmark.docker_runtime import DockerRuntime, validate_container_url
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +73,9 @@ class OpenCodeConfig:
     mcp_port: int
     mcp_public_url: str
     mcp_admin_token: str | None
+    providers: Dict[str, Any] | None = None
+    docker_runtime: DockerRuntime | None = None
+    docker_records: List[Dict[str, Any]] = field(default_factory=list)
 
     @property
     def mcp_admin_url(self) -> str:
@@ -111,6 +116,7 @@ class OpenCodeBackend:
     def __init__(self) -> None:
         self._config: OpenCodeConfig | None = None
         self._mcp_gateway: ActBenchMcpGatewayProcess | None = None
+        self._docker: DockerRuntime | None = None
 
     def slugify_model(self, model_id: str) -> str:
         return default_slugify_model(model_id)
@@ -120,14 +126,40 @@ class OpenCodeBackend:
 
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
-        config = self._load_config(context)
-        if config.mcp_enabled:
-            self._initialize_mcp_gateway(config)
-        self._config = config
+        try:
+            if context.metadata.get("execution") == "docker":
+                record_dir = context.metadata.get("docker_records_dir")
+                self._docker = DockerRuntime(
+                    records_dir=(
+                        Path(record_dir)
+                        if record_dir
+                        else context.run_root / context.run_id / "docker"
+                    )
+                )
+            config = self._load_config(context)
+            if config.mcp_enabled:
+                self._initialize_mcp_gateway(config)
+            self._config = config
+            if self._docker:
+                context.metadata.update(
+                    execution="docker",
+                    docker=self._docker.metadata(),
+                    runtime_identity=self._docker.identity(providers=config.providers),
+                )
+                logger.info(
+                    "Docker image pinned: %s; owner: %s", self._docker.image_id, self._docker.owner
+                )
+        except Exception:
+            self.finalize_run(context)
+            raise
 
     def finalize_run(self, context: BackendRunContext) -> None:
-        stop_gateway_process(self._mcp_gateway)
-        self._mcp_gateway = None
+        try:
+            if self._docker:
+                self._docker.close()
+        finally:
+            stop_gateway_process(self._mcp_gateway)
+            self._mcp_gateway = None
 
     def execute_task(
         self,
@@ -211,6 +243,7 @@ class OpenCodeBackend:
                     task=task,
                     attempt_run_id=attempt_run_id,
                     workspace=workspace,
+                    **({"protect_admin": True} if config.docker_runtime else {}),
                 )
                 if api_endpoints:
                     logger.info("   Mock API services started: %s", ", ".join(api_endpoints))
@@ -370,6 +403,12 @@ class OpenCodeBackend:
                 status = "error"
                 exit_code = -1
                 stderr = "opencode execution produced no transcript"
+            if config.docker_runtime and any(
+                record.get("cleanup") != "removed" for record in config.docker_records
+            ):
+                status = "error"
+                exit_code = -1
+                stderr += "\nDocker cleanup did not complete; inspect the Docker execution records."
 
             if api_group:
                 api_audit = api_group.collect_audit()
@@ -422,10 +461,12 @@ class OpenCodeBackend:
             )
 
     def _load_config(self, context: BackendRunContext) -> OpenCodeConfig:
-        executable = _resolve_executable(
+        executable = (
             os.environ.get("ACTBENCH_OPENCODE_BIN", DEFAULT_OPENCODE_EXECUTABLE).strip()
             or DEFAULT_OPENCODE_EXECUTABLE
         )
+        if self._docker is None:
+            executable = _resolve_executable(executable)
         model = os.environ.get("ACTBENCH_OPENCODE_MODEL", "").strip() or context.model
         if not model.strip():
             raise BackendInitializationError("opencode backend requires a non-empty model id")
@@ -439,14 +480,26 @@ class OpenCodeBackend:
 
         auto_approve = _env_flag("ACTBENCH_OPENCODE_AUTO", default=True)
         mcp_enabled = _env_flag("ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP", default=True)
+        if self._docker and not mcp_enabled:
+            raise BackendInitializationError(
+                "Docker OpenCode requires ActBench MCP for host mock API access"
+            )
         if mcp_enabled:
             mcp_autostart = _env_flag("ACTBENCH_MCP_AUTOSTART", default=True)
             mcp_host = (
                 os.environ.get("ACTBENCH_MCP_HOST", DEFAULT_MCP_HOST).strip() or DEFAULT_MCP_HOST
             )
             mcp_port = _env_int("ACTBENCH_MCP_PORT", default=DEFAULT_MCP_PORT)
+            if self._docker and mcp_autostart and "ACTBENCH_MCP_PORT" not in os.environ:
+                with socket.socket() as port_socket:
+                    port_socket.bind((mcp_host, 0))
+                    mcp_port = port_socket.getsockname()[1]
             default_mcp_url = f"http://{mcp_host}:{mcp_port}/mcp"
+            if self._docker:
+                default_mcp_url = f"http://{self._docker.backend_host}:{mcp_port}/mcp"
             mcp_public_url = os.environ.get("ACTBENCH_MCP_URL", default_mcp_url).strip()
+            if self._docker:
+                validate_container_url(mcp_public_url)
             if not mcp_public_url:
                 raise BackendInitializationError(
                     "ACTBENCH_MCP_URL must not be blank when MCP is enabled"
@@ -474,6 +527,8 @@ class OpenCodeBackend:
             mcp_port=mcp_port,
             mcp_public_url=mcp_public_url,
             mcp_admin_token=mcp_admin_token,
+            providers=_load_provider_config(),
+            docker_runtime=self._docker,
         )
 
     def _attempt_opencode_config(
@@ -494,7 +549,7 @@ class OpenCodeBackend:
             workspace=workspace,
             leaf_name="opencode_home",
         )
-        return replace(config, opencode_home=opencode_home)
+        return replace(config, opencode_home=opencode_home, docker_records=[])
 
     def _prepare_opencode_home(self, config: OpenCodeConfig) -> None:
         try:
@@ -530,6 +585,11 @@ class OpenCodeBackend:
                         host=config.mcp_host,
                         port=config.mcp_port,
                         admin_token=config.mcp_admin_token,
+                        **(
+                            {"bind_host": config.docker_runtime.bind_host}
+                            if config.docker_runtime
+                            else {}
+                        ),
                     )
                 else:
                     check_gateway_admin_health(
@@ -589,6 +649,15 @@ class OpenCodeBackend:
         if config.auto_approve:
             cmd.append("--auto")
         cmd.extend(["--", prompt])
+        if config.docker_runtime:
+            return config.docker_runtime.run(
+                cmd,
+                workspace=workspace,
+                home=config.opencode_home,
+                env=_opencode_env(config),
+                timeout_seconds=timeout_seconds,
+                records=config.docker_records,
+            )
         return _run_subprocess_with_process_group(
             cmd,
             cwd=workspace,
@@ -605,6 +674,16 @@ class OpenCodeBackend:
         timeout_seconds: float,
     ) -> subprocess.CompletedProcess[str]:
         cmd = [config.executable, "export", session_id]
+        if config.docker_runtime:
+            return config.docker_runtime.run(
+                cmd,
+                workspace=workspace,
+                home=config.opencode_home,
+                env=_opencode_env(config),
+                timeout_seconds=timeout_seconds,
+                records=config.docker_records,
+                purpose="transcript_export",
+            )
         return _run_subprocess_with_stdout_file(
             cmd,
             cwd=workspace,
@@ -786,7 +865,7 @@ def _terminate_process_group(process: subprocess.Popen[str], sig: signal.Signals
 
 
 def _opencode_env(config: OpenCodeConfig) -> Dict[str, str]:
-    env = os.environ.copy()
+    env = {} if config.docker_runtime else os.environ.copy()
     env["HOME"] = str(config.home_dir)
     env["XDG_CONFIG_HOME"] = str(config.config_dir)
     env["XDG_DATA_HOME"] = str(config.data_dir)
@@ -798,6 +877,21 @@ def _opencode_env(config: OpenCodeConfig) -> Dict[str, str]:
     env["OPENCODE_DISABLE_PROJECT_CONFIG"] = "1"
     env["OPENCODE_PURE"] = "1"
     env["OPENCODE_DISABLE_AUTOUPDATE"] = "1"
+    if config.docker_runtime:
+        env["OPENCODE_DISABLE_MODELS_FETCH"] = "1"
+        # Provider proxy settings must still allow the container to reach MCP.
+        env["NO_PROXY"] = ",".join(
+            filter(
+                None,
+                [
+                    config.docker_runtime.target_env.get("NO_PROXY", ""),
+                    config.docker_runtime.backend_host,
+                    "localhost",
+                    "127.0.0.1",
+                ],
+            )
+        )
+        env["no_proxy"] = env["NO_PROXY"]
     env.setdefault("NO_COLOR", "1")
     env.pop("ACTBENCH_MCP_ADMIN_TOKEN", None)
     return env
@@ -827,6 +921,8 @@ def _opencode_config_payload(config: OpenCodeConfig) -> Dict[str, Any]:
     }
     if config.agent:
         payload["default_agent"] = config.agent
+    if config.providers:
+        payload["provider"] = config.providers
     if config.mcp_enabled:
         payload["mcp"] = {
             "actbench": {
@@ -861,7 +957,24 @@ def _augment_opencode_result(
         opencode_session_id=session_id,
         mcp_enabled=config.mcp_enabled,
         mcp_public_url=config.mcp_public_url if config.mcp_enabled else None,
+        **({"docker_executions": config.docker_records} if config.docker_runtime else {}),
     )
+
+
+def _load_provider_config() -> Dict[str, Any] | None:
+    path = os.environ.get("ACTBENCH_OPENCODE_PROVIDER_CONFIG", "").strip()
+    if not path:
+        return None
+    try:
+        payload = json.loads(Path(path).expanduser().read_text(encoding="utf-8"))
+        providers = payload["provider"]
+        if not isinstance(providers, dict) or not providers:
+            raise ValueError("provider must be a nonempty object")
+        return providers
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise BackendInitializationError(
+            f"Could not load OpenCode provider config: {path}"
+        ) from exc
 
 
 def _result_api_endpoints(config: OpenCodeConfig, api_endpoints: Dict[str, Any]) -> Dict[str, Any]:

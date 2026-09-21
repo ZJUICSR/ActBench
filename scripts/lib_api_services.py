@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import atexit
 import json
+import secrets
 import os
 import shutil
 import socket
@@ -342,9 +343,13 @@ def _business_key(service_name: str, path: str) -> str:
     return path.strip("/").replace("/", "_")
 
 
-def _http_json(url: str, *, method: str = "GET", timeout: float = 5.0) -> dict[str, Any]:
+def _http_json(
+    url: str, *, method: str = "GET", timeout: float = 5.0, admin_token: str | None = None
+) -> dict[str, Any]:
     data = b"{}" if method == "POST" else None
     headers = {"Content-Type": "application/json", "X-Health-Check": "1"}
+    if admin_token:
+        headers["Authorization"] = f"Bearer {admin_token}"
     req = request.Request(url, data=data, headers=headers, method=method)
     with request.urlopen(req, timeout=timeout) as resp:
         payload = resp.read().decode("utf-8")
@@ -373,6 +378,7 @@ def _read_log_tail(path: Path, max_chars: int = 4000) -> str:
 
 
 class ApiServiceGroup:
+
     def __init__(
         self,
         *,
@@ -381,12 +387,16 @@ class ApiServiceGroup:
         attempt_id: str,
         fixture_overrides: dict[str, Path] | None = None,
         workspace: Path | None = None,
+        protect_admin: bool = False,
+        bind_host: str = "127.0.0.1",
     ) -> None:
         self.service_names = service_names
         self.run_id = run_id
         self.attempt_id = attempt_id
         self.fixture_overrides = fixture_overrides or {}
         self.workspace = workspace
+        self.admin_token = secrets.token_urlsafe(32) if protect_admin else None
+        self.bind_host = bind_host
         self.root = API_RUN_ROOT / _safe_path_component(run_id) / _safe_path_component(attempt_id)
         self.processes: dict[str, subprocess.Popen[str]] = {}
         self.endpoints: dict[str, dict[str, Any]] = {}
@@ -417,6 +427,9 @@ class ApiServiceGroup:
         spec = SERVICE_SPECS[name]
         fixture_path = self.prepared_fixtures[name]
         env = os.environ.copy()
+        env.pop("ACTBENCH_MOCK_ADMIN_TOKEN", None)
+        if self.admin_token:
+            env["ACTBENCH_MOCK_ADMIN_TOKEN"] = self.admin_token
         env["PORT"] = str(_allocate_port())
         env[spec.fixture_env] = str(fixture_path)
         if self.mock_now:
@@ -433,8 +446,20 @@ class ApiServiceGroup:
         log_dir.mkdir(parents=True, exist_ok=True)
         log_path = log_dir / f"{name}.log"
         with log_path.open("a", encoding="utf-8") as log_file:
+            command = [sys.executable, str(spec.server_path)]
+            if self.admin_token:
+                command = [
+                    sys.executable,
+                    "-m",
+                    "uvicorn",
+                    f"mock_services.{name}.server:app",
+                    "--host",
+                    self.bind_host,
+                    "--port",
+                    str(port),
+                ]
             process = subprocess.Popen(
-                [sys.executable, str(spec.server_path)],
+                command,
                 cwd=str(REPO_ROOT),
                 env=env,
                 stdout=log_file,
@@ -484,7 +509,9 @@ class ApiServiceGroup:
                 fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
             except Exception:  # noqa: BLE001 - ignore unparsable fixtures for clock derivation
                 continue
-            all_dates.extend(collect_fixture_datetimes(fixture, field_names=MOCK_ACTIVITY_TIME_FIELDS))
+            all_dates.extend(
+                collect_fixture_datetimes(fixture, field_names=MOCK_ACTIVITY_TIME_FIELDS)
+            )
         if all_dates:
             return (max(all_dates) + timedelta(seconds=1)).isoformat()
         return None
@@ -510,7 +537,7 @@ class ApiServiceGroup:
         for name, endpoint in self.endpoints.items():
             audit_url = endpoint["audit"]
             try:
-                audit_data[name] = _http_json(audit_url, timeout=5.0)
+                audit_data[name] = _http_json(audit_url, timeout=5.0, admin_token=self.admin_token)
             except Exception as exc:  # noqa: BLE001 - audit collection is best-effort
                 audit_data[name] = {"error": str(exc)}
         return audit_data
@@ -519,7 +546,9 @@ class ApiServiceGroup:
         results: dict[str, dict[str, Any]] = {}
         for name, endpoint in self.endpoints.items():
             try:
-                results[name] = _http_json(endpoint["reset"], method="POST", timeout=5.0)
+                results[name] = _http_json(
+                    endpoint["reset"], method="POST", timeout=5.0, admin_token=self.admin_token
+                )
             except Exception as exc:  # noqa: BLE001 - reset errors should be visible to caller
                 results[name] = {"error": str(exc)}
         return results
@@ -549,6 +578,8 @@ def start_api_services(
     attempt_id: str,
     fixture_overrides: dict[str, Path] | None = None,
     workspace: Path | None = None,
+    protect_admin: bool = False,
+    bind_host: str = "127.0.0.1",
 ) -> ApiServiceGroup | None:
     if not services:
         return None
@@ -558,4 +589,6 @@ def start_api_services(
         attempt_id=attempt_id,
         fixture_overrides=fixture_overrides,
         workspace=workspace,
+        protect_admin=protect_admin,
+        bind_host=bind_host,
     ).start()

@@ -69,6 +69,7 @@ class QwenPawConfig:
     delete_agent: bool
     headless_tool_guard: str | None
     usage_delta_enabled: bool
+    docker_runtime: Any = None
 
 
 @dataclass(frozen=True)
@@ -156,7 +157,12 @@ class QwenPawBackend:
         created_service_agent_id: str | None = None
 
         try:
-            materialize_task_workspace(workspace=workspace, skill_dir=context.skill_dir, task=task)
+            materialize_task_workspace(
+                workspace=workspace,
+                skill_dir=context.skill_dir,
+                task=task,
+                **({"preserve_directory": True} if config.docker_runtime else {}),
+            )
             enable_workspace_skills_manifest(workspace)
         except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
             return execution_error_result(
@@ -181,6 +187,7 @@ class QwenPawBackend:
                     task=task,
                     attempt_run_id=attempt_run_id,
                     workspace=workspace,
+                    **({"docker_runtime": config.docker_runtime} if config.docker_runtime else {}),
                 )
                 if api_endpoints:
                     logger.info("   Mock API services started: %s", ", ".join(api_endpoints))
@@ -578,8 +585,7 @@ class QwenPawBackend:
                 f"/api/agents/{scoped_agent_id}/chats/{{chat_id}}",
             ),
             (
-                f"/api/chats?user_id={scoped_user_id}"
-                f"&channel={scoped_channel}",
+                f"/api/chats?user_id={scoped_user_id}" f"&channel={scoped_channel}",
                 "/api/chats/{chat_id}",
             ),
         ]

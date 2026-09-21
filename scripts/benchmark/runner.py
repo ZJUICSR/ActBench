@@ -30,7 +30,12 @@ from benchmark.artifacts import artifact_run_dir, write_execution_artifacts
 from benchmark.backends.base import BackendInitializationError, BackendRunContext
 from benchmark.backends.common import execution_error_result
 from benchmark.backends.registry import get_backend
-from benchmark.baseline import _load_baseline_for_task, _pregenerate_baselines, _scene_for_task
+from benchmark.baseline import (
+    _load_baseline_for_task,
+    _pregenerate_baselines,
+    _scene_for_task,
+    baseline_cache_backend,
+)
 from benchmark.evaluation import _evaluate_attack_for_task
 from benchmark.metrics import (
     _compute_attack_pass_summary,
@@ -838,7 +843,9 @@ def _format_rate_for_log(value: Any) -> str:
 
 
 def _offline_scoring_command(trajectory_root: Optional[Path], judge_model: Optional[str]) -> str:
-    trajectory_arg = str(trajectory_root) if trajectory_root is not None else "<canonical-trajectory-dir>"
+    trajectory_arg = (
+        str(trajectory_root) if trajectory_root is not None else "<canonical-trajectory-dir>"
+    )
     command = f"deeptrap score --trajectory {trajectory_arg} --mode combined-ags"
     if judge_model:
         command += f" --judge-model {judge_model}"
@@ -890,7 +897,9 @@ def _collection_summary(task_entries: Sequence[Dict[str, Any]]) -> Dict[str, Any
     by_behavior: Dict[str, Dict[str, Any]] = {}
     tasks: list[Dict[str, Any]] = []
     for entry in task_entries:
-        backend_meta = entry.get("backend_metadata") if isinstance(entry.get("backend_metadata"), dict) else {}
+        backend_meta = (
+            entry.get("backend_metadata") if isinstance(entry.get("backend_metadata"), dict) else {}
+        )
         run_number = backend_meta.get("run_number") or backend_meta.get("run_index")
         behavior_key = str(entry.get("behavior_label") or entry.get("behavior_id") or "unknown")
         behavior = by_behavior.setdefault(
@@ -1030,8 +1039,18 @@ def run_benchmark(args: argparse.Namespace) -> None:
     scene_index = _build_scene_index(skill_root)
 
     backend_name = getattr(args, "backend", "openclaw")
+    execution_mode = getattr(args, "execution", "local")
+    if execution_mode not in {"local", "docker"} or (
+        execution_mode == "docker" and backend_name == "fake"
+    ):
+        logger.error("Docker execution requires a real agent backend")
+        sys.exit(2)
     try:
-        backend = get_backend(backend_name)
+        backend = (
+            get_backend(backend_name, execution="docker")
+            if execution_mode == "docker"
+            else get_backend(backend_name)
+        )
     except ValueError as exc:
         logger.error("❌ %s", exc)
         sys.exit(2)
@@ -1119,6 +1138,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
     agent_workspace = Path(f"/tmp/claweval/{run_id}/agent_workspace")
     command = "actbench " + " ".join(sys.argv[1:])
     run_metadata = {
+        "execution": execution_mode,
         "suite": args.suite,
         "runs_per_task": runs_per_task,
         "selected_run_numbers": list(selected_run_numbers),
@@ -1131,12 +1151,16 @@ def run_benchmark(args: argparse.Namespace) -> None:
         "inline_scoring": inline_scoring,
         "command": command,
     }
+    if execution_mode == "docker":
+        run_metadata["docker_records_dir"] = str((output_dir / "docker" / run_id).resolve())
     if inline_scoring:
         logger.warning(
             "Deprecated legacy inline scoring mode enabled; default ActBench runs collect trajectories only"
         )
     else:
-        logger.info("Trajectory collection mode enabled; official scoring is deferred to deeptrap score")
+        logger.info(
+            "Trajectory collection mode enabled; official scoring is deferred to deeptrap score"
+        )
     if execution_retries > 0:
         run_metadata.update(
             {
@@ -1188,7 +1212,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "workflow": workflow,
                 "scoring_status": scoring_status,
                 "inline_scoring": inline_scoring,
-                "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
+                "offline_scoring_command": _offline_scoring_command(
+                    offline_trajectory_root, args.judge_model
+                ),
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
                 "tasks_dir": str(tasks_dir),
@@ -1723,7 +1749,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
         baseline_hits = 0
         for tid, t in tasks_by_id.items():
             scene = _scene_for_task(t, scene_index)
-            b = _load_baseline_for_task(t, model_id, scene=scene, backend_name=backend.name)
+            b = _load_baseline_for_task(
+                t,
+                model_id,
+                scene=scene,
+                backend_name=baseline_cache_backend(backend.name, backend_context.metadata),
+            )
             baselines_by_task_id[tid] = b
             if b is not None:
                 baseline_hits += 1
@@ -1862,11 +1893,17 @@ def run_benchmark(args: argparse.Namespace) -> None:
 
         aggregate = {
             "model": model_id,
+            "execution": execution_mode,
             "backend": backend.name,
             "backend_metadata": {
                 "name": backend.name,
                 "model": model_id,
                 "agent_id": agent_id,
+                **{
+                    key: backend_context.metadata[key]
+                    for key in ("execution", "docker", "runtime_identity")
+                    if key in backend_context.metadata
+                },
             },
             "judge_model": args.judge_model or REWARD_JUDGE_MODEL,
             "actbench_version": _get_git_version(skill_root),
@@ -1883,7 +1920,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
             "workflow": workflow,
             "scoring_status": run_scoring_status,
             "inline_scoring": inline_scoring,
-            "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
+            "offline_scoring_command": _offline_scoring_command(
+                offline_trajectory_root, args.judge_model
+            ),
             "execution_retries": execution_retries,
             "retry_statuses": list(retry_statuses),
             "scoring_semantics": "actbench_ags",
@@ -1941,8 +1980,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "workflow": workflow,
                 "scoring_status": run_scoring_status,
                 "inline_scoring": inline_scoring,
-                "summary_kind": "inline_attack_summary" if inline_scoring else "trajectory_collection",
-                "offline_scoring_command": _offline_scoring_command(offline_trajectory_root, args.judge_model),
+                "summary_kind": (
+                    "inline_attack_summary" if inline_scoring else "trajectory_collection"
+                ),
+                "offline_scoring_command": _offline_scoring_command(
+                    offline_trajectory_root, args.judge_model
+                ),
                 "execution_retries": execution_retries,
                 "retry_statuses": list(retry_statuses),
             }
@@ -1990,8 +2033,13 @@ def run_benchmark(args: argparse.Namespace) -> None:
             if training_recorder:
                 logger.info("Saved trajectories to %s", training_recorder.root)
             else:
-                logger.warning("No trajectory artifact directory was recorded; offline scoring needs trajectories")
-            logger.info("Score later with: %s", _offline_scoring_command(offline_trajectory_root, args.judge_model))
+                logger.warning(
+                    "No trajectory artifact directory was recorded; offline scoring needs trajectories"
+                )
+            logger.info(
+                "Score later with: %s",
+                _offline_scoring_command(offline_trajectory_root, args.judge_model),
+            )
     finally:
         if backend_initialized:
             try:

@@ -13,10 +13,22 @@ def available_backend_names() -> tuple[str, ...]:
     return _BACKEND_NAMES
 
 
-def get_backend(name: str | None) -> AgentBackend:
+def get_backend(name: str | None, *, execution: str = "local") -> AgentBackend:
     """Instantiate a backend by name using lazy imports."""
 
     normalized = (name or "openclaw").strip().lower()
+    if execution == "docker" and normalized in {"openclaw", "qwenpaw", "openagent"}:
+        from benchmark.backends.docker_agents import (
+            DockerOpenClawBackend,
+            DockerQwenPawBackend,
+            DockerOpenAgentBackend,
+        )
+
+        return {
+            "openclaw": DockerOpenClawBackend,
+            "qwenpaw": DockerQwenPawBackend,
+            "openagent": DockerOpenAgentBackend,
+        }[normalized]()
     if normalized == "openclaw":
         from benchmark.backends.openclaw import OpenClawBackend
 

@@ -144,6 +144,23 @@ Then use the configured neutral prefix, for example `--judge-model private/gpt-5
 
 ## One-command test
 
+All six real backends support `--execution docker`: OpenCode, Claude Code, Hermes,
+OpenClaw, QwenPaw and OpenAgent. Build/check select the image with `--backend <name>`;
+omitting it defaults to OpenCode. The controller and scorer stay on the host.
+For example:
+
+```bash
+deeptrap docker-build
+deeptrap docker-check  # real container checks; no model or judge calls
+ACTBENCH_DOCKER_ENV=OPENROUTER_API_KEY deeptrap test \
+  --backend opencode --execution docker --model openrouter/<model-id> \
+  --suite task_B9_T01 --score-mode automated
+```
+
+Provide the selected provider credential in the host environment. See
+[`docs/DOCKER.md`](docs/DOCKER.md) for image configuration, custom providers,
+rootless Docker networking, and execution artifacts.
+
 For a bounded first run, use `deeptrap test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend, scores only those trajectories, and writes a concise `one_click_result.json` summary.
 
 Check the local ActBench plumbing without calling a real model or judge:

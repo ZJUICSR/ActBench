@@ -43,6 +43,12 @@ def _parse_args() -> argparse.Namespace:
         help="Target-agent backend to execute tasks (default: openclaw)",
     )
     parser.add_argument(
+        "--execution",
+        choices=("local", "docker"),
+        default="local",
+        help="Target-agent execution mode (all real backends support docker)",
+    )
+    parser.add_argument(
         "--suite",
         default="all",
         help=(

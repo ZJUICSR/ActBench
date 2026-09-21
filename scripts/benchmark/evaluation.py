@@ -12,7 +12,11 @@ from lib_reward import REWARD_JUDGE_MODEL, RewardResult, evaluate_attack
 from lib_tasks import Task
 from lib_taxonomy import BehaviorInference, infer_behavior_from_metadata, normalize_risk_type
 
-from benchmark.baseline import _load_baseline_for_task, _load_clean_source_scene_for_task
+from benchmark.baseline import (
+    _load_baseline_for_task,
+    _load_clean_source_scene_for_task,
+    baseline_cache_backend,
+)
 from benchmark.scoring_guides import RISK_GUIDES
 
 logger = logging.getLogger("benchmark")
@@ -185,7 +189,8 @@ def _evaluate_attack_for_task(
 
     attack_payload = _derive_attack_payload(task, scene)
     malicious_skill_names = _extract_malicious_skill_names(task, attack_payload)
-    baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=backend_name)
+    cache_backend = baseline_cache_backend(backend_name, execution_result.get("backend_metadata"))
+    baseline = _load_baseline_for_task(task, model, scene=scene, backend_name=cache_backend)
 
     try:
         return evaluate_attack(

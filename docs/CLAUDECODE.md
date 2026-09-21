@@ -1,5 +1,10 @@
 # Claude Code backend
 
+For per-attempt containers, use `--backend claudecode --execution docker`. Build and
+check with `deeptrap docker-build --backend claudecode` and
+`deeptrap docker-check --backend claudecode`. See [Docker setup](DOCKER.md) for
+provider configuration and isolation. The native agent does not need to be installed on the host. The setup below describes local execution.
+
 ActBench can drive Claude Code through the non-interactive `claude` CLI. The backend launches one headless Claude Code subprocess per task attempt, materializes the task workspace as the subprocess working directory, and records results in the same schema as the other ActBench backends.
 
 ## Prerequisites

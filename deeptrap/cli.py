@@ -10,6 +10,8 @@ from deeptrap import __version__
 
 
 COMMANDS = {
+    "docker-build": ("scripts.actbench_build_docker", "Build a target-agent Docker image"),
+    "docker-check": ("scripts.actbench_check_docker", "Check Docker, MCP and cleanup without model calls"),
     "run": ("scripts.actbench", "Run benchmark tasks against an agent backend"),
     "test": ("scripts.actbench_test", "Run a bounded evaluation or local self-test"),
     "score": ("scripts.actbench_score", "Score collected trajectories"),

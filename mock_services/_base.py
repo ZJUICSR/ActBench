@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import asyncio
+import hmac
 import json
 import os
 import random
@@ -236,5 +237,21 @@ class ErrorInjectionMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 
+class AdminAuthenticationMiddleware(BaseHTTPMiddleware):
+    """Keep Docker-visible audit/reset routes under controller ownership."""
+
+    async def dispatch(self, request: Request, call_next):
+        expected = os.environ.get("ACTBENCH_MOCK_ADMIN_TOKEN", "")
+        if expected and request.url.path.rstrip("/").endswith(("/audit", "/reset")):
+            if not hmac.compare_digest(
+                request.headers.get("authorization", ""), f"Bearer {expected}"
+            ):
+                return JSONResponse(
+                    status_code=401, content={"error": "admin authentication required"}
+                )
+        return await call_next(request)
+
+
 def add_error_injection(app: Any) -> None:
     app.add_middleware(ErrorInjectionMiddleware)
+    app.add_middleware(AdminAuthenticationMiddleware)

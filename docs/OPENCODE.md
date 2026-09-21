@@ -103,6 +103,13 @@ When MCP is enabled, ActBench result payloads sanitize `api_endpoints`: raw mock
 
 ## Docker, WSL, and remote networking
 
+ActBench now supports `--backend opencode --execution docker` directly. Build
+the target image with `deeptrap docker-build` and verify it with
+`deeptrap docker-check`. See [DOCKER.md](DOCKER.md) for the complete workflow.
+Docker mode does not require a host OpenCode installation. It generates a
+container-reachable MCP address and keeps target credentials on an explicit
+environment-variable allowlist.
+
 `ACTBENCH_MCP_HOST` / `ACTBENCH_MCP_PORT` describe where ActBench binds and checks the local gateway. `ACTBENCH_MCP_URL` is the URL opencode should use.
 
 Examples:

@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import threading
 import time
 from pathlib import Path
@@ -152,6 +153,7 @@ class TrainingArtifactRecorder:
                 "destination": str(dest_root),
                 "created_at": time.time(),
                 "files": [],
+                "symlinks": [],
                 "errors": [],
             }
             if not source_path.exists():
@@ -163,31 +165,57 @@ class TrainingArtifactRecorder:
                 shutil.rmtree(dest_root)
             dest_root.mkdir(parents=True, exist_ok=True)
 
-            for path in sorted(source_path.rglob("*")):
-                try:
-                    rel = path.relative_to(source_path)
-                except ValueError:
-                    continue
-                dest = dest_root / rel
-                try:
-                    if path.is_dir():
-                        dest.mkdir(parents=True, exist_ok=True)
-                        continue
-                    if not path.is_file():
-                        continue
-                    dest.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(path, dest)
-                    stat = path.stat()
-                    manifest["files"].append(
-                        {
-                            "path": str(rel),
-                            "size": stat.st_size,
-                            "sha256": _sha256_file(path),
-                            "mtime": stat.st_mtime,
-                        }
-                    )
-                except OSError as exc:
-                    manifest["errors"].append({"path": str(rel), "error": str(exc)})
+            # Agent-controlled links must never make the host recorder read
+            # outside the mounted workspace. Record links as metadata only.
+            # Directory FDs and O_NOFOLLOW also protect against replacements
+            # while a service container is still alive during collection.
+            def walk_error(exc):
+                manifest["errors"].append({"path": str(exc.filename), "error": str(exc)})
+
+            for directory, dirs, files, dir_fd in os.fwalk(
+                source_path, follow_symlinks=False, onerror=walk_error
+            ):
+                dirs.sort()
+                relative_dir = Path(directory).relative_to(source_path)
+                (dest_root / relative_dir).mkdir(parents=True, exist_ok=True)
+                for name in sorted(dirs + files):
+                    rel = relative_dir / name
+                    dest = dest_root / rel
+                    try:
+                        info = os.stat(name, dir_fd=dir_fd, follow_symlinks=False)
+                        if stat.S_ISLNK(info.st_mode):
+                            manifest["symlinks"].append(
+                                {"path": str(rel), "target": os.readlink(name, dir_fd=dir_fd)}
+                            )
+                            continue
+                        if not stat.S_ISREG(info.st_mode):
+                            continue
+                        fd = os.open(
+                            name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dir_fd
+                        )
+                        with os.fdopen(fd, "rb") as source_file:
+                            info = os.fstat(source_file.fileno())
+                            if not stat.S_ISREG(info.st_mode):
+                                continue
+                            digest = hashlib.sha256()
+                            size = 0
+                            with dest.open("wb") as target_file:
+                                for chunk in iter(lambda: source_file.read(1024 * 1024), b""):
+                                    target_file.write(chunk)
+                                    digest.update(chunk)
+                                    size += len(chunk)
+                        dest.chmod(stat.S_IMODE(info.st_mode))
+                        os.utime(dest, ns=(info.st_atime_ns, info.st_mtime_ns))
+                        manifest["files"].append(
+                            {
+                                "path": str(rel),
+                                "size": size,
+                                "sha256": digest.hexdigest(),
+                                "mtime": info.st_mtime,
+                            }
+                        )
+                    except OSError as exc:
+                        manifest["errors"].append({"path": str(rel), "error": str(exc)})
 
             self.write_json(Path(relative_dest) / "files_manifest.json", manifest)
             return manifest
@@ -211,7 +239,9 @@ class TrainingArtifactRecorder:
             for service, fixture_path in (fixture_overrides or {}).items():
                 source = Path(str(fixture_path))
                 if source.exists() and source.is_file():
-                    dest = self.root / base / "fixtures" / f"{safe_artifact_name(str(service))}.json"
+                    dest = (
+                        self.root / base / "fixtures" / f"{safe_artifact_name(str(service))}.json"
+                    )
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(source, dest)
             for service, endpoint in (api_endpoints or {}).items():

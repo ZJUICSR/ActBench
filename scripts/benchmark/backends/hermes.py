@@ -10,7 +10,7 @@ import secrets
 import shutil
 import subprocess
 import time
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -50,6 +50,9 @@ from benchmark.backends.common import (
     zero_usage,
 )
 
+from benchmark.docker_runtime import DockerRuntime
+from benchmark.docker_support import configure_mcp, initialize_runtime, isolated_env, load_provider
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_HERMES_EXECUTABLE = "hermes"
@@ -70,6 +73,9 @@ class HermesConfig:
     mcp_port: int
     mcp_public_url: str
     mcp_admin_token: str | None
+    docker_provider: Dict[str, Any] | None = None
+    docker_runtime: DockerRuntime | None = None
+    docker_records: List[Dict[str, Any]] = field(default_factory=list)
 
     @property
     def mcp_admin_url(self) -> str:
@@ -85,6 +91,7 @@ class HermesBackend:
 
     def __init__(self) -> None:
         self._config: HermesConfig | None = None
+        self._docker: DockerRuntime | None = None
         self._mcp_gateway: ActBenchMcpGatewayProcess | None = None
 
     def slugify_model(self, model_id: str) -> str:
@@ -95,14 +102,32 @@ class HermesBackend:
 
     def initialize_run(self, context: BackendRunContext) -> None:
         context.agent_workspace.mkdir(parents=True, exist_ok=True)
-        config = self._load_config(context)
-        if config.mcp_enabled:
-            self._initialize_mcp_gateway(config)
-        self._config = config
+        try:
+            self._docker = initialize_runtime(context)
+            config = configure_mcp(self._load_config(context), self._docker)
+            if self._docker and os.environ.get("ACTBENCH_DOCKER_PROVIDER_CONFIG"):
+                provider = load_provider(self._docker, context.model)
+                config = replace(
+                    config,
+                    docker_provider=provider,
+                    provider="custom:" + provider["provider"],
+                    model=provider["model"],
+                )
+                context.metadata["runtime_identity"] = self._docker.identity(providers=provider)
+            if config.mcp_enabled:
+                self._initialize_mcp_gateway(config)
+            self._config = config
+        except Exception:
+            self.finalize_run(context)
+            raise
 
     def finalize_run(self, context: BackendRunContext) -> None:
-        stop_gateway_process(self._mcp_gateway)
-        self._mcp_gateway = None
+        try:
+            if self._docker:
+                self._docker.close()
+        finally:
+            stop_gateway_process(self._mcp_gateway)
+            self._mcp_gateway = None
 
     def execute_task(
         self,
@@ -157,6 +182,8 @@ class HermesBackend:
         )
         try:
             self._write_hermes_config(config)
+            if config.docker_runtime:
+                usage_file = config.hermes_home / "hermes_usage.json"
         except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
             return _augment_hermes_result(
                 execution_error_result(
@@ -185,6 +212,7 @@ class HermesBackend:
                     task=task,
                     attempt_run_id=attempt_run_id,
                     workspace=workspace,
+                    **({"protect_admin": True} if config.docker_runtime else {}),
                 )
                 if api_endpoints:
                     logger.info("   Mock API services started: %s", ", ".join(api_endpoints))
@@ -394,10 +422,12 @@ class HermesBackend:
             )
 
     def _load_config(self, context: BackendRunContext) -> HermesConfig:
-        executable = _resolve_executable(
+        executable = (
             os.environ.get("ACTBENCH_HERMES_BIN", DEFAULT_HERMES_EXECUTABLE).strip()
             or DEFAULT_HERMES_EXECUTABLE
         )
+        if self._docker is None:
+            executable = _resolve_executable(executable)
         provider = os.environ.get("ACTBENCH_HERMES_PROVIDER", "").strip() or None
         model = os.environ.get("ACTBENCH_HERMES_MODEL", "").strip() or context.model
         if not model.strip():
@@ -462,12 +492,22 @@ class HermesBackend:
             workspace=workspace,
             leaf_name="hermes_home",
         )
-        return replace(config, hermes_home=hermes_home)
+        return replace(config, hermes_home=hermes_home, docker_records=[])
 
     def _write_hermes_config(self, config: HermesConfig) -> None:
         try:
             config.hermes_home.mkdir(parents=True, exist_ok=True)
             payload: Dict[str, Any] = {}
+            if config.docker_provider:
+                provider = config.docker_provider
+                payload["providers"] = {
+                    provider["provider"]: {
+                        "base_url": provider["base_url"],
+                        "key_env": provider["api_key_env"],
+                        "default_model": provider["model"],
+                        "transport": "chat_completions",
+                    }
+                }
             if config.mcp_enabled:
                 payload["mcp_servers"] = {
                     "actbench": {
@@ -498,6 +538,11 @@ class HermesBackend:
                         host=config.mcp_host,
                         port=config.mcp_port,
                         admin_token=config.mcp_admin_token,
+                        **(
+                            {"bind_host": config.docker_runtime.bind_host}
+                            if config.docker_runtime
+                            else {}
+                        ),
                     )
                 else:
                     check_gateway_admin_health(
@@ -557,10 +602,23 @@ class HermesBackend:
             cmd.extend(["--toolsets", config.toolsets])
         cmd.extend(["-z", prompt])
 
-        env = os.environ.copy()
+        env = (
+            isolated_env(config.hermes_home, config.docker_runtime)
+            if config.docker_runtime
+            else os.environ.copy()
+        )
         env["HERMES_HOME"] = str(config.hermes_home)
         env.setdefault("NO_COLOR", "1")
         env.pop("ACTBENCH_MCP_ADMIN_TOKEN", None)
+        if config.docker_runtime:
+            return config.docker_runtime.run(
+                cmd,
+                workspace=workspace,
+                home=config.hermes_home,
+                env=env,
+                timeout_seconds=timeout_seconds,
+                records=config.docker_records,
+            )
         return subprocess.run(
             cmd,
             cwd=str(workspace),
@@ -591,10 +649,24 @@ def _run_hermes_sessions_export(
         "-",
     ]
 
-    env = os.environ.copy()
+    env = (
+        isolated_env(config.hermes_home, config.docker_runtime)
+        if config.docker_runtime
+        else os.environ.copy()
+    )
     env["HERMES_HOME"] = str(config.hermes_home)
     env.setdefault("NO_COLOR", "1")
     env.pop("ACTBENCH_MCP_ADMIN_TOKEN", None)
+    if config.docker_runtime:
+        return config.docker_runtime.run(
+            cmd,
+            workspace=workspace,
+            home=config.hermes_home,
+            env=env,
+            timeout_seconds=timeout_seconds,
+            records=config.docker_records,
+            purpose="export",
+        )
     return subprocess.run(
         cmd,
         cwd=str(workspace),
@@ -614,12 +686,18 @@ def _augment_hermes_result(
     transcript_source: str = "hermes_oneshot_stdout",
     transcript_extraction: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
+    if config.docker_runtime and any(
+        record.get("cleanup") != "removed" for record in config.docker_records
+    ):
+        result.update(status="error", exit_code=-1)
+        result["stderr"] = result.get("stderr", "") + "\nDocker cleanup did not complete."
     return augment_execution_result(
         result,
         context=context,
         transcript_source=transcript_source,
         transcript_extraction=transcript_extraction,
         executable=config.executable,
+        docker_executions=config.docker_records if config.docker_runtime else None,
         provider=config.provider,
         toolsets=config.toolsets,
         hermes_home=str(config.hermes_home),

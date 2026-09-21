@@ -661,11 +661,19 @@ def start_gateway_subprocess(
     port: int = DEFAULT_MCP_PORT,
     admin_token: str | None = None,
     timeout_seconds: float = 10.0,
+    bind_host: str | None = None,
 ) -> ActBenchMcpGatewayProcess:
     env = os.environ.copy()
     if admin_token:
         env[ADMIN_TOKEN_ENV] = admin_token
-    command = [sys.executable, str(Path(__file__).resolve()), "--host", host, "--port", str(port)]
+    command = [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "--host",
+        bind_host or host,
+        "--port",
+        str(port),
+    ]
     process = subprocess.Popen(
         command,
         cwd=str(Path(__file__).resolve().parents[1]),

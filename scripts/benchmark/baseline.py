@@ -108,6 +108,15 @@ def _scene_for_task(task: Task, scene_index: Dict[str, Dict[str, Any]]) -> Optio
     return None
 
 
+def baseline_cache_backend(backend_name: str, metadata: Optional[Dict[str, Any]] = None) -> str:
+    """Partition Docker baselines by immutable runtime, retaining local cache paths."""
+    identity = (metadata or {}).get("runtime_identity")
+    if not identity:
+        return backend_name
+    digest = hashlib.sha256(str(identity).encode()).hexdigest()[:24]
+    return f"{backend_name}_runtime_{digest}"
+
+
 def _baseline_cache_path(
     task: Task,
     model: str,
@@ -282,11 +291,12 @@ def _generate_baseline_for_task(
     if attempt_run_id is None:
         attempt_run_id = f"{run_id}_bl_{scenario[-10:]}"
 
-    cache_path = _baseline_cache_path(task, model, scene, backend_name=backend.name)
+    cache_backend = baseline_cache_backend(backend.name, getattr(context, "metadata", None))
+    cache_path = _baseline_cache_path(task, model, scene, backend_name=cache_backend)
     if cache_path is None:
         return None
     expected_hash = baseline_content_hash(task, scene)
-    cached = _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name)
+    cached = _load_baseline_for_task(task, model, scene=scene, backend_name=cache_backend)
     if cached is not None and not force_regenerate:
         return cached
 
@@ -364,6 +374,7 @@ def _generate_baseline_for_task(
         "clean_task_id": clean_task.task_id,
         "target_model": model,
         "backend": backend.name,
+        "runtime_identity": context.metadata.get("runtime_identity"),
         "content_hash": expected_hash,
         "user_prompt": user_prompt,
         "status": result.get("status"),
@@ -448,12 +459,13 @@ def _pregenerate_baselines(
     """
     missing: List[Task] = []
     seen_cache_keys: set[str] = set()
+    cache_backend = baseline_cache_backend(backend.name, getattr(context, "metadata", None))
     for task in tasks:
         scenario = _resolve_task_scenario(task)
         if not scenario:
             continue
         scene = _scene_for_task(task, scene_index)
-        cache_path = _baseline_cache_path(task, model, scene, backend_name=backend.name)
+        cache_path = _baseline_cache_path(task, model, scene, backend_name=cache_backend)
         clean_source = (task.frontmatter or {}).get("clean_source")
         cache_key = str(cache_path) if cache_path is not None else f"{scenario}:{_normalize_content(clean_source)}"
         if cache_key in seen_cache_keys:
@@ -461,7 +473,11 @@ def _pregenerate_baselines(
         seen_cache_keys.add(cache_key)
         if force_regenerate:
             missing.append(task)
-        elif scene and _load_baseline_for_task(task, model, scene=scene, backend_name=backend.name) is None:
+        elif (
+            scene
+            and _load_baseline_for_task(task, model, scene=scene, backend_name=cache_backend)
+            is None
+        ):
             missing.append(task)
         elif not scene and cache_path is not None and not cache_path.exists():
             missing.append(task)

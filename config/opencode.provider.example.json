@@ -1,0 +1,17 @@
+{
+  "provider": {
+    "bailian": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Bailian",
+      "options": {
+        "baseURL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "apiKey": "{env:DASHSCOPE_API_KEY}"
+      },
+      "models": {
+        "deepseek-v4-flash-0731": {
+          "name": "deepseek-v4-flash-0731"
+        }
+      }
+    }
+  }
+}

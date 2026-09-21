@@ -94,11 +94,23 @@ def materialize_task_workspace(
     skill_dir: Path,
     task: Task,
     install_api_skills: bool = True,
+    preserve_directory: bool = False,
 ) -> Path:
     """Materialize task files into an explicit workspace for backend adapters."""
 
     if workspace.exists():
-        shutil.rmtree(workspace)
+        if preserve_directory:
+            # A running service container binds this inode. Replacing the
+            # directory leaves the container attached to an unlinked mount.
+            if workspace.is_symlink():
+                raise ValueError("A mounted workspace must not be a symlink")
+            for entry in workspace.iterdir():
+                if entry.is_dir() and not entry.is_symlink():
+                    shutil.rmtree(entry)
+                else:
+                    entry.unlink()
+        else:
+            shutil.rmtree(workspace)
     workspace.mkdir(parents=True, exist_ok=True)
     resolved_workspace = workspace.resolve()
 
@@ -296,6 +308,8 @@ def start_declared_api_services(
     task: Task,
     attempt_run_id: str,
     workspace: Path,
+    protect_admin: bool = False,
+    docker_runtime=None,
 ):
     """Start services declared by a task and return (group, endpoints)."""
 
@@ -308,8 +322,32 @@ def start_declared_api_services(
         attempt_id=task.task_id,
         fixture_overrides=get_fixture_overrides(task.frontmatter),
         workspace=workspace,
+        **(
+            {"protect_admin": True, "bind_host": docker_runtime.bind_host}
+            if docker_runtime
+            else {"protect_admin": True} if protect_admin else {}
+        ),
     )
     endpoints = group.endpoints if group else {}
+    if docker_runtime and endpoints:
+        # Keep controller URLs private in group.endpoints. Only business URLs
+        # are advertised to agents; audit/reset require a host-only token.
+        from urllib.parse import urlsplit, urlunsplit
+
+        def public(value):
+            if isinstance(value, dict):
+                return {
+                    k: public(v) for k, v in value.items() if k not in {"audit", "reset", "log"}
+                }
+            if isinstance(value, list):
+                return [public(v) for v in value]
+            if isinstance(value, str) and value.startswith("http://127.0.0.1:"):
+                url = urlsplit(value)
+                return urlunsplit(url._replace(netloc=f"{docker_runtime.backend_host}:{url.port}"))
+            return value
+
+        endpoints = public(endpoints)
+        (workspace / "api_endpoints.json").write_text(json.dumps(endpoints, indent=2) + "\n")
     return group, endpoints
 
 

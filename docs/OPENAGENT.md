@@ -1,5 +1,10 @@
 # OpenAgent Backend Setup
 
+For per-attempt containers, use `--backend openagent --execution docker`. Build and
+check with `deeptrap docker-build --backend openagent` and
+`deeptrap docker-check --backend openagent`. See [Docker setup](DOCKER.md) for
+provider configuration and isolation. Docker mode creates a fresh service, database, Provider, Store and MCP registration automatically; the manual service setup below applies to local execution.
+
 ActBench can run tasks through a running OpenAgent service by using OpenAgent's OpenAI-compatible chat-completions API. Unlike backends that can bind a per-task workspace directly to the agent runtime, OpenAgent needs one extra setup step: configure OpenAgent with an ActBench MCP server so it can access the per-task workspace and mock APIs.
 
 ## Why MCP is required

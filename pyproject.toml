@@ -72,6 +72,9 @@ packages = ["deeptrap", "scripts", "mock_services"]
 "skills" = "deeptrap/data/skills"
 "crab.txt" = "deeptrap/data/crab.txt"
 "config/llm_backends.example.yaml" = "deeptrap/data/config/llm_backends.example.yaml"
+"docker" = "deeptrap/data/docker"
+"config/docker.provider.example.json" = "deeptrap/data/config/docker.provider.example.json"
+"config/opencode.provider.example.json" = "deeptrap/data/config/opencode.provider.example.json"
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -81,6 +84,9 @@ include = [
     "/tasks",
     "/skills",
     "/config/llm_backends.example.yaml",
+    "/config/opencode.provider.example.json",
+    "/docker",
+    "/config/docker.provider.example.json",
     "/docs",
     "/tests",
     "/README.md",

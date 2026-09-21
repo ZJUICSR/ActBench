@@ -67,6 +67,7 @@ class OpenAgentConfig:
     mcp_port: int
     mcp_public_url: str
     mcp_admin_token: str | None
+    docker_runtime: Any = None
 
     @property
     def health_url(self) -> str:
@@ -129,7 +130,9 @@ class OpenAgentBackend:
         logger.info("🤖 OpenAgent backend [%s] starting task: %s", context.agent_id, task.task_id)
         start_time = time.time()
         session_id = f"{attempt_run_id}_{task.task_id}_{int(start_time * 1000)}"
-        workspace = backend_task_workspace(context=context, attempt_run_id=attempt_run_id, task=task)
+        workspace = backend_task_workspace(
+            context=context, attempt_run_id=attempt_run_id, task=task
+        )
         api_group = None
         api_endpoints: Dict[str, Any] = {}
         api_audit: Dict[str, Any] = {}
@@ -143,7 +146,12 @@ class OpenAgentBackend:
         timed_out = False
 
         try:
-            materialize_task_workspace(workspace=workspace, skill_dir=context.skill_dir, task=task)
+            materialize_task_workspace(
+                workspace=workspace,
+                skill_dir=context.skill_dir,
+                task=task,
+                **({"preserve_directory": True} if config.docker_runtime else {}),
+            )
         except Exception as exc:  # noqa: BLE001 - convert setup issues to execution result
             return _augment_openagent_result(
                 execution_error_result(
@@ -172,6 +180,7 @@ class OpenAgentBackend:
                     task=task,
                     attempt_run_id=attempt_run_id,
                     workspace=workspace,
+                    **({"protect_admin": True} if config.docker_runtime else {}),
                 )
                 if api_endpoints:
                     logger.info("   Mock API services started: %s", ", ".join(api_endpoints))
@@ -260,7 +269,9 @@ class OpenAgentBackend:
                     assistant_text = _assistant_content_text(assistant_message)
                     if assistant_text:
                         stdout = f"{stdout}\n{assistant_text}".strip()
-                    usage = _add_usage(usage, _normalize_usage(response.get("usage"), request_count=1))
+                    usage = _add_usage(
+                        usage, _normalize_usage(response.get("usage"), request_count=1)
+                    )
                 except OpenAgentTimeoutError as exc:
                     timed_out = True
                     status = "timeout"
@@ -355,6 +366,11 @@ class OpenAgentBackend:
                         host=config.mcp_host,
                         port=config.mcp_port,
                         admin_token=config.mcp_admin_token,
+                        **(
+                            {"bind_host": config.docker_runtime.bind_host}
+                            if config.docker_runtime
+                            else {}
+                        ),
                     )
                 else:
                     check_gateway_admin_health(
@@ -391,8 +407,8 @@ class OpenAgentBackend:
             ) from exc
         logger.info("   ActBench MCP gateway ready for OpenAgent at %s", config.mcp_public_url)
 
-    def _load_config(self) -> OpenAgentConfig:
-        api_key = os.environ.get("OPENAGENT_API_KEY", "").strip()
+    def _load_config(self, *, api_key_override: str | None = None) -> OpenAgentConfig:
+        api_key = api_key_override or os.environ.get("OPENAGENT_API_KEY", "").strip()
         if not api_key:
             raise BackendInitializationError(
                 "openagent backend requires OPENAGENT_API_KEY for the running OpenAgent service. "
@@ -400,8 +416,8 @@ class OpenAgentBackend:
             )
 
         timeout_seconds = _load_timeout_seconds()
-        base_url = os.environ.get("OPENAGENT_BASE_URL", DEFAULT_OPENAGENT_BASE_URL).strip().rstrip(
-            "/"
+        base_url = (
+            os.environ.get("OPENAGENT_BASE_URL", DEFAULT_OPENAGENT_BASE_URL).strip().rstrip("/")
         )
         if not base_url:
             raise BackendInitializationError("OPENAGENT_BASE_URL must not be blank")
@@ -416,7 +432,9 @@ class OpenAgentBackend:
         default_mcp_url = f"http://{mcp_host}:{mcp_port}/mcp"
         mcp_public_url = os.environ.get("ACTBENCH_MCP_URL", default_mcp_url).strip()
         if mcp_enabled and not mcp_public_url:
-            raise BackendInitializationError("ACTBENCH_MCP_URL must not be blank when MCP is enabled")
+            raise BackendInitializationError(
+                "ACTBENCH_MCP_URL must not be blank when MCP is enabled"
+            )
         mcp_admin_token = os.environ.get("ACTBENCH_MCP_ADMIN_TOKEN", "").strip() or None
         if mcp_enabled and mcp_autostart and mcp_admin_token is None:
             mcp_admin_token = secrets.token_urlsafe(32)
@@ -439,7 +457,9 @@ class OpenAgentBackend:
             _request_text(
                 config.health_url,
                 method="GET",
-                timeout_seconds=min(config.timeout_seconds or DEFAULT_OPENAGENT_TIMEOUT_SECONDS, 10.0),
+                timeout_seconds=min(
+                    config.timeout_seconds or DEFAULT_OPENAGENT_TIMEOUT_SECONDS, 10.0
+                ),
             )
         except OpenAgentRequestError as exc:
             raise BackendInitializationError(
@@ -598,7 +618,9 @@ def _normalize_usage(raw_usage: Any, *, request_count: int) -> Dict[str, Any]:
         return usage
     input_tokens = raw_usage.get("prompt_tokens", raw_usage.get("input_tokens", 0)) or 0
     output_tokens = raw_usage.get("completion_tokens", raw_usage.get("output_tokens", 0)) or 0
-    total_tokens = raw_usage.get("total_tokens", _safe_int(input_tokens) + _safe_int(output_tokens)) or 0
+    total_tokens = (
+        raw_usage.get("total_tokens", _safe_int(input_tokens) + _safe_int(output_tokens)) or 0
+    )
     usage["input_tokens"] = _safe_int(input_tokens)
     usage["output_tokens"] = _safe_int(output_tokens)
     usage["total_tokens"] = _safe_int(total_tokens)
@@ -665,7 +687,9 @@ def _coerce_openai_tool_calls(value: Any) -> List[Dict[str, Any]]:
 
 
 def _openai_tool_call_to_content_block(tool_call: Dict[str, Any]) -> Dict[str, Any] | None:
-    function = tool_call.get("function") if isinstance(tool_call.get("function"), dict) else tool_call
+    function = (
+        tool_call.get("function") if isinstance(tool_call.get("function"), dict) else tool_call
+    )
     name = function.get("name") if isinstance(function, dict) else None
     if not name:
         return None
@@ -853,7 +877,9 @@ def _load_timeout_seconds() -> float | None:
             f"OPENAGENT_TIMEOUT_SECONDS must be numeric, got {timeout_raw!r}"
         ) from exc
     if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
-        raise BackendInitializationError("OPENAGENT_TIMEOUT_SECONDS must be a finite positive number")
+        raise BackendInitializationError(
+            "OPENAGENT_TIMEOUT_SECONDS must be a finite positive number"
+        )
     return timeout_seconds
 
 
