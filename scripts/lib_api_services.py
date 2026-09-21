@@ -330,9 +330,9 @@ def _safe_path_component(value: str) -> str:
     return "".join(ch if ch.isalnum() or ch in ("-", "_", ".") else "_" for ch in value)
 
 
-def _allocate_port() -> int:
+def _allocate_port(bind_host: str = "0.0.0.0") -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(("127.0.0.1", 0))
+        sock.bind((bind_host, 0))
         return int(sock.getsockname()[1])
 
 
@@ -430,7 +430,11 @@ class ApiServiceGroup:
         env.pop("ACTBENCH_MOCK_ADMIN_TOKEN", None)
         if self.admin_token:
             env["ACTBENCH_MOCK_ADMIN_TOKEN"] = self.admin_token
-        env["PORT"] = str(_allocate_port())
+        # Native server entrypoints bind all interfaces; protected services
+        # use the configured Docker/MCP interface. Probe the same address so
+        # another loopback or network interface cannot hide a port conflict.
+        bind_host = self.bind_host if self.admin_token else "0.0.0.0"
+        env["PORT"] = str(_allocate_port(bind_host))
         env[spec.fixture_env] = str(fixture_path)
         if self.mock_now:
             env["CLAWEVAL_MOCK_NOW"] = self.mock_now

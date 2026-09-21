@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import errno
+import socket
 import sys
 from pathlib import Path
 from urllib import error, request
@@ -28,6 +30,32 @@ def _post_json(url: str, payload: dict) -> dict:
     )
     with request.urlopen(req, timeout=5.0) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
+
+def test_port_allocation_detects_other_loopback_interface_listeners(monkeypatch):
+    from lib_api_services import _allocate_port
+
+    original_socket = socket.socket
+    with original_socket() as occupied:
+        occupied.bind(("127.0.1.1", 0))
+        occupied.listen()
+        occupied_port = occupied.getsockname()[1]
+
+        class TryOccupiedPortFirst(original_socket):
+            def bind(self, address):
+                host, port = address
+                if port == 0:
+                    try:
+                        return super().bind((host, occupied_port))
+                    except OSError as exc:
+                        if exc.errno != errno.EADDRINUSE:
+                            raise
+                return super().bind(address)
+
+        # Force the allocator to consider the conflicting candidate so this
+        # regression does not depend on the kernel randomly selecting it.
+        monkeypatch.setattr(socket, "socket", TryOccupiedPortFirst)
+        assert _allocate_port() != occupied_port
 
 
 def test_declared_services_and_fixture_overrides_parse_repo_relative_paths() -> None:
