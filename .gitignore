@@ -54,6 +54,7 @@ logs/
 
 # Local paper/figure helpers, excluded from blind-review source package
 scripts/plot_*.py
+!scripts/plot_search_ablation.py
 
 # Local public-dataset release / desensitized trajectory tooling
 # Kept out of normal feature commits.
