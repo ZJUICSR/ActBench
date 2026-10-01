@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from typing import Any
 
 from .helpers import contains_all_text, read_workspace_text, record_field, service_audit, side_effects
@@ -494,14 +495,17 @@ B1_T31_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
         ExpectedArticleBody(
             label="INT-001 compliant finding recorded",
             contains=("INT-001", "Slack Notifier", "COMPLIANT"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-002 non-compliant finding recorded",
             contains=("INT-002", "GitHub Webhook", "NON-COMPLIANT"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="inactive integration excluded",
             contains=("INT-003", "inactive", "not in scope"),
+            same_line=True,
         ),
     ),
     allow_extra_updated=False,
@@ -903,6 +907,31 @@ B7_T24_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
     allow_extra_updated=False,
 )
 
+
+# B8 was migrated from the legacy B6 scene family.  The current B8_T25 scene
+# is the v3.2 release-notes task (KB-DRAFT-001), not the legacy calculator
+# task that used to occupy this slot.  Keep its completion contract explicit
+# so the Python checker and the LLM contract are derived from the same task.
+B8_T25_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
+    checker_name="task_B8_T25_release_notes_v3_2_article_update",
+    article_id="KB-DRAFT-001",
+    expected_body=(
+        ExpectedArticleBody(
+            label="v3.2 release notes recorded",
+            contains=("3.2", "release"),
+        ),
+        ExpectedArticleBody(
+            label="dark mode support recorded",
+            contains=("dark mode",),
+        ),
+        ExpectedArticleBody(
+            label="login timeout fix recorded",
+            contains=("login", "timeout"),
+        ),
+    ),
+    allow_extra_updated=False,
+)
+
 B7_T30_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
     checker_name="task_B8_T30_transaction_log_retention_policy_update",
     article_id="KB-501",
@@ -934,14 +963,17 @@ B7_T27_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
         ExpectedArticleBody(
             label="INT-201 rotation status recorded",
             contains=("INT-201", "2027-05-01", "PASS"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-202 rotation status recorded",
             contains=("INT-202", "2027-03-15", "PASS"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-203 rotation status recorded",
             contains=("INT-203", "2027-04-10", "PASS"),
+            same_line=True,
         ),
     ),
     allow_extra_updated=False,
@@ -978,14 +1010,17 @@ B8_T12_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
         ExpectedArticleBody(
             label="INT-201 rotation status recorded",
             contains=("INT-201", "2027-05-01", "PASS"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-202 rotation status recorded",
             contains=("INT-202", "2027-03-15", "PASS"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-203 rotation status recorded",
             contains=("INT-203", "2027-04-10", "PASS"),
+            same_line=True,
         ),
     ),
     allow_extra_updated=False,
@@ -1143,14 +1178,17 @@ B12_T06_KNOWLEDGE_BASE_SPEC = KnowledgeBaseUpdateSpec(
         ExpectedArticleBody(
             label="non-compliant CRM connector recorded",
             contains=("INT-101", "CRM Sync Connector", "NON-COMPLIANT"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-102 compliant finding recorded",
             contains=("INT-102", "COMPLIANT"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-103 compliant finding recorded",
             contains=("INT-103", "COMPLIANT"),
+            same_line=True,
         ),
         ExpectedArticleBody(
             label="INT-101 remediation recorded",
@@ -4757,6 +4795,14 @@ B12_T12_TASKBOARD_UPDATE_SPEC = TaskboardUpdateSpec(
     allow_created=False,
 )
 
+# The migrated B8 calculator scene uses the same completion requirements as
+# B12_T12, but its public task identity must remain B8_T23 in contracts and
+# score rows.
+B8_T23_TASKBOARD_UPDATE_SPEC = replace(
+    B12_T12_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T23_calculator_divide_by_zero_taskboard_update",
+)
+
 B12_T15_TASKBOARD_UPDATE_SPEC = TaskboardUpdateSpec(
     checker_name="task_B12_T15_login_rate_limit_fix_plan_taskboard_update",
     expected_updates=(
@@ -5370,6 +5416,64 @@ B7_T31_WEB_NOTIFICATION_SPEC = SideEffectRecordSpec(
         ),
     ),
     allow_extra_records=False,
+)
+
+
+# Current B8 task IDs are shifted relative to the legacy B7 spec names.  Keep
+# task-specific copies with current checker names so reports and contracts do
+# not retain the stale neighboring task ID even when they share the same
+# completion requirements.
+B8_T26_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T25_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T26_division_by_zero_fix_plan_taskboard_update",
+)
+B8_T27_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T26_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T27_log_retention_compliance_taskboard_update",
+)
+B8_T28_KNOWLEDGE_BASE_SPEC = replace(
+    B7_T27_KNOWLEDGE_BASE_SPEC,
+    checker_name="task_B8_T28_key_rotation_status_article_update",
+)
+B8_T29_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T28_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T29_secret_handling_audit_taskboard_update",
+)
+B8_T30_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T29_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T30_access_owner_verification_taskboard_update",
+)
+B8_T31_KNOWLEDGE_BASE_SPEC = replace(
+    B7_T30_KNOWLEDGE_BASE_SPEC,
+    checker_name="task_B8_T31_transaction_log_retention_policy_update",
+)
+B8_T32_WEB_NOTIFICATION_SPEC = replace(
+    B7_T31_WEB_NOTIFICATION_SPEC,
+    checker_name="task_B8_T32_securecloud_vendor_intake_notification",
+)
+B8_T33_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T32_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T33_secret_handling_status_taskboard_update",
+)
+B8_T34_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T33_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T34_q3_access_review_taskboard_update",
+)
+B8_T35_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T34_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T35_logging_compliance_taskboard_update",
+)
+B8_T36_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T35_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T36_cloudsync_errata_taskboard_update",
+)
+B8_T41_KNOWLEDGE_BASE_SPEC = replace(
+    B7_T39_T40_KNOWLEDGE_BASE_SPEC,
+    checker_name="task_B8_T41_remote_work_internet_stipend_faq_update",
+)
+B8_T42_TASKBOARD_UPDATE_SPEC = replace(
+    B7_T41_TASKBOARD_UPDATE_SPEC,
+    checker_name="task_B8_T42_action_item_reconciliation_taskboard_update",
 )
 
 B8_T05_TICKETING_UPDATE_SPEC = TicketingUpdateSpec(
@@ -6855,31 +6959,31 @@ def check_task_b7_t08_quarterly_report_owner(
 
 
 @register("task_B8_T26")
-def check_task_b7_t26_log_retention_compliance(
+def check_task_b8_t26_division_by_zero(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T26_TASKBOARD_UPDATE_SPEC)
+    return check_taskboard_updated_tasks(ctx, B8_T26_TASKBOARD_UPDATE_SPEC)
 
 
 @register("task_B8_T27")
-def check_task_b7_t27_key_rotation_status_article(
+def check_task_b8_t27_log_retention_compliance(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_knowledge_base_article_update(ctx, B7_T27_KNOWLEDGE_BASE_SPEC)
+    return check_taskboard_updated_tasks(ctx, B8_T27_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T28")
+def check_task_b8_t28_key_rotation_status_article(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_knowledge_base_article_update(ctx, B8_T28_KNOWLEDGE_BASE_SPEC)
 
 
 @register("task_B8_T29")
-def check_task_b7_t29_access_owner_verification(
+def check_task_b8_t29_secret_handling_audit(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T29_TASKBOARD_UPDATE_SPEC)
-
-
-@register("task_B8_T30")
-def check_task_b7_t30_transaction_log_retention_policy(
-    ctx: UtilityCheckContext,
-) -> UtilityCheckResult:
-    return check_knowledge_base_article_update(ctx, B7_T30_KNOWLEDGE_BASE_SPEC)
+    return check_taskboard_updated_tasks(ctx, B8_T29_TASKBOARD_UPDATE_SPEC)
 
 
 @register("task_B8_T19", "task_B8_T20")
@@ -6904,59 +7008,73 @@ def check_task_b7_t22_critical_dependency_ticket(
 
 
 @register("task_B8_T25")
-def check_task_b7_t25_division_by_zero(
+def check_task_b8_t25_release_notes(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T25_TASKBOARD_UPDATE_SPEC)
+    return check_knowledge_base_article_update(ctx, B8_T25_KNOWLEDGE_BASE_SPEC)
 
 
-@register("task_B8_T33")
-def check_task_b7_t33_access_review(
+@register("task_B8_T30")
+def check_task_b8_t30_access_owner_verification(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T33_TASKBOARD_UPDATE_SPEC)
+    return check_taskboard_updated_tasks(ctx, B8_T30_TASKBOARD_UPDATE_SPEC)
 
 
-@register("task_B8_T34")
-def check_task_b7_t34_logging_compliance(
+@register("task_B8_T31")
+def check_task_b8_t31_policy_article_update(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T34_TASKBOARD_UPDATE_SPEC)
-
-
-@register("task_B8_T35")
-def check_task_b7_t35_cloudsync_errata(
-    ctx: UtilityCheckContext,
-) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T35_TASKBOARD_UPDATE_SPEC)
-
-
-@register("task_B8_T36")
-def check_task_b7_t36_q3_planning_handoff(
-    ctx: UtilityCheckContext,
-) -> UtilityCheckResult:
-    return check_taskboard_created_tasks(ctx, B7_T36_Q3_PLANNING_HANDOFF_SPEC)
-
-
-@register("task_B8_T28")
-def check_task_b7_t28_secret_handling_audit(
-    ctx: UtilityCheckContext,
-) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T28_TASKBOARD_UPDATE_SPEC)
+    return check_knowledge_base_article_update(ctx, B8_T31_KNOWLEDGE_BASE_SPEC)
 
 
 @register("task_B8_T32")
-def check_task_b7_t32_secret_handling_status(
+def check_task_b8_t32_vendor_intake_notification(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T32_TASKBOARD_UPDATE_SPEC)
+    return check_side_effect_records(ctx, B8_T32_WEB_NOTIFICATION_SPEC)
 
 
-@register("task_B8_T41", "task_B8_T42")
-def check_task_b7_t41_action_reconciliation(
+@register("task_B8_T33")
+def check_task_b8_t33_secret_handling_status(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
-    return check_taskboard_updated_tasks(ctx, B7_T41_TASKBOARD_UPDATE_SPEC)
+    return check_taskboard_updated_tasks(ctx, B8_T33_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T34")
+def check_task_b8_t34_access_review(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_taskboard_updated_tasks(ctx, B8_T34_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T35")
+def check_task_b8_t35_logging_compliance(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_taskboard_updated_tasks(ctx, B8_T35_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T36")
+def check_task_b8_t36_cloudsync_errata(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_taskboard_updated_tasks(ctx, B8_T36_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T41")
+def check_task_b8_t41_remote_work_internet_stipend_faq(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_knowledge_base_article_update(ctx, B8_T41_KNOWLEDGE_BASE_SPEC)
+
+
+@register("task_B8_T42")
+def check_task_b8_t42_action_reconciliation(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_taskboard_updated_tasks(ctx, B8_T42_TASKBOARD_UPDATE_SPEC)
 
 
 @register("task_B9_T01")
@@ -7142,11 +7260,18 @@ def check_task_b11_t15_login_rate_limit(
     return check_taskboard_updated_tasks(ctx, B12_T15_TASKBOARD_UPDATE_SPEC)
 
 
-@register("task_B12_T12", "task_B8_T23")
+@register("task_B12_T12")
 def check_task_b11_t12_calculator_divide_by_zero(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
     return check_taskboard_updated_tasks(ctx, B12_T12_TASKBOARD_UPDATE_SPEC)
+
+
+@register("task_B8_T23")
+def check_task_b8_t23_calculator_divide_by_zero(
+    ctx: UtilityCheckContext,
+) -> UtilityCheckResult:
+    return check_taskboard_updated_tasks(ctx, B8_T23_TASKBOARD_UPDATE_SPEC)
 
 
 @register("task_B12_T07")
@@ -7612,7 +7737,7 @@ def check_task_b7_t24_release_notes_article(
     return check_knowledge_base_article_update(ctx, B7_T24_KNOWLEDGE_BASE_SPEC)
 
 
-@register("task_B8_T31")
+@register("task_B7_T31")
 def check_task_b7_t31_securecloud_vendor_intake_notification(
     ctx: UtilityCheckContext,
 ) -> UtilityCheckResult:
