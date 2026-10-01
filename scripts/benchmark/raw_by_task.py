@@ -20,7 +20,7 @@ from benchmark.task_fingerprint import (
 )
 
 RAW_BY_TASK_SCHEMA_VERSION = "actbench.raw_by_task.v1"
-DEFAULT_RAW_BY_TASK_ROOT = Path.home() / "pack" / "raw_by_task"
+DEFAULT_RAW_BY_TASK_ROOT = Path.home() / "data" / "actbench" / "raw_by_task"
 RAW_BY_TASK_GLOBAL_MANIFEST = "raw_by_task_manifest.json"
 BASELINE_CACHE_ONLY_REASON = "baseline_cache_only"
 PROTECTED_VALUE_LEAK_REASON = "protected_value_leak"

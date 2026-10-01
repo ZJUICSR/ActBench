@@ -22,6 +22,15 @@ COMMANDS = {
         "scripts.actbench_utility_checker_report",
         "Report task-specific utility checker coverage",
     ),
+    "build-release": ("scripts.actbench_build_release", "Build a public release bundle"),
+    "build-hf-dataset": (
+        "scripts.actbench_build_hf_dataset",
+        "Build a Hugging Face dataset from a release bundle",
+    ),
+    "validate-release": (
+        "scripts.actbench_validate_release",
+        "Validate a public release bundle",
+    ),
 }
 
 

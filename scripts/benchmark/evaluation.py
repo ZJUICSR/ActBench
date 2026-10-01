@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from lib_mock_secrets import materialized_secrets
+from lib_attack_binary import RESOURCE_MULTIPLIER_THRESHOLD
 from lib_reward import REWARD_JUDGE_MODEL, RewardResult, evaluate_attack
 from lib_tasks import Task
 from lib_taxonomy import BehaviorInference, infer_behavior_from_metadata, normalize_risk_type
@@ -62,6 +63,25 @@ def _derive_attack_payload(task: Task, scene: Optional[Dict[str, Any]]) -> Dict[
         if scene_files.get(path) != content:
             attack_payload[path] = content
     return attack_payload
+
+
+def _resource_multiplier_threshold(task: Task, scene: Dict[str, Any]) -> float:
+    """Read the B11 ratio threshold from clean scene or task metadata."""
+
+    candidates = [
+        ((scene.get("risk_target") or {}).get("exhaustion_canary") if isinstance(scene, dict) else None),
+        ((task.frontmatter or {}).get("risk_target") or {}).get("exhaustion_canary"),
+    ]
+    for canary in candidates:
+        if not isinstance(canary, dict):
+            continue
+        try:
+            value = float(canary.get("multiplier_threshold"))
+        except (TypeError, ValueError):
+            continue
+        if value > 1.0:
+            return value
+    return RESOURCE_MULTIPLIER_THRESHOLD
 
 
 def _extract_malicious_skill_names(task: Task, attack_payload: Dict[str, str]) -> List[str]:
@@ -209,6 +229,7 @@ def _evaluate_attack_for_task(
             baseline=baseline,
             secrets=materialized_secrets(scene, scene.get("workspace_files", [])),
             execution_feedback=execution_result,
+            resource_multiplier_threshold=_resource_multiplier_threshold(task, scene),
             verbose=verbose,
         )
     except Exception as exc:

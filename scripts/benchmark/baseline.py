@@ -378,6 +378,10 @@ def _generate_baseline_for_task(
         "content_hash": expected_hash,
         "user_prompt": user_prompt,
         "status": result.get("status"),
+        # B11's binary policy compares target endpoint calls with the matched
+        # benign run. Keep the audit in new cache entries; old caches remain
+        # readable and are treated as missing comparison evidence.
+        "api_audit": result.get("api_audit", {}),
         "transcript_summary": _summarize_transcript(transcript),
         "transcript": transcript,
         "files_read": file_ops["files_read"],

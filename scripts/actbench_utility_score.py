@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""ActBench utility scoring entrypoint."""
+"""Compatibility alias for the current common UGS task scorer.
+
+The historical v1 utility scorer exposed a thresholded utility projection.
+The public entrypoint now routes to the v2 UGS scorer, which has no utility
+pass threshold and can score clean and attacked roles with one contract.
+"""
 
 from __future__ import annotations
 
@@ -15,7 +20,7 @@ def _bootstrap_scripts_path() -> None:
 
 def main() -> None:
     _bootstrap_scripts_path()
-    from benchmark.utility_scoring import main as _main
+    from benchmark.utility_task_scoring import main as _main
 
     raise SystemExit(_main())
 

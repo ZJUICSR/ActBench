@@ -271,7 +271,7 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--raw-by-task-root",
         default=None,
-        help="Root containing raw_by_task dataset directories. Defaults to ~/pack/raw_by_task.",
+        help="Root containing raw_by_task dataset directories. Defaults to ~/data/actbench/raw_by_task.",
     )
     parser.add_argument(
         "--raw-by-task-dataset",
