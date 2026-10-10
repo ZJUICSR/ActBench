@@ -8,6 +8,7 @@ potential leaks without printing matched secret values.
 from __future__ import annotations
 
 import ast
+import copy
 import getpass
 import hashlib
 from functools import lru_cache
@@ -927,8 +928,89 @@ def redact_json(value: Any) -> Any:
 _EMBEDDED_CHECKER_PATHS: tuple[tuple[str, ...], ...] = (
     ("task", "automated_checks"),
     ("scoring_inputs", "attack_check_code"),
+    ("scoring_inputs", "scene", "attack_check_code"),
     ("task", "frontmatter", "attack_check_code"),
 )
+
+# These fields belong to the retired threshold/defense scoring contract.  They
+# may still occur in historical trajectories, but they are not part of the
+# public AGS/UGS/ASR contract.  Keep this list path-aware: free-form transcript
+# and workspace evidence can legitimately quote an old field name.
+PUBLIC_LEGACY_SCORING_FIELDS: frozenset[str] = frozenset(
+    {
+        "attack_success_threshold",
+        "defense_pass_condition",
+        "defense_score",
+        "task_pass",
+        "attack_pass",
+        "TAcc",
+        "tacc",
+        "safety_diagnostic",
+    }
+)
+PUBLIC_LEGACY_CLEANUP_VERSION = "actbench.public_legacy_cleanup.v1"
+
+
+def _strip_legacy_scoring_keys(value: Any, *, path: tuple[str, ...], removed: list[str]) -> None:
+    """Remove retired score keys from structured scoring metadata in-place."""
+
+    if isinstance(value, dict):
+        for key in list(value):
+            key_text = str(key)
+            child_path = path + (key_text,)
+            if key_text in PUBLIC_LEGACY_SCORING_FIELDS:
+                value.pop(key, None)
+                removed.append(".".join(child_path))
+                continue
+            _strip_legacy_scoring_keys(value[key], path=child_path, removed=removed)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _strip_legacy_scoring_keys(item, path=path + (str(index),), removed=removed)
+
+
+def clean_public_trajectory(
+    payload: dict[str, Any],
+    *,
+    checker_code: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Apply the current public scoring contract to one trajectory payload.
+
+    The source trajectory remains untouched.  Only structured scoring metadata
+    is cleaned; transcript/workspace evidence is preserved byte-for-byte apart
+    from the normal privacy redaction pass.  Embedded checker snippets are
+    replaced by the authoritative current task grader supplied by the release
+    builder, avoiding unsafe regex edits to executable Python.
+    """
+
+    cleaned = copy.deepcopy(payload)
+    removed: list[str] = []
+    scoring_inputs = cleaned.get("scoring_inputs")
+    if isinstance(scoring_inputs, dict):
+        _strip_legacy_scoring_keys(scoring_inputs, path=("scoring_inputs",), removed=removed)
+
+    replaced: list[str] = []
+    for path in _EMBEDDED_CHECKER_PATHS:
+        current: Any = cleaned
+        for key in path[:-1]:
+            if not isinstance(current, dict):
+                current = None
+                break
+            current = current.get(key)
+        if not isinstance(current, dict) or path[-1] not in current:
+            continue
+        if current[path[-1]] in (None, ""):
+            continue
+        current[path[-1]] = checker_code
+        replaced.append(".".join(path))
+
+    return cleaned, {
+        "policy_version": PUBLIC_LEGACY_CLEANUP_VERSION,
+        "applied": True,
+        "removed_fields": sorted(removed),
+        "removed_field_count": len(removed),
+        "replaced_checker_paths": replaced,
+        "replaced_checker_count": len(replaced),
+    }
 
 
 def _payload_path(payload: Any, path: Sequence[str]) -> Any:

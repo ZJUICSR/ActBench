@@ -26,11 +26,14 @@ from benchmark.raw_by_task import (
     resolve_raw_by_task_datasets,
 )
 from benchmark.release_redaction import (
+    PUBLIC_LEGACY_CLEANUP_VERSION,
     copy_redacted_file,
     copy_redacted_tree,
+    clean_public_trajectory,
     raise_on_redaction_hits,
     redact_json,
     scan_release_tree,
+    validate_checker_payload,
     validate_redacted_checker_payload,
 )
 from benchmark.release_scores import (
@@ -80,6 +83,8 @@ class ReleaseBuildOptions:
     run_redaction_scan: bool = True
     archive: bool = False
     compression: str = "zstd"
+    clean_legacy_fields: bool = False
+    task_grader_root: Path | str | None = None
 
 
 @dataclass(frozen=True)
@@ -152,6 +157,57 @@ def _load_json(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ReleaseBundleError(f"JSON payload must be an object: {path}")
     return payload
+
+
+def _authoritative_task_checker(task_id: str, options: ReleaseBuildOptions) -> str:
+    """Load the current task grader used by the public clean release."""
+
+    if options.task_grader_root is None:
+        raise ReleaseBundleError(
+            "clean_legacy_fields requires task_grader_root so the release cannot silently retain an old checker"
+        )
+    grader_path = Path(options.task_grader_root).expanduser() / task_id / "graders" / "attack_check.py"
+    try:
+        checker_code = grader_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ReleaseBundleError(f"Could not read authoritative task grader {grader_path}: {exc}") from exc
+    if not checker_code.strip():
+        raise ReleaseBundleError(f"Authoritative task grader is empty: {grader_path}")
+    forbidden_tokens = (
+        "defense_score",
+        "attack_success_threshold",
+        "defense_pass_condition",
+    )
+    if any(token in checker_code for token in forbidden_tokens):
+        raise ReleaseBundleError(
+            f"Authoritative task grader still contains retired scoring fields: {grader_path}"
+        )
+    errors = validate_checker_payload(
+        {"scoring_inputs": {"attack_check_code": checker_code}},
+        label=str(grader_path),
+    )
+    if errors:
+        raise ReleaseBundleError("; ".join(errors))
+    return checker_code
+
+
+def _public_trajectory_payload(
+    trajectory: dict[str, Any],
+    *,
+    task_id: str,
+    options: ReleaseBuildOptions,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    if not options.clean_legacy_fields:
+        return trajectory, {
+            "policy_version": None,
+            "applied": False,
+            "removed_fields": [],
+            "removed_field_count": 0,
+            "replaced_checker_paths": [],
+            "replaced_checker_count": 0,
+        }
+    checker_code = _authoritative_task_checker(task_id, options)
+    return clean_public_trajectory(trajectory, checker_code=checker_code)
 
 
 def _write_json(
@@ -458,10 +514,15 @@ def _copy_clean_run(
     if destination.exists():
         shutil.rmtree(destination)
     destination.mkdir(parents=True, exist_ok=True)
-    _copy_json_payload(trajectory, destination / "trajectory.json", redact=options.redact)
+    public_trajectory, legacy_cleanup = _public_trajectory_payload(
+        trajectory,
+        task_id=task_id,
+        options=options,
+    )
+    _copy_json_payload(public_trajectory, destination / "trajectory.json", redact=options.redact)
     _write_json(
         destination / "scoring_input.json",
-        _as_dict(trajectory.get("scoring_inputs")),
+        _as_dict(public_trajectory.get("scoring_inputs")),
         redact=options.redact,
         validate_embedded_checker=True,
     )
@@ -475,6 +536,7 @@ def _copy_clean_run(
         "source_trajectory_sha256": source_sha,
         "score": "score.json",
         "score_summary": _score_summary(public_score, role="clean"),
+        "legacy_cleanup": legacy_cleanup,
         "artifacts": artifacts,
     }
     return _RunBundleResult(manifest=manifest, public_score=public_score)
@@ -541,10 +603,15 @@ def _copy_attack_run(
     if destination.exists():
         shutil.rmtree(destination)
     destination.mkdir(parents=True, exist_ok=True)
-    _copy_json_payload(trajectory, destination / "trajectory.json", redact=options.redact)
+    public_trajectory, legacy_cleanup = _public_trajectory_payload(
+        trajectory,
+        task_id=task_id,
+        options=options,
+    )
+    _copy_json_payload(public_trajectory, destination / "trajectory.json", redact=options.redact)
     _write_json(
         destination / "scoring_input.json",
-        _as_dict(trajectory.get("scoring_inputs")),
+        _as_dict(public_trajectory.get("scoring_inputs")),
         redact=options.redact,
         validate_embedded_checker=True,
     )
@@ -560,6 +627,7 @@ def _copy_attack_run(
         "source_trajectory_sha256": source_sha,
         "score": "score.json",
         "score_summary": _score_summary(public_score, role="attack"),
+        "legacy_cleanup": legacy_cleanup,
         "artifacts": artifacts,
     }
     return _RunBundleResult(
@@ -1030,6 +1098,26 @@ def build_combo_bundle(
             "applied": bool(options.redact),
             "scan_required": bool(options.run_redaction_scan),
         },
+        "legacy_cleanup": {
+            "policy_version": PUBLIC_LEGACY_CLEANUP_VERSION if options.clean_legacy_fields else None,
+            "applied": bool(options.clean_legacy_fields),
+            "run_count": sum(
+                1
+                for record in task_records
+                for run in [_as_dict(record.get("clean")), *_as_list(record.get("attacks"))]
+                if _as_dict(run.get("legacy_cleanup")).get("applied")
+            ),
+            "removed_field_count": sum(
+                int(_as_dict(run.get("legacy_cleanup")).get("removed_field_count") or 0)
+                for record in task_records
+                for run in [_as_dict(record.get("clean")), *_as_list(record.get("attacks"))]
+            ),
+            "replaced_checker_count": sum(
+                int(_as_dict(run.get("legacy_cleanup")).get("replaced_checker_count") or 0)
+                for record in task_records
+                for run in [_as_dict(record.get("clean")), *_as_list(record.get("attacks"))]
+            ),
+        },
         "raw_by_task_exclusions": {
             "clean_excluded_count": len(clean_collection.excluded),
             "clean_excluded": clean_collection.excluded,
@@ -1101,6 +1189,10 @@ def build_full_release(options: ReleaseBuildOptions) -> ReleaseBuildResult:
         "release_id": options.release_id,
         "created_at": time.time(),
         "combo_count": len(combos),
+        "legacy_cleanup": {
+            "policy_version": PUBLIC_LEGACY_CLEANUP_VERSION if options.clean_legacy_fields else None,
+            "applied": bool(options.clean_legacy_fields),
+        },
         "combos": [
             {
                 "combo_id": item.combo_id,
@@ -1138,6 +1230,16 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--skip-redaction-scan", action="store_true")
     parser.add_argument("--archive", action="store_true")
     parser.add_argument("--compression", choices=("zstd", "gzip"), default="zstd")
+    parser.add_argument(
+        "--clean-legacy-fields",
+        action="store_true",
+        help="Remove retired scoring metadata and inject the current task graders into public trajectories",
+    )
+    parser.add_argument(
+        "--task-grader-root",
+        default=None,
+        help="Root containing task_<B>_<T>/graders/attack_check.py for --clean-legacy-fields",
+    )
     return parser.parse_args(argv)
 
 
@@ -1158,6 +1260,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         run_redaction_scan=not args.skip_redaction_scan,
         archive=args.archive,
         compression=args.compression,
+        clean_legacy_fields=args.clean_legacy_fields,
+        task_grader_root=args.task_grader_root,
     )
     result = build_full_release(options)
     print(
