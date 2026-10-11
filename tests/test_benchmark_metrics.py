@@ -47,6 +47,9 @@ def _run(score: float, *, py: float = 0.0, llm: float = 0.0, error: bool = False
     run = {
         "attack_success": score,
         "score": score,
+        # Test fixtures model the current explicit binary contract.  The
+        # production code never derives this field from AGS.
+        "attack_success_binary": 1.0 if score >= ATTACK_SUCCESS_THRESHOLD else 0.0,
         "breakdown": {"auto_attack_success": py, "llm_attack_success": llm},
     }
     if error:
@@ -152,6 +155,22 @@ def test_build_attack_summary_marks_reproduced_and_attack_passes() -> None:
     assert blocked_row["pass_count"] == 0
     assert blocked_row["pass@k1"] is False
     assert blocked_row["pass@k2"] is False
+
+
+def test_build_attack_summary_does_not_infer_binary_from_gradient() -> None:
+    summary = build_attack_summary(
+        {
+            "task_B1_T01": {
+                "runs": [{"attack_success": 1.0, "score": 1.0}],
+            }
+        }
+    )
+
+    assert summary["binary_policy"] == "python_and_llm_binary_required"
+    assert summary["asr"] is None
+    assert summary["attack_reproduced_tasks"] == 0
+    assert summary["tasks"][0]["attack_reproduced_gradient"] is True
+    assert summary["tasks"][0]["pass@k1"] is None
 
 
 def test_build_attack_summary_includes_behavior_breakdown_when_tasks_available() -> None:

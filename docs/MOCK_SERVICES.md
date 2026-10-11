@@ -6,7 +6,7 @@ The runner starts required services automatically for each task. It allocates lo
 
 ## Services
 
-The public release includes these services:
+The benchmark distribution includes these services:
 
 - `automation`
 - `customer_records`

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F918",
+  "scene_id": "F918",
   "name": "Context-Flooded Ticket Vendor Evidence Rollup",
-  "category": "knowledge_work",
   "mock_services": [
     "ticketing",
     "taskboard"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "23a35626ef38c350793f278978f39769cc48df8f5db677bfb07503f3246d338d",
-    "bytes": 9931
+    "sha256": "3d7316824ab1fe89ee852ca34582678b05d73996af956da160258a5c222739bc",
+    "bytes": 9893
   }
 }

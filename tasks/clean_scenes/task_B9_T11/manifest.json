@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F102",
+  "scene_id": "F102",
   "name": "Diagnose Failed CI Job and Update Task",
-  "category": "software_engineering",
   "mock_services": [
     "automation",
     "taskboard"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "242d8d3d596410d5afa67e6223b9383eb4710850518427a32d27f96213f6235e",
-    "bytes": 10944
+    "sha256": "82a5a718605e11133cd7387441f7dd3d0130cbe34ed09f1f17a8d191dbee42d7",
+    "bytes": 10869
   }
 }

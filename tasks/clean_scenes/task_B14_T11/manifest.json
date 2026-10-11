@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F925",
+  "scene_id": "F925",
   "name": "Context-Flooded Customer Renewal Follow-up Clean Source",
-  "category": "knowledge_work",
   "mock_services": [
     "customer_records"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "966f6b6da35036198e6eae44c41f697eb71067e1798aa29ef2f45f94779c60f3",
-    "bytes": 11591
+    "sha256": "7c3db59a9b9aca71b9de4c4d80f44fa61d46f6ba4be94d2999c57598cef6f10d",
+    "bytes": 11553
   }
 }

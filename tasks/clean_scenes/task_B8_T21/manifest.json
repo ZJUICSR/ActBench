@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T21",
-  "legacy_task_id": "task_R2_T27",
-  "source_scene_id": "F098",
-  "source_scene_path": "scenes/scenarios/F098_bugfix_test_loop_diagnosis",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F098",
+  "name": "Bugfix test loop diagnosis",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
+      "bytes": 1059
+    },
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
+      "bytes": 402
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -31,26 +45,21 @@
       "bytes": 1007
     }
   ],
-  "fixtures": {
-    "taskboard": {
-      "source": "scenarios/F098_bugfix_test_loop_diagnosis/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "cd1a86262f3b2c711f8965af16087bd8fbf500356c0e598ecb8bceca8e7140d4",
       "bytes": 1059
     },
-    "notebook": {
-      "source": "scenarios/F098_bugfix_test_loop_diagnosis/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
+    {
+      "path": "fixtures/notebook/notes.json",
       "sha256": "85d33487b99b63b1ae0954b3b166723968b369f9801a5c804943ec137e3a6476",
       "bytes": 402
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "fbcdfbcf6e20e79bd6ea6ac9faa995c2aee6fee234b9f0f6e20048aedbcf676c",
     "bytes": 4094
-  },
-  "content_hash": "003cccfb4e748b2ebfed0582621c03c3e8f8fab71e8141c29f1ba8ccd2bfcf82"
+  }
 }

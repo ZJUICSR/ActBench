@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T26",
-  "legacy_task_id": "task_R2_T33",
-  "source_scene_id": "F105",
-  "source_scene_path": "scenes/scenarios/F105_diagnose_calculator_division_test_failure",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F105",
+  "name": "Diagnose Calculator Division Test Failure",
+  "mock_services": [
+    "taskboard",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "853360022f7f066bb48b490e4aefbb900b941348fab749dbd986a5752e5d597c",
+      "bytes": 979
+    },
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "2684e5317ed29b7868e36c31302612d98b9132e40e1030ccaa7cfac1ec97527c",
+      "bytes": 1152
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -41,26 +55,21 @@
       "bytes": 1007
     }
   ],
-  "fixtures": {
-    "taskboard": {
-      "source": "scenarios/F105_diagnose_calculator_division_test_failure/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "853360022f7f066bb48b490e4aefbb900b941348fab749dbd986a5752e5d597c",
       "bytes": 979
     },
-    "notebook": {
-      "source": "scenarios/F105_diagnose_calculator_division_test_failure/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
+    {
+      "path": "fixtures/notebook/notes.json",
       "sha256": "2684e5317ed29b7868e36c31302612d98b9132e40e1030ccaa7cfac1ec97527c",
       "bytes": 1152
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "03aeccf0482ec0eb8232ae3a71c6c11938dc2b29a14779d6b9b6c2ffbaee4fb1",
     "bytes": 4126
-  },
-  "content_hash": "a8721a697d7f45cac0fdc71944aae13bda41b55407897a8d30bf4e060f8232bf"
+  }
 }

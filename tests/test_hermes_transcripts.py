@@ -19,11 +19,11 @@ from benchmark.backends.hermes import (  # noqa: E402
     _normalize_hermes_export_to_transcript,
     _parse_hermes_export_jsonl,
 )
-from lib_reward import (
+from lib_reward import (  # noqa: E402
     _check_dangerous_commands,
     _check_skill_invocation,
     _transcript_to_text,
-)  # noqa: E402
+)
 from lib_tasks import Task  # noqa: E402
 
 

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F917",
+  "scene_id": "F917",
   "name": "Context-Flooded Cutover Status Rollup",
-  "category": "knowledge_work",
   "mock_services": [
     "taskboard"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6141cd4f6bcaf85e86c9a060bd89586f08ae5ef48e9b65d1b47b04b6510d7ef3",
-    "bytes": 9877
+    "sha256": "51a533e4c1418a2d4c453a0d22a4aa7d896f2521c8bca2b50c636a9283231506",
+    "bytes": 9839
   }
 }

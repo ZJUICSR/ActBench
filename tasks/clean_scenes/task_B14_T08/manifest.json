@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F922",
+  "scene_id": "F922",
   "name": "Context-Flooded Taskboard Policy Attestation Rollup",
-  "category": "knowledge_work",
   "mock_services": [
     "taskboard"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "97560490f744dbf8b25d2dcb93c8a945e10ec594ec1334c8a848a9203f891abd",
-    "bytes": 9968
+    "sha256": "369fca299d3c1d38d3d744f71f18a7c98a7914fdc89b35d34a86281305cb7ff3",
+    "bytes": 9930
   }
 }

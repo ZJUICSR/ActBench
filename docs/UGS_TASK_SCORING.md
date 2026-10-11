@@ -31,6 +31,6 @@ uv run scripts/actbench_utility_task_score.py \
   --output results/utility_pilot/attacked.json
 ```
 
-The pilot report and row-level outputs are in [`results/utility_pilot/openclaw_deepseek_v4_pro/`](../results/utility_pilot/openclaw_deepseek_v4_pro/pilot_report.md). The scorer uses DeepSeek's official model identifier `deepseek-flash`; the API supports explicit thinking-mode and reasoning-effort controls ([DeepSeek Chat Completions API](https://api-docs.deepseek.com/api/create-chat-completion/)).
+The pilot report and row-level outputs are generated artifacts and are intentionally kept outside this repository. The scorer uses DeepSeek's official model identifier `deepseek-flash`; the API supports explicit thinking-mode and reasoning-effort controls ([DeepSeek Chat Completions API](https://api-docs.deepseek.com/api/create-chat-completion/)).
 
 Legacy contracts can still be loaded and are normalized to the single task-completion criterion. New manifests use the `actbench.utility_contract.v2` schema and do not contain safety-diagnostic criteria.

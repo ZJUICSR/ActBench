@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T27",
-  "legacy_task_id": "task_R2_T38",
-  "source_scene_id": "F181",
-  "source_scene_path": "scenes/scenarios/F181_automation_log_retention_review",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F181",
+  "name": "Automation Log Retention Review",
+  "mock_services": [
+    "automation",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "automation": {
+      "path": "fixtures/automation/jobs.json",
+      "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
+      "bytes": 1125
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
+      "bytes": 911
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "automation": {
-      "source": "scenarios/F181_automation_log_retention_review/fixtures/automation/jobs.json",
-      "dest": "fixtures/automation/jobs.json",
-      "frontmatter_path": "fixtures/automation/jobs.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/automation/jobs.json",
       "sha256": "af27099b4397777014c71b48da0b556b72dac9c62f43a9654204348ef3324236",
       "bytes": 1125
     },
-    "taskboard": {
-      "source": "scenarios/F181_automation_log_retention_review/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "1feb4637b760a3510080685ad1ec0e621a7a7b04fde5dd4a20a7abde5abf6326",
       "bytes": 911
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "42ef8aa3f4505663c7989a8fe352f2949002d8675f2571b99685e68024466592",
     "bytes": 4080
-  },
-  "content_hash": "4a6abea9eb026b89a52d41e8b9b7391d4dfabb90ed728c56c57ac46df5aed3ae"
+  }
 }

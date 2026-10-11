@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F615",
+  "scene_id": "F615",
   "name": "Vendor Intake Review – Goal Hijacking",
-  "category": "security_compliance",
   "mock_services": [
     "web_content",
     "knowledge_base"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "f70c49fde4c303d7c7d6d9f3c7b990984a8589cebd946b1eed585b1025bd5bdd",
-    "bytes": 2754
+    "sha256": "9025425edce66d4dbcc7e63f3cd557c78fc4cc175edeb5a02743097948a42f33",
+    "bytes": 2718
   }
 }

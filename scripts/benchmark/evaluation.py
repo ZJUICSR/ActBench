@@ -18,6 +18,7 @@ from benchmark.baseline import (
     _load_clean_source_scene_for_task,
     baseline_cache_backend,
 )
+from benchmark.attack_metadata import canonical_attack_goal_from_metadata
 from benchmark.scoring_guides import RISK_GUIDES
 
 logger = logging.getLogger("benchmark")
@@ -33,7 +34,10 @@ def _normalize_file_content(content: Any) -> str:
 
 def _derive_attack_payload(task: Task, scene: Optional[Dict[str, Any]]) -> Dict[str, str]:
     # Preferred path: use the explicit attack_payload_paths list embedded in
-    # public task metadata. This is accurate even when scene files are unavailable.
+    # public task metadata. Payloads normally live in the task workspace, but
+    # context-flooding tasks may inject them through a fixture-backed service.
+    # Resolve both locations so the scoring evidence reflects the declared
+    # payload instead of silently becoming empty.
     payload_paths = (task.frontmatter or {}).get("attack_payload_paths")
     if isinstance(payload_paths, list) and payload_paths:
         task_files: Dict[str, str] = {
@@ -41,11 +45,51 @@ def _derive_attack_payload(task: Task, scene: Optional[Dict[str, Any]]) -> Dict[
             for file_spec in task.workspace_files
             if isinstance(file_spec.get("path"), str) and file_spec["path"]
         }
-        return {p: task_files[p] for p in payload_paths if p in task_files}
+        payload: Dict[str, str] = {p: task_files[p] for p in payload_paths if p in task_files}
 
-    # Fallback: diff task workspace against scene's original workspace.
-    # Less accurate when scene files are absent (scene workspace_files=[]).
+        task_file = getattr(task, "file_path", None)
+        task_dir = Path(str(task_file)).parent if task_file else None
+        fixture_paths = (task.frontmatter or {}).get("mock_service_fixtures") or {}
+        fixture_candidates = (
+            [Path(str(path)) for path in fixture_paths.values() if isinstance(path, str)]
+            if isinstance(fixture_paths, dict)
+            else []
+        )
+        for raw_path in payload_paths:
+            if not isinstance(raw_path, str) or not raw_path or raw_path in payload:
+                continue
+            candidates: List[Path] = []
+            if task_dir is not None:
+                candidate = (task_dir / raw_path).resolve()
+                try:
+                    if candidate.is_relative_to(task_dir.resolve()):
+                        candidates.append(candidate)
+                except (OSError, RuntimeError):
+                    pass
+            candidates.extend(
+                candidate
+                for candidate in fixture_candidates
+                if candidate.as_posix().endswith(Path(raw_path).as_posix())
+            )
+            for candidate in candidates:
+                try:
+                    if candidate.is_file():
+                        payload[raw_path] = candidate.read_text(encoding="utf-8")
+                        break
+                except (OSError, UnicodeError):
+                    continue
+        return payload
+
+    # Fallback: diff task workspace against the clean source workspace.  A
+    # legacy scene object can belong to a neighbouring task; in that case its
+    # files are not a valid baseline and treating the whole task workspace as
+    # the payload is safer than silently comparing against the wrong scene.
     scene_files: Dict[str, str] = {}
+    scene_id = str((scene or {}).get("id") or "")
+    task_scenario = str(_resolve_task_scenario(task) or "")
+    scene_matches_task = not scene_id or not task_scenario or scene_id == task_scenario
+    if not scene_matches_task:
+        scene = {}
     for file_spec in (scene or {}).get("workspace_files", []) or []:
         if not isinstance(file_spec, dict):
             continue
@@ -66,11 +110,15 @@ def _derive_attack_payload(task: Task, scene: Optional[Dict[str, Any]]) -> Dict[
 
 
 def _resource_multiplier_threshold(task: Task, scene: Dict[str, Any]) -> float:
-    """Read the B11 ratio threshold from clean scene or task metadata."""
+    """Read the B11 ratio threshold from task metadata, then clean-scene fallback."""
 
     candidates = [
-        ((scene.get("risk_target") or {}).get("exhaustion_canary") if isinstance(scene, dict) else None),
         ((task.frontmatter or {}).get("risk_target") or {}).get("exhaustion_canary"),
+        (
+            (scene.get("risk_target") or {}).get("exhaustion_canary")
+            if isinstance(scene, dict)
+            else None
+        ),
     ]
     for canary in candidates:
         if not isinstance(canary, dict):
@@ -106,8 +154,15 @@ def _extract_malicious_skill_names(task: Task, attack_payload: Dict[str, str]) -
 
 
 def _resolve_task_risk_type(task: Task) -> Optional[str]:
-    """Return the canonical risk type for a task, accepting legacy metadata aliases."""
+    """Return the compatibility risk label derived from canonical B metadata."""
     fm = task.frontmatter or {}
+    if isinstance(fm, dict):
+        try:
+            inference = infer_behavior_from_metadata(fm, path=task.file_path)
+            if inference.legacy_risk_type:
+                return normalize_risk_type(inference.legacy_risk_type)
+        except (TypeError, ValueError):
+            pass
     candidates: List[object] = []
     if fm.get("risk_type"):
         candidates.append(fm.get("risk_type"))
@@ -201,11 +256,13 @@ def _evaluate_attack_for_task(
 
     risk_guide = RISK_GUIDES.get(risk_type, {})
     reward_criteria = risk_guide.get("reward_criteria", {})
-    attack_goal = scene.get("risk_goal") or task.frontmatter.get(
-        "attack_goal", task.expected_behavior or task.prompt
+    frontmatter = task.frontmatter or {}
+    attack_goal = canonical_attack_goal_from_metadata(
+        frontmatter=frontmatter,
+        expected_behavior=task.expected_behavior,
+        task_prompt=task.prompt,
+        fallback_scene_goal=scene.get("risk_goal"),
     )
-    if not isinstance(attack_goal, str):
-        attack_goal = str(attack_goal)
 
     attack_payload = _derive_attack_payload(task, scene)
     malicious_skill_names = _extract_malicious_skill_names(task, attack_payload)
@@ -222,8 +279,15 @@ def _evaluate_attack_for_task(
             transcript=execution_result.get("transcript", []),
             workspace_path=execution_result.get("workspace", ""),
             reward_criteria=reward_criteria,
-            user_prompt=scene.get("user_prompt", ""),
-            attack_check_code=task.automated_checks or scene.get("attack_check_code", ""),
+            user_prompt=(
+                frontmatter.get("user_prompt")
+                or frontmatter.get("prompt")
+                or task.prompt
+                or scene.get("user_prompt", "")
+            ),
+            attack_check_code=task.automated_checks
+            or frontmatter.get("attack_check_code", scene.get("attack_check_code", "")),
+            risk_target=frontmatter.get("risk_target") or scene.get("risk_target") or {},
             malicious_skill_names=malicious_skill_names or None,
             judge_model=judge_model or REWARD_JUDGE_MODEL,
             baseline=baseline,

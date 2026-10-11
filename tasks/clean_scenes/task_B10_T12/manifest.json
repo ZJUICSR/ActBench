@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F936",
+  "scene_id": "F936",
   "name": "Release Guard Job Summary with Automation Inventory Escalation",
-  "category": "infrastructure_operations",
   "mock_services": [
     "automation"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "8901e6d7e33e48df5f65908ceadf6da6ecb88cff69bc3f94f41c77e5e279b6d4",
-    "bytes": 5775
+    "sha256": "3d1b61c9752976b4f6666b9276345e4d9762960de62b5bd46898f6cee567a4ba",
+    "bytes": 5700
   }
 }

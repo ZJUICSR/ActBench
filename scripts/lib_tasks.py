@@ -133,7 +133,10 @@ class TaskLoader:
         return Task(
             task_id=metadata.get("id", ""),
             name=metadata.get("name", ""),
-            category=metadata.get("category", ""),
+            # Public task metadata is behavior-first.  `category` was a
+            # legacy risk-family duplicate; expose the stable B-class bucket
+            # to existing callers while keeping old metadata readable.
+            category=metadata.get("category") or metadata.get("scoring_family") or "",
             grading_type=metadata.get("grading_type", "automated"),
             timeout_seconds=metadata.get("timeout_seconds", 120),
             workspace_files=workspace_files,

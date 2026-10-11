@@ -156,19 +156,18 @@ the Docker-reachable interface, and workspace endpoints advertise that address.
 Their audit/reset routes additionally require a controller-only token, including
 on rootless networks that can reach host loopback services.
 
-For rootless Docker, use the daemon's reachable host address explicitly. On
-the existing A6000 deployment this is `10.0.2.2`:
+For rootless Docker, use the daemon's reachable host address explicitly:
 
 ```bash
 export DOCKER_HOST=unix:///run/user/1024/msca-docker.sock
-export ACTBENCH_DOCKER_HOST_ADDRESS=10.0.2.2
+export ACTBENCH_DOCKER_HOST_ADDRESS=docker-reachable-host
 # Optional container proxy; this does not alter the controller's proxy.
-export ACTBENCH_DOCKER_PROXY_URL=http://10.0.2.2:17890
+export ACTBENCH_DOCKER_PROXY_URL=http://docker-reachable-host:17890
 ```
 
 The Docker client must be installed and on PATH. Set `ACTBENCH_DOCKER_BIN` for
 a different executable. Build proxies are supplied separately, for example
-`deeptrap docker-build --build-arg HTTPS_PROXY=http://10.0.2.2:17890`.
+`deeptrap docker-build --build-arg HTTPS_PROXY=http://docker-reachable-host:17890`.
 
 | Setting | Default / meaning |
 | --- | --- |
@@ -176,7 +175,7 @@ a different executable. Build proxies are supplied separately, for example
 | `ACTBENCH_DOCKER_<BACKEND>_IMAGE` | Per-backend override, preferred over the global override |
 | `ACTBENCH_DOCKER_PROVIDER_CONFIG` | Explicit provider JSON for OpenClaw, QwenPaw, OpenAgent, optionally Hermes |
 | `ACTBENCH_DOCKER_ENV` | Empty; comma-separated target-provider variable names |
-| `ACTBENCH_DOCKER_HOST_ADDRESS` | `host.docker.internal`; use `10.0.2.2` where appropriate for rootless |
+| `ACTBENCH_DOCKER_HOST_ADDRESS` | `host.docker.internal`; override with a Docker-reachable host for rootless |
 | `ACTBENCH_DOCKER_MCP_BIND_HOST` | `0.0.0.0`; restrict to a Docker-reachable interface if needed |
 | `ACTBENCH_DOCKER_PROXY_URL` | Unset; optional HTTP proxy inside the container |
 | `ACTBENCH_DOCKER_USER` | Host UID:GID for rootful, container `0:0` for rootless |

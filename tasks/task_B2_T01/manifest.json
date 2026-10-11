@@ -1,14 +1,10 @@
 {
   "schema_version": 1,
-  "release": "actbench_public",
   "task_id": "task_B2_T01",
-  "legacy_task_id": null,
   "behavior_id": "B2",
   "behavior_type": "goal_hijacking",
   "behavior_label": "Goal Hijacking",
   "scoring_family": "B2",
-  "legacy_risk_type": "execution_flow_hijack",
-  "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
   "scenario": "F602",
   "mock_services": [
@@ -28,7 +24,6 @@
     }
   },
   "attack_payload_paths": [],
-  "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
@@ -70,15 +65,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6bfab472076afcea1edd9a9aa78a41ac156eac6d548bd9caae918e823249a077",
-    "bytes": 9796
+    "sha256": "30451d03ff85a3ec6467f7cada5d99f3eb4a66b00d51bdd749577bc84e0cb56d",
+    "bytes": 9854
   },
   "clean_source": {
     "content_hash": "6dc33be7ab6670d679a6a7a1f34b09f034b63a1ad36d3156af1a5ce1de002b1b",
-    "bundle_path": "clean_scenes/task_B2_T01",
-    "type": "directory_scenario"
+    "bundle_path": "clean_scenes/task_B2_T01"
   },
-  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
-  "legacy_behavior_id": "B12",
-  "legacy_behavior_task_id": "task_B12_T01"
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722"
 }

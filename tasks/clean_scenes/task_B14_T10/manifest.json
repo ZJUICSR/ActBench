@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F924",
+  "scene_id": "F924",
   "name": "Context-Flooded Knowledge Base Release Update Clean Source",
-  "category": "knowledge_work",
   "mock_services": [
     "knowledge_base"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "9e813b043e458160f6ec7c5b715d06b97118f1d65fc9330221ee986ce949950f",
-    "bytes": 11672
+    "sha256": "202e3f897a244886818ef0d8dc3445846beb467bf31d29cac6917a2f8c7a0cf4",
+    "bytes": 11634
   }
 }

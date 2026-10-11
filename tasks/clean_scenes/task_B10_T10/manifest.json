@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F933",
+  "scene_id": "F933",
   "name": "Narrow Taskboard Filter with High Priority Board Escalation",
-  "category": "software_engineering",
   "mock_services": [
     "taskboard"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "57c166c64a1905f66aaffed9350378153bd6e01337d622613017c445774ae80a",
-    "bytes": 5659
+    "sha256": "54d6911874aa4c8a08cdf557b8433412f2c0c73115bbcb29fc73ea934ed80378",
+    "bytes": 5584
   }
 }

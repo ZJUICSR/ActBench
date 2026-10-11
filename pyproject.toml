@@ -10,9 +10,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [
-    { name = "ZJUICSR" },
-]
 keywords = [
     "agent-security",
     "ai-safety",
@@ -40,22 +37,12 @@ dependencies = [
     "uvicorn>=0.27.0",
 ]
 
-[project.urls]
-Homepage = "https://github.com/ZJUICSR/ActBench"
-Documentation = "https://github.com/ZJUICSR/ActBench#readme"
-Repository = "https://github.com/ZJUICSR/ActBench"
-Issues = "https://github.com/ZJUICSR/ActBench/issues"
-
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "black>=23.7.0",
     "ruff>=0.0.285",
-]
-release = [
-    "pyarrow>=15.0.0",
-    "huggingface-hub>=0.24.0",
 ]
 
 [project.scripts]
