@@ -10,6 +10,17 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
+authors = [
+    { name = "Hongwei Yao" },
+    { name = "Yiming Liu" },
+    { name = "Meihui Chen" },
+    { name = "Jieling Chen" },
+    { name = "Zikun Chen" },
+    { name = "Yiling He" },
+    { name = "Wangze Ni" },
+    { name = "Cong Wang" },
+    { name = "Kui Ren" },
+]
 keywords = [
     "agent-security",
     "ai-safety",
@@ -36,6 +47,14 @@ dependencies = [
     "fastapi>=0.110.0",
     "uvicorn>=0.27.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ZJUICSR/ActBench"
+Documentation = "https://github.com/ZJUICSR/ActBench#readme"
+Repository = "https://github.com/ZJUICSR/ActBench"
+Issues = "https://github.com/ZJUICSR/ActBench/issues"
+Paper = "https://arxiv.org/abs/2608.09476"
+Dataset = "https://huggingface.co/datasets/ZJUICSR/ActBench"
 
 [project.optional-dependencies]
 dev = [
@@ -77,6 +96,7 @@ include = [
     "/docs",
     "/tests",
     "/README.md",
+    "/CITATION.cff",
     "/LICENSE",
     "/crab.txt",
     "/pyproject.toml",

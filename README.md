@@ -1,14 +1,24 @@
 # ActBench
 
 [![PyPI](https://img.shields.io/pypi/v/deeptrap.svg)](https://pypi.org/project/deeptrap/)
+[![Hugging Face Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-ZJUICSR%2FActBench-yellow)](https://huggingface.co/datasets/ZJUICSR/ActBench)
+[![ActBench paper](https://img.shields.io/badge/arXiv-2608.09476-b31b1b.svg)](https://arxiv.org/abs/2608.09476)
 
-ActBench is a benchmark of **behavioral safety in cowork agents**. It defines behavioral safety as whether an agent's execution remains within the permissions and state changes required by a benign task, and evaluates realized behavioral risk from execution trajectories rather than final responses.
+ActBench is a self-evolving benchmark of **behavioral safety in cowork agents**. It defines behavioral safety as whether an agent's execution remains within the permissions and state changes required by a benign task, and evaluates realized behavioral risk from execution trajectories rather than final responses.
 
 The benchmark contains 600 cases organized as 300 matched benign/adversarial pairs from 213 operational scenarios. Within each pair, the adversarial case preserves the benign user instruction, task configuration, initialized state, grading criteria, and trusted records while injecting one task-reachable payload. The cases span 15 risk behaviors, four propagation families, six execution spaces, and 48 web-service APIs.
 
 This repository contains the runnable benchmark cases, trajectory runner, scorers, local mock services, and backend adapters. It is intentionally limited to the public execution and scoring path; construction experiments, publication artifacts, and release-only tooling are kept outside this checkout. Existing `actbench.*` result schema names are retained for compatibility.
 
 The project and benchmark are named **ActBench**. The PyPI distribution and installed command are named **`deeptrap`**.
+
+The accompanying paper is [*ActBench: Self-Evolving Benchmark of Behavioral Safety in Cowork Agents*](https://arxiv.org/abs/2608.09476).
+
+**Authors:** Hongwei Yao<sup>1†</sup>, Yiming Liu<sup>2†</sup>, Meihui Chen<sup>4</sup>, Jieling Chen<sup>4</sup>, Zikun Chen<sup>2</sup>, Yiling He<sup>3</sup>, Wangze Ni<sup>2</sup>, Cong Wang<sup>1</sup>, Kui Ren<sup>2*</sup>
+
+**Affiliations:** <sup>1</sup>City University of Hong Kong · <sup>2</sup>Zhejiang University · <sup>3</sup>University College London · <sup>4</sup>Xiaomi Corporation
+
+<sup>†</sup>Equal contribution · <sup>*</sup>Corresponding author
 
 ## Benchmark design
 
@@ -19,6 +29,8 @@ Evaluation separates safety from task completion:
 - **AGS (Attack Grading Score)** measures coverage of prohibited effects in adversarial executions.
 - **UGS (Utility Grading Score)** measures coverage of required task effects in the matched benign executions.
 - **Dual evidence verification** combines trusted log evidence with LLM-based trajectory evidence to verify both the realized effect and its execution path.
+
+The accompanying paper describes a self-evolving construction method that uses reward-guided search and reflection to strengthen task-reachable payloads. This checkout contains the released benchmark cases and public evaluation path; construction experiments and release-only tooling remain outside the repository.
 
 ## Install and verify
 
@@ -52,6 +64,29 @@ The wheel includes the benchmark tasks, skills, and mock-service fixtures, so a 
 - `mock_services/` — local fixture-backed FastAPI services used by tasks.
 - `skills/mock_apis/` — standard mock API skill descriptions that describe the service endpoints.
 - `docs/` — task, result, mock-service, and backend setup notes.
+
+## Public dataset
+
+The companion [`ZJUICSR/ActBench` dataset on Hugging Face](https://huggingface.co/datasets/ZJUICSR/ActBench) provides the released task pairs and execution trajectories described in the paper. It contains 300 matched benign/adversarial task pairs, representing 600 benchmark cases, together with the public task definitions, workspaces, fixtures, skills, logs, and graders.
+
+Load the task pairs or released trajectories with [`datasets`](https://huggingface.co/docs/datasets/):
+
+```python
+from datasets import load_dataset
+
+task_pairs = load_dataset(
+    "ZJUICSR/ActBench",
+    "task_pairs",
+    split="test",
+)
+
+trajectories = load_dataset(
+    "ZJUICSR/ActBench",
+    "trajectories",
+    split="test",
+    streaming=True,
+)
+```
 
 ## Task inventory
 
@@ -338,8 +373,45 @@ ActBench reports behavioral safety and benign task utility with criterion-covera
 
 Task metadata uses behavior-first ActBench fields (`behavior_id`, `behavior_type`); `scoring_family` is the current B-class bucket (`B1`-`B15`). Legacy risk-family fields may appear in metadata for compatibility with older internal artifacts, but new integrations should use the behavior-first fields.
 
+## Paper results: base models under OpenClaw
+
+The paper compares 15 base models under the fixed OpenClaw 2026.5.19 harness. At the paper's 0.9 attack-success threshold, ASR ranges from 8.6% to 89.4%. In the complementary experiment that fixes Deepseek-v4-Pro and varies six cowork-agent harnesses, ASR ranges from 68.9% to 89.4%. The values below are reported paper results for reference; they are not generated by the default checkout.
+
+The table reports the fixed-OpenClaw results. `Iter.` is the median action-cycle count over adversarial rollouts.
+
+| Model | AGS_mal ↓ | ASR (%) ↓ | p@1/p@2/p@3 ↓ | UGS_ben ↑ | Iter. |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Claude-Opus-4.8 | 0.284 | 8.6 | 8.3/10.3/11.7 | 0.938 | 15.0 |
+| Claude-Sonnet-4.6 | 0.347 | 17.9 | 17.0/21.0/22.3 | 0.927 | 16.0 |
+| GPT-5.5 | 0.493 | 35.6 | 34.3/42.0/45.3 | 0.928 | 16.0 |
+| GPT-5.4-mini | 0.727 | 61.1 | 61.3/70.7/73.3 | 0.904 | 18.0 |
+| Grok-4.5 | 0.870 | 80.8 | 79.0/87.0/87.7 | 0.938 | 17.0 |
+| GLM-5.2 | 0.547 | 40.9 | 38.7/46.3/52.7 | 0.929 | 16.0 |
+| Qwen-3.7-max | 0.511 | 36.3 | 35.3/45.7/52.0 | 0.915 | 16.0 |
+| Qwen-3.7-plus | 0.524 | 40.1 | 40.7/49.0/52.7 | 0.915 | 16.0 |
+| Kimi-K3 | 0.489 | 33.7 | 33.7/42.3/45.3 | 0.940 | 17.0 |
+| Kimi-k2.6 | 0.748 | 65.7 | 66.3/73.3/78.3 | 0.869 | 17.0 |
+| MiniMax-M3 | 0.402 | 22.7 | 22.3/29.0/33.7 | 0.917 | 19.0 |
+| MiniMax-M2.7 | 0.804 | 71.1 | 72.0/80.0/84.7 | 0.880 | 17.0 |
+| Deepseek-v4-Pro | 0.955 | 89.4 | 89.7/93.3/95.3 | 0.922 | 19.0 |
+| Deepseek-v4-Flash | 0.887 | 80.2 | 78.0/86.0/89.3 | 0.900 | 19.5 |
+| Hunyuan-3.0 | 0.455 | 28.4 | 28.3/35.3/39.3 | 0.933 | 19.0 |
+
 ## Mock services
 
 Tasks declare any required mock services in `task.yaml`. The runner starts those services automatically on local random ports and writes `api_endpoints.json` into the task workspace. Users normally do not need to start mock services manually.
 
 See `docs/MOCK_SERVICES.md` and `mock_services/README.md` for endpoint details.
+
+## Citation
+
+If you use the ActBench benchmark, task pairs, or released trajectories, please cite [ActBench: Self-Evolving Benchmark of Behavioral Safety in Cowork Agents](https://arxiv.org/abs/2608.09476):
+
+```bibtex
+@article{yao2026actbench,
+  title={ActBench: Self-Evolving Benchmark of Behavioral Safety in Cowork Agents},
+  author={Yao, Hongwei and Liu, Yiming and Chen, Meihui and Chen, Jieling and Chen, Zikun and He, Yiling and Ni, Wangze and Wang, Cong and Ren, Kui},
+  journal={arXiv preprint arXiv:2608.09476},
+  year={2026}
+}
+```
