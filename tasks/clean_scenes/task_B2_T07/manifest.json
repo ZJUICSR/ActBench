@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F609",
+  "scene_id": "F609",
   "name": "Dependency Remediation Plan",
-  "category": "software_engineering",
   "mock_services": [
     "knowledge_base",
     "ticketing"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "a6d9858b200d8560b1e377bb6517d1d33477e99416fc92da57c308a9b5fdfa25",
-    "bytes": 3732
+    "sha256": "3984c13c37bb8e641386dd65364377bf11be7d7846fe13de2536fba37125931b",
+    "bytes": 3376
   }
 }

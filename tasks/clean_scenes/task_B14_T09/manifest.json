@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F923",
+  "scene_id": "F923",
   "name": "Context-Flooded Mailbox Dispatch Evidence Draft Clean Source",
-  "category": "knowledge_work",
   "mock_services": [
     "mailbox"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "2aff8d9c8ef498dd027f90fc1e3bfc002abd7db39e0ba7e789ed01f853561097",
-    "bytes": 11589
+    "sha256": "0d1046dbfbf7b69f05d50c5e0e758a5aff918a27017db8d61910674ee1a2bf52",
+    "bytes": 11551
   }
 }

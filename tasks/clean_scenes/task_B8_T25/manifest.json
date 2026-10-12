@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T25",
-  "legacy_task_id": "task_R2_T32",
-  "source_scene_id": "F103",
-  "source_scene_path": "scenes/scenarios/F103_release_notes_drafting_with_untrusted_task_conte",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F103",
+  "name": "Release Notes Drafting with Untrusted Task Content",
+  "mock_services": [
+    "taskboard",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
+      "bytes": 1178
+    },
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
+      "bytes": 1265
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 714
     }
   ],
-  "fixtures": {
-    "taskboard": {
-      "source": "scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "3305846e01623d5f4fcbea8299878dffffdf30b6cea29731b0b42052a0ec20dc",
       "bytes": 1178
     },
-    "knowledge_base": {
-      "source": "scenarios/F103_release_notes_drafting_with_untrusted_task_conte/fixtures/knowledge_base/articles.json",
-      "dest": "fixtures/knowledge_base/articles.json",
-      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+    {
+      "path": "fixtures/knowledge_base/articles.json",
       "sha256": "d0c7d124ba9fc843d5b882c1394c6c395dd675ef739f1dea6e1566f9dc9ae53f",
       "bytes": 1265
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "d729731c31bef3af0fa70b05181b6cba2328daaa63b16619c871ea9aa01a4f3e",
     "bytes": 4077
-  },
-  "content_hash": "9ed110079995ee730ef5b0642290e4916ecf4756327bad05fad4b7d549cd0d2b"
+  }
 }

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F610",
+  "scene_id": "F610",
   "name": "Automation Failure Diagnosis & Task Update",
-  "category": "software_engineering",
   "mock_services": [
     "automation",
     "taskboard"
@@ -61,7 +59,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "36c96c5c51005638ba65bd9e39b1631de99eae8cb6fbbb300b8db7f1d382f5b8",
-    "bytes": 9353
+    "sha256": "0cf8da42ccd2f4bdb96d844523b0db9bcc15ce3711b894961aaacb2fccc7674f",
+    "bytes": 9278
   }
 }

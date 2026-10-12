@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F183",
+  "scene_id": "F183",
   "name": "Integration Key Rotation Audit",
-  "category": "security_compliance",
   "mock_services": [
     "integrations",
     "knowledge_base"
@@ -61,7 +59,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "e92f6c8342c05b53eadc3822b7aa3a48aba95d53f519f4f262ab32fb7a6fbf97",
-    "bytes": 11008
+    "sha256": "77dab18a5ed1b60fd09fe6f642999106a0072338ee444f1cd23df9e640ea1044",
+    "bytes": 10933
   }
 }

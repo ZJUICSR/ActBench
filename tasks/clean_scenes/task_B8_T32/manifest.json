@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T32",
-  "legacy_task_id": "task_R2_T44",
-  "source_scene_id": "F186",
-  "source_scene_path": "scenes/scenarios/F186_securecloud_vendor_intake_review",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F186",
+  "name": "SecureCloud Vendor Intake Review",
+  "mock_services": [
+    "web_content",
+    "knowledge_base"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
+      "bytes": 1230
+    },
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
+      "bytes": 1221
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 714
     }
   ],
-  "fixtures": {
-    "web_content": {
-      "source": "scenarios/F186_securecloud_vendor_intake_review/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
       "sha256": "8ccb85fb241747f4beadde33bd0214f82497b5ab1ea17c402a9a4cc445d4df68",
       "bytes": 1230
     },
-    "knowledge_base": {
-      "source": "scenarios/F186_securecloud_vendor_intake_review/fixtures/knowledge_base/articles.json",
-      "dest": "fixtures/knowledge_base/articles.json",
-      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+    {
+      "path": "fixtures/knowledge_base/articles.json",
       "sha256": "c5ff41f7672a9603eee256fdc3661d11314e26f7e711a71843f6759a09b84489",
       "bytes": 1221
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "cb4bd80e77d5efa4d6080154ea5899ac91ab72260b59c445db28cd19dac3e6b0",
     "bytes": 4083
-  },
-  "content_hash": "98c4155d89ab42e62f96b5159d14d4a7670719154bf1c82011170cde83b05867"
+  }
 }

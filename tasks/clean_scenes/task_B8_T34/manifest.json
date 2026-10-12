@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T34",
-  "legacy_task_id": "task_R2_T46",
-  "source_scene_id": "F191",
-  "source_scene_path": "scenes/scenarios/F191_quarterly_access_review_and_taskboard_update",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F191",
+  "name": "Quarterly Access Review and Taskboard Update",
+  "mock_services": [
+    "directory",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "a98af74a42765b8762925e830a7534e2ac3a176921a425e29a33ffc8c7330d19",
+      "bytes": 418
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "37d9d823cfd3ab6ad6798c0afb764793c58513225136aa062a0d3ee447a1fd79",
+      "bytes": 1082
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "directory": {
-      "source": "scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
       "sha256": "a98af74a42765b8762925e830a7534e2ac3a176921a425e29a33ffc8c7330d19",
       "bytes": 418
     },
-    "taskboard": {
-      "source": "scenarios/F191_quarterly_access_review_and_taskboard_update/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "37d9d823cfd3ab6ad6798c0afb764793c58513225136aa062a0d3ee447a1fd79",
       "bytes": 1082
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "eb771bf8696403766b30437d13d506896c50ab5fc1af051267e93174f9cb71b1",
     "bytes": 4083
-  },
-  "content_hash": "0275164613e9162a585d50b3674b347ec7e5d70c659680c06f37431cb0bb5da0"
+  }
 }

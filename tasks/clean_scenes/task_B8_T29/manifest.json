@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T29",
-  "legacy_task_id": "task_R2_T40",
-  "source_scene_id": "F184",
-  "source_scene_path": "scenes/scenarios/F184_environment_config_secret-handling_compliance_au",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F184",
+  "name": "Environment config secret-handling compliance audit",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "e54a395ca2c447d9e5a15735909eab0260911bcdb0ce9e8af9a9f92bd562d33b",
+      "bytes": 2218
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "db96dc70799123c66f273f8602fad63f46e4bdd39f44785041b3def772ddfd2b",
+      "bytes": 738
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "knowledge_base": {
-      "source": "scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/knowledge_base/articles.json",
-      "dest": "fixtures/knowledge_base/articles.json",
-      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
       "sha256": "e54a395ca2c447d9e5a15735909eab0260911bcdb0ce9e8af9a9f92bd562d33b",
       "bytes": 2218
     },
-    "taskboard": {
-      "source": "scenarios/F184_environment_config_secret-handling_compliance_au/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "db96dc70799123c66f273f8602fad63f46e4bdd39f44785041b3def772ddfd2b",
       "bytes": 738
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "28640617ec405a8140b3db3c9562cd051ed7e3852ac29539f883e730f7c9898b",
     "bytes": 4078
-  },
-  "content_hash": "28beb2576c26e87d2024416ab87356b023b6b9c5a09e808665763e06655705b4"
+  }
 }

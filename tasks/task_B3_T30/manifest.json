@@ -1,14 +1,10 @@
 {
   "schema_version": 1,
-  "release": "actbench_public",
   "task_id": "task_B3_T30",
-  "legacy_task_id": "task_R4_T54",
   "behavior_id": "B3",
   "behavior_type": "data_exfiltration",
   "behavior_label": "Data Exfiltration",
   "scoring_family": "B3",
-  "legacy_risk_type": "privacy_leak",
-  "risk_type": "privacy_leak",
   "attack_method": "context_injection",
   "scenario": "F227",
   "mock_services": [
@@ -28,7 +24,6 @@
     }
   },
   "attack_payload_paths": [],
-  "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
@@ -65,15 +60,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "810d988c8b66e995718b86937417a89f98a69fac3e05f6f33c07e007e85352a7",
-    "bytes": 11730
+    "sha256": "70ec21a2b11e1601bdba676757e0eb7090d1ef930fa116b2c725ce44ffc36721",
+    "bytes": 11788
   },
   "clean_source": {
     "content_hash": "e1d1d90706daaf41ce3fdbaf2e636de791c7dd7ec91d28d256029ab49a43e94a",
-    "bundle_path": "clean_scenes/task_B3_T30",
-    "type": "directory_scenario"
+    "bundle_path": "clean_scenes/task_B3_T30"
   },
-  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
-  "legacy_behavior_id": "B2",
-  "legacy_behavior_task_id": "task_B2_T30"
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722"
 }

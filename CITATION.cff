@@ -1,0 +1,70 @@
+cff-version: 1.2.0
+message: "If you use ActBench, please cite the accompanying paper."
+title: "ActBench: Self-Evolving Benchmark of Behavioral Safety in Cowork Agents"
+type: software
+abstract: >-
+  ActBench evaluates behavioral safety in cowork agents from complete execution
+  trajectories. It provides matched benign and adversarial task cases, local
+  mock services, trajectory collection, and safety and utility scoring.
+authors:
+  - given-names: Hongwei
+    family-names: Yao
+    affiliation: City University of Hong Kong
+  - given-names: Yiming
+    family-names: Liu
+    affiliation: Zhejiang University
+  - given-names: Meihui
+    family-names: Chen
+    affiliation: Xiaomi Corporation
+  - given-names: Jieling
+    family-names: Chen
+    affiliation: Xiaomi Corporation
+  - given-names: Zikun
+    family-names: Chen
+    affiliation: Zhejiang University
+  - given-names: Yiling
+    family-names: He
+    affiliation: University College London
+  - given-names: Wangze
+    family-names: Ni
+    affiliation: Zhejiang University
+  - given-names: Cong
+    family-names: Wang
+    affiliation: City University of Hong Kong
+  - given-names: Kui
+    family-names: Ren
+    affiliation: Zhejiang University
+repository-code: "https://github.com/ZJUICSR/ActBench"
+url: "https://arxiv.org/abs/2608.09476"
+license: MIT
+keywords:
+  - agent safety
+  - behavioral safety
+  - cowork agents
+  - prompt injection
+  - benchmark
+preferred-citation:
+  type: article
+  title: "ActBench: Self-Evolving Benchmark of Behavioral Safety in Cowork Agents"
+  authors:
+    - family-names: Yao
+      given-names: Hongwei
+    - family-names: Liu
+      given-names: Yiming
+    - family-names: Chen
+      given-names: Meihui
+    - family-names: Chen
+      given-names: Jieling
+    - family-names: Chen
+      given-names: Zikun
+    - family-names: He
+      given-names: Yiling
+    - family-names: Ni
+      given-names: Wangze
+    - family-names: Wang
+      given-names: Cong
+    - family-names: Ren
+      given-names: Kui
+  journal: "arXiv preprint arXiv:2608.09476"
+  year: 2026
+  url: "https://arxiv.org/abs/2608.09476"

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F921",
+  "scene_id": "F921",
   "name": "Context-Flooded Ticket Audit Exception Rollup",
-  "category": "knowledge_work",
   "mock_services": [
     "ticketing",
     "taskboard"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1563bca329eab213dbc983689be9dd988712ad2083ade619a40baa48c7fd0ec0",
-    "bytes": 9933
+    "sha256": "57a48b3032d45b6eefb99799f6e7d02bca205edd82f386eccb28618f74a2af08",
+    "bytes": 9895
   }
 }

@@ -836,12 +836,29 @@ def _workspace_candidates(run: _SourceRun) -> list[Path]:
     return candidates
 
 
+def _api_dir_candidates(run: _SourceRun) -> list[Path]:
+    artifacts = _as_dict(run.trajectory.get("artifacts"))
+    candidates: list[Path] = []
+    candidates.extend(run_dir / "api" for run_dir in run.artifact_run_dirs)
+    for artifact_key in ("api_audit", "api_endpoints", "api_fixture_overrides"):
+        candidates.extend(path.parent for path in _path_candidates(artifacts.get(artifact_key), (*run.artifact_roots, run.trajectory_path.parent, Path.cwd())))
+        candidates.extend(path.parent for path in _path_candidates(artifacts.get(f"{artifact_key}_absolute"), (Path.cwd(),)))
+    candidates.extend(path.parent for path in _path_candidates(artifacts.get("api_fixtures_dir"), (*run.artifact_roots, run.trajectory_path.parent, Path.cwd())))
+    candidates.extend(path.parent for path in _path_candidates(artifacts.get("api_logs_dir"), (*run.artifact_roots, run.trajectory_path.parent, Path.cwd())))
+    candidates.append(run.trajectory_path.parent / "api")
+    return candidates
+
+
 def _copy_run_sidecars(state: _PackState, run: _SourceRun, dest_run_dir: Path) -> None:
     workspace = _first_existing_dir(_workspace_candidates(run))
     if workspace is not None:
         _copy_dir(state, workspace, dest_run_dir / "workspace_after", label="workspace_after")
     else:
         state.warnings.append(f"No workspace_after sidecar found for {run.trajectory_path}")
+
+    api_dir = _first_existing_dir(_api_dir_candidates(run))
+    if api_dir is not None:
+        _copy_dir(state, api_dir, dest_run_dir / "api", label="api")
 
     execution = _as_dict(run.trajectory.get("execution"))
     for artifact_key, relative, inline_key in (
@@ -850,6 +867,8 @@ def _copy_run_sidecars(state: _PackState, run: _SourceRun, dest_run_dir: Path) -
     ):
         source = _first_existing_file(_sidecar_file_candidates(run, artifact_key, relative))
         dest = dest_run_dir / relative
+        if dest.exists():
+            continue
         if source is not None:
             _copy_file(state, source, dest, label=artifact_key)
             continue

@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T30",
-  "legacy_task_id": "task_R2_T42",
-  "source_scene_id": "F185",
-  "source_scene_path": "scenes/scenarios/F185_quarterly_access_owner_verification",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F185",
+  "name": "Quarterly Access Owner Verification",
+  "mock_services": [
+    "directory",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "directory": {
+      "path": "fixtures/directory/entries.json",
+      "sha256": "ae0b653751962573654a3e0cc795bb733dd2c6f4856091406eb38f9727da5748",
+      "bytes": 1427
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "e07411f60f9bbc414c2bc13d5c0d194c0c495b25bacc7d5474dde825ca92919d",
+      "bytes": 1072
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -31,26 +45,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "directory": {
-      "source": "scenarios/F185_quarterly_access_owner_verification/fixtures/directory/entries.json",
-      "dest": "fixtures/directory/entries.json",
-      "frontmatter_path": "fixtures/directory/entries.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/directory/entries.json",
       "sha256": "ae0b653751962573654a3e0cc795bb733dd2c6f4856091406eb38f9727da5748",
       "bytes": 1427
     },
-    "taskboard": {
-      "source": "scenarios/F185_quarterly_access_owner_verification/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "e07411f60f9bbc414c2bc13d5c0d194c0c495b25bacc7d5474dde825ca92919d",
       "bytes": 1072
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "9dc1c839e2d013853d5edd1548e132d2e59b638ae0cc729cac4c51761461979e",
     "bytes": 4091
-  },
-  "content_hash": "04e694026565ae3d0c5f3e59eab2a2ba619ec90bda436cf894f0a48cec0b2317"
+  }
 }

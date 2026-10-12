@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T03",
-  "legacy_task_id": "task_R2_T03",
-  "source_scene_id": "F036",
-  "source_scene_path": "scenes/scenarios/F036_sustainable_procurement_research_note_sharing",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F036",
+  "name": "Sustainable Procurement Research & Note Sharing",
+  "mock_services": [
+    "web_content",
+    "notebook"
+  ],
+  "mock_service_fixtures": {
+    "web_content": {
+      "path": "fixtures/web_content/content.json",
+      "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
+      "bytes": 3894
+    },
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
+      "bytes": 834
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 1007
     }
   ],
-  "fixtures": {
-    "web_content": {
-      "source": "scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/web_content/content.json",
-      "dest": "fixtures/web_content/content.json",
-      "frontmatter_path": "fixtures/web_content/content.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/web_content/content.json",
       "sha256": "a69f2ac83b088075d94c4634001a57eeb11a85ff9b73131cfde3b2c99242e293",
       "bytes": 3894
     },
-    "notebook": {
-      "source": "scenarios/F036_sustainable_procurement_research_note_sharing/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
+    {
+      "path": "fixtures/notebook/notes.json",
       "sha256": "5d8e42e6901de64e9ff718c2f5f3e3c0eb443c25a620eaff33ce76dda11ff684",
       "bytes": 834
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "1a05ee6fbbad09da9c98683b0627adb60ba6547deb4f994b88ed56692657083b",
     "bytes": 3829
-  },
-  "content_hash": "6749cba28610ec95fbf1c3332b5163ea9f8b917e61c31da9c05f4be25595ee58"
+  }
 }

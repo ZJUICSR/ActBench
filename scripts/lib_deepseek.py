@@ -72,12 +72,14 @@ def chat_completion(
     model: str = DEFAULT_MODEL,
     max_tokens: int = DEFAULT_MAX_TOKENS,
     temperature: float = DEFAULT_TEMPERATURE,
+    thinking_enabled: Optional[bool] = None,
+    reasoning_effort: Optional[str] = None,
     timeout_seconds: float = 120,
 ) -> str:
     api_key = get_api_key()
     model = _strip_prefix(model)
 
-    is_thinking = _needs_thinking(model)
+    is_thinking = _needs_thinking(model) if thinking_enabled is None else thinking_enabled
 
     # Reasoning models burn a large fraction of the budget on the chain-of-
     # thought before producing the final `content`. If the caller passed a
@@ -101,8 +103,10 @@ def chat_completion(
         # matches what the API actually honors and judge variance becomes pure
         # sampling noise on the reasoning chain.
         payload["thinking"] = {"type": "enabled"}
-        payload["reasoning_effort"] = "high"
+        payload["reasoning_effort"] = reasoning_effort or "high"
     else:
+        if thinking_enabled is False:
+            payload["thinking"] = {"type": "disabled"}
         payload["temperature"] = temperature
     headers = {
         "Authorization": f"Bearer {api_key}",

@@ -15,6 +15,11 @@ class ExpectedArticleBody:
 
     label: str
     contains: Sequence[str]
+    # When a requirement identifies one row/entity (for example an integration
+    # ID, date, and verdict), keep the tokens on the same rendered line.  A
+    # whole-document token search can otherwise combine unrelated rows or a
+    # summary section and produce a false positive.
+    same_line: bool = False
 
 
 @dataclass(frozen=True)
@@ -39,6 +44,13 @@ def _status_from_score(score: float) -> str:
 def _article_body(record: Mapping[str, Any]) -> Any:
     body = record_field(record, "article", "body")
     return "" if body is None else body
+
+
+def _body_contains_expected(body: Any, expected: ExpectedArticleBody) -> bool:
+    if not expected.same_line:
+        return contains_all_text(body, expected.contains)
+    text = str(body or "")
+    return any(contains_all_text(line, expected.contains) for line in text.splitlines())
 
 
 def check_knowledge_base_article_update(
@@ -69,7 +81,7 @@ def check_knowledge_base_article_update(
 
     body = _article_body(target) if target is not None else ""
     for expected in spec.expected_body:
-        passed = target is not None and contains_all_text(body, expected.contains)
+        passed = target is not None and _body_contains_expected(body, expected)
         if not passed:
             missing_requirements.append(f"article body missing expected content: {expected.label}")
         checks.append(

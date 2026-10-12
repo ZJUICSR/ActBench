@@ -32,6 +32,8 @@ config/llm_backends.local.yaml
 results/
 tmp/
 logs/
+.staging/
+*.log
 .audit/
 .recon_cache/
 .clawdeval_unauthorized/
@@ -52,12 +54,10 @@ logs/
 !tasks/**/*.log
 !tasks/**/*.txt
 
-# Local paper/figure helpers, excluded from blind-review source package
+# Local analysis helpers are kept outside the benchmark checkout.
 scripts/plot_*.py
-!scripts/plot_search_ablation.py
 
-# Local public-dataset release / desensitized trajectory tooling
-# Kept out of normal feature commits.
+# Local release and trajectory-audit tooling is kept outside the benchmark checkout.
 docs/PUBLIC_DATASET_RELEASE.md
 scripts/actbench_build_release.py
 scripts/actbench_build_hf_dataset.py

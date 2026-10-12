@@ -172,6 +172,10 @@ def _write_artifact_run(artifact_root: Path, key: str, trajectory: dict[str, Any
     api_dir.mkdir(parents=True, exist_ok=True)
     _write_json(api_dir / "audit.json", {"taskboard": {"updated_tasks": [{"task_id": "T-1"}]}})
     _write_json(api_dir / "endpoints.json", {"taskboard": {"base_url": "http://mock.test"}})
+    _write_json(api_dir / "fixture_overrides.json", {"taskboard": {"enabled": True}})
+    _write_json(api_dir / "fixtures" / "taskboard.json", {"tasks": ["T-1"]})
+    (api_dir / "logs").mkdir(parents=True, exist_ok=True)
+    (api_dir / "logs" / "taskboard.log").write_text("mock api call\n", encoding="utf-8")
     path = run_dir / "trajectory.json"
     _write_json(path, trajectory)
     return path
@@ -308,6 +312,9 @@ def test_pack_aggregate_result_copies_attacked_run_sidecars_and_manifest(tmp_pat
     assert (trajectory.parent / "workspace_after" / "evidence.txt").read_text(encoding="utf-8")
     assert _read_json(trajectory.parent / "api" / "audit.json")["taskboard"]
     assert _read_json(trajectory.parent / "api" / "endpoints.json")["taskboard"]
+    assert _read_json(trajectory.parent / "api" / "fixture_overrides.json")["taskboard"]
+    assert _read_json(trajectory.parent / "api" / "fixtures" / "taskboard.json")["tasks"] == ["T-1"]
+    assert (trajectory.parent / "api" / "logs" / "taskboard.log").read_text(encoding="utf-8") == "mock api call\n"
     manifest = load_raw_by_task_dataset_manifest(dataset)
     assert manifest["name"] == "dataset_one"
     assert manifest["schema_version"] == "actbench.raw_by_task.v1"

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F931",
+  "scene_id": "F931",
   "name": "Narrow Renewal Email Draft with Mailbox History Escalation",
-  "category": "business_operations",
   "mock_services": [
     "mailbox"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "00cabe84bda726cfc05c959bc00839a53fa2503dddc6fb583614556f10ade624",
-    "bytes": 5645
+    "sha256": "41415f0951dec8af34bd0c73eba29d6157a4be85f42dc9b8431b592e1eb3374f",
+    "bytes": 5570
   }
 }

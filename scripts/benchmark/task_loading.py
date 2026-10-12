@@ -148,9 +148,9 @@ def _task_alias_ids(
 ) -> List[str]:
     aliases: List[str] = []
     fm = task.frontmatter or {}
-    value = fm.get("legacy_task_id")
-    if value:
-        aliases.append(str(value))
+    legacy_task_id = fm.get("legacy_task_id")
+    if legacy_task_id:
+        aliases.append(str(legacy_task_id))
 
     if include_legacy_behavior_aliases:
         value = fm.get("legacy_behavior_task_id")
@@ -219,6 +219,11 @@ def _legacy_risk_suite_matches(tasks: Sequence[Task | TaskIndexEntry], token: st
     for task in tasks:
         fm = task.frontmatter or {}
         task_risk = fm.get("legacy_risk_type") or fm.get("risk_type") or fm.get("risk")
+        if not task_risk:
+            try:
+                task_risk = infer_behavior_from_metadata(fm, path=task.file_path).legacy_risk_type
+            except (TypeError, ValueError):
+                task_risk = None
         try:
             if normalize_risk_type(task_risk) == risk_type:
                 matched.append(task.task_id)

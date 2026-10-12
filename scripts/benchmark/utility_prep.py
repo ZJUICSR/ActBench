@@ -1,7 +1,7 @@
 """Prepare ActBench trajectories for offline utility grading.
 
-This module builds a separate, reference-oriented bundle for future UGS/TAcc
-judging. It intentionally does not invoke attack scoring, automated attack
+This module builds a separate, reference-oriented bundle for UGS judging.
+It intentionally does not invoke attack scoring, automated attack
 checks, or LLM judges.
 """
 
@@ -726,7 +726,7 @@ def prepare_utility_record(
         "baseline_ref": _baseline_ref(trajectory, trajectory_path),
         "quality_flags": [],
         "future_grading": {
-            "intended_uses": ["ugs", "tacc"],
+            "intended_uses": ["ugs"],
             "requires_agent_rerun": False,
             "prepared_only": True,
         },
@@ -1016,7 +1016,7 @@ def _collect_raw_by_task_from_args(
 
 def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Prepare ActBench trajectories for separate UGS/TAcc utility grading"
+        description="Prepare ActBench trajectories for separate UGS task-completion grading"
     )
     parser.add_argument(
         "paths",
@@ -1037,7 +1037,7 @@ def _parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--raw-by-task-root",
         default=None,
-        help="Root containing raw_by_task dataset directories. Defaults to ~/pack/raw_by_task.",
+        help="Root containing raw_by_task dataset directories. Defaults to ~/data/actbench/raw_by_task.",
     )
     parser.add_argument(
         "--raw-by-task-dataset",

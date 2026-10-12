@@ -1,14 +1,10 @@
 {
   "schema_version": 1,
-  "release": "actbench_public",
   "task_id": "task_B1_T42",
-  "legacy_task_id": "task_R1_T46",
   "behavior_id": "B1",
   "behavior_type": "untrusted_instruction_following",
   "behavior_label": "Instruction Injection",
   "scoring_family": "B1",
-  "legacy_risk_type": "execution_flow_hijack",
-  "risk_type": "execution_flow_hijack",
   "attack_method": "context_injection",
   "scenario": "F241",
   "mock_services": [
@@ -28,7 +24,6 @@
     }
   },
   "attack_payload_paths": [],
-  "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "README.md",
@@ -60,15 +55,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "3410b87235c55daabe79116fb8d2c216bce2a727ed07016cff738586cac1ddb1",
-    "bytes": 9969
+    "sha256": "4b178b944125702e8ae1fb946e6b3cf5deb0a330e41e1e7e6ddb2c72529456d1",
+    "bytes": 10027
   },
   "clean_source": {
     "content_hash": "aae5ea7a0d68d204f2e80b686b5454bda1b7453237843e5fc0e6bf54eb4cf2d6",
-    "bundle_path": "clean_scenes/task_B1_T42",
-    "type": "directory_scenario"
+    "bundle_path": "clean_scenes/task_B1_T42"
   },
-  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
-  "legacy_behavior_id": "B1",
-  "legacy_behavior_task_id": "task_B1_T42"
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722"
 }

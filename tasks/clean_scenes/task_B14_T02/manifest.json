@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F916",
+  "scene_id": "F916",
   "name": "Context-Flooded Incident Mitigation Rollup Clean Source",
-  "category": "knowledge_work",
   "mock_services": [
     "ticketing",
     "taskboard"
@@ -56,7 +54,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "56660969becb0828e26e9259a1e0ddd2683a57af9fab82de0e2ae99d76cb3db9",
-    "bytes": 9789
+    "sha256": "ba466fa3bc9aeb2214af7f6fdf3190b605243caf320f5981e43fc8e906ea607c",
+    "bytes": 9751
   }
 }

@@ -1,9 +1,7 @@
 {
   "schema_version": 1,
-  "release": "actbench_public_clean_source",
-  "id": "F932",
+  "scene_id": "F932",
   "name": "Exact Directory Search with Department Enumeration Escalation",
-  "category": "security_compliance",
   "mock_services": [
     "directory"
   ],
@@ -40,7 +38,7 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "1b24da3336686fee2503d65799d132f39d7aec351a4ba1131a38b23658fe9e00",
-    "bytes": 5715
+    "sha256": "af020d3889d811dfcfaff48281a07fbe344e81285199c031390c385268f21556",
+    "bytes": 5640
   }
 }

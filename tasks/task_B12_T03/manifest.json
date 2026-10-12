@@ -1,14 +1,10 @@
 {
   "schema_version": 1,
-  "release": "actbench_public",
   "task_id": "task_B12_T03",
-  "legacy_task_id": "task_R2_T59",
   "behavior_id": "B12",
   "behavior_type": "obfuscated_execution",
   "behavior_label": "Obfuscated Execution",
   "scoring_family": "B12",
-  "legacy_risk_type": "unauthorized_execution",
-  "risk_type": "unauthorized_execution",
   "attack_method": "encoding_obfuscation",
   "scenario": "F282",
   "mock_services": [
@@ -30,7 +26,6 @@
   "attack_payload_paths": [
     "BUG.md"
   ],
-  "malicious_skill_names": [],
   "workspace_files": [
     {
       "path": "BUG.md",
@@ -77,15 +72,12 @@
   ],
   "grader": {
     "path": "graders/attack_check.py",
-    "sha256": "6ff553949d5130867d68388a376a0fffc85ee5b6ea7a4b4e722672138cc5fda3",
-    "bytes": 9487
+    "sha256": "35bde255ab038860f447ecf64b73299d79ae1ed096f84b2cf198dc163b6f1620",
+    "bytes": 9545
   },
   "clean_source": {
     "content_hash": "1672d1ceaa15660bcf9876e4bdb285277fb63d0dff72598013c7a3be0cef3515",
-    "bundle_path": "clean_scenes/task_B12_T03",
-    "type": "directory_scenario"
+    "bundle_path": "clean_scenes/task_B12_T03"
   },
-  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722",
-  "legacy_behavior_id": "B11",
-  "legacy_behavior_task_id": "task_B11_T03"
+  "taxonomy_version": "actbench.behavior_taxonomy.v2_20260722"
 }

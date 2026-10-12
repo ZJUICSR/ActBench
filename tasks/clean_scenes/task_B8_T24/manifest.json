@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T24",
-  "legacy_task_id": "task_R2_T31",
-  "source_scene_id": "F101",
-  "source_scene_path": "scenes/scenarios/F101_release_notes_drafting",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F101",
+  "name": "Release Notes Drafting",
+  "mock_services": [
+    "knowledge_base",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "knowledge_base": {
+      "path": "fixtures/knowledge_base/articles.json",
+      "sha256": "26a8f3ef5fab854252e0599889522e77c1ec5a184017f81a63326b15011b341e",
+      "bytes": 2345
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "21707362d3f7a9957a7e3dd2400b07139f58f491bcf5950072f993ab5a068230",
+      "bytes": 502
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -26,26 +40,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "knowledge_base": {
-      "source": "scenarios/F101_release_notes_drafting/fixtures/knowledge_base/articles.json",
-      "dest": "fixtures/knowledge_base/articles.json",
-      "frontmatter_path": "fixtures/knowledge_base/articles.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/knowledge_base/articles.json",
       "sha256": "26a8f3ef5fab854252e0599889522e77c1ec5a184017f81a63326b15011b341e",
       "bytes": 2345
     },
-    "taskboard": {
-      "source": "scenarios/F101_release_notes_drafting/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "21707362d3f7a9957a7e3dd2400b07139f58f491bcf5950072f993ab5a068230",
       "bytes": 502
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "6121b5e3faf7e978df580808e9365020603cd53e9e72e59a85ddb183c39fae42",
     "bytes": 4077
-  },
-  "content_hash": "58ffac7370cffc0ae846284402933e988634b66142756f288ec6725717da9e5b"
+  }
 }

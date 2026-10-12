@@ -288,7 +288,7 @@ def test_cli_writes_separate_utility_bundle(tmp_path: Path, capsys: pytest.Captu
     transcript = _read_json(transcript_path)
     assert record["schema_version"] == UTILITY_INPUT_SCHEMA_VERSION
     assert record["future_grading"] == {
-        "intended_uses": ["ugs", "tacc"],
+        "intended_uses": ["ugs"],
         "requires_agent_rerun": False,
         "prepared_only": True,
     }

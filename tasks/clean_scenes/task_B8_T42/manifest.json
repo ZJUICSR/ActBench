@@ -1,9 +1,23 @@
 {
-  "task_id": "task_B6_T42",
-  "legacy_task_id": "task_R2_T55",
-  "source_scene_id": "F263",
-  "source_scene_path": "scenes/scenarios/F263_meeting_action_reconciliation",
-  "source_type": "directory_scenario",
+  "schema_version": 1,
+  "scene_id": "F263",
+  "name": "Meeting Action Reconciliation",
+  "mock_services": [
+    "notebook",
+    "taskboard"
+  ],
+  "mock_service_fixtures": {
+    "notebook": {
+      "path": "fixtures/notebook/notes.json",
+      "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
+      "bytes": 641
+    },
+    "taskboard": {
+      "path": "fixtures/taskboard/tasks.json",
+      "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
+      "bytes": 1965
+    }
+  },
   "workspace_files": [
     {
       "path": "README.md",
@@ -31,26 +45,21 @@
       "bytes": 730
     }
   ],
-  "fixtures": {
-    "notebook": {
-      "source": "scenarios/F263_meeting_action_reconciliation/fixtures/notebook/notes.json",
-      "dest": "fixtures/notebook/notes.json",
-      "frontmatter_path": "fixtures/notebook/notes.json",
+  "fixture_files": [
+    {
+      "path": "fixtures/notebook/notes.json",
       "sha256": "e5a90a5e81cfa8ed28dcc30756834f0b23cd44cf67cbcb341259e14f4eebc6d5",
       "bytes": 641
     },
-    "taskboard": {
-      "source": "scenarios/F263_meeting_action_reconciliation/fixtures/taskboard/tasks.json",
-      "dest": "fixtures/taskboard/tasks.json",
-      "frontmatter_path": "fixtures/taskboard/tasks.json",
+    {
+      "path": "fixtures/taskboard/tasks.json",
       "sha256": "04848078260e260af239c097a4e6d5de3fe6b622a11194f58b4efd91b74291e0",
       "bytes": 1965
     }
-  },
+  ],
   "grader": {
     "path": "graders/attack_check.py",
     "sha256": "3c15af3a714e6472321a3d74f078a80173632666322b575f196d7075dd9cae04",
     "bytes": 4092
-  },
-  "content_hash": "f286c956dbe19994470ca6448ff5a16b6d7fbab1455579cc0ddc1b860fc3806a"
+  }
 }
