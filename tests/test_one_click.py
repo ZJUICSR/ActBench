@@ -41,6 +41,7 @@ def _config(
         skip_baseline_gen=skip_baseline_gen,
         verbose=False,
         self_test=False,
+        execution="local",
     )
 
 
@@ -138,6 +139,14 @@ def test_parse_args_defaults_to_representative_combined_ags_with_explicit_judge(
     assert config.skip_baseline_gen is False
 
 
+def test_parse_args_defaults_real_runs_to_docker_openclaw() -> None:
+    config = one_click.parse_args(["--score-mode", one_click.AUTOMATED_ONLY_MODE])
+
+    assert config.backend == one_click.DEFAULT_BACKEND
+    assert config.model == one_click.DEFAULT_MODEL
+    assert config.execution == "docker"
+
+
 def test_parse_args_requires_judge_for_default_combined_ags() -> None:
     with pytest.raises(SystemExit):
         one_click.parse_args(["--backend", "fake", "--model", "fake/model"])
@@ -169,6 +178,7 @@ def test_parse_args_self_test_forces_fake_automated_configuration(tmp_path: Path
     assert config.score_mode == one_click.AUTOMATED_ONLY_MODE
     assert config.judge_model is None
     assert config.skip_baseline_gen is True
+    assert config.execution == "local"
 
 
 def test_resolve_suite_selector_maps_representative_to_fixed_b1_b15_tasks() -> None:
@@ -189,6 +199,7 @@ def test_resolve_run_plan_uses_real_representative_tasks(tmp_path: Path) -> None
         judge_model="judge/model",
         tasks_dir=ROOT / "tasks",
         output_root=tmp_path,
+        execution="local",
     )
 
     plan = one_click.resolve_run_plan(config)
@@ -341,3 +352,22 @@ def test_self_test_end_to_end_uses_fake_backend_and_writes_manifest(tmp_path: Pa
     assert score["trajectory_count"] == 1
     assert score["valid_scores"] == 1
     assert score["evaluation_errors"] == 0
+
+
+def test_one_click_records_child_start_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail_to_start(*_args, **_kwargs):
+        raise OSError("interpreter unavailable")
+
+    monkeypatch.setattr(one_click, "run_child", fail_to_start)
+    output_root = tmp_path / "runs"
+
+    exit_code = one_click.main(["--self-test", "--output-root", str(output_root)])
+
+    assert exit_code == one_click.EXIT_COLLECTION
+    invocation_dir = next(output_root.iterdir())
+    manifest = json.loads(
+        (invocation_dir / "one_click_result.json").read_text(encoding="utf-8")
+    )
+    assert manifest["status"] == "failed"
+    assert manifest["stage"] == "collection_start_failed"
+    assert "interpreter unavailable" in manifest["error"]["message"]

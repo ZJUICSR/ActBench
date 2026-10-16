@@ -115,10 +115,12 @@ ActBench contains 300 public matched-pair task directories, grouped by B-class s
 
 - Python 3.10+
 - `uv` or `pip`
-- OpenClaw CLI available on `PATH` for the default `openclaw` backend
-- Hermes CLI available on `PATH` or `ACTBENCH_HERMES_BIN` set when using `--backend hermes`
-- opencode CLI available on `PATH` or `ACTBENCH_OPENCODE_BIN` set when using `--backend opencode`
-- A running QwenPaw service when using `--backend qwenpaw`
+- A Linux Docker Engine/daemon for real runs (Docker is the default execution mode)
+- Native agent CLIs/services only when opting into `--execution local`:
+  - OpenClaw CLI available on `PATH` for the default `openclaw` backend
+  - Hermes CLI available on `PATH` or `ACTBENCH_HERMES_BIN` for `--backend hermes`
+  - opencode CLI available on `PATH` or `ACTBENCH_OPENCODE_BIN` for `--backend opencode`
+  - a running QwenPaw service for `--backend qwenpaw`
 - A configured target model for the selected backend
 - A judge-model API key when using LLM-assisted scoring:
   - `DEEPSEEK_API_KEY` for `deepseek/...` judge models
@@ -145,16 +147,22 @@ Then use the configured neutral prefix, for example `--judge-model deepseek/deep
 
 ## One-command test
 
-All six real backends support `--execution docker`: OpenCode, Claude Code, Hermes,
-OpenClaw, QwenPaw and OpenAgent. Build/check select the image with `--backend <name>`;
-omitting it defaults to OpenCode. The controller and scorer stay on the host.
+All six real backends run in Ubuntu 22.04 containers by default: OpenCode, Claude Code, Hermes,
+OpenClaw, QwenPaw and OpenAgent. Use `--execution local` only when deliberately
+running an agent installed on the host. Build/check select the image with
+`--backend <name>`; omitting it defaults to OpenCode. The controller and scorer
+stay on the host.
 For example:
 
 ```bash
-deeptrap docker-build
-deeptrap docker-check  # real container checks; no model or judge calls
+deeptrap docker-build --backend opencode
+deeptrap docker-check --backend opencode  # no model or judge calls
+# Copy and edit the provider file before the first OpenCode Docker run.
+cp config/opencode.provider.example.json config/opencode.provider.local.json
+# Set its base URL and {env:...} credential reference to your provider.
+export ACTBENCH_OPENCODE_PROVIDER_CONFIG="$PWD/config/opencode.provider.local.json"
 ACTBENCH_DOCKER_ENV=OPENROUTER_API_KEY deeptrap test \
-  --backend opencode --execution docker --model openrouter/<model-id> \
+  --backend opencode --model openrouter/<model-id> \
   --suite task_B9_T01 --score-mode automated
 ```
 
@@ -162,7 +170,7 @@ Provide the selected provider credential in the host environment. See
 [`docs/DOCKER.md`](docs/DOCKER.md) for image configuration, custom providers,
 rootless Docker networking, and execution artifacts.
 
-For a bounded first run, use `deeptrap test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend, scores only those trajectories, and writes a concise `one_click_result.json` summary.
+For a bounded first run, use `deeptrap test`. It creates an invocation-scoped output directory, collects trajectories with the selected backend in Docker, scores only those trajectories, and writes a concise `one_click_result.json` summary. The default backend is OpenClaw and the default model label is `deepseek/deepseek-v4-pro`; pass `--backend` and `--model` when using another target.
 
 Check the local ActBench plumbing without calling a real model or judge:
 
@@ -202,11 +210,15 @@ deeptrap run --model deepseek/deepseek-v4-pro
 deeptrap run --backend openclaw --model deepseek/deepseek-v4-pro
 ```
 
-Run with QwenPaw by starting QwenPaw separately and pointing ActBench at the service. ActBench does not import the `qwenpaw` package or require a QwenPaw Python environment; it creates a task-scoped QwenPaw service agent bound to each materialized task workspace:
+Run with QwenPaw in Docker by using the default execution mode. The following
+host-service example opts into local execution explicitly. ActBench does not
+import the `qwenpaw` package or require a QwenPaw Python environment in Docker;
+it creates a task-scoped QwenPaw service agent bound to each materialized task
+workspace:
 
 ```bash
 ACTBENCH_QWENPAW_BASE_URL=http://127.0.0.1:8088 \
-  deeptrap run --backend qwenpaw --model deepseek/deepseek-v4-pro
+  deeptrap run --backend qwenpaw --execution local --model deepseek/deepseek-v4-pro
 ```
 
 For source-checkout QwenPaw runs, one typical service startup command is:
@@ -229,29 +241,32 @@ Relevant QwenPaw environment variables:
 - `ACTBENCH_QWENPAW_USAGE_DELTA` controls the ActBench-side token-usage fallback; by default ActBench first uses usage returned by QwenPaw process events, then falls back to the service's `/api/token-usage/details` or `/api/token-usage` aggregate delta when event usage is absent. Because that fallback is provider/model aggregate data from the QwenPaw service, unrelated concurrent QwenPaw traffic for the same provider/model can contaminate per-task token counts. For same-task parallel repeats (`--run-workers > 1`), ActBench disables this aggregate delta fallback and only trusts per-event usage returned by QwenPaw.
 
 
-Run with OpenAgent when an OpenAgent service is already running and configured with a Store external API key:
+Run with OpenAgent in Docker by using the default execution mode. When an
+OpenAgent service is already running, use the explicit local mode shown here:
 
 ```bash
 OPENAGENT_API_KEY=... \
 OPENAGENT_BASE_URL=http://localhost:14000 \
-deeptrap run --backend openagent --model deepseek/deepseek-v4-pro
+deeptrap run --backend openagent --execution local --model deepseek/deepseek-v4-pro
 ```
 
 OpenAgent support uses its OpenAI-compatible chat completions endpoint. ActBench records `--model` in results and sends it in the request, but the actual OpenAgent model and tools are controlled by the Store associated with `OPENAGENT_API_KEY`.
 
-Run with Hermes when the Hermes CLI is installed and configured for the target provider:
+Run with Hermes in Docker by using the default execution mode. When the Hermes
+CLI is installed on the host, use the explicit local mode shown here:
 
 ```bash
 ACTBENCH_HERMES_PROVIDER=... \
-deeptrap run --backend hermes --model deepseek/deepseek-v4-pro
+deeptrap run --backend hermes --execution local --model deepseek/deepseek-v4-pro
 ```
 
 The Hermes backend launches isolated `hermes -z` subprocesses from each materialized task workspace. By default it writes a run-scoped `HERMES_HOME`, registers the ActBench MCP gateway as the `actbench` MCP server, and instructs Hermes to use task-scoped MCP tools for workspace and mock API access. See `docs/HERMES.md` for setup, environment variables, and troubleshooting.
 
-Run with opencode when the opencode CLI is installed and configured for the target provider:
+Run with opencode in Docker by using the default execution mode. When the
+opencode CLI is installed on the host, use the explicit local mode shown here:
 
 ```bash
-deeptrap run --backend opencode --model deepseek/deepseek-v4-pro
+deeptrap run --backend opencode --execution local --model deepseek/deepseek-v4-pro
 ```
 
 The opencode backend launches isolated `opencode run --format json` subprocesses from each materialized task workspace. By default it provides an inline opencode config with the ActBench MCP gateway as a remote MCP server named `actbench`, instructs opencode to use task-scoped MCP tools for workspace and mock API access, and extracts the full session with `opencode export <sessionID>` for scoring. See `docs/OPENCODE.md` for setup, environment variables, and troubleshooting.

@@ -161,6 +161,21 @@ def test_image_lookup_failure_does_not_fall_back_to_local(monkeypatch, tmp_path)
         DockerRuntime(records_dir=tmp_path / "records")
 
 
+def test_image_lookup_failure_names_the_missing_image(monkeypatch, tmp_path):
+    def failed(self, args, *, check=False):
+        if args[0] == "info":
+            return subprocess.CompletedProcess(
+                args, 0, json.dumps({"SecurityOptions": ["name=seccomp"], "OSType": "linux"}), ""
+            )
+        raise subprocess.CalledProcessError(
+            1, ["docker", *args], stderr="No such image: actbench-opencode:1.18.3-ubuntu22.04"
+        )
+
+    monkeypatch.setattr(DockerRuntime, "_control", failed)
+    with pytest.raises(BackendInitializationError, match="actbench-opencode:1.18.3-ubuntu22.04"):
+        DockerRuntime(records_dir=tmp_path / "records")
+
+
 def test_cleanup_does_not_treat_daemon_failure_as_success(runtime_factory, monkeypatch):
     make, _ = runtime_factory
     runtime = make()

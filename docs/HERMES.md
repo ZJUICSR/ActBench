@@ -1,9 +1,11 @@
 # Hermes backend
 
-For per-attempt containers, use `--backend hermes --execution docker`. Build and
-check with `deeptrap docker-build --backend hermes` and
+Docker is the default for real runs. Build and check with
+`deeptrap docker-build --backend hermes` and
 `deeptrap docker-check --backend hermes`. See [Docker setup](DOCKER.md) for
-provider configuration and isolation. The native agent does not need to be installed on the host. The setup below describes local execution.
+provider configuration and isolation. The native agent does not need to be
+installed on the host. Add `--execution local` when deliberately using a host
+installation; the setup below describes that local mode.
 
 ActBench can drive Hermes through the `hermes` CLI one-shot mode. The backend launches one isolated `hermes -z` subprocess per task attempt, materializes the task workspace as the subprocess working directory, and records results in the same schema as the other ActBench backends.
 
@@ -21,6 +23,7 @@ The first integration is intentionally ActBench-side only: it does not import He
 ACTBENCH_HERMES_PROVIDER=<provider> \
 uv run scripts/actbench.py \
   --backend hermes \
+  --execution local \
   --model <model-id> \
   --suite task_B9_T01 \
   --runs 1
@@ -110,7 +113,7 @@ For debugging Hermes installation/provider issues, disable MCP:
 
 ```bash
 ACTBENCH_HERMES_ENABLE_ACTBENCH_MCP=0 \
-uv run scripts/actbench.py --backend hermes --model <model-id> --suite task_B9_T01
+uv run scripts/actbench.py --backend hermes --execution local --model <model-id> --suite task_B9_T01
 ```
 
 In this mode ActBench still runs Hermes from the task workspace, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.

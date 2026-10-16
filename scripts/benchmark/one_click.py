@@ -29,6 +29,8 @@ from benchmark.task_loading import select_task_files_for_suite
 ONE_CLICK_SCHEMA_VERSION = "actbench.one_click.v1"
 DEFAULT_SUITE = "representative"
 DEFAULT_OUTPUT_ROOT = Path("results/one_click")
+DEFAULT_BACKEND = "openclaw"
+DEFAULT_MODEL = "deepseek/deepseek-v4-pro"
 SELF_TEST_MODEL = "fake/self-test"
 SELF_TEST_SUITE = "task_B9_T01"
 REPRESENTATIVE_SUITE_NAME = "representative"
@@ -59,7 +61,7 @@ class OneClickConfig:
     skip_baseline_gen: bool = False
     verbose: bool = False
     self_test: bool = False
-    execution: str = "local"
+    execution: str = "docker"
 
 
 @dataclass(frozen=True)
@@ -164,18 +166,27 @@ def build_parser() -> argparse.ArgumentParser:
         "--backend",
         choices=available_backend_names(),
         default=None,
-        help="Target-agent backend. Required unless --self-test is used.",
+        help=(
+            "Target-agent backend (default: "
+            f"{DEFAULT_BACKEND}; --self-test uses fake)."
+        ),
     )
     parser.add_argument(
         "--execution",
         choices=("local", "docker"),
-        default="local",
-        help="Target-agent execution mode (all real backends support docker)",
+        default="docker",
+        help=(
+            "Target-agent execution mode (default for real runs: docker; use "
+            "--execution local to run an agent installed on the host)"
+        ),
     )
     parser.add_argument(
         "--model",
         default=None,
-        help="Backend-specific model id/label. Required unless --self-test is used.",
+        help=(
+            "Backend-specific model id/label (default: "
+            f"{DEFAULT_MODEL}; ignored by --self-test)."
+        ),
     )
     parser.add_argument(
         "--judge-model",
@@ -250,7 +261,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
     parser = build_parser()
-    args = parser.parse_args(argv)
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    args = parser.parse_args(raw_argv)
+    execution_explicit = any(
+        value == "--execution" or value.startswith("--execution=") for value in raw_argv
+    )
 
     tasks_dir = (
         Path(args.tasks_dir).expanduser().resolve() if args.tasks_dir else _default_tasks_dir()
@@ -258,7 +273,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
     output_root = Path(args.output_root).expanduser().resolve()
 
     if args.self_test:
-        if args.execution != "local":
+        if args.execution == "docker" and execution_explicit:
             parser.error(
                 "--self-test uses the local fake backend; use deeptrap docker-check for Docker"
             )
@@ -294,13 +309,13 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
             skip_baseline_gen=True,
             verbose=bool(args.verbose),
             self_test=True,
+            execution="local",
         )
 
-    if args.backend is None:
-        parser.error("--backend is required unless --self-test is used")
-    if not args.model:
-        parser.error("--model is required unless --self-test is used")
-    if args.execution == "docker" and args.backend == "fake":
+    backend = str(args.backend or DEFAULT_BACKEND).strip().lower()
+    model = str(args.model or DEFAULT_MODEL).strip()
+    execution = "local" if backend == "fake" and not execution_explicit else args.execution
+    if execution == "docker" and backend == "fake":
         parser.error("Docker execution requires a real agent backend")
 
     score_mode = args.score_mode or COMBINED_AGS_MODE
@@ -316,8 +331,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
         parser.error("--retry-status must include at least one status when --execution-retries > 0")
 
     return OneClickConfig(
-        backend=str(args.backend).strip().lower(),
-        model=str(args.model).strip(),
+        backend=backend,
+        model=model,
         suite=args.suite or DEFAULT_SUITE,
         score_mode=score_mode,
         judge_model=args.judge_model,
@@ -331,7 +346,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> OneClickConfig:
         skip_baseline_gen=bool(args.skip_baseline_gen),
         verbose=bool(args.verbose),
         self_test=False,
-        execution=args.execution,
+        execution=execution,
     )
 
 
@@ -502,16 +517,21 @@ def run_child(
 ) -> int:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if os.name == "nt" else 0
-    process = subprocess.Popen(
-        list(command),
-        cwd=str(cwd),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        bufsize=1,
-        start_new_session=(os.name != "nt"),
-        creationflags=creationflags,
-    )
+    try:
+        process = subprocess.Popen(
+            list(command),
+            cwd=str(cwd),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            start_new_session=(os.name != "nt"),
+            creationflags=creationflags,
+        )
+    except (OSError, ValueError):
+        # Keep command-start failures in the same error path as collection or
+        # scoring failures; callers attach the failure to the invocation manifest.
+        raise
     try:
         with log_path.open("w", encoding="utf-8") as log_file:
             assert process.stdout is not None
@@ -521,7 +541,9 @@ def run_child(
                 if stream_output:
                     print(line, end="")
         return process.wait()
-    except KeyboardInterrupt:
+    except BaseException:
+        # A failed log write or an interrupted terminal must not leave a child
+        # runner (or its Docker containers) alive after the parent has stopped.
         _terminate_process_group(process)
         raise
 
@@ -604,7 +626,7 @@ def validate_collection_result(result_path: Path, plan: OneClickRunPlan) -> Dict
 
     if payload.get("workflow") != "trajectory_collection":
         errors.append("collection aggregate workflow is not trajectory_collection")
-    if payload.get("execution", "local") != plan.config.execution:
+    if payload.get("execution", plan.config.execution) != plan.config.execution:
         errors.append("collection execution mode does not match the requested mode")
     if payload.get("backend") != plan.config.backend:
         errors.append(
@@ -920,6 +942,12 @@ def run(config: OneClickConfig) -> int:
         _record_error(manifest, error)
         write_invocation_manifest(invocation_dir, manifest)
         raise error from exc
+    except (OSError, ValueError) as exc:
+        error = OneClickCollectionError(f"could not start collection command: {exc}")
+        _finish_manifest(manifest, status="failed", stage="collection_start_failed")
+        _record_error(manifest, error)
+        write_invocation_manifest(invocation_dir, manifest)
+        raise error from exc
     manifest["collection"] = {"exit_code": collection_exit}
     write_invocation_manifest(invocation_dir, manifest)
     if collection_exit != 0:
@@ -980,6 +1008,12 @@ def run(config: OneClickConfig) -> int:
         _record_error(manifest, error)
         write_invocation_manifest(invocation_dir, manifest)
         raise error from exc
+    except (OSError, ValueError) as exc:
+        error = OneClickScoringError(f"could not start scoring command: {exc}")
+        _finish_manifest(manifest, status="failed", stage="scoring_start_failed")
+        _record_error(manifest, error)
+        write_invocation_manifest(invocation_dir, manifest)
+        raise error from exc
     manifest["scoring"] = {"exit_code": scoring_exit}
     write_invocation_manifest(invocation_dir, manifest)
     if scoring_exit != 0:
@@ -1022,6 +1056,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 __all__ = [
     "AUTOMATED_ONLY_MODE",
     "COMBINED_AGS_MODE",
+    "DEFAULT_BACKEND",
+    "DEFAULT_MODEL",
     "DEFAULT_SUITE",
     "ONE_CLICK_SCHEMA_VERSION",
     "OneClickCollectionError",

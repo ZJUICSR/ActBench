@@ -1271,6 +1271,9 @@ def run_benchmark(args: argparse.Namespace) -> None:
         except BackendInitializationError as exc:
             logger.error("❌ Backend %s could not be initialized: %s", backend.name, exc)
             sys.exit(2)
+        except Exception as exc:  # noqa: BLE001 - keep CLI failures actionable
+            logger.error("❌ Backend %s could not be initialized: %s", backend.name, exc)
+            sys.exit(2)
 
         results = []
         grades_by_task_id = {}

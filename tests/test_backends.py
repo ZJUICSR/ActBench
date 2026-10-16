@@ -175,6 +175,15 @@ def test_cli_default_backend_is_openclaw(monkeypatch: pytest.MonkeyPatch) -> Non
 
     assert args.backend == "openclaw"
     assert args.model == "deepseek/deepseek-v4-pro"
+    assert args.execution == "docker"
+
+
+def test_cli_fake_backend_defaults_to_local_execution(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "fake"])
+
+    args = _parse_args()
+
+    assert args.execution == "local"
 
 
 def test_cli_accepts_qwenpaw_backend(monkeypatch: pytest.MonkeyPatch) -> None:

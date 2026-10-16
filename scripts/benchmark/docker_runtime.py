@@ -26,14 +26,14 @@ from urllib.request import ProxyHandler, build_opener
 
 from benchmark.backends.base import BackendInitializationError
 
-DEFAULT_IMAGE = "actbench-opencode:1.17.18"
+DEFAULT_IMAGE = "actbench-opencode:1.18.3-ubuntu22.04"
 DEFAULT_IMAGES = {
     "opencode": DEFAULT_IMAGE,
-    "claudecode": "actbench-claudecode:2.1.268",
-    "hermes": "actbench-hermes:0.18.2",
-    "openclaw": "actbench-openclaw:2026.5.18",
-    "qwenpaw": "actbench-qwenpaw:1.1.11.post2",
-    "openagent": "actbench-openagent:2.83.1",
+    "claudecode": "actbench-claudecode:2.1.218-ubuntu22.04",
+    "hermes": "actbench-hermes:0.18.2-ubuntu22.04",
+    "openclaw": "actbench-openclaw:2026.5.19-ubuntu22.04",
+    "qwenpaw": "actbench-qwenpaw:2.0.0.post2-ubuntu22.04",
+    "openagent": "actbench-openagent:2.83.1-ubuntu22.04",
 }
 
 
@@ -157,6 +157,22 @@ class DockerRuntime:
             detail = self.redact(
                 str(getattr(exc, "stderr", None) or getattr(exc, "stdout", None) or exc)
             ).strip()
+            if isinstance(exc, FileNotFoundError):
+                detail = (
+                    f"Docker executable {self.binary!r} was not found; install Docker or "
+                    "set ACTBENCH_DOCKER_BIN"
+                )
+            elif isinstance(exc, subprocess.CalledProcessError):
+                command = list(getattr(exc, "cmd", ()) or ())
+                if command[:2] == ["image", "inspect"] or command[1:3] == [
+                    "image",
+                    "inspect",
+                ]:
+                    detail = f"Docker image {self.image!r} is unavailable"
+                elif command[:1] == ["info"] or command[1:2] == ["info"]:
+                    detail = "Docker daemon is unavailable or is not a Linux daemon"
+                if getattr(exc, "stderr", None):
+                    detail = f"{detail}: {self.redact(str(exc.stderr)).strip()}"
             raise BackendInitializationError(
                 f"Docker preflight failed: {detail}. Enable a Linux Docker daemon and run "
                 f"'deeptrap docker-build --backend {self.backend}' first; no local-agent fallback is used."
