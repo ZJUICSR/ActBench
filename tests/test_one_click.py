@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -12,6 +15,107 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from benchmark import one_click  # noqa: E402
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX session cleanup")
+def test_run_child_cleans_descendant_after_leader_exits(tmp_path):
+    pid_path = tmp_path / "descendant.pid"
+    code = (
+        "import subprocess,sys,pathlib;"
+        "p=subprocess.Popen([sys.executable,'-c','import time;time.sleep(10)']);"
+        f"pathlib.Path({str(pid_path)!r}).write_text(str(p.pid));"
+        "print('leader exited',flush=True)"
+    )
+    started = time.monotonic()
+    assert (
+        one_click.run_child(
+            [sys.executable, "-c", code],
+            cwd=tmp_path,
+            log_path=tmp_path / "run.log",
+            stream_output=False,
+        )
+        == 0
+    )
+    assert time.monotonic() - started < 2
+    assert "leader exited" in (tmp_path / "run.log").read_text()
+    pid = int(pid_path.read_text())
+    until = time.monotonic() + 1
+    while time.monotonic() < until:
+        stat = Path(f"/proc/{pid}/stat")
+        try:
+            state = stat.read_text().split()[2]
+        except (FileNotFoundError, ProcessLookupError):
+            break
+        if state == "Z":
+            break
+        time.sleep(0.01)
+    else:
+        pytest.fail("descendant survived collection process exit")
+
+
+def test_run_child_streams_fragmented_utf8_and_keeps_invalid_bytes(tmp_path, capsys):
+    code = (
+        "import os,time;os.write(1,b'\\xe4');time.sleep(0.15);" "os.write(1,b'\\xb8\\xad\\xff\\n')"
+    )
+    assert (
+        one_click.run_child(
+            [sys.executable, "-c", code],
+            cwd=tmp_path,
+            log_path=tmp_path / "run.log",
+            stream_output=True,
+        )
+        == 0
+    )
+    assert capsys.readouterr().out == "中\ufffd\n"
+    assert (tmp_path / "run.log").read_bytes() == b"\xe4\xb8\xad\xff\n"
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX descendant cleanup")
+def test_continuous_descendant_output_cannot_hide_leader_exit(tmp_path, monkeypatch):
+    child = (
+        "import os,time;end=time.monotonic()+2\n"
+        "while time.monotonic()<end: os.write(1,b'x'*4096);time.sleep(.001)"
+    )
+    code = (
+        "import subprocess,sys,time;"
+        f"subprocess.Popen([sys.executable,'-c',{child!r}]);time.sleep(.3)"
+    )
+    monkeypatch.setattr("builtins.print", lambda *args, **kwargs: time.sleep(0.03))
+    started = time.monotonic()
+    assert (
+        one_click.run_child(
+            [sys.executable, "-c", code],
+            cwd=tmp_path,
+            log_path=tmp_path / "run.log",
+            stream_output=True,
+        )
+        == 0
+    )
+    assert time.monotonic() - started < 1.5
+
+
+def test_run_child_interrupt_cleans_running_process(tmp_path, monkeypatch):
+    original = subprocess.Popen
+    processes = []
+
+    def spawn(*args, **kwargs):
+        process = original(*args, **kwargs)
+        processes.append(process)
+        return process
+
+    def interrupted_print(*args, **kwargs):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(one_click.subprocess, "Popen", spawn)
+    monkeypatch.setattr("builtins.print", interrupted_print)
+    with pytest.raises(KeyboardInterrupt):
+        one_click.run_child(
+            [sys.executable, "-c", "import time;print('ready',flush=True);time.sleep(10)"],
+            cwd=tmp_path,
+            log_path=tmp_path / "run.log",
+            stream_output=True,
+        )
+    assert processes[0].poll() is not None
 
 
 def _config(
@@ -107,12 +211,16 @@ def _write_collection(
 def _write_score(score_path: Path, *, plan: one_click.OneClickRunPlan) -> None:
     payload = {
         "schema_version": one_click.OFFLINE_SCORE_SCHEMA_VERSION,
-        "scoring_mode": "combined_ags"
-        if plan.config.score_mode == one_click.COMBINED_AGS_MODE
-        else "automated_only",
-        "scoring_semantics": "actbench_ags"
-        if plan.config.score_mode == one_click.COMBINED_AGS_MODE
-        else "actbench_automated_only",
+        "scoring_mode": (
+            "combined_ags"
+            if plan.config.score_mode == one_click.COMBINED_AGS_MODE
+            else "automated_only"
+        ),
+        "scoring_semantics": (
+            "actbench_ags"
+            if plan.config.score_mode == one_click.COMBINED_AGS_MODE
+            else "actbench_automated_only"
+        ),
         "trajectory_count": plan.expected_attempts,
         "valid_scores": plan.expected_attempts,
         "evaluation_errors": 0,
@@ -354,7 +462,9 @@ def test_self_test_end_to_end_uses_fake_backend_and_writes_manifest(tmp_path: Pa
     assert score["evaluation_errors"] == 0
 
 
-def test_one_click_records_child_start_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_one_click_records_child_start_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     def fail_to_start(*_args, **_kwargs):
         raise OSError("interpreter unavailable")
 
@@ -365,9 +475,7 @@ def test_one_click_records_child_start_failure(tmp_path: Path, monkeypatch: pyte
 
     assert exit_code == one_click.EXIT_COLLECTION
     invocation_dir = next(output_root.iterdir())
-    manifest = json.loads(
-        (invocation_dir / "one_click_result.json").read_text(encoding="utf-8")
-    )
+    manifest = json.loads((invocation_dir / "one_click_result.json").read_text(encoding="utf-8"))
     assert manifest["status"] == "failed"
     assert manifest["stage"] == "collection_start_failed"
     assert "interpreter unavailable" in manifest["error"]["message"]

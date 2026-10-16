@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import atexit
 import json
+import logging
 import secrets
 import os
 import shutil
@@ -16,6 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 from urllib import error, request
+from lib_http import urlopen as bounded_urlopen
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 API_RUN_ROOT = Path("/tmp/claweval/api")
@@ -278,7 +280,10 @@ _ACTIVE_GROUPS: list["ApiServiceGroup"] = []
 
 def _cleanup_active_groups() -> None:
     for group in list(_ACTIVE_GROUPS):
-        group.stop()
+        try:
+            group.stop()
+        except Exception:
+            logging.getLogger(__name__).exception("Failed to stop mock API services")
 
 
 atexit.register(_cleanup_active_groups)
@@ -351,7 +356,7 @@ def _http_json(
     if admin_token:
         headers["Authorization"] = f"Bearer {admin_token}"
     req = request.Request(url, data=data, headers=headers, method=method)
-    with request.urlopen(req, timeout=timeout) as resp:
+    with bounded_urlopen(req, timeout=timeout) as resp:
         payload = resp.read().decode("utf-8")
     parsed = json.loads(payload) if payload else {}
     return parsed if isinstance(parsed, dict) else {"data": parsed}
@@ -408,6 +413,8 @@ class ApiServiceGroup:
             return self
 
         self.root.mkdir(parents=True, exist_ok=True)
+        if self not in _ACTIVE_GROUPS:
+            _ACTIVE_GROUPS.append(self)
         try:
             for name in self.service_names:
                 self.prepared_fixtures[name] = self._prepare_fixture(SERVICE_SPECS[name])
@@ -416,11 +423,9 @@ class ApiServiceGroup:
                 self._start_one(name)
             if self.workspace:
                 self.write_endpoints_file(self.workspace)
-        except Exception:
+        except BaseException:
             self.stop()
             raise
-
-        _ACTIVE_GROUPS.append(self)
         return self
 
     def _start_one(self, name: str) -> None:
@@ -558,21 +563,36 @@ class ApiServiceGroup:
         return results
 
     def stop(self) -> None:
-        for process in self.processes.values():
-            if process.poll() is not None:
-                continue
-            process.terminate()
-        for process in self.processes.values():
+        errors = {}
+        for name, process in self.processes.items():
+            try:
+                if process.poll() is None:
+                    process.terminate()
+            except OSError as exc:
+                errors[name] = exc
+        pending = {}
+        for name, process in self.processes.items():
             if process.poll() is not None:
                 continue
             try:
-                process.wait(timeout=3.0)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=3.0)
-        self.processes = {}
-        if self in _ACTIVE_GROUPS:
+                if name not in errors:
+                    process.wait(timeout=3.0)
+            except (subprocess.TimeoutExpired, OSError) as exc:
+                errors[name] = exc
+            if process.poll() is None:
+                try:
+                    process.kill()
+                    process.wait(timeout=3.0)
+                except (subprocess.TimeoutExpired, OSError) as exc:
+                    errors[name] = exc
+            if process.poll() is None:
+                pending[name] = process
+        self.processes = pending
+        if not pending and self in _ACTIVE_GROUPS:
             _ACTIVE_GROUPS.remove(self)
+        if pending:
+            detail = "; ".join(f"{name}: {errors.get(name, 'still running')}" for name in pending)
+            raise RuntimeError(f"Mock API cleanup failed; retained processes for retry: {detail}")
 
 
 def start_api_services(

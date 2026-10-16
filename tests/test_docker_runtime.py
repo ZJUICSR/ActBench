@@ -29,6 +29,31 @@ from scripts.actbench_build_docker import stage_context  # noqa: E402
 IMAGE_ID = "sha256:" + "a" * 64
 
 
+@pytest.mark.parametrize("timeout", [False, True])
+def test_docker_control_does_not_wait_for_descendant_stdout(tmp_path, timeout):
+    import time
+
+    script = tmp_path / "docker-stub"
+    script.write_text(
+        f"#!{sys.executable}\n"
+        "import subprocess,sys,time\n"
+        "subprocess.Popen([sys.executable,'-c','import time;time.sleep(10)'])\n"
+        "print('controller output',flush=True)\n" + ("time.sleep(10)\n" if timeout else "")
+    )
+    script.chmod(0o700)
+    runtime = object.__new__(DockerRuntime)
+    runtime.binary = str(script)
+    runtime.host_env = dict(os.environ)
+    started = time.monotonic()
+    if timeout:
+        with pytest.raises(subprocess.TimeoutExpired):
+            runtime._control(["info"], timeout_seconds=0.15)
+    else:
+        result = runtime._control(["info"], timeout_seconds=0.5)
+        assert result.stdout == "controller output\n"
+    assert time.monotonic() - started < 1
+
+
 @pytest.fixture
 def runtime_factory(monkeypatch, tmp_path):
     for name in list(os.environ):
@@ -38,7 +63,7 @@ def runtime_factory(monkeypatch, tmp_path):
     calls = []
 
     def make(*, rootless=False, image_id=IMAGE_ID, backend="opencode"):
-        def control(self, args, *, check=False):
+        def control(self, args, *, check=False, timeout_seconds=30):
             calls.append(args)
             if args[0] == "info":
                 value = {

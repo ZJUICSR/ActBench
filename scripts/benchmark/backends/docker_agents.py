@@ -12,7 +12,7 @@ import json
 import secrets
 import subprocess
 import time
-from urllib.request import HTTPCookieProcessor, ProxyHandler, Request, build_opener
+from urllib.request import HTTPCookieProcessor, ProxyHandler, Request
 
 from benchmark.backends.base import augment_execution_result
 from benchmark.backends.common import (
@@ -31,6 +31,7 @@ from benchmark.backends.qwenpaw import QwenPawBackend
 from benchmark.docker_support import configure_mcp, initialize_runtime, isolated_env, load_provider
 from lib_agent import _extract_usage_from_transcript, _openclaw_agent_command, _read_transcript_file
 from lib_mcp_gateway import stop_gateway_process
+from lib_http import urlopen as bounded_urlopen
 
 
 def _initialize(backend, context):
@@ -61,7 +62,7 @@ class JsonApi:
     def __init__(self, url, deadline=None):
         self.url = url
         self.deadline = deadline
-        self.opener = build_opener(ProxyHandler({}), HTTPCookieProcessor(CookieJar()))
+        self.handlers = (ProxyHandler({}), HTTPCookieProcessor(CookieJar()))
 
     def call(self, path, payload=None, method=None):
         req = Request(
@@ -73,7 +74,7 @@ class JsonApi:
         remaining = self.deadline - time.monotonic() if self.deadline is not None else 30
         if remaining <= 0:
             raise TimeoutError("Agent service initialization exceeded the task timeout")
-        with self.opener.open(req, timeout=min(30, remaining)) as response:
+        with bounded_urlopen(req, timeout=min(30, remaining), handlers=self.handlers) as response:
             value = json.load(response)
         if isinstance(value, dict) and value.get("status") == "error":
             # Do not echo provider responses, which may contain credentials.

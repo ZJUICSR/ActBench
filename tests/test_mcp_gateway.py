@@ -64,6 +64,61 @@ def _call_tool(name: str, arguments: dict) -> dict:
     return response
 
 
+def test_slow_tool_keeps_gateway_event_loop_responsive(monkeypatch):
+    import asyncio
+    import threading
+    import time
+    from starlette.requests import Request
+
+    release = threading.Event()
+
+    def slow_dispatch(_payload):
+        release.wait(0.6)
+        return {"jsonrpc": "2.0", "id": 1, "result": {}}
+
+    monkeypatch.setattr(mcp_gateway_module, "dispatch_json_rpc", slow_dispatch)
+    routes = {route.path: route.endpoint for route in mcp_gateway_module.create_app().routes}
+
+    async def exercise():
+        async def receive():
+            return {"type": "http.request", "body": b"{}"}
+
+        request = Request({"type": "http", "method": "POST", "path": "/mcp"}, receive)
+        started = time.monotonic()
+        call = asyncio.create_task(routes["/mcp"](request))
+        try:
+            await asyncio.sleep(0.03)
+            assert await routes["/health"]() == {"status": "ok"}
+            assert time.monotonic() - started < 0.3
+            assert not call.done()
+        finally:
+            release.set()
+            await call
+
+    asyncio.run(exercise())
+
+
+def test_invalid_mcp_json_returns_parse_error():
+    import asyncio
+    from starlette.requests import Request
+
+    async def exercise():
+        async def receive():
+            return {"type": "http.request", "body": b"not JSON"}
+
+        request = Request({"type": "http", "method": "POST", "path": "/mcp"}, receive)
+        endpoint = next(
+            route.endpoint
+            for route in mcp_gateway_module.create_app().routes
+            if route.path == "/mcp"
+        )
+        response = await endpoint(request)
+        assert response.status_code == 400
+        assert json.loads(response.body)["error"]["code"] == -32700
+
+    asyncio.run(exercise())
+
+
 def test_json_rpc_initialize_and_tools_list_shapes() -> None:
     initialized = dispatch_json_rpc(
         {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
@@ -263,7 +318,9 @@ def test_workspace_file_tools_reject_absolute_and_parent_escape(tmp_path: Path) 
     assert not (tmp_path / "outside.txt").exists()
 
 
-def test_sanitized_api_endpoint_discovery_hides_internal_urls_and_admin_paths(tmp_path: Path) -> None:
+def test_sanitized_api_endpoint_discovery_hides_internal_urls_and_admin_paths(
+    tmp_path: Path,
+) -> None:
     workspace = tmp_path / "workspace"
     group = start_api_services(
         services=["mailbox"],

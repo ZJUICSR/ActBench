@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import codecs
 import json
 import os
 import signal
@@ -166,10 +167,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--backend",
         choices=available_backend_names(),
         default=None,
-        help=(
-            "Target-agent backend (default: "
-            f"{DEFAULT_BACKEND}; --self-test uses fake)."
-        ),
+        help=("Target-agent backend (default: " f"{DEFAULT_BACKEND}; --self-test uses fake)."),
     )
     parser.add_argument(
         "--execution",
@@ -484,7 +482,7 @@ def build_scoring_command(plan: OneClickRunPlan, invocation_dir: Path) -> List[s
 
 
 def _terminate_process_group(process: subprocess.Popen[str]) -> None:
-    if process.poll() is not None:
+    if os.name == "nt" and process.poll() is not None:
         return
     try:
         if os.name == "nt":
@@ -495,9 +493,10 @@ def _terminate_process_group(process: subprocess.Popen[str]) -> None:
         return
     try:
         process.wait(timeout=5)
-        return
     except subprocess.TimeoutExpired:
         pass
+    # The leader may have exited while a descendant still owns output files or
+    # sockets. Always finish cleaning the session created by run_child.
     try:
         if os.name == "nt":
             process.kill()
@@ -517,35 +516,48 @@ def run_child(
 ) -> int:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if os.name == "nt" else 0
-    try:
+    # A descendant inheriting a pipe can hold iteration open after the leader
+    # exits. File-backed capture lets us observe the process independently.
+    with log_path.open("wb") as log_file:
         process = subprocess.Popen(
             list(command),
             cwd=str(cwd),
-            stdout=subprocess.PIPE,
+            stdout=log_file,
             stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1,
             start_new_session=(os.name != "nt"),
             creationflags=creationflags,
         )
-    except (OSError, ValueError):
-        # Keep command-start failures in the same error path as collection or
-        # scoring failures; callers attach the failure to the invocation manifest.
-        raise
-    try:
-        with log_path.open("w", encoding="utf-8") as log_file:
-            assert process.stdout is not None
-            for line in process.stdout:
-                log_file.write(line)
-                log_file.flush()
+        cleaned = False
+        try:
+            with log_path.open("rb") as output:
+                decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+
+                def drain():
+                    if stream_output:
+                        remaining = os.fstat(output.fileno()).st_size - output.tell()
+                        while remaining > 0:
+                            chunk = output.read(min(64 * 1024, remaining))
+                            if not chunk:
+                                break
+                            remaining -= len(chunk)
+                            print(decoder.decode(chunk), end="", flush=True)
+
+                while process.poll() is None:
+                    drain()
+                    try:
+                        process.wait(timeout=0.1)
+                    except subprocess.TimeoutExpired:
+                        pass
+                _terminate_process_group(process)
+                cleaned = True
+                drain()
                 if stream_output:
-                    print(line, end="")
-        return process.wait()
-    except BaseException:
-        # A failed log write or an interrupted terminal must not leave a child
-        # runner (or its Docker containers) alive after the parent has stopped.
-        _terminate_process_group(process)
-        raise
+                    print(decoder.decode(b"", final=True), end="", flush=True)
+                return process.returncode
+        finally:
+            # Includes log/terminal failures and Ctrl-C, even after leader exit.
+            if not cleaned:
+                _terminate_process_group(process)
 
 
 def _load_json(

@@ -8,6 +8,7 @@ agent execution through its service API.
 from __future__ import annotations
 
 import hashlib
+import http.client
 import json
 import logging
 import math
@@ -23,6 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from lib_tasks import Task
+from lib_http import MAX_LINE_BYTES, urlopen as bounded_urlopen
 
 from benchmark.backends.base import (
     BackendInitializationError,
@@ -80,6 +82,10 @@ class QwenPawChatScope:
 
 class QwenPawRequestError(RuntimeError):
     """Raised when the QwenPaw service returns an unexpected response."""
+
+    def __init__(self, message: str, *, partial_response=None):
+        super().__init__(message)
+        self.partial_response = partial_response
 
 
 class QwenPawTimeoutError(QwenPawRequestError):
@@ -266,7 +272,7 @@ class QwenPawBackend:
                         logger.debug("qwenpaw token usage pre-snapshot failed: %s", exc)
 
             if status == "success" and service_agent_id:
-                for prompt in prompts:
+                for prompt_index, prompt in enumerate(prompts, start=1):
                     remaining = timeout_budget - (time.time() - start_time)
                     if remaining <= 0:
                         timed_out = True
@@ -286,6 +292,11 @@ class QwenPawBackend:
                             prompt=prompt,
                             timeout_seconds=_request_timeout(config=config, remaining=remaining),
                         )
+                        if recorder and event.get(_SSE_EVENTS_KEY):
+                            recorder.write_json(
+                                Path("runs") / artifact_key / f"qwenpaw_stream_{prompt_index}.json",
+                                {"complete": True, "events": event[_SSE_EVENTS_KEY]},
+                            )
                         output_text = _extract_output_text(event).strip()
                         process_outputs.append(output_text)
                         raw_usage = _event_usage(event)
@@ -297,16 +308,33 @@ class QwenPawBackend:
                                 event_usage_total = _add_usage(event_usage_total, prompt_usage)
                                 usage = dict(event_usage_total)
                                 usage_source = "qwenpaw_event"
-                    except QwenPawTimeoutError as exc:
-                        timed_out = True
-                        status = "timeout"
-                        exit_code = -1
-                        stderr = _append_stderr(stderr, f"qwenpaw service request timed out: {exc}")
-                        break
                     except QwenPawRequestError as exc:
-                        status = "error"
+                        timed_out = isinstance(exc, QwenPawTimeoutError)
+                        status = "timeout" if timed_out else "error"
                         exit_code = -1
                         stderr = _append_stderr(stderr, f"qwenpaw service request failed: {exc}")
+                        if exc.partial_response:
+                            if recorder:
+                                recorder.write_json(
+                                    Path("runs")
+                                    / artifact_key
+                                    / f"qwenpaw_stream_{prompt_index}.json",
+                                    {
+                                        "complete": False,
+                                        "status": status,
+                                        "events": exc.partial_response.get(_SSE_EVENTS_KEY, []),
+                                    },
+                                )
+                            process_outputs.append(
+                                _extract_output_text(exc.partial_response).strip()
+                            )
+                            raw_usage = _event_usage(exc.partial_response)
+                            if raw_usage is not None:
+                                usage = _add_usage(
+                                    event_usage_total,
+                                    _normalize_qwenpaw_usage(raw_usage, request_count=1),
+                                )
+                                usage_source = "qwenpaw_partial_event"
                         break
                     except (
                         Exception
@@ -655,7 +683,7 @@ def _request_text(
 
     request = urllib.request.Request(url, data=data, headers=request_headers, method=method)
     try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+        with bounded_urlopen(request, timeout=timeout_seconds) as response:
             return response.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
@@ -704,6 +732,41 @@ def _request_json(
     return parsed
 
 
+def _sse_data(response):
+    """Parse SSE framing without treating Unicode paragraph separators as lines."""
+    buffer = b""
+    data_lines = []
+    data_size = 0
+    first_line = True
+    while True:
+        chunk = response.read1(64 * 1024)
+        buffer += chunk
+        while match := re.search(rb"\r\n|\r|\n", buffer):
+            if chunk and match.group() == b"\r" and match.end() == len(buffer):
+                break  # A CRLF pair may straddle two socket reads.
+            raw_line, buffer = buffer[: match.start()], buffer[match.end() :]
+            line = raw_line.decode("utf-8-sig" if first_line else "utf-8")
+            first_line = False
+            if not line:
+                if data_lines:
+                    yield "\n".join(data_lines)
+                data_lines = []
+                data_size = 0
+            elif not line.startswith(":"):
+                field, separator, value = line.partition(":")
+                if field == "data":
+                    value = value.removeprefix(" ") if separator else ""
+                    data_lines.append(value)
+                    data_size += len(raw_line)
+                    if data_size > MAX_LINE_BYTES:
+                        raise QwenPawRequestError("QwenPaw SSE event exceeds capture limit")
+        if len(buffer) > MAX_LINE_BYTES:
+            raise QwenPawRequestError("QwenPaw SSE line exceeds capture limit")
+        if not chunk:
+            # EOF does not dispatch an event without its terminating blank line.
+            return
+
+
 def _post_sse_json(
     url: str,
     *,
@@ -724,48 +787,59 @@ def _post_sse_json(
         headers=request_headers,
         method="POST",
     )
-    deadline = time.monotonic() + max(timeout_seconds, 0.001)
     events: List[Dict[str, Any]] = []
+    completed = False
+
+    def stream_error(message, error_type=QwenPawRequestError):
+        return error_type(message, partial_response=_merge_sse_events(events))
+
     try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
-            for raw_line in response:
-                if time.monotonic() > deadline:
-                    raise QwenPawTimeoutError(f"request to {url} timed out")
-                line = raw_line.decode("utf-8", errors="replace").strip()
-                if not line or line.startswith(":"):
-                    continue
-                if not line.startswith("data:"):
-                    continue
-                data = line[len("data:") :].strip()
-                if not data or data == "[DONE]":
+        with bounded_urlopen(request, timeout=timeout_seconds) as response:
+            for data in _sse_data(response):
+                if data == "[DONE]":
+                    completed = True
                     continue
                 try:
                     event = json.loads(data)
                 except json.JSONDecodeError as exc:
-                    raise QwenPawRequestError(
+                    raise stream_error(
                         f"invalid SSE JSON event from {url}: {_summarize_body(data)}"
                     ) from exc
                 if not isinstance(event, dict):
-                    continue
-                if event.get("error"):
-                    raise QwenPawRequestError(str(event.get("error")))
+                    raise stream_error("QwenPaw SSE event must be a JSON object")
                 events.append(event)
-                if time.monotonic() > deadline:
-                    raise QwenPawTimeoutError(f"request to {url} timed out")
+                if event.get("error"):
+                    raise stream_error(str(event["error"]))
+                if event.get("object") == "response":
+                    status = event.get("status")
+                    if status in {"failed", "cancelled", "incomplete"}:
+                        raise stream_error(f"QwenPaw response ended with status {status}")
+                    completed = status == "completed"
+                elif not event.get("object") and event.get("status") == "done":
+                    completed = True
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
         if exc.code in {408, 504}:
-            raise QwenPawTimeoutError(
-                f"request to {url} timed out with HTTP {exc.code}: {_summarize_body(body)}"
+            raise stream_error(
+                f"request to {url} timed out with HTTP {exc.code}: {_summarize_body(body)}",
+                QwenPawTimeoutError,
             ) from exc
-        raise QwenPawRequestError(f"HTTP {exc.code} {exc.reason}: {_summarize_body(body)}") from exc
+        raise stream_error(f"HTTP {exc.code} {exc.reason}: {_summarize_body(body)}") from exc
     except urllib.error.URLError as exc:
         reason = getattr(exc, "reason", exc)
         if isinstance(reason, (TimeoutError, socket.timeout)):
-            raise QwenPawTimeoutError(f"request to {url} timed out") from exc
-        raise QwenPawRequestError(f"request to {url} failed: {reason}") from exc
+            raise stream_error(f"request to {url} timed out", QwenPawTimeoutError) from exc
+        raise stream_error(f"request to {url} failed: {reason}") from exc
     except (TimeoutError, socket.timeout) as exc:
-        raise QwenPawTimeoutError(f"request to {url} timed out") from exc
+        raise stream_error(f"request to {url} timed out", QwenPawTimeoutError) from exc
+    except QwenPawRequestError as exc:
+        if exc.partial_response is None:
+            exc.partial_response = _merge_sse_events(events)
+        raise
+    except (OSError, ValueError, http.client.HTTPException) as exc:
+        raise stream_error(f"QwenPaw response interrupted: {exc}") from exc
+    if not completed or not events:
+        raise stream_error("QwenPaw stream ended without a completed response")
     return _merge_sse_events(events)
 
 

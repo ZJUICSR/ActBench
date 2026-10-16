@@ -28,6 +28,7 @@ from lib_mcp_gateway import (
     unregister_gateway_context,
 )
 from lib_tasks import Task
+from lib_http import urlopen as bounded_urlopen
 
 from benchmark.backends.base import (
     BackendInitializationError,
@@ -513,7 +514,7 @@ def _request_text(
 
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+        with bounded_urlopen(request, timeout=timeout_seconds) as response:
             return response.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")

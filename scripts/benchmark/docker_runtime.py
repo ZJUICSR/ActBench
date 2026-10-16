@@ -22,10 +22,11 @@ import uuid
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
-from urllib.request import ProxyHandler, build_opener
+from urllib.request import ProxyHandler
 
 from benchmark.backends.base import BackendInitializationError
 from lib_training_artifacts import atomic_write_json, get_current_recorder
+from lib_http import urlopen as bounded_urlopen
 
 DEFAULT_IMAGE = "actbench-opencode:1.18.3-ubuntu22.04"
 DEFAULT_IMAGES = {
@@ -199,16 +200,44 @@ class DockerRuntime:
                 self._previous_signals[signum] = signal.getsignal(signum)
                 signal.signal(signum, self._on_signal)
 
-    def _control(self, args: list[str], *, check: bool = False) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            [self.binary, *args],
-            env=self.host_env,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            text=True,
-            timeout=30,
-            check=check,
+    def _control(
+        self, args: list[str], *, check: bool = False, timeout_seconds: float = 30
+    ) -> subprocess.CompletedProcess[str]:
+        command = [self.binary, *args]
+        with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+            process = subprocess.Popen(
+                command,
+                env=self.host_env,
+                stdin=subprocess.DEVNULL,
+                stdout=out,
+                stderr=err,
+                start_new_session=True,
+            )
+            try:
+                process.wait(timeout=timeout_seconds)
+            finally:
+                # File-backed capture and group cleanup also cover credential
+                # helpers inheriting output after the Docker CLI has exited.
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                process.wait(timeout=5)
+            out.seek(0)
+            err.seek(0)
+            limit = 64 * 1024 * 1024
+            stdout, stderr = out.read(limit + 1), err.read(limit + 1)
+            if len(stdout) > limit or len(stderr) > limit:
+                raise RuntimeError("Docker control output exceeds capture limit")
+        result = subprocess.CompletedProcess(
+            command,
+            process.returncode,
+            stdout.decode("utf-8", errors="replace"),
+            stderr.decode("utf-8", errors="replace"),
         )
+        if check:
+            result.check_returncode()
+        return result
 
     def redact(self, value: str) -> str:
         for secret in sorted(self._secret_values, key=len, reverse=True):
@@ -485,7 +514,6 @@ class DockerRuntime:
         atomic_write_json(record_path, record)
         process = None
         started = time.monotonic()
-        opener = build_opener(ProxyHandler({}))
         with tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as logs:
             try:
                 with self._lock:
@@ -509,13 +537,27 @@ class DockerRuntime:
                             + self.redact(logs.read()[-6000:])
                         )
                     if base_url is None:
-                        mapped = self._control(["port", name, f"{port}/tcp"])
+                        try:
+                            mapped = self._control(
+                                ["port", name, f"{port}/tcp"],
+                                timeout_seconds=min(
+                                    30, max(0.001, started + timeout_seconds - time.monotonic())
+                                ),
+                            )
+                        except subprocess.TimeoutExpired as exc:
+                            raise TimeoutError("Agent service startup deadline exceeded") from exc
                         match = re.fullmatch(r"127\.0\.0\.1:(\d+)", mapped.stdout.strip())
                         if match:
                             base_url = "http://" + match.group(0)
                     if base_url:
                         try:
-                            with opener.open(base_url + health_path, timeout=1) as response:
+                            with bounded_urlopen(
+                                base_url + health_path,
+                                timeout=min(
+                                    1, max(0.001, started + timeout_seconds - time.monotonic())
+                                ),
+                                handlers=(ProxyHandler({}),),
+                            ) as response:
                                 if response.status == 200:
                                     break
                         except OSError:

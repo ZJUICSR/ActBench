@@ -95,7 +95,7 @@ def test_openai_compatible_chat_completion_posts_payload(monkeypatch: Any) -> No
     )
     monkeypatch.setenv("ACTBENCH_PRIVATE_GATEWAY_API_KEY", "test-key")
     monkeypatch.setenv("ACTBENCH_PRIVATE_GATEWAY_BASE_URL", "https://private-gateway.example/v1")
-    monkeypatch.setattr(lib_openai_compatible.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(lib_openai_compatible, "bounded_urlopen", fake_urlopen)
     lib_openai_compatible.reset_usage()
 
     response = lib_openai_compatible.chat_completion(

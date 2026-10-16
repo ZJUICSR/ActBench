@@ -231,6 +231,21 @@ is replaced before provider setup. Agent state directories can contain native
 credential stores and should be treated as private; they are not included in the
 build context or normal workspace artifacts.
 
+Controller HTTP deadlines cover connection setup, response headers and the
+entire body, including error responses and SSE streams. Slow trickles and
+heartbeats cannot extend the request budget. Responses are capped at 64 MiB;
+QwenPaw SSE events are capped at 1 MiB. Redirects must remain on the same origin
+to keep API and admin credentials at their intended service. MCP tool calls
+run in workers so a slow mock API does not block gateway health or other tasks.
+
+QwenPaw requires a completed response event before accepting a stream as
+successful, and retains usage events sent afterward. On interruption, received
+text and usage remain available as partial evidence with error or timeout status.
+Docker control commands and the one-command runner capture output in files and
+clean up their process groups, including descendants of an exited command.
+Mock service cleanup continues after individual failures and retains failed
+process handles for a later cleanup attempt.
+
 Workspace snapshots record symbolic links in `files_manifest.json` without
 following them or recreating them in the exported workspace. This prevents a
 container-created link from making the host recorder copy an unmounted host
