@@ -1,6 +1,7 @@
 # DeepTrap one-command testing
 
-`deeptrap test` is the convenience path for a bounded ActBench run. It wraps the existing two-stage workflow:
+`deeptrap test` is the convenience path for a bounded ActBench run. Real runs
+use Docker by default. The command wraps the existing two-stage workflow:
 
 1. collect target-agent trajectories with `deeptrap run`, and
 2. score only those invocation-local trajectories with `deeptrap score`.
@@ -18,7 +19,7 @@ deeptrap test \
   --judge-model private/gpt-5.5
 ```
 
-The command prints the resolved plan before execution and writes all artifacts under a fresh directory in `results/one_click/`.
+The command prints the resolved plan before execution and writes all artifacts under a fresh directory in `results/one_click/`. Use `--execution local` only for a deliberately host-managed backend.
 
 ## Self-test
 
@@ -41,12 +42,18 @@ This exercises task loading, workspace materialization, mock services, artifact 
 
 ## Defaults for real runs
 
-A real `deeptrap test` run requires explicit `--backend`, `--model`, and (for the default scoring mode) `--judge-model`.
+A real `deeptrap test` run defaults to the `openclaw` backend, the
+`deepseek/deepseek-v4-pro` model label, Docker execution, and the representative
+suite. Pass `--backend` and `--model` for another target. The default scoring
+mode still requires an explicit `--judge-model`.
 
 Default behavior:
 
 | Setting | Default |
 | --- | --- |
+| Backend | `openclaw` |
+| Model | `deepseek/deepseek-v4-pro` |
+| Execution | `docker` |
 | Suite | `representative` |
 | Representative tasks | `task_B1_T01` through `task_B15_T01` |
 | Runs | `1` per task |
@@ -115,16 +122,16 @@ If baseline evidence is missing in the collection aggregate, `deeptrap test` rec
 
 ## Backend setup
 
-`deeptrap test` intentionally uses the existing backend adapters. It validates the selected backend name, task selector, task loadability, and same-task worker support, then delegates backend-specific setup to the normal runner initialization path.
+`deeptrap test` intentionally uses the existing backend adapters. It validates the selected backend name, task selector, task loadability, and same-task worker support, then delegates backend-specific setup to the normal runner initialization path. Docker image and provider failures are reported before task execution with the corresponding `docker-build` or provider configuration command.
 
 Backend notes:
 
-- `openclaw`: requires the OpenClaw CLI on `PATH` and mutates OpenClaw agent/session state as the normal runner does.
-- `qwenpaw`: requires a running QwenPaw service; see the QwenPaw section in `README.md`.
-- `openagent`: requires a running OpenAgent service, API key, Store setup, and ActBench MCP configuration; see `docs/OPENAGENT.md`.
-- `hermes`: requires the Hermes CLI and provider credentials visible to isolated attempt homes; see `docs/HERMES.md`.
-- `opencode`: requires opencode CLI/provider setup; see `docs/OPENCODE.md`.
-- `claudecode`: requires Claude Code CLI/provider setup; see `docs/CLAUDECODE.md`.
+- `openclaw`: Docker supplies the native CLI; local execution requires the OpenClaw CLI on `PATH`.
+- `qwenpaw`: Docker starts an attempt-owned service; local execution requires a running QwenPaw service.
+- `openagent`: Docker creates an attempt-owned service; local execution requires a running OpenAgent service, API key, Store setup, and ActBench MCP configuration.
+- `hermes`: Docker supplies the native CLI; local execution requires the Hermes CLI and provider credentials visible to isolated attempt homes.
+- `opencode`: Docker supplies the native CLI; local execution requires opencode CLI/provider setup.
+- `claudecode`: Docker supplies the native CLI; local execution requires Claude Code CLI/provider setup.
 - `fake`: deterministic plumbing backend for self-test and local tests only.
 
 For OpenAgent, remember that ActBench records and sends `--model`, but the actual provider/model/tools can be controlled by the OpenAgent Store associated with the API key.

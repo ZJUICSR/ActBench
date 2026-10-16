@@ -6,6 +6,7 @@ import contextvars
 import hashlib
 import json
 import os
+import re
 import shutil
 import stat
 import threading
@@ -86,7 +87,7 @@ def artifact_file_info(path: str | Path) -> Dict[str, Any]:
 
 
 class TrainingArtifactRecorder:
-    """Writes raw, non-redacted artifacts for later red-team model training."""
+    """Keep benchmark evidence while replacing known runtime credentials."""
 
     schema_version = "training_artifacts.v1"
 
@@ -106,6 +107,10 @@ class TrainingArtifactRecorder:
         self.model_calls: list[Dict[str, Any]] = []
         self.created_at = time.time()
         self._lock = threading.RLock()
+        self._secrets: set[str] = set()
+        for name, value in os.environ.items():
+            if re.search(r"(?:^|_)(?:API_KEY|TOKEN|SECRET|PASSWORD|AUTH_TOKEN)$", name, re.I):
+                self.register_secret(value)
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / "model_calls").mkdir(parents=True, exist_ok=True)
         (self.root / "runs").mkdir(parents=True, exist_ok=True)
@@ -119,7 +124,7 @@ class TrainingArtifactRecorder:
                 "run_id": self.run_id,
                 "created_at": self.created_at,
                 "updated_at": time.time(),
-                "raw_retention_policy": "raw_unredacted",
+                "raw_retention_policy": "runtime_credentials_redacted",
                 "metadata": self.metadata,
                 "model_calls": self.model_calls,
             }
@@ -129,14 +134,78 @@ class TrainingArtifactRecorder:
 
     def write_json(self, relative_path: str | Path, data: Any) -> Path:
         with self._lock:
-            return atomic_write_json(self.root / relative_path, data)
+            return atomic_write_json(self.root / relative_path, self.redact_value(data))
 
     def write_text(self, relative_path: str | Path, text: str) -> Path:
         with self._lock:
             path = self.root / relative_path
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8", errors="replace")
+            path.write_text(self.redact_text(text), encoding="utf-8", errors="replace")
             return path
+
+    def register_secret(self, value: str) -> None:
+        """Register an exact controller/provider credential, never a task pattern."""
+        if value:
+            with self._lock:
+                self._secrets.add(value)
+
+    def redact_text(self, value: str) -> str:
+        with self._lock:
+            secrets = sorted(self._secrets, key=len, reverse=True)
+        for secret in secrets:
+            value = value.replace(secret, "[REDACTED]")
+        return value
+
+    def redact_value(self, value: Any) -> Any:
+        if isinstance(value, str):
+            return self.redact_text(value)
+        if isinstance(value, dict):
+            return {
+                self.redact_text(key) if isinstance(key, str) else key: self.redact_value(item)
+                for key, item in value.items()
+            }
+        if isinstance(value, (list, tuple)):
+            return [self.redact_value(item) for item in value]
+        if value is None or isinstance(value, (int, float, bool)):
+            return value
+        return self.redact_text(str(value))
+
+    def _copy_evidence(self, source_file, target_file, size: int) -> Dict[str, Any]:
+        # Read only the size observed at open: a still-running agent must not
+        # extend collection indefinitely by appending to a file during capture.
+        secrets = sorted((value.encode("utf-8") for value in self._secrets), key=len, reverse=True)
+        pattern = re.compile(b"|".join(re.escape(value) for value in secrets)) if secrets else None
+        overlap = max(map(len, secrets), default=1) - 1
+        pending = b""
+        remaining = size
+        digest = hashlib.sha256()
+        written = 0
+        redacted = False
+        while True:
+            chunk = source_file.read(min(1024 * 1024, remaining)) if remaining else b""
+            remaining -= len(chunk)
+            pending += chunk
+            final = not chunk or remaining == 0
+            cutoff = len(pending) if final else max(0, len(pending) - overlap)
+            pieces = []
+            position = 0
+            if pattern:
+                for match in pattern.finditer(pending):
+                    if match.start() >= cutoff:
+                        break
+                    pieces.extend((pending[position : match.start()], b"[REDACTED]"))
+                    position = match.end()
+                    redacted = True
+            consumed = max(cutoff, position)
+            pieces.append(pending[position:consumed])
+            output = b"".join(pieces)
+            target_file.write(output)
+            digest.update(output)
+            written += len(output)
+            pending = pending[consumed:]
+            if final:
+                break
+        return {"size": written, "sha256": digest.hexdigest(), "redacted": redacted}
 
     def run_dir(self, run_key: str) -> Path:
         safe_key = safe_artifact_name(run_key)
@@ -197,20 +266,22 @@ class TrainingArtifactRecorder:
                             info = os.fstat(source_file.fileno())
                             if not stat.S_ISREG(info.st_mode):
                                 continue
-                            digest = hashlib.sha256()
-                            size = 0
                             with dest.open("wb") as target_file:
-                                for chunk in iter(lambda: source_file.read(1024 * 1024), b""):
-                                    target_file.write(chunk)
-                                    digest.update(chunk)
-                                    size += len(chunk)
+                                captured = self._copy_evidence(
+                                    source_file, target_file, info.st_size
+                                )
+                            after = os.fstat(source_file.fileno())
                         dest.chmod(stat.S_IMODE(info.st_mode))
                         os.utime(dest, ns=(info.st_atime_ns, info.st_mtime_ns))
                         manifest["files"].append(
                             {
                                 "path": str(rel),
-                                "size": size,
-                                "sha256": digest.hexdigest(),
+                                **captured,
+                                "source_size": info.st_size,
+                                "source_changed": (
+                                    info.st_size != after.st_size
+                                    or info.st_mtime_ns != after.st_mtime_ns
+                                ),
                                 "mtime": info.st_mtime,
                             }
                         )
@@ -243,7 +314,10 @@ class TrainingArtifactRecorder:
                         self.root / base / "fixtures" / f"{safe_artifact_name(str(service))}.json"
                     )
                     dest.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(source, dest)
+                    with source.open("rb") as source_file, dest.open("wb") as target_file:
+                        self._copy_evidence(
+                            source_file, target_file, os.fstat(source_file.fileno()).st_size
+                        )
             for service, endpoint in (api_endpoints or {}).items():
                 if not isinstance(endpoint, dict):
                     continue
@@ -254,7 +328,10 @@ class TrainingArtifactRecorder:
                 if source.exists():
                     dest = self.root / base / "logs" / f"{safe_artifact_name(str(service))}.log"
                     dest.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(source, dest)
+                    with source.open("rb") as source_file, dest.open("wb") as target_file:
+                        self._copy_evidence(
+                            source_file, target_file, os.fstat(source_file.fileno()).st_size
+                        )
 
     def record_model_call(
         self,

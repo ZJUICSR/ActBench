@@ -9,13 +9,21 @@ from pathlib import Path
 
 
 def _next_run_id(run_root: Path) -> str:
+    """Reserve a fresh run directory, including across concurrent CLI processes."""
     run_root.mkdir(parents=True, exist_ok=True)
     existing = []
     for entry in run_root.iterdir():
         if entry.is_dir() and entry.name.isdigit():
             existing.append(int(entry.name))
     next_id = (max(existing) + 1) if existing else 1
-    return f"{next_id:04d}"
+    while True:
+        run_id = f"{next_id:04d}"
+        try:
+            (run_root / run_id).mkdir(mode=0o700)
+        except FileExistsError:
+            next_id += 1
+        else:
+            return run_id
 
 
 def _load_ascii_art(script_dir: Path, filename: str) -> str | None:

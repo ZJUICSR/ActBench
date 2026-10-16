@@ -22,18 +22,20 @@ import uuid
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
-from urllib.request import ProxyHandler, build_opener
+from urllib.request import ProxyHandler
 
 from benchmark.backends.base import BackendInitializationError
+from lib_training_artifacts import atomic_write_json, get_current_recorder
+from lib_http import urlopen as bounded_urlopen
 
-DEFAULT_IMAGE = "actbench-opencode:1.17.18"
+DEFAULT_IMAGE = "actbench-opencode:1.18.3-ubuntu22.04"
 DEFAULT_IMAGES = {
     "opencode": DEFAULT_IMAGE,
-    "claudecode": "actbench-claudecode:2.1.268",
-    "hermes": "actbench-hermes:0.18.2",
-    "openclaw": "actbench-openclaw:2026.5.18",
-    "qwenpaw": "actbench-qwenpaw:1.1.11.post2",
-    "openagent": "actbench-openagent:2.83.1",
+    "claudecode": "actbench-claudecode:2.1.218-ubuntu22.04",
+    "hermes": "actbench-hermes:0.18.2-ubuntu22.04",
+    "openclaw": "actbench-openclaw:2026.5.19-ubuntu22.04",
+    "qwenpaw": "actbench-qwenpaw:2.0.0.post2-ubuntu22.04",
+    "openagent": "actbench-openagent:2.83.1-ubuntu22.04",
 }
 
 
@@ -133,6 +135,8 @@ class DockerRuntime:
             for name, value in self.target_env.items()
             if value and re.search(r"KEY|TOKEN|SECRET|PASSWORD|AUTH", name, re.I)
         ]
+        for value in self._secret_values:
+            self.register_secret(value)
         try:
             info = json.loads(self._control(["info", "--format", "{{json .}}"], check=True).stdout)
             security = info.get("SecurityOptions")
@@ -157,6 +161,22 @@ class DockerRuntime:
             detail = self.redact(
                 str(getattr(exc, "stderr", None) or getattr(exc, "stdout", None) or exc)
             ).strip()
+            if isinstance(exc, FileNotFoundError):
+                detail = (
+                    f"Docker executable {self.binary!r} was not found; install Docker or "
+                    "set ACTBENCH_DOCKER_BIN"
+                )
+            elif isinstance(exc, subprocess.CalledProcessError):
+                command = list(getattr(exc, "cmd", ()) or ())
+                if command[:2] == ["image", "inspect"] or command[1:3] == [
+                    "image",
+                    "inspect",
+                ]:
+                    detail = f"Docker image {self.image!r} is unavailable"
+                elif command[:1] == ["info"] or command[1:2] == ["info"]:
+                    detail = "Docker daemon is unavailable or is not a Linux daemon"
+                if getattr(exc, "stderr", None):
+                    detail = f"{detail}: {self.redact(str(exc.stderr)).strip()}"
             raise BackendInitializationError(
                 f"Docker preflight failed: {detail}. Enable a Linux Docker daemon and run "
                 f"'deeptrap docker-build --backend {self.backend}' first; no local-agent fallback is used."
@@ -180,16 +200,44 @@ class DockerRuntime:
                 self._previous_signals[signum] = signal.getsignal(signum)
                 signal.signal(signum, self._on_signal)
 
-    def _control(self, args: list[str], *, check: bool = False) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            [self.binary, *args],
-            env=self.host_env,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            text=True,
-            timeout=30,
-            check=check,
+    def _control(
+        self, args: list[str], *, check: bool = False, timeout_seconds: float = 30
+    ) -> subprocess.CompletedProcess[str]:
+        command = [self.binary, *args]
+        with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+            process = subprocess.Popen(
+                command,
+                env=self.host_env,
+                stdin=subprocess.DEVNULL,
+                stdout=out,
+                stderr=err,
+                start_new_session=True,
+            )
+            try:
+                process.wait(timeout=timeout_seconds)
+            finally:
+                # File-backed capture and group cleanup also cover credential
+                # helpers inheriting output after the Docker CLI has exited.
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                process.wait(timeout=5)
+            out.seek(0)
+            err.seek(0)
+            limit = 64 * 1024 * 1024
+            stdout, stderr = out.read(limit + 1), err.read(limit + 1)
+            if len(stdout) > limit or len(stderr) > limit:
+                raise RuntimeError("Docker control output exceeds capture limit")
+        result = subprocess.CompletedProcess(
+            command,
+            process.returncode,
+            stdout.decode("utf-8", errors="replace"),
+            stderr.decode("utf-8", errors="replace"),
         )
+        if check:
+            result.check_returncode()
+        return result
 
     def redact(self, value: str) -> str:
         for secret in sorted(self._secret_values, key=len, reverse=True):
@@ -199,13 +247,19 @@ class DockerRuntime:
     def register_secret(self, value: str) -> None:
         if value and value not in self._secret_values:
             self._secret_values.append(value)
+        recorder = get_current_recorder()
+        if recorder is not None:
+            recorder.register_secret(value)
 
     def redact_value(self, value: Any) -> Any:
         """Apply the same credential redaction to HTTP and native-file transcripts."""
         if isinstance(value, str):
             return self.redact(value)
         if isinstance(value, dict):
-            return {key: self.redact_value(item) for key, item in value.items()}
+            return {
+                self.redact(key) if isinstance(key, str) else key: self.redact_value(item)
+                for key, item in value.items()
+            }
         if isinstance(value, list):
             return [self.redact_value(item) for item in value]
         return value
@@ -346,16 +400,22 @@ class DockerRuntime:
             "purpose": purpose,
             "image_id": self.image_id,
             "cleanup": "pending",
+            "started_at": time.time(),
+            "timeout_seconds": timeout_seconds,
+            "executable": argv[0],
+            "stdout_path": f"{name}.stdout.log",
+            "stderr_path": f"{name}.stderr.log",
         }
+        started = time.monotonic()
         records.append(record)
         record_path = self.records_dir / f"{name}.json"
-        record_path.write_text(json.dumps(record, indent=2) + "\n")
+        atomic_write_json(record_path, record)
         process = None
         timed_out = False
         # File-backed output also handles large opencode export payloads.
         with (
-            tempfile.TemporaryFile(mode="w+", encoding="utf-8") as out,
-            tempfile.TemporaryFile(mode="w+", encoding="utf-8") as err,
+            tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as out,
+            tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as err,
             tempfile.TemporaryFile(mode="w+", encoding="utf-8") as inp,
         ):
             if input_text is not None:
@@ -378,26 +438,38 @@ class DockerRuntime:
                     process.wait(timeout=timeout_seconds)
                 except subprocess.TimeoutExpired:
                     timed_out = True
+            except BaseException as exc:
+                record["error"] = {"type": type(exc).__name__, "message": self.redact(str(exc))}
+                raise
             finally:
                 try:
                     self._remove(name)
                     record["cleanup"] = "removed"
-                except Exception:
+                except Exception as exc:
                     record["cleanup"] = "failed"
+                    record["cleanup_error"] = self.redact(str(exc))
                     raise
                 finally:
-                    if process is not None and process.poll() is None:
-                        try:
-                            os.killpg(process.pid, signal.SIGKILL)
-                        except ProcessLookupError:
-                            pass
-                        process.wait(timeout=5)
-                    record_path.write_text(json.dumps(record, indent=2) + "\n")
-            out.seek(0)
-            err.seek(0)
-            stdout, stderr = self.redact(out.read()), self.redact(err.read())
-        record.update(exit_code=process.returncode, timed_out=timed_out)
-        record_path.write_text(json.dumps(record, indent=2) + "\n")
+                    try:
+                        if process is not None and process.poll() is None:
+                            try:
+                                os.killpg(process.pid, signal.SIGKILL)
+                            except ProcessLookupError:
+                                pass
+                            process.wait(timeout=5)
+                    finally:
+                        out.seek(0)
+                        err.seek(0)
+                        stdout, stderr = self.redact(out.read()), self.redact(err.read())
+                        (self.records_dir / record["stdout_path"]).write_text(stdout)
+                        (self.records_dir / record["stderr_path"]).write_text(stderr)
+                        record.update(
+                            exit_code=process.returncode if process is not None else None,
+                            timed_out=timed_out,
+                            finished_at=time.time(),
+                            duration_seconds=time.monotonic() - started,
+                        )
+                        atomic_write_json(record_path, self.redact_value(record))
         if timed_out:
             raise subprocess.TimeoutExpired(argv[:1], timeout_seconds, output=stdout, stderr=stderr)
         return subprocess.CompletedProcess(argv, process.returncode, stdout, stderr)
@@ -431,14 +503,18 @@ class DockerRuntime:
             "purpose": "agent-service",
             "image_id": self.image_id,
             "cleanup": "pending",
+            "started_at": time.time(),
+            "timeout_seconds": timeout_seconds,
+            "executable": argv[0],
+            "ready": False,
+            "log_path": f"{name}.log",
         }
         records.append(record)
         record_path = self.records_dir / f"{name}.json"
-        record_path.write_text(json.dumps(record, indent=2) + "\n")
+        atomic_write_json(record_path, record)
         process = None
         started = time.monotonic()
-        opener = build_opener(ProxyHandler({}))
-        with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as logs:
+        with tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as logs:
             try:
                 with self._lock:
                     if self._closed:
@@ -461,13 +537,27 @@ class DockerRuntime:
                             + self.redact(logs.read()[-6000:])
                         )
                     if base_url is None:
-                        mapped = self._control(["port", name, f"{port}/tcp"])
+                        try:
+                            mapped = self._control(
+                                ["port", name, f"{port}/tcp"],
+                                timeout_seconds=min(
+                                    30, max(0.001, started + timeout_seconds - time.monotonic())
+                                ),
+                            )
+                        except subprocess.TimeoutExpired as exc:
+                            raise TimeoutError("Agent service startup deadline exceeded") from exc
                         match = re.fullmatch(r"127\.0\.0\.1:(\d+)", mapped.stdout.strip())
                         if match:
                             base_url = "http://" + match.group(0)
                     if base_url:
                         try:
-                            with opener.open(base_url + health_path, timeout=1) as response:
+                            with bounded_urlopen(
+                                base_url + health_path,
+                                timeout=min(
+                                    1, max(0.001, started + timeout_seconds - time.monotonic())
+                                ),
+                                handlers=(ProxyHandler({}),),
+                            ) as response:
                                 if response.status == 200:
                                     break
                         except OSError:
@@ -478,24 +568,37 @@ class DockerRuntime:
                         f"{self.backend} service did not become ready in {timeout_seconds}s"
                     )
                 record["ready"] = True
+                record["ready_at"] = time.time()
+                atomic_write_json(record_path, record)
                 yield base_url
+            except BaseException as exc:
+                record["error"] = {"type": type(exc).__name__, "message": self.redact(str(exc))}
+                raise
             finally:
                 try:
                     self._remove(name)
                     record["cleanup"] = "removed"
-                except Exception:
+                except Exception as exc:
                     record["cleanup"] = "failed"
+                    record["cleanup_error"] = self.redact(str(exc))
                     raise
                 finally:
-                    if process is not None and process.poll() is None:
-                        try:
-                            os.killpg(process.pid, signal.SIGKILL)
-                        except ProcessLookupError:
-                            pass
-                        process.wait(timeout=5)
-                    logs.seek(0)
-                    (self.records_dir / f"{name}.log").write_text(self.redact(logs.read()))
-                    record_path.write_text(json.dumps(record, indent=2) + "\n")
+                    try:
+                        if process is not None and process.poll() is None:
+                            try:
+                                os.killpg(process.pid, signal.SIGKILL)
+                            except ProcessLookupError:
+                                pass
+                            process.wait(timeout=5)
+                    finally:
+                        logs.seek(0)
+                        (self.records_dir / record["log_path"]).write_text(self.redact(logs.read()))
+                        record.update(
+                            exit_code=process.returncode if process is not None else None,
+                            finished_at=time.time(),
+                            duration_seconds=time.monotonic() - started,
+                        )
+                        atomic_write_json(record_path, self.redact_value(record))
 
     def _remove(self, name: str) -> None:
         result = self._control(["rm", "--force", name])
@@ -516,7 +619,7 @@ class DockerRuntime:
             )
             if remaining.stdout.strip():
                 raise RuntimeError(
-                    f"Could not remove Docker container {name}: {result.stderr.strip()}"
+                    f"Could not remove Docker container {name}: {self.redact(result.stderr.strip())}"
                 )
         with self._lock:
             self._active.discard(name)

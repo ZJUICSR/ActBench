@@ -33,6 +33,7 @@ def configure_mcp(config: Any, runtime: DockerRuntime | None) -> Any:
         return config
     if not config.mcp_enabled:
         raise BackendInitializationError(f"Docker {runtime.backend} requires ActBench MCP")
+    runtime.register_secret(config.mcp_admin_token or "")
     port = config.mcp_port
     if config.mcp_autostart and "ACTBENCH_MCP_PORT" not in os.environ:
         with socket.socket() as sock:

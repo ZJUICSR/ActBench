@@ -168,6 +168,62 @@ def _write_minimal_task(tasks_dir: Path) -> None:
     )
 
 
+@pytest.mark.parametrize("fail_initialization", [False, True])
+def test_runner_restores_the_callers_recorder_after_success_or_initialization_failure(
+    monkeypatch, tmp_path, fail_initialization
+):
+    from lib_training_artifacts import (
+        TrainingArtifactRecorder,
+        activate_recorder,
+        get_current_recorder,
+        reset_recorder,
+        record_model_call,
+    )
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    outer = TrainingArtifactRecorder(root=tmp_path / "outer", run_kind="test", run_id="caller")
+    token = activate_recorder(outer)
+
+    def initialize(self, context):
+        assert get_current_recorder() is not outer
+        assert get_current_recorder() is not None
+        if fail_initialization:
+            raise BackendInitializationError("test startup failure")
+
+    monkeypatch.setattr(FakeBackend, "initialize_run", initialize)
+    args = Namespace(
+        tasks_dir=str(tasks_dir),
+        model="test/model",
+        backend="fake",
+        suite="task_fake",
+        output_dir=str(tmp_path / "results"),
+        timeout_multiplier=1.0,
+        runs=1,
+        run_workers=1,
+        judge_model=None,
+        verbose=False,
+        no_fail_fast=True,
+        skip_baseline_gen=True,
+        training_artifact_dir=None,
+        no_training_artifacts=False,
+    )
+    try:
+        if fail_initialization:
+            with pytest.raises(SystemExit):
+                run_benchmark(args)
+        else:
+            run_benchmark(args)
+        assert get_current_recorder() is outer
+        recorded = record_model_call(
+            role="caller", model="test", request_payload={"prompt": "next call"}
+        )
+        assert recorded.is_relative_to(outer.root)
+        assert outer.model_call_count == 1
+    finally:
+        reset_recorder(token)
+
+
 def test_cli_default_backend_is_openclaw(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sys, "argv", ["actbench"])
 
@@ -175,6 +231,15 @@ def test_cli_default_backend_is_openclaw(monkeypatch: pytest.MonkeyPatch) -> Non
 
     assert args.backend == "openclaw"
     assert args.model == "deepseek/deepseek-v4-pro"
+    assert args.execution == "docker"
+
+
+def test_cli_fake_backend_defaults_to_local_execution(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["actbench", "--backend", "fake"])
+
+    args = _parse_args()
+
+    assert args.execution == "local"
 
 
 def test_cli_accepts_qwenpaw_backend(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1269,7 +1334,9 @@ def test_qwenpaw_usage_parsing_accepts_nested_and_aggregate_shapes() -> None:
 
 class _FakeSseResponse:
     def __init__(self, lines: list[str]) -> None:
-        self._lines = lines
+        import io
+
+        self._body = io.BytesIO("".join(lines).encode("utf-8"))
 
     def __enter__(self):
         return self
@@ -1277,8 +1344,8 @@ class _FakeSseResponse:
     def __exit__(self, exc_type, exc, tb) -> None:
         return None
 
-    def __iter__(self):
-        return iter(line.encode("utf-8") for line in self._lines)
+    def read1(self, size):
+        return self._body.read1(size)
 
 
 def test_qwenpaw_sse_keeps_early_text_and_usage(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1286,14 +1353,14 @@ def test_qwenpaw_sse_keeps_early_text_and_usage(monkeypatch: pytest.MonkeyPatch)
     from benchmark.backends.qwenpaw import _event_usage, _extract_output_text, _post_sse_json
 
     lines = [
-        f"data: {json.dumps({'text': 'early '})}\n",
-        f"data: {json.dumps({'usage': {'prompt_tokens': 2, 'total_tokens': 2}})}\n",
-        f"data: {json.dumps({'usage': {'completion_tokens': 3, 'total_tokens': 3}})}\n",
-        f"data: {json.dumps({'status': 'done'})}\n",
+        f"data: {json.dumps({'text': 'early '})}\n\n",
+        f"data: {json.dumps({'usage': {'prompt_tokens': 2, 'total_tokens': 2}})}\n\n",
+        f"data: {json.dumps({'usage': {'completion_tokens': 3, 'total_tokens': 3}})}\n\n",
+        f"data: {json.dumps({'status': 'done'})}\n\n",
     ]
     monkeypatch.setattr(
-        qwenpaw_module.urllib.request,
-        "urlopen",
+        qwenpaw_module,
+        "bounded_urlopen",
         lambda *args, **kwargs: _FakeSseResponse(lines),
     )
 
@@ -1316,14 +1383,13 @@ def test_qwenpaw_sse_enforces_total_deadline(monkeypatch: pytest.MonkeyPatch) ->
     import benchmark.backends.qwenpaw as qwenpaw_module
     from benchmark.backends.qwenpaw import QwenPawTimeoutError, _post_sse_json
 
-    monotonic_values = iter([0.0, 0.5, 1.1])
-    monkeypatch.setattr(qwenpaw_module.time, "monotonic", lambda: next(monotonic_values))
+    def timed_out(*args, **kwargs):
+        raise TimeoutError("HTTP request deadline exceeded")
+
     monkeypatch.setattr(
-        qwenpaw_module.urllib.request,
-        "urlopen",
-        lambda *args, **kwargs: _FakeSseResponse(
-            [f"data: {json.dumps({'text': 'still running'})}\n"]
-        ),
+        qwenpaw_module,
+        "bounded_urlopen",
+        timed_out,
     )
 
     with pytest.raises(QwenPawTimeoutError):
@@ -1453,6 +1519,56 @@ def test_qwenpaw_backend_timeout_returns_timeout_result(
     assert result["exit_code"] == -1
     assert result["backend_metadata"]["transcript_source"] == "qwenpaw_service_no_transcript"
     assert "timed out" in result["stderr"]
+
+
+@pytest.mark.parametrize("timeout", [False, True])
+def test_qwenpaw_incomplete_stream_retains_evidence_without_success(monkeypatch, tmp_path, timeout):
+    from benchmark.backends.qwenpaw import (
+        QwenPawBackend,
+        QwenPawRequestError,
+        QwenPawTimeoutError,
+        _merge_sse_events,
+    )
+    from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, reset_recorder
+
+    _configure_qwenpaw_test_env(monkeypatch)
+    backend = QwenPawBackend()
+    monkeypatch.setattr(backend, "_check_health", lambda config: None)
+    monkeypatch.setattr(backend, "_create_task_agent", lambda **kwargs: "actbench-test-agent")
+    monkeypatch.setattr(backend, "_delete_task_agent", lambda **kwargs: None)
+
+    def partial(**kwargs):
+        error = QwenPawTimeoutError if timeout else QwenPawRequestError
+        raise error(
+            "incomplete stream",
+            partial_response=_merge_sse_events(
+                [
+                    {"text": "partial evidence", "usage": {"total_tokens": 7}},
+                ]
+            ),
+        )
+
+    monkeypatch.setattr(backend, "_post_agent_process", partial)
+    context = _context(tmp_path, backend="qwenpaw")
+    backend.initialize_run(context)
+    recorder = TrainingArtifactRecorder(
+        root=tmp_path / "artifacts", run_kind="test", run_id="partial"
+    )
+    token = activate_recorder(recorder)
+    try:
+        result = backend.execute_task(task=_task(), context=context, attempt_run_id="run_001-1")
+    finally:
+        reset_recorder(token)
+    assert result["status"] == ("timeout" if timeout else "error")
+    assert result["stdout"] == "partial evidence"
+    assert result["transcript"]
+    assert result["usage"]["total_tokens"] == 7
+    assert result["backend_metadata"]["usage_source"] == "qwenpaw_partial_event"
+    artifact = next((tmp_path / "artifacts").rglob("qwenpaw_stream_1.json"))
+    saved = json.loads(artifact.read_text())
+    assert saved["complete"] is False
+    assert saved["status"] == result["status"]
+    assert saved["events"][0]["text"] == "partial evidence"
 
 
 def test_qwenpaw_backend_falls_back_when_history_fetch_fails(
@@ -3905,9 +4021,9 @@ def test_run_benchmark_with_fake_backend_writes_backend_schema(
     assert "openclaw_feedback" not in task_entry
     artifact_root = Path(payload["training_artifact_dir"])
     evaluation = json.loads(
-        (artifact_root / "runs" / task_entry["training_artifact_key"] / "evaluation.json").read_text(
-            encoding="utf-8"
-        )
+        (
+            artifact_root / "runs" / task_entry["training_artifact_key"] / "evaluation.json"
+        ).read_text(encoding="utf-8")
     )
     assert evaluation["schema_version"] == "actbench.evaluation_skipped.v1"
     assert evaluation["scoring_status"] == "deferred"
@@ -3981,7 +4097,6 @@ def test_default_collection_execution_failure_writes_error_evaluation(
     assert summary["total_attempts"] == 1
     assert summary["status_counts"] == {"error": 1}
     assert summary["scoring_status_counts"] == {"error": 1}
-
 
 
 def test_run_benchmark_parallel_fake_repeats_are_deterministic(tmp_path: Path) -> None:
@@ -4350,7 +4465,6 @@ def test_default_collection_parallel_worker_exception_keeps_deferred_metadata(
     assert summary["scoring_status_counts"] == {"deferred": 2, "error": 1}
 
 
-
 def test_run_benchmark_parallel_attempt_exception_becomes_error_entry(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -4468,9 +4582,9 @@ def test_inline_reward_result_evaluation_error_marks_run_error(
 
     artifact_root = Path(payload["training_artifact_dir"])
     metadata = json.loads(
-        (output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "metadata.json").read_text(
-            encoding="utf-8"
-        )
+        (
+            output_dir / "trajectories" / "B1" / "task_fake" / "runs" / "run_1" / "metadata.json"
+        ).read_text(encoding="utf-8")
     )
     assert metadata["scoring"]["scoring_status"] == "error"
     evaluation = json.loads(
@@ -4977,7 +5091,6 @@ def test_run_benchmark_rejects_direct_default_collection_without_artifacts(
         )
 
     assert exc_info.value.code == 2
-
 
 
 def test_run_benchmark_baseline_only_skips_attack_execution(

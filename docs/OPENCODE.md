@@ -15,6 +15,7 @@ The first integration is an ActBench-side MVP: it does not import opencode inter
 ```bash
 uv run scripts/actbench.py \
   --backend opencode \
+  --execution local \
   --model <provider/model-id> \
   --suite task_B9_T01 \
   --runs 1
@@ -31,6 +32,7 @@ The opencode backend supports same-task repeat parallelism with `--runs N --run-
 ```bash
 uv run scripts/actbench.py \
   --backend opencode \
+  --execution local \
   --model <provider/model-id> \
   --suite task_B9_T01 \
   --runs 3 \
@@ -103,9 +105,11 @@ When MCP is enabled, ActBench result payloads sanitize `api_endpoints`: raw mock
 
 ## Docker, WSL, and remote networking
 
-ActBench now supports `--backend opencode --execution docker` directly. Build
-the target image with `deeptrap docker-build` and verify it with
-`deeptrap docker-check`. See [DOCKER.md](DOCKER.md) for the complete workflow.
+Docker is the default for real runs. Build the target image with
+`deeptrap docker-build --backend opencode` and verify it with
+`deeptrap docker-check --backend opencode`. See [DOCKER.md](DOCKER.md) for the
+complete workflow. Use `--execution local` when deliberately using a host
+installation.
 Docker mode does not require a host OpenCode installation. It generates a
 container-reachable MCP address and keeps target credentials on an explicit
 environment-variable allowlist.
@@ -132,7 +136,7 @@ For debugging opencode installation/provider issues, disable MCP:
 
 ```bash
 ACTBENCH_OPENCODE_ENABLE_ACTBENCH_MCP=0 \
-uv run scripts/actbench.py --backend opencode --model <provider/model-id> --suite task_B9_T01
+uv run scripts/actbench.py --backend opencode --execution local --model <provider/model-id> --suite task_B9_T01
 ```
 
 In this mode ActBench still runs opencode from the task workspace, but it does not register MCP contexts or sanitize raw mock API endpoint metadata. Use it for troubleshooting, not for final comparable benchmark runs.

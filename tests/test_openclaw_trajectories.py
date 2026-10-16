@@ -27,6 +27,7 @@ from lib_reward import RewardResult  # noqa: E402
 from lib_tasks import Task  # noqa: E402
 from lib_training_artifacts import TrainingArtifactRecorder  # noqa: E402
 from lib_training_artifacts import activate_recorder, reset_recorder  # noqa: E402
+from benchmark.transcript_metrics import transcript_length_metrics  # noqa: E402
 
 
 def _task(frontmatter: dict | None = None) -> Task:
@@ -123,6 +124,48 @@ def _execution_result(artifact_key: str = "artifact-one") -> dict:
         "attack_eval": {"score": 1.0},
         "grading": {"mean": 0.0},
     }
+
+
+def test_canonical_and_attempt_copies_share_redacted_evidence_and_hashes(tmp_path):
+    import hashlib
+
+    secret = "synthetic-private-runtime-credential"
+    recorder = TrainingArtifactRecorder(root=tmp_path / "artifacts", run_kind="test", run_id="keys")
+    recorder.register_secret(secret)
+    context = _context(tmp_path)
+    context.metadata["diagnostic"] = secret
+    result = _execution_result()
+    result["stdout"] = secret
+    result["transcript"][0]["message"]["content"] = [secret, "sk-fake-task"]
+    output = tmp_path / "output"
+
+    attempt = persist_trajectory(
+        recorder=recorder,
+        task=_task(),
+        execution_result=result,
+        context=context,
+        scene_index={},
+        model=context.model,
+        judge_model=None,
+        canonical_output_dir=output,
+        canonical_suite="B9",
+        write_canonical=True,
+    )
+
+    canonical = Path(result["trajectory_artifacts"]["canonical_absolute"])
+    assert canonical.read_bytes() == attempt.read_bytes()
+    trajectory = json.loads(canonical.read_text())
+    assert trajectory["execution"]["stdout"] == "[REDACTED]"
+    assert "sk-fake-task" in canonical.read_text()
+    metrics = transcript_length_metrics(trajectory["transcript"]["entries"])
+    assert trajectory["transcript"]["transcript_json_chars"] == metrics["transcript_json_chars"]
+    metadata = json.loads(
+        Path(result["trajectory_artifacts"]["canonical_metadata_absolute"]).read_text()
+    )
+    assert metadata["sha256"] == hashlib.sha256(canonical.read_bytes()).hexdigest()
+    for root in (recorder.root, output):
+        for path in root.rglob("*.json"):
+            assert secret not in path.read_text(), path
 
 
 def test_derive_attack_payload_reads_fixture_payloads(tmp_path: Path) -> None:

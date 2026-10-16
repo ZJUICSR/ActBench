@@ -56,6 +56,14 @@ def rpc(name, arguments):
 assert "ACTBENCH_CHECK_HOST_SECRET" not in os.environ
 assert not pathlib.Path(os.environ["ACTBENCH_CHECK_HIDDEN_PATH"]).exists()
 assert not pathlib.Path("/var/run/docker.sock").exists()
+os_release = dict(
+    line.split("=", 1) for line in pathlib.Path("/etc/os-release").read_text().splitlines()
+    if "=" in line
+)
+os_release = {key: value.strip('"') for key, value in os_release.items()}
+assert os_release.get("ID") == "ubuntu" and os_release.get("VERSION_ID") == "22.04", (
+    "Expected Ubuntu 22.04, got " + os_release.get("PRETTY_NAME", repr(os_release))
+)
 assert pathlib.Path("marker.txt").read_text() == "input\n"
 pathlib.Path("native-output.txt").write_text("native write\n")
 pathlib.Path(os.environ["HOME"], "home-output.txt").write_text("home write\n")
@@ -90,7 +98,8 @@ config_command = json.loads(os.environ.get("ACTBENCH_CHECK_CONFIG_COMMAND", "[]"
 if config_command:
     config = subprocess.run(config_command, capture_output=True, text=True, timeout=60)
     assert config.returncode == 0, config.stderr
-print(json.dumps({"agent_version": version, "uid": os.getuid(), "mcp": "passed",
+print(json.dumps({"os": {key: os_release[key] for key in ("ID", "VERSION_ID", "PRETTY_NAME")},
+                  "agent_version": version, "uid": os.getuid(), "mcp": "passed",
                   "direct_mock_api": "passed",
                   "workspace": "passed", "home": "passed", "host_files_hidden": True,
                   "rootfs_read_only": True, "admin_endpoints_protected": True,
@@ -225,6 +234,7 @@ def check(output: Path, backend_name: str = "opencode") -> dict:
                 bind_host=runtime.bind_host,
             )
             context_id = secrets.token_urlsafe(32)
+            runtime.register_secret(context_id)
             register_gateway_context(
                 mcp_url=config.mcp_admin_url,
                 context_id=context_id,

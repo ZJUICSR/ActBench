@@ -45,8 +45,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--execution",
         choices=("local", "docker"),
-        default="local",
-        help="Target-agent execution mode (all real backends support docker)",
+        default="docker",
+        help=(
+            "Target-agent execution mode (default: docker; use --execution local "
+            "to run an agent installed on the host)"
+        ),
     )
     parser.add_argument(
         "--suite",
@@ -175,6 +178,14 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     args = parser.parse_args()
+    # The deterministic fake backend is intentionally host-only. Keep the
+    # public default Docker for every real backend while allowing
+    # `deeptrap run --backend fake` to remain a useful local smoke check.
+    execution_explicit = any(
+        value == "--execution" or value.startswith("--execution=") for value in sys.argv[1:]
+    )
+    if args.backend == "fake" and not execution_explicit:
+        args.execution = "local"
     if args.skip_baseline_gen and args.regenerate_baselines:
         parser.error("--regenerate-baselines cannot be used with --skip-baseline-gen")
     if args.baseline_only and args.skip_baseline_gen:

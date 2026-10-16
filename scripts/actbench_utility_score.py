@@ -14,8 +14,10 @@ from pathlib import Path
 
 def _bootstrap_scripts_path() -> None:
     scripts_dir = Path(__file__).resolve().parent
-    if str(scripts_dir) not in sys.path:
-        sys.path.insert(0, str(scripts_dir))
+    repo_root = scripts_dir.parent
+    for path in (repo_root, scripts_dir):
+        if str(path) not in sys.path:
+            sys.path.insert(0, str(path))
 
 
 def main() -> None:

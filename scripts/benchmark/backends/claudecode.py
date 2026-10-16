@@ -307,6 +307,8 @@ class ClaudeCodeBackend:
             if config.mcp_enabled:
                 try:
                     mcp_context_id = secrets.token_urlsafe(32)
+                    if config.docker_runtime:
+                        config.docker_runtime.register_secret(mcp_context_id)
                     ttl_seconds = max(float(timeout_budget) + 60.0, 60.0)
                     register_gateway_context(
                         mcp_url=config.mcp_admin_url,

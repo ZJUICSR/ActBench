@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional
 from urllib import error, request
 
 from lib_llm_config import ProviderConfig
+from lib_http import urlopen as bounded_urlopen
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +94,7 @@ def chat_completion(
     for attempt in range(MAX_RETRIES):
         req = request.Request(url, data=_build_data(), headers=headers, method="POST")
         try:
-            with request.urlopen(req, timeout=effective_timeout) as resp:
+            with bounded_urlopen(req, timeout=effective_timeout) as resp:
                 result = json.loads(resp.read().decode("utf-8"))
             break
         except error.HTTPError as exc:

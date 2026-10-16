@@ -18,9 +18,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from fastapi import FastAPI, HTTPException, Request
+from starlette.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse, Response
 
 from lib_api_services import SERVICE_SPECS
+from lib_http import urlopen as bounded_urlopen
 
 DEFAULT_MCP_HOST = "127.0.0.1"
 DEFAULT_MCP_PORT = 8765
@@ -261,7 +263,9 @@ def actbench_list_files(context_id: str, path: str = "") -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     for entry in sorted(root.iterdir(), key=lambda item: item.name):
         resolved = entry.resolve()
-        if not resolved.is_relative_to(context.workspace) or _is_internal_workspace_path(context, resolved):
+        if not resolved.is_relative_to(context.workspace) or _is_internal_workspace_path(
+            context, resolved
+        ):
             continue
         item: dict[str, Any] = {
             "path": _relative_path(context, resolved),
@@ -271,7 +275,10 @@ def actbench_list_files(context_id: str, path: str = "") -> dict[str, Any]:
         if entry.is_file():
             item["size_bytes"] = entry.stat().st_size
         entries.append(item)
-    return {"path": _relative_path(context, root) if root != context.workspace else "", "entries": entries}
+    return {
+        "path": _relative_path(context, root) if root != context.workspace else "",
+        "entries": entries,
+    }
 
 
 def actbench_read_file(context_id: str, path: str) -> dict[str, Any]:
@@ -363,7 +370,7 @@ def actbench_call_api(
 
     req = urllib.request.Request(url, data=data, headers=outbound_headers, method=method_name)
     try:
-        with urllib.request.urlopen(req, timeout=10.0) as response:
+        with bounded_urlopen(req, timeout=10.0) as response:
             raw = response.read()
             status_code = int(response.status)
             content_type = response.headers.get("Content-Type", "")
@@ -381,7 +388,12 @@ def actbench_call_api(
             parsed_body = json.loads(text) if text else None
         except json.JSONDecodeError:
             parsed_body = text
-    return {"service": service_name, "path": request_path, "status_code": status_code, "body": parsed_body}
+    return {
+        "service": service_name,
+        "path": request_path,
+        "status_code": status_code,
+        "body": parsed_body,
+    }
 
 
 def _sanitize_outbound_headers(headers: dict[str, Any]) -> dict[str, str]:
@@ -506,7 +518,9 @@ def dispatch_json_rpc(message: Any) -> dict[str, Any] | list[dict[str, Any]] | N
         elif method == "tools/call":
             result = _dispatch_tool_call(params)
         else:
-            return None if is_notification else _json_rpc_error(request_id, -32601, "Method not found")
+            return (
+                None if is_notification else _json_rpc_error(request_id, -32601, "Method not found")
+            )
         return None if is_notification else _json_rpc_result(request_id, result)
     except Exception as exc:  # noqa: BLE001 - JSON-RPC must return structured errors
         return None if is_notification else _json_rpc_error(request_id, -32603, str(exc))
@@ -538,7 +552,9 @@ def _dispatch_tool_call(params: Any) -> dict[str, Any]:
     return result
 
 
-def _maybe_record_tool_trace(*, name: str, arguments: dict[str, Any], result: dict[str, Any]) -> None:
+def _maybe_record_tool_trace(
+    *, name: str, arguments: dict[str, Any], result: dict[str, Any]
+) -> None:
     context_id = arguments.get("context_id")
     if not isinstance(context_id, str) or not context_id.strip():
         return
@@ -594,8 +610,11 @@ def create_app() -> FastAPI:
 
     @app.post("/mcp")
     async def mcp_endpoint(request: Request) -> Response:
-        payload = await request.json()
-        response = dispatch_json_rpc(payload)
+        try:
+            payload = await request.json()
+        except (ValueError, UnicodeError):
+            return JSONResponse(_json_rpc_error(None, -32700, "Parse error"), status_code=400)
+        response = await run_in_threadpool(dispatch_json_rpc, payload)
         if response is None:
             return Response(status_code=202)
         return JSONResponse(response)
@@ -822,7 +841,7 @@ def _client_request_json(
         headers["Authorization"] = f"Bearer {admin_token}"
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
+        with bounded_urlopen(req, timeout=timeout_seconds) as response:
             text = response.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")

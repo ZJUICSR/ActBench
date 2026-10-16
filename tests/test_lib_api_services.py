@@ -4,6 +4,7 @@ import json
 import errno
 import socket
 import sys
+import pytest
 from pathlib import Path
 from urllib import error, request
 
@@ -14,10 +15,45 @@ for path in (ROOT, SCRIPTS_DIR):
         sys.path.insert(0, str(path))
 
 from lib_api_services import (  # noqa: E402
+    ApiServiceGroup,
     get_declared_mock_services,
     get_fixture_overrides,
     start_api_services,
 )
+
+
+def test_cleanup_failure_does_not_skip_later_services_and_can_retry():
+    class Process:
+        def __init__(self, fail=False):
+            self.fail = fail
+            self.returncode = None
+            self.terminated = False
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            if self.fail:
+                raise PermissionError("injected failure")
+            self.terminated = True
+            self.returncode = 0
+
+        def kill(self):
+            self.terminate()
+
+        def wait(self, timeout):
+            return self.returncode
+
+    group = ApiServiceGroup(service_names=[], run_id="cleanup-test", attempt_id="1")
+    first, second = Process(fail=True), Process()
+    group.processes = {"first": first, "second": second}
+    with pytest.raises(RuntimeError, match="cleanup failed"):
+        group.stop()
+    assert second.terminated
+    assert group.processes == {"first": first}
+    first.fail = False
+    group.stop()
+    assert group.processes == {}
 
 
 def _post_json(url: str, payload: dict) -> dict:
@@ -195,6 +231,7 @@ def test_mailbox_fixture_override_uses_fixture_relative_clock(tmp_path: Path) ->
     finally:
         group.stop()
 
+
 def test_stop_makes_service_unreachable(tmp_path: Path) -> None:
     group = start_api_services(
         services=["mailbox"],
@@ -261,7 +298,9 @@ def test_service_group_uses_single_mailbox_anchored_mock_now(tmp_path: Path) -> 
         assert [message["message_id"] for message in listed["messages"]] == ["msg_recent"]
 
         taskboard_endpoints = group.endpoints["taskboard"]["business"]
-        created = _post_json(taskboard_endpoints["tasks_create"], {"title": "Created under group clock"})
+        created = _post_json(
+            taskboard_endpoints["tasks_create"], {"title": "Created under group clock"}
+        )
         assert created["task"]["created_at"] == "2025-06-15T09:00:01+00:00"
     finally:
         group.stop()

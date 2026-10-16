@@ -23,6 +23,7 @@ from lib_api_services import (
 from lib_api_skill_install import install_mock_api_skills
 from lib_mock_secrets import materialize_workspace_file
 from lib_tasks import Task
+from lib_http import urlopen as bounded_urlopen
 from lib_training_artifacts import get_current_recorder, safe_artifact_name
 
 logger = logging.getLogger(__name__)
@@ -162,7 +163,7 @@ def validate_openrouter_model(model_id: str, timeout_seconds: float = 10.0) -> b
     specific_endpoint = f"https://openrouter.ai/api/v1/models/{encoded_model_id}"
     req = request.Request(specific_endpoint, headers=headers, method="GET")
     try:
-        with request.urlopen(req, timeout=timeout_seconds) as resp:
+        with bounded_urlopen(req, timeout=timeout_seconds):
             # Model exists - validation passed
             logger.info("✅ Model validated: %s", bare_model_id)
             return True
@@ -173,7 +174,7 @@ def validate_openrouter_model(model_id: str, timeout_seconds: float = 10.0) -> b
         else:
             logger.warning("OpenRouter API error during validation: %s", exc)
             return True
-    except error.URLError as exc:
+    except (error.URLError, OSError) as exc:
         logger.warning("Network error during model validation: %s", exc)
         return True
 
@@ -181,12 +182,12 @@ def validate_openrouter_model(model_id: str, timeout_seconds: float = 10.0) -> b
     catalog_endpoint = "https://openrouter.ai/api/v1/models"
     req = request.Request(catalog_endpoint, headers=headers, method="GET")
     try:
-        with request.urlopen(req, timeout=timeout_seconds) as resp:
+        with bounded_urlopen(req, timeout=timeout_seconds) as resp:
             data = json.loads(resp.read().decode("utf-8"))
     except error.HTTPError as exc:
         logger.warning("OpenRouter API error fetching model catalog: %s", exc)
         raise ModelValidationError(f"Model '{bare_model_id}' not found on OpenRouter.")
-    except error.URLError as exc:
+    except (error.URLError, OSError) as exc:
         logger.warning("Network error fetching model catalog: %s", exc)
         raise ModelValidationError(f"Model '{bare_model_id}' not found on OpenRouter.")
     except json.JSONDecodeError as exc:
@@ -580,9 +581,7 @@ def _find_recent_session_path(agent_dir: Path, started_at: float) -> Path | None
     if not candidates:
         return None
     tolerance_seconds = 5.0
-    recent_candidates = [
-        item for item in candidates if item[1] >= (started_at - tolerance_seconds)
-    ]
+    recent_candidates = [item for item in candidates if item[1] >= (started_at - tolerance_seconds)]
     pool = recent_candidates or candidates
     return max(pool, key=lambda item: item[1])[0]
 

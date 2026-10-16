@@ -29,6 +29,31 @@ from scripts.actbench_build_docker import stage_context  # noqa: E402
 IMAGE_ID = "sha256:" + "a" * 64
 
 
+@pytest.mark.parametrize("timeout", [False, True])
+def test_docker_control_does_not_wait_for_descendant_stdout(tmp_path, timeout):
+    import time
+
+    script = tmp_path / "docker-stub"
+    script.write_text(
+        f"#!{sys.executable}\n"
+        "import subprocess,sys,time\n"
+        "subprocess.Popen([sys.executable,'-c','import time;time.sleep(10)'])\n"
+        "print('controller output',flush=True)\n" + ("time.sleep(10)\n" if timeout else "")
+    )
+    script.chmod(0o700)
+    runtime = object.__new__(DockerRuntime)
+    runtime.binary = str(script)
+    runtime.host_env = dict(os.environ)
+    started = time.monotonic()
+    if timeout:
+        with pytest.raises(subprocess.TimeoutExpired):
+            runtime._control(["info"], timeout_seconds=0.15)
+    else:
+        result = runtime._control(["info"], timeout_seconds=0.5)
+        assert result.stdout == "controller output\n"
+    assert time.monotonic() - started < 1
+
+
 @pytest.fixture
 def runtime_factory(monkeypatch, tmp_path):
     for name in list(os.environ):
@@ -38,7 +63,7 @@ def runtime_factory(monkeypatch, tmp_path):
     calls = []
 
     def make(*, rootless=False, image_id=IMAGE_ID, backend="opencode"):
-        def control(self, args, *, check=False):
+        def control(self, args, *, check=False, timeout_seconds=30):
             calls.append(args)
             if args[0] == "info":
                 value = {
@@ -158,6 +183,21 @@ def test_image_lookup_failure_does_not_fall_back_to_local(monkeypatch, tmp_path)
 
     monkeypatch.setattr(DockerRuntime, "_control", failed)
     with pytest.raises(BackendInitializationError, match="daemon unavailable"):
+        DockerRuntime(records_dir=tmp_path / "records")
+
+
+def test_image_lookup_failure_names_the_missing_image(monkeypatch, tmp_path):
+    def failed(self, args, *, check=False):
+        if args[0] == "info":
+            return subprocess.CompletedProcess(
+                args, 0, json.dumps({"SecurityOptions": ["name=seccomp"], "OSType": "linux"}), ""
+            )
+        raise subprocess.CalledProcessError(
+            1, ["docker", *args], stderr="No such image: actbench-opencode:1.18.3-ubuntu22.04"
+        )
+
+    monkeypatch.setattr(DockerRuntime, "_control", failed)
+    with pytest.raises(BackendInitializationError, match="actbench-opencode:1.18.3-ubuntu22.04"):
         DockerRuntime(records_dir=tmp_path / "records")
 
 
@@ -396,6 +436,97 @@ def test_explicit_provider_credential_is_redacted_independent_of_variable_name(
     runtime.target_env["CUSTOM_CREDENTIAL"] = "rotated-private-value"
     load_provider(runtime, "check/model")
     assert runtime.identity(providers=config) == original_identity
+
+
+def test_provider_registration_also_protects_raw_snapshots(runtime_factory, tmp_path):
+    from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, reset_recorder
+
+    recorder = TrainingArtifactRecorder(root=tmp_path / "artifacts", run_kind="test", run_id="raw")
+    token = activate_recorder(recorder)
+    try:
+        make, _ = runtime_factory
+        runtime = make()
+        runtime.register_secret("custom-named-provider-credential")
+        workspace, _ = _paths(tmp_path)
+        (workspace / "native.json").write_text('{"key":"custom-named-provider-credential"}')
+        recorder.snapshot_directory(workspace, "after")
+        assert (
+            "custom-named-provider-credential"
+            not in (recorder.root / "after/native.json").read_text()
+        )
+    finally:
+        reset_recorder(token)
+
+
+def test_cleanup_failure_keeps_partial_output_and_final_record(
+    runtime_factory, monkeypatch, tmp_path
+):
+    make, _ = runtime_factory
+    runtime = make()
+    runtime.register_secret("private-cleanup-sentinel")
+    workspace, home = _paths(tmp_path)
+    original = subprocess.Popen
+    monkeypatch.setattr(
+        subprocess,
+        "Popen",
+        lambda command, **kwargs: original(
+            [
+                sys.executable,
+                "-c",
+                "import sys; print('private-cleanup-sentinel'); sys.stderr.write('failure evidence')",
+            ],
+            **kwargs,
+        ),
+    )
+    remove = runtime._remove
+    monkeypatch.setattr(
+        runtime,
+        "_remove",
+        lambda name: (_ for _ in ()).throw(RuntimeError("daemon cleanup unavailable")),
+    )
+    records = []
+    try:
+        with pytest.raises(RuntimeError, match="daemon cleanup unavailable"):
+            runtime.run(
+                ["agent"],
+                workspace=workspace,
+                home=home,
+                env={},
+                timeout_seconds=5,
+                records=records,
+            )
+    finally:
+        monkeypatch.setattr(runtime, "_remove", remove)
+    record = json.loads((runtime.records_dir / f'{records[0]["container_name"]}.json').read_text())
+    assert record["cleanup"] == "failed"
+    assert record["exit_code"] == 0 and record["timed_out"] is False
+    assert record["finished_at"] >= record["started_at"]
+    assert record["duration_seconds"] >= 0
+    assert (runtime.records_dir / record["stdout_path"]).read_text() == "[REDACTED]\n"
+    assert (runtime.records_dir / record["stderr_path"]).read_text() == "failure evidence"
+
+
+def test_process_start_failure_still_writes_final_docker_record(
+    runtime_factory, monkeypatch, tmp_path
+):
+    make, _ = runtime_factory
+    runtime = make()
+    workspace, home = _paths(tmp_path)
+    monkeypatch.setattr(
+        subprocess,
+        "Popen",
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("could not start docker")),
+    )
+    records = []
+    with pytest.raises(OSError, match="could not start docker"):
+        runtime.run(
+            ["agent"], workspace=workspace, home=home, env={}, timeout_seconds=5, records=records
+        )
+    record = json.loads((runtime.records_dir / f'{records[0]["container_name"]}.json').read_text())
+    assert record["cleanup"] == "removed"
+    assert record["exit_code"] is None
+    assert record["error"]["type"] == "OSError"
+    assert "finished_at" in record
 
 
 def test_stdin_is_forwarded_without_prompt_in_container_argv(

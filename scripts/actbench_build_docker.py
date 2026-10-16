@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -35,7 +36,11 @@ def main() -> None:
     parser.add_argument("--backend", choices=tuple(DEFAULT_IMAGES), default="opencode")
     parser.add_argument("--tag", default=None)
     parser.add_argument("--docker", default=os.environ.get("ACTBENCH_DOCKER_BIN", "docker"))
-    parser.add_argument("--opencode-version", default=None)
+    parser.add_argument(
+        "--opencode-version",
+        default=None,
+        help="Override the OpenCode package version (only valid with --backend opencode).",
+    )
     parser.add_argument(
         "--build-arg",
         action="append",
@@ -46,6 +51,10 @@ def main() -> None:
         "--context-only", type=Path, help="Stage the build context without contacting Docker"
     )
     args = parser.parse_args()
+    if args.opencode_version and args.backend != "opencode":
+        parser.error("--opencode-version can only be used with --backend opencode")
+    if args.opencode_version and not args.tag:
+        parser.error("--opencode-version requires --tag to preserve the pinned default image")
     if args.context_only:
         stage_context(args.context_only, args.backend)
         print(
@@ -56,7 +65,8 @@ def main() -> None:
         return
     with tempfile.TemporaryDirectory(prefix="actbench-docker-build-") as directory:
         stage_context(Path(directory), args.backend)
-        command = [args.docker, "build", "--tag", args.tag or image_for_backend(args.backend)]
+        tag = args.tag or image_for_backend(args.backend)
+        command = [args.docker, "build", "--tag", tag]
         if args.opencode_version:
             command.extend(["--build-arg", f"OPENCODE_VERSION={args.opencode_version}"])
         for value in args.build_arg:
@@ -65,8 +75,14 @@ def main() -> None:
             subprocess.run([*command, directory], check=True)
         except (OSError, subprocess.CalledProcessError) as exc:
             raise SystemExit(
-                "Docker build failed; check the Docker daemon and the build output above."
+                "Docker build failed; check the Docker daemon, registry access, and the "
+                "build output above."
             ) from exc
+        check_command = (
+            f"ACTBENCH_DOCKER_{args.backend.upper()}_IMAGE={shlex.quote(tag)} "
+            f"deeptrap docker-check --backend {args.backend}"
+        )
+        print(f"Built {tag}. Verify it with: {check_command}")
 
 
 if __name__ == "__main__":

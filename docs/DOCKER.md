@@ -1,21 +1,25 @@
-# Agents in Docker
+# Ubuntu 22.04 agents in Docker
 
 ActBench's controller, graders, mock services and results stay on the host.
-Use `--backend <name> --execution docker` to run target agents in isolated
-containers. All six real backends are supported; `fake` remains a local test
-backend. Local execution remains the default. Docker mode also applies to
-benign baselines, retries and parallel repeats.
+Real target agents run in isolated containers by default. All six real backends
+are supported; `fake` remains a local test backend. Use `--execution local` to
+deliberately run a host-installed agent. Docker mode also applies to benign
+baselines, retries and parallel repeats.
+
+Every agent image starts from `ubuntu:22.04`. The Node agents use Node.js
+22.23.2 from the official, SHA-256-checked release archive. The Python agents
+use Python 3.12.14 installed with pinned uv 0.13.1 into `/opt/venv`.
 
 | Backend | Pinned agent | Per-attempt execution |
 | --- | --- | --- |
-| `opencode` | 1.17.18 | CLI, then a separate session-export container |
-| `claudecode` | 2.1.268 | CLI with stdin prompt and stream-JSON transcript |
+| `opencode` | 1.18.3 | CLI, then a separate session-export container |
+| `claudecode` | 2.1.218 | CLI with stdin prompt and stream-JSON transcript |
 | `hermes` | 0.18.2, source `daedf4f627c73859974e587783b7cef8ce80e19a` | CLI and session export sharing only that attempt's HOME |
-| `openclaw` | 2026.5.18 | `agent --local`, isolated configuration and session JSONL |
-| `qwenpaw` | 1.1.11.post2 | Fresh HTTP service and provider state for each attempt |
+| `openclaw` | 2026.5.19 | `agent --local`, isolated configuration and session JSONL |
+| `qwenpaw` | 2.0.0.post2 | Fresh HTTP service and provider state for each attempt |
 | `openagent` | 2.83.1 | Fresh HTTP service, SQLite database, Provider, Store and MCP registration |
 
-The native versions match the locally installed adapters. OpenAgent's release
+The harness versions are pinned in the table above. OpenAgent's release
 binary is verified by SHA-256 and currently targets Linux amd64. Other images
 use their upstream npm/Python packages; no GPU or host agent installation is
 required. QwenPaw additionally pins MCP 1.27.2 and FastMCP 3.4.2 because
@@ -29,21 +33,27 @@ Install ActBench on the host and enable a Linux Docker daemon:
 uv sync --extra dev
 uv run deeptrap docker-build --backend claudecode
 uv run deeptrap docker-check --backend claudecode
+# A real run uses Docker automatically; --execution docker is optional.
+uv run deeptrap test --backend claudecode --model <provider/model-id> --score-mode automated
 ```
 
 `docker-build` sends only the Dockerfile and `.dockerignore` to Docker. The
 images contain only native agent software and basic tools (Python, bash, curl,
 git, jq and ripgrep). They contain no benchmark tasks, results, graders or local
-credentials. Default tags are `actbench-<backend>:<version>` from the table above.
+credentials. Default tags are `actbench-<backend>:<version>-ubuntu22.04` from the
+table above. Rebuild the images when upgrading from the older image tags.
 Omitting `--backend` on build/check keeps the OpenCode default.
 
-`docker-check --backend <name>` calls no model or judge. It verifies the native
-CLI version, workspace and HOME writes, MCP and host mock API connectivity,
-protected admin endpoints, host-file isolation, read-only rootfs, and actual
+`docker-check --backend <name>` calls no model or judge. It verifies the
+Ubuntu 22.04 system identity, native CLI version, workspace and HOME writes,
+MCP and host mock API connectivity, protected admin endpoints, host-file
+isolation, read-only rootfs, and actual
 container timeout cleanup. OpenCode and OpenClaw also parse their native
 configuration; QwenPaw and OpenAgent start and initialize a fresh service using
 a dummy provider key. Each check writes a fresh `report.json` plus container
 records. A failed check returns nonzero.
+
+Container execution records include start/end times, duration, exit code and cleanup status. CLI stdout/stderr and service logs are saved beside those records with known provider credentials replaced by `[REDACTED]`, including on startup failure, timeout or cleanup failure. Each record names its log files. Run directories are reserved atomically so simultaneous CLI invocations receive separate workspaces and agent state.
 
 For a reviewable build context without Docker:
 
@@ -54,8 +64,8 @@ uv run deeptrap docker-build --context-only /tmp/actbench-image-context
 To change OpenCode, explicitly select a version and a new image tag:
 
 ```bash
-uv run deeptrap docker-build --opencode-version <version> --tag actbench-opencode:<version>
-export ACTBENCH_DOCKER_IMAGE=actbench-opencode:<version>
+uv run deeptrap docker-build --opencode-version <version> --tag actbench-opencode:<version>-ubuntu22.04
+export ACTBENCH_DOCKER_OPENCODE_IMAGE=actbench-opencode:<version>-ubuntu22.04
 uv run deeptrap docker-check
 ```
 
@@ -69,7 +79,7 @@ export OPENROUTER_API_KEY=...  # or load the existing credential into this shell
 export ACTBENCH_DOCKER_ENV=OPENROUTER_API_KEY
 
 uv run deeptrap test \
-  --backend opencode --execution docker \
+  --backend opencode \
   --model openrouter/<model-id> \
   --suite task_B9_T01 --score-mode automated
 ```
@@ -82,7 +92,7 @@ The lower-level collector supports the same execution switch:
 
 ```bash
 uv run deeptrap run \
-  --backend opencode --execution docker --model <provider/model-id> \
+  --backend opencode --model <provider/model-id> \
   --suite B9 --runs 3 --run-workers 2 --output-dir results/docker_b9
 ```
 
@@ -96,9 +106,10 @@ For a custom OpenAI-compatible provider, create a JSON file with a `provider`
 object, following [`config/opencode.provider.example.json`](../config/opencode.provider.example.json):
 
 ```bash
-export ACTBENCH_OPENCODE_PROVIDER_CONFIG="$PWD/config/opencode.provider.example.json"
+cp config/opencode.provider.example.json config/opencode.provider.local.json
+export ACTBENCH_OPENCODE_PROVIDER_CONFIG="$PWD/config/opencode.provider.local.json"
 export ACTBENCH_DOCKER_ENV=DASHSCOPE_API_KEY
-uv run deeptrap test --backend opencode --execution docker \
+uv run deeptrap test --backend opencode \
   --model bailian/deepseek-v4-flash-0731 \
   --suite task_B9_T01 --score-mode automated
 ```
@@ -115,10 +126,11 @@ mounted. Hermes accepts the same configuration and resolves it as a named
 custom provider:
 
 ```bash
-export ACTBENCH_DOCKER_PROVIDER_CONFIG="$PWD/config/docker.provider.example.json"
+cp config/docker.provider.example.json config/docker.provider.local.json
+export ACTBENCH_DOCKER_PROVIDER_CONFIG="$PWD/config/docker.provider.local.json"
 export ACTBENCH_DOCKER_ENV=DASHSCOPE_API_KEY
 # Use hermes, openclaw, qwenpaw or openagent here.
-uv run deeptrap test --backend hermes --execution docker \
+uv run deeptrap test --backend hermes \
   --model bailian/deepseek-v4-flash-0731 \
   --suite task_B9_T01 --score-mode automated
 ```
@@ -135,7 +147,7 @@ Bailian key, for example:
 export ANTHROPIC_BASE_URL=https://dashscope.aliyuncs.com/apps/anthropic
 export ANTHROPIC_AUTH_TOKEN="$DASHSCOPE_API_KEY"
 export ACTBENCH_DOCKER_ENV=ANTHROPIC_BASE_URL,ANTHROPIC_AUTH_TOKEN
-uv run deeptrap test --backend claudecode --execution docker \
+uv run deeptrap test --backend claudecode \
   --model deepseek-v4-flash-0731 --suite task_B9_T01 --score-mode automated
 ```
 
@@ -218,6 +230,21 @@ existing host service or database is reused. OpenAgent's initial admin password
 is replaced before provider setup. Agent state directories can contain native
 credential stores and should be treated as private; they are not included in the
 build context or normal workspace artifacts.
+
+Controller HTTP deadlines cover connection setup, response headers and the
+entire body, including error responses and SSE streams. Slow trickles and
+heartbeats cannot extend the request budget. Responses are capped at 64 MiB;
+QwenPaw SSE events are capped at 1 MiB. Redirects must remain on the same origin
+to keep API and admin credentials at their intended service. MCP tool calls
+run in workers so a slow mock API does not block gateway health or other tasks.
+
+QwenPaw requires a completed response event before accepting a stream as
+successful, and retains usage events sent afterward. On interruption, received
+text and usage remain available as partial evidence with error or timeout status.
+Docker control commands and the one-command runner capture output in files and
+clean up their process groups, including descendants of an exited command.
+Mock service cleanup continues after individual failures and retains failed
+process handles for a later cleanup attempt.
 
 Workspace snapshots record symbolic links in `files_manifest.json` without
 following them or recreating them in the exported workspace. This prevents a

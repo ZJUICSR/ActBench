@@ -329,6 +329,8 @@ def start_declared_api_services(
         ),
     )
     endpoints = group.endpoints if group else {}
+    if docker_runtime and group:
+        docker_runtime.register_secret(group.admin_token or "")
     if docker_runtime and endpoints:
         # Keep controller URLs private in group.endpoints. Only business URLs
         # are advertised to agents; audit/reset require a host-only token.
