@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -52,6 +53,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.opencode_version and args.backend != "opencode":
         parser.error("--opencode-version can only be used with --backend opencode")
+    if args.opencode_version and not args.tag:
+        parser.error("--opencode-version requires --tag to preserve the pinned default image")
     if args.context_only:
         stage_context(args.context_only, args.backend)
         print(
@@ -75,7 +78,11 @@ def main() -> None:
                 "Docker build failed; check the Docker daemon, registry access, and the "
                 "build output above."
             ) from exc
-        print(f"Built {tag}. Verify it with: deeptrap docker-check --backend {args.backend}")
+        check_command = (
+            f"ACTBENCH_DOCKER_{args.backend.upper()}_IMAGE={shlex.quote(tag)} "
+            f"deeptrap docker-check --backend {args.backend}"
+        )
+        print(f"Built {tag}. Verify it with: {check_command}")
 
 
 if __name__ == "__main__":

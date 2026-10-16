@@ -715,7 +715,7 @@ def _persist_canonical_trajectory(
         previous_metadata=previous_metadata,
         existing_trajectory_path=canonical_path,
     )
-    atomic_write_json(canonical_path, trajectory)
+    atomic_write_json(canonical_path, recorder.redact_value(trajectory))
     info = artifact_file_info(canonical_path)
     metadata = _canonical_metadata_payload(
         trajectory=trajectory,
@@ -731,6 +731,7 @@ def _persist_canonical_trajectory(
         previous_metadata=previous_metadata,
         replacement=replacement,
     )
+    metadata = recorder.redact_value(metadata)
     atomic_write_json(metadata_path, metadata)
     _update_trajectory_index(output_dir, metadata)
     return metadata
@@ -882,7 +883,7 @@ def persist_trajectory(
     execution_result["training_artifact_key"] = training_artifact_key
     trajectory = build_trajectory(
         task=task,
-        execution_result=execution_result,
+        execution_result=recorder.redact_value(execution_result),
         context=context,
         scene_index=scene_index,
         model=model,

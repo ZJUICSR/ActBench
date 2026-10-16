@@ -53,6 +53,8 @@ configuration; QwenPaw and OpenAgent start and initialize a fresh service using
 a dummy provider key. Each check writes a fresh `report.json` plus container
 records. A failed check returns nonzero.
 
+Container execution records include start/end times, duration, exit code and cleanup status. CLI stdout/stderr and service logs are saved beside those records with known provider credentials replaced by `[REDACTED]`, including on startup failure, timeout or cleanup failure. Each record names its log files. Run directories are reserved atomically so simultaneous CLI invocations receive separate workspaces and agent state.
+
 For a reviewable build context without Docker:
 
 ```bash
@@ -63,7 +65,7 @@ To change OpenCode, explicitly select a version and a new image tag:
 
 ```bash
 uv run deeptrap docker-build --opencode-version <version> --tag actbench-opencode:<version>-ubuntu22.04
-export ACTBENCH_DOCKER_IMAGE=actbench-opencode:<version>-ubuntu22.04
+export ACTBENCH_DOCKER_OPENCODE_IMAGE=actbench-opencode:<version>-ubuntu22.04
 uv run deeptrap docker-check
 ```
 

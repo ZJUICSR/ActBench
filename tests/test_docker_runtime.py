@@ -413,6 +413,97 @@ def test_explicit_provider_credential_is_redacted_independent_of_variable_name(
     assert runtime.identity(providers=config) == original_identity
 
 
+def test_provider_registration_also_protects_raw_snapshots(runtime_factory, tmp_path):
+    from lib_training_artifacts import TrainingArtifactRecorder, activate_recorder, reset_recorder
+
+    recorder = TrainingArtifactRecorder(root=tmp_path / "artifacts", run_kind="test", run_id="raw")
+    token = activate_recorder(recorder)
+    try:
+        make, _ = runtime_factory
+        runtime = make()
+        runtime.register_secret("custom-named-provider-credential")
+        workspace, _ = _paths(tmp_path)
+        (workspace / "native.json").write_text('{"key":"custom-named-provider-credential"}')
+        recorder.snapshot_directory(workspace, "after")
+        assert (
+            "custom-named-provider-credential"
+            not in (recorder.root / "after/native.json").read_text()
+        )
+    finally:
+        reset_recorder(token)
+
+
+def test_cleanup_failure_keeps_partial_output_and_final_record(
+    runtime_factory, monkeypatch, tmp_path
+):
+    make, _ = runtime_factory
+    runtime = make()
+    runtime.register_secret("private-cleanup-sentinel")
+    workspace, home = _paths(tmp_path)
+    original = subprocess.Popen
+    monkeypatch.setattr(
+        subprocess,
+        "Popen",
+        lambda command, **kwargs: original(
+            [
+                sys.executable,
+                "-c",
+                "import sys; print('private-cleanup-sentinel'); sys.stderr.write('failure evidence')",
+            ],
+            **kwargs,
+        ),
+    )
+    remove = runtime._remove
+    monkeypatch.setattr(
+        runtime,
+        "_remove",
+        lambda name: (_ for _ in ()).throw(RuntimeError("daemon cleanup unavailable")),
+    )
+    records = []
+    try:
+        with pytest.raises(RuntimeError, match="daemon cleanup unavailable"):
+            runtime.run(
+                ["agent"],
+                workspace=workspace,
+                home=home,
+                env={},
+                timeout_seconds=5,
+                records=records,
+            )
+    finally:
+        monkeypatch.setattr(runtime, "_remove", remove)
+    record = json.loads((runtime.records_dir / f'{records[0]["container_name"]}.json').read_text())
+    assert record["cleanup"] == "failed"
+    assert record["exit_code"] == 0 and record["timed_out"] is False
+    assert record["finished_at"] >= record["started_at"]
+    assert record["duration_seconds"] >= 0
+    assert (runtime.records_dir / record["stdout_path"]).read_text() == "[REDACTED]\n"
+    assert (runtime.records_dir / record["stderr_path"]).read_text() == "failure evidence"
+
+
+def test_process_start_failure_still_writes_final_docker_record(
+    runtime_factory, monkeypatch, tmp_path
+):
+    make, _ = runtime_factory
+    runtime = make()
+    workspace, home = _paths(tmp_path)
+    monkeypatch.setattr(
+        subprocess,
+        "Popen",
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("could not start docker")),
+    )
+    records = []
+    with pytest.raises(OSError, match="could not start docker"):
+        runtime.run(
+            ["agent"], workspace=workspace, home=home, env={}, timeout_seconds=5, records=records
+        )
+    record = json.loads((runtime.records_dir / f'{records[0]["container_name"]}.json').read_text())
+    assert record["cleanup"] == "removed"
+    assert record["exit_code"] is None
+    assert record["error"]["type"] == "OSError"
+    assert "finished_at" in record
+
+
 def test_stdin_is_forwarded_without_prompt_in_container_argv(
     runtime_factory, monkeypatch, tmp_path
 ):

@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import atexit
 import contextvars
-import json
 import logging
 import statistics
 import sys
@@ -24,6 +23,7 @@ from lib_training_artifacts import (
     activate_recorder,
     atomic_write_json,
     get_current_recorder,
+    reset_recorder,
 )
 
 from benchmark.artifacts import artifact_run_dir, write_execution_artifacts
@@ -1238,9 +1238,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "benchmark_version": _get_git_version(skill_root),
             },
         )
-        activate_recorder(training_recorder)
-    else:
-        activate_recorder(None)
+    recorder_token = activate_recorder(training_recorder)
 
     gateway_lock_acquired = False
     gateway_lock_atexit_callback = None
@@ -2021,6 +2019,8 @@ def run_benchmark(args: argparse.Namespace) -> None:
             aggregate["canonical_output_dir"] = str(output_dir)
 
         output_path = output_dir / f"{run_id}_{model_slug}.json"
+        if training_recorder:
+            aggregate = training_recorder.redact_value(aggregate)
         atomic_write_json(output_path, aggregate)
         if training_recorder:
             training_recorder.write_json("aggregate_result.json", aggregate)
@@ -2065,9 +2065,10 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 "retry_statuses": list(retry_statuses),
             }
         )
-        summary_payload = json.dumps(attack_summary, indent=2)
         summary_path = output_dir / f"actbench_summary_{run_id}_{model_slug}.json"
-        summary_path.write_text(summary_payload, encoding="utf-8")
+        if training_recorder:
+            attack_summary = training_recorder.redact_value(attack_summary)
+        atomic_write_json(summary_path, attack_summary)
 
         if inline_scoring:
             # Calculate and log final AGS summary for deprecated inline scoring runs.
@@ -2116,6 +2117,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
                 _offline_scoring_command(offline_trajectory_root, args.judge_model),
             )
     finally:
+        reset_recorder(recorder_token)
         if backend_initialized:
             try:
                 backend.finalize_run(backend_context)

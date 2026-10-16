@@ -234,6 +234,7 @@ def check(output: Path, backend_name: str = "opencode") -> dict:
                 bind_host=runtime.bind_host,
             )
             context_id = secrets.token_urlsafe(32)
+            runtime.register_secret(context_id)
             register_gateway_context(
                 mcp_url=config.mcp_admin_url,
                 context_id=context_id,

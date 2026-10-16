@@ -168,6 +168,62 @@ def _write_minimal_task(tasks_dir: Path) -> None:
     )
 
 
+@pytest.mark.parametrize("fail_initialization", [False, True])
+def test_runner_restores_the_callers_recorder_after_success_or_initialization_failure(
+    monkeypatch, tmp_path, fail_initialization
+):
+    from lib_training_artifacts import (
+        TrainingArtifactRecorder,
+        activate_recorder,
+        get_current_recorder,
+        reset_recorder,
+        record_model_call,
+    )
+
+    tasks_dir = tmp_path / "tasks"
+    _write_minimal_task(tasks_dir)
+    outer = TrainingArtifactRecorder(root=tmp_path / "outer", run_kind="test", run_id="caller")
+    token = activate_recorder(outer)
+
+    def initialize(self, context):
+        assert get_current_recorder() is not outer
+        assert get_current_recorder() is not None
+        if fail_initialization:
+            raise BackendInitializationError("test startup failure")
+
+    monkeypatch.setattr(FakeBackend, "initialize_run", initialize)
+    args = Namespace(
+        tasks_dir=str(tasks_dir),
+        model="test/model",
+        backend="fake",
+        suite="task_fake",
+        output_dir=str(tmp_path / "results"),
+        timeout_multiplier=1.0,
+        runs=1,
+        run_workers=1,
+        judge_model=None,
+        verbose=False,
+        no_fail_fast=True,
+        skip_baseline_gen=True,
+        training_artifact_dir=None,
+        no_training_artifacts=False,
+    )
+    try:
+        if fail_initialization:
+            with pytest.raises(SystemExit):
+                run_benchmark(args)
+        else:
+            run_benchmark(args)
+        assert get_current_recorder() is outer
+        recorded = record_model_call(
+            role="caller", model="test", request_payload={"prompt": "next call"}
+        )
+        assert recorded.is_relative_to(outer.root)
+        assert outer.model_call_count == 1
+    finally:
+        reset_recorder(token)
+
+
 def test_cli_default_backend_is_openclaw(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sys, "argv", ["actbench"])
 
